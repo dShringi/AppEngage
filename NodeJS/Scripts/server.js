@@ -1,8 +1,8 @@
 'use strict'
 
 var Hapi = require('hapi');
-var logger = require('./log.js');
-var config = require('./config.js');
+var logger = require('./conf/log.js');
+var config = require('./conf/config.js');
 var server = new Hapi.Server();
 
 server.connection({ host: config.server.host,  port: config.server.port  });
