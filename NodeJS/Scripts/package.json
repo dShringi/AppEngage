@@ -13,6 +13,9 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "hapi": "^13.4.1"
+    "hapi": "^13.4.1",
+    "mongoose": "^4.4.20",
+    "no-kafka": "^2.5.2",
+    "winston": "^2.2.0"
   }
 }
