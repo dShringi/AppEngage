@@ -1,0 +1,69 @@
+<div class="bar-icon"><a href="index.html"><img src="assets/img/Hamburger.png" /></a></div>
+<div class="arrow-icon"><a href="index.html"><img src="assets/img/Back.png" /></a></div>
+<!--logo and iconic logo end-->
+<div class="left-side-inner">
+
+    <!--sidebar nav start-->
+    <ul class="nav nav-pills nav-stacked">
+        <li class="active"><a href="index.html"><img src="assets/img/Dashboard.png" /></a><span><a href="index.html">Dashboard</a></span></li>
+        <li class=""><a href="insights.html"><img src="assets/img/Search.png" /></a><span><a href="insights.html">Insights</a></span></li>
+        <li class="menu-device"><a href="#"><img src="assets/img/Device.png" /></a><span><a href="#">Device</a></span>
+            <ul class="sub-menu">
+                <li class=""><a href="device-manufacturer.html">Manufacturer</a></li>
+                <li class=""><a href="device-model.html">Model</a></li>
+                <li class=""><a href="#">Type</a></li>
+                <li class=""><a href="#">Platform</a></li>
+                <li class=""><a href="#">OS Version</a></li>
+                <li class=""><a href="#">App Version</a></li>
+                <li class=""><a href="#">Carrier</a></li>
+                <li class=""><a href="#">Resolution</a></li>
+            </ul>
+        </li>              
+        <li class=""><a href="cities.html"><img src="assets/img/Cities.png" /></a><span><a href="cities.html">Cities</a></span></li>      
+        <li class=""><a href="event-summery.html"><img src="assets/img/Events.png" /></a><span><a href="event-summery.html">Events</a></span></li>
+        <li class=""><a href="#"><img src="assets/img/Cohort.png" /></a><span><a href="#">Cohort</a></span></li>
+        <li class=""><a href="crash-report.html"><img src="assets/img/Crash-Reports.png" /></a><span><a href="crash-report.html">Crash Reports</a></span></li>
+    </ul>
+    <!--sidebar nav end-->
+</div>
+
+<script>
+$('.bar-icon').on('click', function(e){
+    e.preventDefault();
+    showMenu();
+});
+	
+var showMenu = function(){
+	$('.overlay').show();
+	$('.bar-icon').hide();
+    $('.arrow-icon').show();
+	
+    $( ".left-side" ).animate({
+        width: "220px"
+    }, 1500, function(){
+        $('.left-side-inner ul li span').show("fast");
+        $( ".left-side" ).addClass("shadow");
+    } );
+};
+	
+$('.arrow-icon').on('click', function(e){
+    e.preventDefault();
+    $( ".left-side" ).animate({
+        width: "80px"
+    }, 1500 );
+    $('.left-side-inner ul li span').hide(1500);
+    $('.bar-icon').show();
+    $('.arrow-icon').hide();
+    $('ul.sub-menu').hide(1000);
+    $( ".left-side" ).removeClass("shadow");
+    $('.overlay').hide();
+});
+$('.menu-device').click(function(){
+	if( $( ".left-side" ).width() != 220){
+		showMenu();
+	}
+	
+    $('ul.sub-menu').toggle(1500,function(){});
+});
+
+</script>

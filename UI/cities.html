@@ -1,0 +1,138 @@
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Mobile Analytics</title>
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="assets/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="assets/css/style.css">
+        <script src="assets/js/jquery.js"></script>
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="assets/js/bootstrap.min.js"></script>
+        <script src="assets/js/d3.v3.min.js"></script>
+        <script src="http://d3js.org/topojson.v0.min.js"></script>
+        <script src="assets/js/custom-script.js"></script>
+        <script src="assets/js/moment.min.js"></script>
+        <script src="assets/js/daterangepicker.js"></script>
+        <link rel="stylesheet" type="text/css" href="assets/css/daterangepicker.css" />
+		<style>
+			path{fill:grey; stroke:white}
+		</style>
+    </head>
+    <body>
+        <aside class="left-side sticky-left-side" tabindex="5000"></aside>
+        <aside class="main-container" >
+            <section class=""><!--breadcrumb bg-white border-bottom paddl30">-->
+                <!--<ul>
+                    <li><a href="">Events</a></li>
+                    <li> &gt; </li>
+                    <li>Summary</li>
+                </ul>-->
+            </section>    
+            
+            <section class="border-bottom paddl50 mrgnBtm0">
+                <div class="row chart-header">
+                    <div class="col-md-6 txt-drk-gray"></div>
+                    <div class="col-md-6 txt-drk-gray margnTp-5 text-right">
+						<div>
+							<span class="glyphicon glyphicon-calendar txt-green sel-range" aria-hidden="true"></span> &nbsp;<span class="date-range">May 01, 2016 - May 24, 2016</span> &nbsp;
+							<select class="form-control" style="width:150px; display:inline;">
+								<option value="Today">Today</option>
+								<option value="Yesterday">Yesterday</option>
+								<option value="Today">Current Month</option>
+								<option value="Today">Previous Month</option>
+								<option value="Today">3 Months</option>
+								<option value="Today">6 Months</option>
+								<option value="Today">1 Year</option>
+							</select>
+						</div>
+                    </div>
+                </div>
+            </section>
+            <section class="bg-white paddl50 border-bottom mrgnBtm0">
+                <div class="paddt25" id="map-container">
+					
+                </div>
+            </section>
+        </aside>
+        <div class="overlay"></div>
+        <script>
+			var width = 1050,
+				height = 740;
+
+			var projection = d3.geo.mercator()
+				.center([0, 65 ])
+				.scale(170)
+				.rotate([0, 0]);
+
+			var svg = d3.select("#map-container").append("svg")
+				.attr("width", width)
+				.attr("height", height);
+			
+			var path = d3.geo.path()
+				.projection(projection);
+
+			var defs = svg.append('svg:defs');
+
+			defs.append("svg:pattern")
+				.attr("id", "bgImg")
+				.attr("width", 6)
+				.attr("height", 6)
+				.attr("patternUnits", "userSpaceOnUse")
+				.append("svg:image")
+				.attr("xlink:href", 'map-tile.png')
+				.attr("width", 6)
+				.attr("height", 6)
+				.attr("x", 0)
+				.attr("y", 0);
+			
+			var g = svg.append("g");
+
+			// load and display the World
+			d3.json("/assets/js/world-110m2.json", function (error, topology) {
+				g.selectAll("path")
+					.data(topojson.object(topology, topology.objects.countries).geometries)
+					.enter()
+					.append("path")
+					.attr("fill", "url(#bgImg)")
+					.attr("d", path);
+
+				// load and display the cities
+				d3.json("data-cities.json", function (error, data) {
+					svg.selectAll(".mark")
+						.data(data)
+						.enter()
+						.append("image")
+						.attr('class', 'mark')
+						.attr('width', 21)
+						.attr('height', 21)
+						.attr("xlink:href", '/assets/img/marker.png')
+						.attr("transform", function (d) {
+							var cx = projection([d.lng, d.lat])[0] - 9, cy = projection([d.lng, d.lat])[1] - 21;
+							return "translate(" + cx + ", " + cy + ")";
+						});
+
+				});
+
+
+
+			});
+
+			// zoom and pan
+			var zoom = d3.behavior.zoom()
+				.on("zoom", function () {
+					g.attr("transform", "translate(" +
+						d3.event.translate.join(",") + ")scale(" + d3.event.scale + ")");
+					g.selectAll("circle")
+						.attr("d", path.projection(projection));
+					g.selectAll("path")
+						.attr("d", path.projection(projection));
+				});
+
+			//svg.call(zoom)
+
+			</script>
+        
+    </body>
+    </html>
