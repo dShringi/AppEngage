@@ -1,0 +1,17 @@
+[
+    {
+        "manufacturer":"Samsung",
+        "users":4,
+        "time":82
+    },
+    {
+        "manufacturer":"Microsoft",
+        "users":1,
+        "time":102
+    },
+    {
+        "manufacturer":"Motorolla",
+        "users":2,
+        "time":156
+    }
+]
