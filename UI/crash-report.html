@@ -1,0 +1,206 @@
+    <!doctype html>
+    <html>
+    <head>
+        <title>Mobile Analytics</title>
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="assets/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="assets/css/style.css">
+        <script src="assets/js/jquery.js"></script>
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="assets/js/bootstrap.min.js"></script>
+        <script src="assets/js/d3.v3.min.js"></script>
+        <script src="assets/js/d3.legend.js"></script>
+        <script src="assets/js/custom-script.js"></script>
+        <script src="assets/js/moment.min.js"></script>
+        <script type="text/javascript" src="assets/js/daterangepicker.js"></script>
+        <link rel="stylesheet" type="text/css" href="assets/css/daterangepicker.css" />
+    </head>
+    <body>
+        <aside class="left-side sticky-left-side" tabindex="5000"></aside>
+        <aside class="main-container" >
+            <section class=""><!--breadcrumb bg-white border-bottom paddl30">-->
+                <!--<ul>
+                    <li><a href="">Events</a></li>
+                    <li> &gt; </li>
+                    <li>Summary</li>
+                </ul>-->
+            </section>    
+            
+            <section class="border-bottom paddl50 mrgnBtm0">
+                <div class="row chart-header">
+                    <div class="col-md-6 txt-drk-gray"></div>
+                    <div class="col-md-6 txt-drk-gray margnTp-5 text-right">
+						<div>
+							<span class="glyphicon glyphicon-calendar txt-green sel-range" aria-hidden="true"></span> &nbsp;<span class="date-range">May 01, 2016 - May 24, 2016</span> &nbsp;
+							<select class="form-control" style="width:150px; display:inline">
+								<option value="Today">Today</option>
+								<option value="Yesterday">Yesterday</option>
+								<option value="Today">Current Month</option>
+								<option value="Today">Previous Month</option>
+								<option value="Today">3 Months</option>
+								<option value="Today">6 Months</option>
+								<option value="Today">1 Year</option>
+							</select>
+						</div>
+                    </div>
+                </div>
+            </section>
+            <section class="bg-white paddl50 border-bottom">
+                <div class="paddb15 paddt25">
+					<div class="row">
+						<div class="col-md-3 col-lg-3 col-sm-6 col-xs-12"><div class="div-total-crashes"></div></div>
+						<div class="col-md-3 col-lg-3 col-sm-6 col-xs-12"><div class="div-total-crashes-manufacturer"></div></div>
+						<div class="col-md-3 col-lg-3 col-sm-6 col-xs-12"><div class="div-total-crashes-platform"></div></div>
+						<div class="col-md-3 col-lg-3 col-sm-6 col-xs-12"><div class="div-total-crashes-os-version"></div></div>
+					</div>
+					<div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+                            <div class="table-responsive"> 
+                                <table class="table text-left" id="tbl-crash-report"> 
+                                    <thead> 
+                                        <tr> 
+                                            <th>Time</th>
+                                            <th>Platform</th>
+                                            <th>OS Version</th>
+											<th>App Version</th>
+											<th>Total Crash Count</th>
+                                        </tr> 
+                                    </thead> 
+                                    <tbody> 
+                                        
+                                    </tbody> 
+                                </table> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </aside>
+        <div class="overlay"></div>
+        <script>
+			var width = $(".div-total-crashes").width(), height = 250, radius = Math.min(width, height) / 2;
+            var legendPosY = (height / 2) - 20;
+
+            //var color = d3.scale.ordinal().range(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+
+            var color = d3.scale.category20();
+            
+            var arc = d3.svg.arc().innerRadius(radius - 20).outerRadius(radius - 60);
+            var arcOver = d3.svg.arc().outerRadius(radius - 18).innerRadius(radius - 62);
+
+            var pie = d3.layout.pie().sort(null).value(function (d) { return d.plateform; });
+
+            var svg = d3.select(".div-total-crashes-platform").append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", "translate(" + ((width / 2) - 70) + "," + height / 2 + ")");
+            
+            
+            var pie1 = d3.layout.pie().sort(null).value(function (d) { return d.os; });
+
+            var svg1 = d3.select(".div-total-crashes-os-version").append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .append("g")
+                .attr("transform", "translate(" + ((width / 2) - 70) + "," + height / 2 + ")");
+            
+
+            d3.json("data-crash-reports.json", function (error, data) {
+                if (error) { throw error; }
+                
+				
+				
+                var g = svg.selectAll(".arc")
+                    .data(pie(data))
+                    .enter().append("g")
+                    .attr("class", "arc");
+
+                g.append("path")
+                    .attr("d", arc)
+                    .attr("data-legend", function (d) { return d.data.date; })
+                    //.attr("id", function(d) {'tag'+d.data.manufacturer.replace(/\s+/g, '')}) // assign ID
+                    .on("mouseenter", function (d) {
+                        d3.select(this)
+							.transition()
+							.duration(1000)
+							.attr("class", "shadow")
+							.attr("d", arcOver);
+                    })
+                    .on("mouseleave", function (d) {
+                        d3.select(this)
+							.transition()
+							.duration(1000)
+							.attr("d", arc);
+                    })
+                    .style("fill", function (d) { return color(d.data.date); });
+
+                g.append("text")
+                    .attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
+                    //.attr("dy", ".35em")
+                    .on("click", function (d) {
+                        //alert("aaa");
+                    });
+				
+                var g1 = svg1.selectAll(".arc")
+                    .data(pie1(data))
+                    .enter().append("g")
+                    .attr("class", "arc");
+
+                g1.append("path")
+                    .attr("d", arc)
+                    .attr("data-legend", function (d) { return d.data.date; })
+                    //.attr("id", function(d) {'tag'+d.data.manufacturer.replace(/\s+/g, '')}) // assign ID
+                    .on("mouseenter", function (d) {
+                        d3.select(this)
+							.attr("class", "shadow")
+							.transition()
+							.duration(1000)
+							.attr("d", arcOver);
+                    })
+                    .on("mouseleave", function (d) {
+						d3.select(this)
+							.transition()
+							.duration(1000)
+							.attr("d", arc);
+                    })
+                    .style("fill", function (d) { return color(d.data.date); });
+
+                g1.append("text")
+                    .attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
+                    //.attr("dy", ".35em")
+                    .on("mouseover", function (d) {
+                        //alert("bbb");
+                    });
+                    //.text(function (d) { return d.data.manufacturer; });
+                
+                showCrashReportTable(data, 'tbl-crash-report');
+                
+                var legend = svg.append("g")
+                    .attr("class", "legend")
+                    .attr("transform", "translate(120,-" + legendPosY + ")")
+                    .call(d3.legend);
+
+                setTimeout(function () {
+                    legend
+						.attr("data-style-padding", 10)
+						.call(d3.legend);
+                }, 1000);
+                
+                var legend1 = svg1.append("g")
+					.attr("class", "legend")
+					.attr("transform", "translate(120,-" + legendPosY + ")")
+					.call(d3.legend);
+
+                setTimeout(function () {
+                    legend
+						.attr("data-style-padding", 10)
+						.call(d3.legend);
+                }, 1000);
+            });
+        </script>
+        
+    </body>
+    </html>
