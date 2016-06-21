@@ -1,9 +1,10 @@
 var Kafka = require('kafka-node');
-var BeginEvent   = require('../models/analyticEvent').BeginEvent;
-var CrashEvent   = require('../models/analyticEvent').CrashEvent;
-var EndEvent   = require('../models/analyticEvent').EndEvent;
+var BeginEvent = require('../models/analyticEvent').BeginEvent;
+var CrashEvent = require('../models/analyticEvent').CrashEvent;
+var EndEvent = require('../models/analyticEvent').EndEvent;
 var logger = require('../conf/log.js');
 var Mongoose = require('mongoose');
+
 Mongoose.connect('mongodb://localhost/appengage');
 
 var HighLevelConsumer = Kafka.HighLevelConsumer;
@@ -30,14 +31,11 @@ var offset = new Offset(client);
 
 consumer.on('message', function (message) {
     message_data = JSON.parse(message.value);
-    console.log(this.id, JSON.stringify(message_data));
-    console.log('----------logging message--------------');
-    console.log(message_data.akey);
-    console.log('----------logging message--------------');
     event = new BeginEvent();
     event.akey = message_data.akey;
     event.mnu = message_data.mnu;
     event.pf = message_data.pf;
+    event.ip_address = message_data.ip_address;
     // TODO get ip address and add to json.
     event.save(function (err) {
         if (!err) {

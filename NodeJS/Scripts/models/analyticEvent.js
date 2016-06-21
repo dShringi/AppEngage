@@ -6,6 +6,7 @@ var beginEventSchema = new Schema({
   mnu           : { type: String },
   mod           : { type: String },
   pf        	: { type: String },
+  ip_address    : { type: String },
   dateCreated   : { type: Date, default: Date.now }
 });
 

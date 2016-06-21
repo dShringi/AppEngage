@@ -5,7 +5,7 @@ config.server.host = 'localhost';
 config.server.port = '8000';
 
 config.mongodb = {};
-config.mongodb.name = 'appengage';
+config.mongodb.url = 'mongodb://localhost/appengage';
 config.mongodb.port = process.env.MONGODB_PORT || '27017';
 
 config.kafka = {};

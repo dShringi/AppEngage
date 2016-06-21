@@ -1,3 +1,3 @@
 exports.init = function(server, producer) {
-  require('./events_producer')(server, producer);
+  require('./events')(server, producer);
 };

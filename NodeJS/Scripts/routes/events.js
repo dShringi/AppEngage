@@ -13,6 +13,7 @@ exports.begin = function(server, producer) {
         path: '/api/i/single/B',
         handler: function (request, reply) {
             akey = request.payload.akey;
+            request.payload.ip_address = request.info.remoteAddress;
             data = request.payload;
             // TODO get ip address and add to json.
             console.log(JSON.stringify(data));
