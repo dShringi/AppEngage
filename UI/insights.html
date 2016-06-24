@@ -106,7 +106,7 @@
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
                 // Get the data for total session
-                d3.json("data-insight-user-total-session.json", function(error, data) {
+                d3.json("assets/json/data-insight-user-total-session.json", function(error, data) {
                     //alert(data);
                     data.forEach(function(d) {
                         d.date = parseDate(d.date);
@@ -130,7 +130,7 @@
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
                 
                 // Get the data for total session
-                d3.json("data-insight-user-total-time-spent.json", function(error, data) {
+                d3.json("assets/json/data-insight-user-total-time-spent.json", function(error, data) {
                     //alert(data);
                     data.forEach(function(d) {
                         d.date = parseDate(d.date);

@@ -55,8 +55,9 @@ section>header{/*border-bottom:1px solid #dadada;*/ padding:8px;display: inline-
 .left-side {width: 80px;position: absolute;top: 0;left: 0; overflow-x: hidden; overflow-y: hidden; z-index: 10}
 .bar-icon, .arrow-icon{background-color:rgb(34,43,50)}
 .arrow-icon{display: none;}
-.left-side .bar-icon, .left-side .arrow-icon, .left-side ul li a{padding: 5px; font-size: 19px;}
-
+.left-side .bar-icon, .left-side .arrow-icon, .left-side ul li a{font-size: 17px;}
+.left-side .bar-icon, .left-side .arrow-icon{padding: 5px 0;}
+.left-side ul li a{padding: 0;}
 .sticky-left-side {position: fixed;height: 100%; z-index: 100;background: rgb(56,67,75);}
 
 .left-side-inner li a{color:rgb(234,239,243);}
@@ -65,7 +66,11 @@ section>header{/*border-bottom:1px solid #dadada;*/ padding:8px;display: inline-
 .chart-container{display:block; height:200px;}
 .row {margin:0;}
 .nav-pills > li.active > a, .nav-pills > li.active > a:focus, .nav-pills > li.active > a:hover {background-color:inherit;color:#fff}
-
+.left-side-inner .nav li a{width:70px}
+.left-side-inner .nav li span{display: inline-block;width:140px;float: right;padding-top: 22px; display: none; height: 63px; padding-left: 5px;}
+.left-side-inner li:hover a{color:rgb(99,184,213)}
+.left-side-inner li a:visited{background-color: rgb(56,67,75);}
+.nav-stacked > li + li{margin-top: 0}
 .nav-pills  li.active :after, .nav-pills  li:hover :after{
     content: "\e029";
     position :absolute; 
@@ -199,58 +204,14 @@ div.tooltip {
 .ht150{height: 150px}
 
 
-.left-menu-toggler{
-    left: 80px;
-    top:0;
-    background-color:rgb(34,43,50);
-    width: 200px;
-    height: 100%;
-    /*z-index: 99999999;*/
-    display: none;
-    position: fixed;
-    padding-top: 73px
-}
-
-.left-menu-toggler div{
-    background-color:rgb(60,70,80);
-    width: 200px;
-    height: 100%;
-}
-
-.left-menu-toggler div ul{
-    padding-left: 0;
-}
-
-.left-menu-toggler div ul li{
-    display: block;
-    padding: 25px 0 22px 15px;
-}
-
-.left-menu-toggler div ul li.active, .left-menu-toggler div ul li:hover{
-    background-color: rgb(58,90,99);
-    color: rgb(44,153,156);
-}
-
-.left-menu-toggler div ul li a{
-    color: #fff;
-    text text-decoration: none;
-}
-
-.left-menu-toggler nav ul li ul.sub-menu li{
-    padding: 4px;
-    font-family: Proxima-Nova, sans-serif;
-    font-weight:lighter;
-    background-color: rgb(62,76,86)
-}
-
-.left-side-inner .nav > li > a{display: inline}
+.left-side-inner .nav > li > a{display: inline-block}
 
 .left-side-inner ul li span{display: none}
 
-.sub-menu{padding-left: 80px; display: none}
-.sub-menu li {
-    display: block;
-}
+.sub-menu{padding-left: 75px; display: none}
+.sub-menu li {display: block;padding: 3px 0;}
+.sub-menu li a{color: #fff !important;font-size: 14px !important;}
+.sub-menu li:hover a{color: rgb(99,184,213) !important;}
 
 .shadow{box-shadow: 5px 7px 7px #444;}
 .overlay { position: fixed; z-index: 3; opacity: 0.5; filter: alpha(opacity = 50); top: 0; bottom: 0; left: 0; right: 0; width: 100%; height: 100%; background-color: Black; color: White;display: none}
@@ -263,3 +224,26 @@ div.tooltip {
 .btn-primary{background-color: rgb(54,101,124); border: 1px solid rgb(54,101,124)}
 
 #tbl-event{color: rgb(54,101,124); font-size: 90%}
+
+.usr-menu{display: inline-block;}
+.usr-menu .arrow{
+	font-size: 11px;
+	color: inherit;
+}
+
+.usr-menu:hover ul.usr-submenu{display: block} 
+ul.usr-submenu{
+	background-color: aquamarine;
+	padding: 3px;
+	border: 1px solid;
+	width:130px;
+	position: absolute;
+	margin-left: 50px;
+	display: none;
+	background-color: rgb(62,76,86);
+	color:#fff;
+}
+ul.usr-submenu li{
+}
+ul.usr-submenu li a{display: block;padding:3px;color:#fff}
+ul.usr-submenu li a:hover{background-color: rgb(58,90,99);color:#fff}

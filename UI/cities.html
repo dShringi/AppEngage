@@ -78,18 +78,18 @@
 				.attr("height", 6)
 				.attr("patternUnits", "userSpaceOnUse")
 				.append("svg:image")
-				.attr("xlink:href", 'map-tile.png')
+				.attr("xlink:href", 'assets/img/map-tile.png')
 				.attr("width", 6)
 				.attr("height", 6)
 				.attr("x", 0)
 				.attr("y", 0);
 			
 			var g = svg.append("g")
-				.attr("width", width)
+				.attr("width", width+160)
 				.attr("height", height);
 
 			// load and display the World
-			d3.json("/assets/js/world-110m2.json", function (error, topology) {
+			d3.json("assets/js/world-110m2.json", function (error, topology) {
 				g.selectAll("path")
 					.data(topojson.object(topology, topology.objects.countries).geometries)
 					.enter()
@@ -98,7 +98,7 @@
 					.attr("d", path);
 
 				// load and display the cities
-				d3.json("data-cities.json", function (error, data) {
+				d3.json("assets/json/data-cities.json", function (error, data) {
 					svg.selectAll(".mark")
 						.data(data)
 						.enter()

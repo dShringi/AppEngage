@@ -32,15 +32,15 @@ $('.bar-icon').on('click', function(e){
     e.preventDefault();
     showMenu();
 });
-	
+var animateTime = 1000;
 var showMenu = function(){
 	$('.overlay').show();
 	$('.bar-icon').hide();
     $('.arrow-icon').show();
 	
     $( ".left-side" ).animate({
-        width: "220px"
-    }, 1500, function(){
+        width: "210px"
+    }, animateTime, function(){
         $('.left-side-inner ul li span').show("fast");
         $( ".left-side" ).addClass("shadow");
     } );
@@ -50,20 +50,20 @@ $('.arrow-icon').on('click', function(e){
     e.preventDefault();
     $( ".left-side" ).animate({
         width: "80px"
-    }, 1500 );
-    $('.left-side-inner ul li span').hide(1500);
+    }, animateTime );
+    $('.left-side-inner ul li span').hide(animateTime);
     $('.bar-icon').show();
     $('.arrow-icon').hide();
-    $('ul.sub-menu').hide(1000);
+    $('ul.sub-menu').hide(animateTime);
     $( ".left-side" ).removeClass("shadow");
     $('.overlay').hide();
 });
 $('.menu-device').click(function(){
-	if( $( ".left-side" ).width() != 220){
+	if( $( ".left-side" ).width() != 210){
 		showMenu();
 	}
 	
-    $('ul.sub-menu').toggle(1500,function(){});
+    $('ul.sub-menu').toggle(animateTime,function(){});
 });
 
 </script>
