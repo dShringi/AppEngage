@@ -21,3 +21,11 @@ routes.init(server, producer);
 server.start((err) => {
     logger.info('Server started at: ' + server.info.uri);
 });
+
+server.route({
+        method: 'GET',
+        path: '/',
+        handler: function (request, reply) {
+            reply({ message: "Hello from AppEngage!"});
+        }
+});

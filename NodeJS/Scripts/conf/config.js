@@ -9,6 +9,7 @@ config.mongodb.url = 'mongodb://localhost/appengage';
 config.mongodb.port = process.env.MONGODB_PORT || '27017';
 
 config.kafka = {};
+config.kafka.default = 'unregistered';
 
 config.log = {};
 config.log.level = 'debug';

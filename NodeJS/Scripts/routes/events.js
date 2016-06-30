@@ -12,17 +12,15 @@ exports.begin = function(server, producer) {
         method: 'POST',
         path: '/api/i/single/B',
         handler: function (request, reply) {
-            akey = request.payload.akey;
-            request.payload.ip_address = request.info.remoteAddress;
+            akey = request.headers.akey || config.kafka.default;
+            request.payload.ipa = request.info.remoteAddress;
             data = request.payload;
-            // TODO get ip address and add to json.
-            console.log(JSON.stringify(data));
+            data.type = "begin";
             payloads = [{
                 topic: akey,
                 messages: JSON.stringify(data),
                 partition: 0
             }];
-            
             producer.send(payloads, function(err, data){
                 if(err){
                     logger.error(getErrorMessageFrom(err));
@@ -30,9 +28,9 @@ exports.begin = function(server, producer) {
                     return reply;
                 }        
             });
-            
             reply.statusCode = 200;
-            return reply;
+            console.log("return reply");
+            reply({ message: "Success!!"});
         }
     });
 };

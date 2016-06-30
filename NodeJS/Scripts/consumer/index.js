@@ -2,6 +2,8 @@ var Kafka = require('kafka-node');
 var BeginEvent = require('../models/analyticEvent').BeginEvent;
 var CrashEvent = require('../models/analyticEvent').CrashEvent;
 var EndEvent = require('../models/analyticEvent').EndEvent;
+var Model = require('../models/analyticEvent');
+var EventFactory = new Model.EventFactory();
 var logger = require('../conf/log.js');
 var Mongoose = require('mongoose');
 
@@ -14,11 +16,9 @@ var client = new Client('localhost:2181','consumer'+process.pid);
 var payloads = [ { topic: 'test' }];
 var options = {
     groupId: 'kafka-node-group',
-    // Auto commit config
     autoCommit: true,
     autoCommitMsgCount: 100,
     autoCommitIntervalMs: 5000,
-    // Fetch message config
     fetchMaxWaitMs: 100,
     fetchMinBytes: 1,
     fetchMaxBytes: 1024 * 10,
@@ -30,13 +30,9 @@ var consumer = new HighLevelConsumer(client, payloads, options);
 var offset = new Offset(client);
 
 consumer.on('message', function (message) {
+    console.log("There was a message!");
     message_data = JSON.parse(message.value);
-    event = new BeginEvent();
-    event.akey = message_data.akey;
-    event.mnu = message_data.mnu;
-    event.pf = message_data.pf;
-    event.ip_address = message_data.ip_address;
-    // TODO get ip address and add to json.
+    event = EventFactory.getEvent(message_data);
     event.save(function (err) {
         if (!err) {
             logger.info('/api/i/single/B/' + event._id); 
