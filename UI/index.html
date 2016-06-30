@@ -134,7 +134,7 @@
             $(document).ready(function() {
                 
                 //var imgs = {'Total Sessions':'01.png','Total Events':'02.png','Total Users':'03.png','New Users':'04.png','Total Time Spent':'05.png','Total Crashes':'06.png',}
-                $.getJSON( "data1.json", function( data ) {
+                $.getJSON( "/assets/json/data1.json", function( data ) {
                     var evntBx = "";
                     $.each(data, function(index, values){
                         evntBx += '<li class="col-md-2 col-sm-4 ">'+
@@ -185,7 +185,7 @@
 
                 // load the data
                 //alert("2323");
-                d3.json("data.json", function(error, data) {
+                d3.json("/assets/json/data.json", function(error, data) {
 
                    // alert(error);
                     data.forEach(function(d) {

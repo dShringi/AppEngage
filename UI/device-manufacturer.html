@@ -106,7 +106,7 @@
                 .attr("transform", "translate(" + ((width / 2) - 70) + "," + height / 2 + ")");
             
 
-            d3.json("data-devices-device-manufacturer-tot-users-n-time-spent.json", function (error, data) {
+            d3.json("assets/json/data-devices-device-manufacturer-tot-users-n-time-spent.json", function (error, data) {
                 if (error) { throw error; }
                 
                 var g = svg.selectAll(".arc")
