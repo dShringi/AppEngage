@@ -1,0 +1,32 @@
+[
+{
+	"Title": "Total Sessions",
+	"Total": 13,
+    "img": "01.png"
+},
+{
+	"Title" : "Total Events",
+	"Total": 35,
+    "img": "02.png"
+},
+{
+	"Title" : "Total Users",
+	"Total": 3,
+    "img": "03.png"
+},
+{
+	"Title" : "New Users",
+	"Total": 3,
+    "img": "04.png"
+},
+{
+	"Title" : "Total Time Spent",
+	"Total": 438,
+    "img": "05.png"
+},
+{
+	"Title" : "Total Crashes",
+	"Total": 15,
+    "img": "06.png"
+}
+]

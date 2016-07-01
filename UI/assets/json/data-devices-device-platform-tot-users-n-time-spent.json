@@ -1,0 +1,17 @@
+[
+    {
+        "platform":"Android",
+        "users":6,
+        "time":481
+    },
+	{
+        "platform":"iOS",
+        "users":2,
+        "time":289
+    },
+	{
+        "platform":"Windows",
+        "users":3,
+        "time":421
+    }
+]

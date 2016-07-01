@@ -1,0 +1,10 @@
+[
+    {
+        "platform":"Android",
+		"totalCrashes":218
+    },
+    {
+        "platform":"iOS",
+		"totalCrashes":76
+    }
+]

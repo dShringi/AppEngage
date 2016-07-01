@@ -16,6 +16,8 @@
         <script src="assets/js/moment.min.js"></script>
         <script type="text/javascript" src="assets/js/daterangepicker.js"></script>
         <link rel="stylesheet" type="text/css" href="assets/css/daterangepicker.css" />
+		<link rel="stylesheet" href="assets/css/bootstrap-select.min.css">
+		<script src="assets/js/bootstrap-select.min.js"></script>
     </head>
     <body>
         <aside class="left-side sticky-left-side" tabindex="5000"></aside>
@@ -34,7 +36,7 @@
                     <div class="col-md-6 txt-drk-gray margnTp-5 text-right">
 						<div>
 							<span class="glyphicon glyphicon-calendar txt-green sel-range" aria-hidden="true"></span> &nbsp;<span class="date-range">May 01, 2016 - May 24, 2016</span> &nbsp;
-							<select class="form-control" style="width:150px; display:inline;">
+							<select class="form-control selectpicker" data-width="150px">
 								<option value="Today">Today</option>
 								<option value="Yesterday">Yesterday</option>
 								<option value="Today">Current Month</option>

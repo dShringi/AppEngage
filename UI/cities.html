@@ -16,6 +16,8 @@
         <script src="assets/js/moment.min.js"></script>
         <script src="assets/js/daterangepicker.js"></script>
         <link rel="stylesheet" type="text/css" href="assets/css/daterangepicker.css" />
+		<link rel="stylesheet" href="assets/css/bootstrap-select.min.css">
+		<script src="assets/js/bootstrap-select.min.js"></script>
 		<style>
 			path{fill:grey; stroke:white}
 		</style>
@@ -37,7 +39,7 @@
                     <div class="col-md-6 txt-drk-gray margnTp-5 text-right">
 						<div>
 							<span class="glyphicon glyphicon-calendar txt-green sel-range" aria-hidden="true"></span> &nbsp;<span class="date-range">May 01, 2016 - May 24, 2016</span> &nbsp;
-							<select class="form-control" style="width:150px; display:inline;">
+							<select class="form-control selectpicker" data-width="150px">
 								<option value="Today">Today</option>
 								<option value="Yesterday">Yesterday</option>
 								<option value="Today">Current Month</option>
@@ -57,6 +59,12 @@
         <div class="overlay"></div>
         <script>
 			var width = $("#map-container").width()-50, height = 740;
+			
+			// Define 'div' for tooltips
+			var tooltip = d3.select("body")
+				.append("div")  // declare the tooltip div 
+				.attr("class", "map-tooltip")              // apply the 'tooltip' class
+				.style("opacity", 0);                  // set the opacity to nil
 
 			var projection = d3.geo.mercator()
 				.center([0, 65 ])
@@ -110,7 +118,12 @@
 						.attr("transform", function (d) {
 							var cx = projection([d.lng, d.lat])[0] - 9, cy = projection([d.lng, d.lat])[1] - 21;
 							return "translate(" + cx + ", " + cy + ")";
-						});
+						})
+						.on("mouseover", function(d) {
+							tooltip.transition().duration(200).style("opacity", 1);	
+                            tooltip.html(d.city +" : "+d.count).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
+                        })
+						.on("mouseout", function(d) {tooltip.transition().duration(200).style("opacity", 0);	});
 				});
 			});
 

@@ -1,0 +1,22 @@
+[
+    {
+        "platform":"Android",
+		"version":"4.1.2",
+		"totalCrashes":28
+    },
+    {
+        "platform":"iOS",
+		"version":"9",
+		"totalCrashes":6
+    },
+	{
+        "platform":"Android",
+		"version":"4.3",
+		"totalCrashes":18
+    },
+	{
+        "platform":"Android",
+		"version":"4.2.2",
+		"totalCrashes":9
+    }
+]

@@ -1,0 +1,26 @@
+[
+    {
+        "manufacturer":"Samsung",
+		"totalCrashes":28
+    },
+    {
+        "manufacturer":"ASUS",
+		"totalCrashes":18
+    },
+    {
+        "manufacturer":"Microsoft",
+		"totalCrashes":36
+    },
+    {
+        "manufacturer":"APPLE",
+		"totalCrashes":32
+    },
+    {
+        "manufacturer":"Sony",
+		"totalCrashes":28
+    },
+    {
+        "manufacturer":"MI",
+		"totalCrashes":45
+    }
+]

@@ -14,7 +14,7 @@
         <script src="assets/js/d3.legend.js"></script>
         <script src="assets/js/custom-script.js"></script>
         <script src="assets/js/moment.min.js"></script>
-        <script src="assets/js/daterangepicker.js"></script>
+        <script type="text/javascript" src="assets/js/daterangepicker.js"></script>
         <link rel="stylesheet" type="text/css" href="assets/css/daterangepicker.css" />
 		<link rel="stylesheet" href="assets/css/bootstrap-select.min.css">
 		<script src="assets/js/bootstrap-select.min.js"></script>
@@ -31,7 +31,7 @@
                 <ul>
                     <li><a href="">Devices</a></li>
                     <li> &gt; </li>
-                    <li>Device Manufacturer</li>
+                    <li>Device Carriers</li>
                 </ul>
             </section>    
             
@@ -56,7 +56,7 @@
             </section>
             <section class="bg-white paddl50 ">
                 <div class="paddb40 paddt25">
-                    <div class="col-md-12"><strong>Device Manufacturers</strong></div>
+                    <div class="col-md-12"><strong>Device Carriers</strong></div>
                     <div class="row">
                         <div class="col-md-6 chart-total-users"></div>
                         <div class="col-md-6 chart-time-spent"></div>
@@ -65,10 +65,10 @@
                         <div class="col-md-3"></div>
                         <div class="col-md-6 col-sm-12 col-xs-12 text-center">
                             <div class="table-responsive"> 
-                                <table class="table text-left tablesorter" id="tbl-device-manufacturers"> 
+                                <table class="table text-left" id="tbl-device-carriers"> 
                                     <thead> 
                                         <tr> 
-                                            <th>Model</th> 
+                                            <th>Carriers</th> 
                                             <th>Total Users</th> 
                                             <th>Total Time Spent</th>
                                         </tr> 
@@ -102,8 +102,7 @@
         </aside>
         <div class="overlay"></div>
         <script type="text/javascript">
-			//$(".tablesorter").tablesorter({ theme : 'blue' });
-			var width = $(".chart-time-spent").width(), height = 250, radius = Math.min(width, height) / 2, legendPosY = (height / 2) - 20;
+            var width = $(".chart-time-spent").width(), height = 250, radius = Math.min(width, height) / 2, legendPosY = (height / 2)-20;
 
             var color = d3.scale.ordinal().range(["#f47321", "#76bce6", "#75d3c5", "#379154", "#39B4BF", "#FFE666", "#E54E67", "#F75B49"]);
 
@@ -118,7 +117,7 @@
                 .attr("width", width)
                 .attr("height", height)
                 .append("g")
-                .attr("transform", "translate(" + ((width / 2) - 70) + "," + height / 2 + ")");
+                .attr("transform", "translate(" + ((width / 2)-70) + "," + height / 2 + ")");
             
             
             var pie1 = d3.layout.pie().sort(null).value(function (d) { return d.users; });
@@ -127,10 +126,10 @@
                 .attr("width", width)
                 .attr("height", height)
                 .append("g")
-                .attr("transform", "translate(" + ((width / 2) - 70) + "," + height / 2 + ")");
+                .attr("transform", "translate(" + ((width / 2)-70) + "," + height / 2 + ")");
             
 
-            d3.json("assets/json/data-devices-device-manufacturer-tot-users-n-time-spent.json", function (error, data) {
+            d3.json("assets/json/data-devices-device-carriers-tot-users-n-time-spent.json", function (error, data) {
                 if (error) { throw error; }
                 
                 var g = svg.selectAll(".arc")
@@ -140,39 +139,44 @@
 
                 g.append("path")
                     .attr("d", arc)
-                    .attr("data-legend", function (d) { return d.data.manufacturer; })
-                    //.attr("id", function(d) {'tag'+d.data.manufacturer.replace(/\s+/g, '')}) // assign ID
-                    .on("mouseenter", function (d) {
+                    .attr("data-legend",function(d) { return d.data.carrier})
+                    .attr("id", function(d) {'tag'+d.data.carrier.replace(/\s+/g, '')}) // assign ID
+                    .on("mouseenter", function(d){
                         d3.select(this)
-							.transition()
-							.duration(1000)
-							.attr("class", "shadow")
-							.attr("d", arcOver);
+                           	.transition()
+                           	.duration(1000)
+							.attr("class","shadow")
+                           	.attr("d", arcOver);
                     })
-                    .on("mouseleave", function (d) {
+                    .on("mouseleave", function(d){
                         d3.select(this)
-							.transition()
-							.duration(1000)
-							.attr("d", arc);
+                           	.transition()
+                           	.duration(1000)
+                           	.attr("d", arc);
                     })
-                    .style("fill", function (d) { return color(d.data.manufacturer); });
+                    .style("fill", function (d) { return color(d.data.carrier); });
 
                 /*g.append("text")
                     .attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
                     //.attr("dy", ".35em")
-                    .on("click", function (d) {
-                        //alert("aaa");
-                    });*/
-				
+                    .on("click", function(d){
+                        alert("aaa");
+                    })
+                    .text(function (d) { return d.data.carrier; });*/
 				g.append("svg:image")
 					.attr("xlink:href", "assets/img/B.png")
-					.attr("width", 124)
-					.attr("height", 113)
+				  	.attr("width",124)
+					.attr("height",113)
 					.attr("text-anchor", "middle")
-					.attr("x", -1 * 124 / 2)
-					.attr("y", -1 * 113 / 2);
-				
-				
+					.attr("x",-1*124/2)
+  					.attr("y",-1*113/2);
+                
+                
+                
+                
+                
+                
+                
                 var g1 = svg1.selectAll(".arc")
                     .data(pie1(data))
                     .enter().append("g")
@@ -180,61 +184,67 @@
 
                 g1.append("path")
                     .attr("d", arc)
-                    .attr("data-legend", function (d) { return d.data.manufacturer; })
-                    //.attr("id", function(d) {'tag'+d.data.manufacturer.replace(/\s+/g, '')}) // assign ID
-                    .on("mouseenter", function (d) {
+                    .attr("data-legend",function(d) { return d.data.carrier})
+                    .attr("id", function(d) {'tag'+d.data.carrier.replace(/\s+/g, '')}) // assign ID
+                    .on("mouseenter", function(d){
                         d3.select(this)
-							.attr("class", "shadow")
-							.transition()
-							.duration(1000)
-							.attr("d", arcOver);
+							.attr("class","shadow")
+                           	.transition()
+                           	.duration(1000)
+                           	.attr("d", arcOver);
                     })
-                    .on("mouseleave", function (d) {
+                    .on("mouseleave", function(d){
 						d3.select(this)
-							.transition()
-							.duration(1000)
-							.attr("d", arc);
+                           	.transition()
+                           	.duration(1000)
+                           	.attr("d", arc);
                     })
-                    .style("fill", function (d) { return color(d.data.manufacturer); });
+                    .style("fill", function (d) { return color(d.data.carrier); });
 
                 /*g1.append("text")
                     .attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
                     //.attr("dy", ".35em")
-                    .on("mouseover", function (d) {
-                        //alert("bbb");
+                    .on("mouseover", function(d){
+                        //alert(d.data.model);
+                        alert("bbb");
                     });*/
-                    //.text(function (d) { return d.data.manufacturer; });
-				g1.append("svg:image")
+                    //.text(function (d) { return d.data.carrier; });
+                g1.append("svg:image")
 					.attr("xlink:href", "assets/img/A.png")
-					.attr("width", 124)
-					.attr("height", 113)
+				  	.attr("width",124)
+					.attr("height",113)
 					.attr("text-anchor", "middle")
-					.attr("x", -1 * 124 / 2)
-					.attr("y", -1 * 113 / 2);
+					.attr("x",-1*124/2)
+  					.attr("y",-1*130/2);
+				
+                showDeviceCarrierTable(data, 'tbl-device-carriers');
                 
-                showDeviceMenufacturerTable(data, 'tbl-device-manufacturers');
-                
-                var legend = svg.append("g")
-                    .attr("class", "legend")
-                    .attr("transform", "translate(120,-" + legendPosY + ")")
-                    .call(d3.legend);
+                legend = svg.append("g")
+                    .attr("class","legend")
+                    .attr("transform","translate(120,-" + legendPosY + ")")
+                    //.style("font-size","12px")
+                    .call(d3.legend)
 
-                setTimeout(function () {
+                setTimeout(function() { 
                     legend
-						.attr("data-style-padding", 10)
-						.call(d3.legend);
-                }, 1000);
+                      //.style("font-size","20px")
+                      .attr("data-style-padding",10)
+                      .call(d3.legend)
+                },1000);
                 
-                var legend1 = svg1.append("g")
-					.attr("class", "legend")
-					.attr("transform", "translate(120,-" + legendPosY + ")")
-					.call(d3.legend);
+                legend1 = svg1.append("g")
+                    .attr("class","legend")
+                    .attr("transform","translate(120,-" + legendPosY + ")")
+                    //.style("font-size","12px")
+                    .call(d3.legend)
 
-                setTimeout(function () {
+                setTimeout(function() { 
                     legend
-						.attr("data-style-padding", 10)
-						.call(d3.legend);
-                }, 1000);
+                      //.style("font-size","20px")
+                      .attr("data-style-padding",10)
+                      .call(d3.legend)
+                },1000)
+                
             });
         </script>
         

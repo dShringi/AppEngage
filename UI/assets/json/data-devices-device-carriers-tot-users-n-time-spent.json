@@ -1,0 +1,17 @@
+[
+    {
+        "carrier":"Airtel",
+        "users":1225,
+        "time":481
+    },
+	{
+        "carrier":"Vodafone",
+        "users":112,
+        "time":289
+    },
+	{
+        "carrier":"Reliance",
+        "users":112,
+        "time":421
+    }
+]

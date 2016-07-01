@@ -1,0 +1,12 @@
+[
+    {
+        "resolution":"1280*720",
+        "users":1,
+        "time":481
+    },
+	{
+        "resolution":"800*480",
+        "users":2,
+        "time":289
+    }
+]
