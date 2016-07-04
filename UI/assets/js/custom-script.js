@@ -1,4 +1,6 @@
 var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+// Define 'div' for tooltips
+
 $(document).ready(function () {
     "use strict";
     $('.left-side').load("menu.html");
@@ -202,14 +204,11 @@ var getDateObj = function(dateEle){
 	var year = tempArrDate[2] < 100 ? "20"+tempArrDate[2] : tempArrDate[2];
 	//console.log(year);
 	return new Date(year, (months.indexOf(tempArrDate[1]) + 1), tempArrDate[0], 0, 0, 0);
-}
+};
+
+var totalCrashes = 0;
 
 var showTotalCrashesChart = function(data,svg,pie, jsonItem){
-	var totalCrashes = 0;
-	$.each(data, function(i, value){
-		totalCrashes += value.totalCrashes;
-	})
-
 	var g = svg.selectAll(".arc")
 		.data(pie(data))
 		.enter().append("g")
@@ -217,22 +216,9 @@ var showTotalCrashesChart = function(data,svg,pie, jsonItem){
 
 	g.append("path")
 		.attr("d", arc)
-		.attr("data-legend", function (d) { return d.data.date; })
+		.attr("data-legend", function (d) {return d.data.crashes; })
 		//.attr("id", function(d) {'tag'+d.data.manufacturer.replace(/\s+/g, '')}) // assign ID
-		.on("mouseenter", function (d) {
-			d3.select(this)
-				.transition()
-				.duration(1000)
-				.attr("class", "shadow")
-				.attr("d", arcOver);
-		})
-		.on("mouseleave", function (d) {
-			d3.select(this)
-				.transition()
-				.duration(1000)
-				.attr("d", arc);
-		})
-		.style("fill", function (d) { return color(d.data.date); });
+		.style("fill", function (d) { return color(d.data.crashes); });
 
 	g.append("text")
 		.attr("dy", ".35em")
@@ -240,16 +226,16 @@ var showTotalCrashesChart = function(data,svg,pie, jsonItem){
 		.attr("class", "inside")
 		.attr("fill", "#616161")
 		.text(totalCrashes)
-		.on("click", function (d) {
-			//alert("aaa");
-		});
 };
-
+var tooltip = d3.select("body")
+		.append("div")  // declare the tooltip div 
+		.attr("class", "map-tooltip shadow")              // apply the 'tooltip' class
+		.style("opacity", 0);                  // set the opacity to nil
 var showManufacturerCrashesChart = function(data,svg,pie){
-	var totalCrashes = 0;
-	$.each(data, function(i, value){
-		totalCrashes += value.totalCrashes;
-	})
+	tooltip = d3.select("body")
+		.append("div")  // declare the tooltip div 
+		.attr("class", "map-tooltip shadow")              // apply the 'tooltip' class
+		.style("opacity", 0);                  // set the opacity to nil
 
 	var g = svg.selectAll(".arc")
 		.data(pie(data))
@@ -261,17 +247,20 @@ var showManufacturerCrashesChart = function(data,svg,pie){
 		.attr("data-legend", function (d) { return d.data.manufacturer; })
 		//.attr("id", function(d) {'tag'+d.data.manufacturer.replace(/\s+/g, '')}) // assign ID
 		.on("mouseenter", function (d) {
-			d3.select(this)
+			/*d3.select(this)
 				.transition()
 				.duration(1000)
 				.attr("class", "shadow")
-				.attr("d", arcOver);
+				.attr("d", arcOver);*/
+			tooltip.transition().duration(200).style("opacity", 1);	
+			tooltip.html(d.data.manufacturer +" : "+d.data.totalCrashes).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
 		})
 		.on("mouseleave", function (d) {
-			d3.select(this)
+			/*d3.select(this)
 				.transition()
 				.duration(1000)
-				.attr("d", arc);
+				.attr("d", arc);*/
+			tooltip.transition().duration(200).style("opacity", 0);	
 		})
 		.style("fill", function (d) { return color(d.data.manufacturer); });
 
@@ -286,11 +275,6 @@ var showManufacturerCrashesChart = function(data,svg,pie){
 		});
 };
 var showPlatformCrashesChart = function(data,svg,pie){
-	var totalCrashes = 0;
-	$.each(data, function(i, value){
-		totalCrashes += value.totalCrashes;
-	})
-
 	var g = svg.selectAll(".arc")
 		.data(pie(data))
 		.enter().append("g")
@@ -301,17 +285,20 @@ var showPlatformCrashesChart = function(data,svg,pie){
 		.attr("data-legend", function (d) { return d.data.platform; })
 		//.attr("id", function(d) {'tag'+d.data.manufacturer.replace(/\s+/g, '')}) // assign ID
 		.on("mouseenter", function (d) {
-			d3.select(this)
+			/*d3.select(this)
 				.transition()
 				.duration(1000)
 				.attr("class", "shadow")
-				.attr("d", arcOver);
+				.attr("d", arcOver);*/
+			tooltip.transition().duration(200).style("opacity", 1);	
+			tooltip.html(d.data.platform +" : "+d.data.totalCrashes).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
 		})
 		.on("mouseleave", function (d) {
-			d3.select(this)
+			/*d3.select(this)
 				.transition()
 				.duration(1000)
-				.attr("d", arc);
+				.attr("d", arc);*/
+			tooltip.transition().duration(200).style("opacity", 0);	
 		})
 		.style("fill", function (d) { return color(d.data.platform); });
 
@@ -327,10 +314,6 @@ var showPlatformCrashesChart = function(data,svg,pie){
 };
 
 var showOsVersionCrashesChart = function(data,svg,pie){
-	var totalCrashes = 0;
-	$.each(data, function(i, value){
-		totalCrashes += value.totalCrashes;
-	})
 
 	var g = svg.selectAll(".arc")
 		.data(pie(data))
@@ -342,17 +325,20 @@ var showOsVersionCrashesChart = function(data,svg,pie){
 		.attr("data-legend", function (d) { return d.data.version; })
 		//.attr("id", function(d) {'tag'+d.data.manufacturer.replace(/\s+/g, '')}) // assign ID
 		.on("mouseenter", function (d) {
-			d3.select(this)
+			/*d3.select(this)
 				.transition()
 				.duration(1000)
 				.attr("class", "shadow")
-				.attr("d", arcOver);
+				.attr("d", arcOver);*/
+			tooltip.transition().duration(200).style("opacity", 1);	
+			tooltip.html(d.data.platform + " " + d.data.version +" : "+d.data.totalCrashes).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
 		})
 		.on("mouseleave", function (d) {
-			d3.select(this)
+			/*d3.select(this)
 				.transition()
 				.duration(1000)
-				.attr("d", arc);
+				.attr("d", arc);*/
+			tooltip.transition().duration(200).style("opacity", 0);	
 		})
 		.style("fill", function (d) { return color(d.data.version); });
 

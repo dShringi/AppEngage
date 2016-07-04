@@ -163,7 +163,7 @@ div.tooltip {
 }
 .tin{stroke:#BF6011 !important}
 .inside{font-size: 50px; color: #616161; font-weight: bold}
-.map-tooltip{background-color: #fff;color:#6a6a6a;padding:4px; border:1px solid #000; position: absolute; font-size: 104%; display :block; font-weight: bold}
+.map-tooltip{background-color: #fff;color:#6a6a6a;padding:4px; border:1px solid #a1a1a1; position: absolute; font-size: 104%; display :block; font-weight: bold; border-radius: 4px}
 /************************** For Column Chart - END *******************************/
 
 .event-container label, .chart-title{color: rgb(134,163,176)}

@@ -116,6 +116,7 @@
 		<script>
 			var width = $(".div-total-crashes").width(), height = 250, radius = Math.min(width, height) / 2;
             var legendPosY = (height / 2) - 20;
+			var totalCrashes = 0;
 
             var color = d3.scale.ordinal().range(["#f47321", "#76bce6", "#75d3c5", "#379154", "#39B4BF", "#FFE666", "#E54E67", "#F75B49"]);
 
@@ -124,7 +125,7 @@
             var arc = d3.svg.arc().innerRadius(radius - 35).outerRadius(radius - 60);
             var arcOver = d3.svg.arc().outerRadius(radius - 32).innerRadius(radius - 63);
 
-            var pie = d3.layout.pie().sort(null).value(function (d) { return d.totalCrashes; });
+            var pie = d3.layout.pie().sort(null).value(function (d) { return d.crashes; });
 			var pie1 = d3.layout.pie().sort(null).value(function (d) { return d.totalCrashes; });
 			var pie2 = d3.layout.pie().sort(null).value(function (d) { return d.totalCrashes; });
 			var pie3 = d3.layout.pie().sort(null).value(function (d) { return d.totalCrashes; });
@@ -153,8 +154,12 @@
 			/************************ Total Crashes Chart *****************/
 			d3.json("assets/json/data-total-crashes-datewise.json", function (error, data) {
                 if (error) { throw error; }
-				
-				showTotalCrashesChart(data, svg, pie, "d.data.date");
+				var dataArr = new Array();
+				$.each(data, function(i, value){
+					totalCrashes += value.totalCrashes;
+				});
+				dataArr.push({'crashes':totalCrashes});
+				showTotalCrashesChart(dataArr, svg, pie);
             });
 			/************************ Total Crashes Chart - End************/
 			/************************ Manufacturer Crashes Chart *****************/

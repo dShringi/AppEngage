@@ -31,7 +31,7 @@
                 <ul>
                     <li><a href="">Devices</a></li>
                     <li> &gt; </li>
-                    <li>Device OS Version</li>
+                    <li>Device App Version</li>
                 </ul>
             </section>    
             
@@ -56,7 +56,7 @@
             </section>
             <section class="bg-white paddl50 ">
                 <div class="paddb40 paddt25">
-                    <div class="col-md-12"><strong>Device OS Version</strong></div>
+                    <div class="col-md-12"><strong>Device App Version</strong></div>
                     <div class="row">
                         <div class="col-md-6 chart-total-users"></div>
                         <div class="col-md-6 chart-time-spent"></div>
@@ -65,10 +65,10 @@
                         <div class="col-md-3"></div>
                         <div class="col-md-6 col-sm-12 col-xs-12 text-center">
                             <div class="table-responsive"> 
-                                <table class="table text-left" id="tbl-device-os-version"> 
+                                <table class="table text-left" id="tbl-device-app-version"> 
                                     <thead> 
                                         <tr> 
-                                            <th>OS Version</th> 
+                                            <th>App Version</th> 
                                             <th>Total Users</th> 
                                             <th>Total Time Spent</th>
                                         </tr> 
@@ -129,7 +129,7 @@
                 .attr("transform", "translate(" + ((width / 2)-70) + "," + height / 2 + ")");
             
 
-            d3.json("assets/json/data-devices-device-os-version-tot-users-n-time-spent.json", function (error, data) {
+            d3.json("assets/json/data-devices-device-app-version-tot-users-n-time-spent.json", function (error, data) {
                 if (error) { throw error; }
                 
                 var g = svg.selectAll(".arc")
@@ -139,8 +139,8 @@
 
                 g.append("path")
                     .attr("d", arc)
-                    .attr("data-legend",function(d) { return d.data.os})
-                    .attr("id", function(d) {'tag'+d.data.os.replace(/\s+/g, '')}) // assign ID
+                    .attr("data-legend",function(d) { return d.data.app})
+                    .attr("id", function(d) {'tag'+d.data.app.replace(/\s+/g, '')}) // assign ID
                     .on("mouseenter", function(d){
                         d3.select(this)
                            	.transition()
@@ -154,7 +154,7 @@
                            	.duration(1000)
                            	.attr("d", arc);
                     })
-                    .style("fill", function (d) { return color(d.data.os); });
+                    .style("fill", function (d) { return color(d.data.app); });
 
                 /*g.append("text")
                     .attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
@@ -162,7 +162,7 @@
                     .on("click", function(d){
                         alert("aaa");
                     })
-                    .text(function (d) { return d.data.os; });*/
+                    .text(function (d) { return d.data.app; });*/
 				g.append("svg:image")
 					.attr("xlink:href", "assets/img/B.png")
 				  	.attr("width",124)
@@ -184,8 +184,8 @@
 
                 g1.append("path")
                     .attr("d", arc)
-                    .attr("data-legend",function(d) { return d.data.os})
-                    .attr("id", function(d) {'tag'+d.data.os.replace(/\s+/g, '')}) // assign ID
+                    .attr("data-legend",function(d) { return d.data.app})
+                    .attr("id", function(d) {'tag'+d.data.app.replace(/\s+/g, '')}) // assign ID
                     .on("mouseenter", function(d){
                         d3.select(this)
 							.attr("class","shadow")
@@ -199,7 +199,7 @@
                            	.duration(1000)
                            	.attr("d", arc);
                     })
-                    .style("fill", function (d) { return color(d.data.os); });
+                    .style("fill", function (d) { return color(d.data.app); });
 
                 /*g1.append("text")
                     .attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
@@ -208,7 +208,7 @@
                         //alert(d.data.model);
                         alert("bbb");
                     });*/
-                    //.text(function (d) { return d.data.os; });
+                    //.text(function (d) { return d.data.app; });
                 g1.append("svg:image")
 					.attr("xlink:href", "assets/img/A.png")
 				  	.attr("width",124)
@@ -217,7 +217,7 @@
 					.attr("x",-1*124/2)
   					.attr("y",-1*130/2);
 				
-                showDeviceOSVersionTable(data, 'tbl-device-os-version');
+                showDeviceAppVersionTable(data, 'tbl-device-app-version');
                 
                 legend = svg.append("g")
                     .attr("class","legend")
