@@ -1,6 +1,6 @@
 var logger = require('../conf/log.js');
+var Collection = require('../models/analyticEvent').Collection;
 
-// Wanna know the reason for "module.exports = exports...", checkout SO
 module.exports = exports = function (server, producer) {
     exports.begin(server, producer);
     exports.crash(server, producer);
@@ -13,9 +13,11 @@ exports.begin = function(server, producer) {
         path: '/api/i/single/B',
         handler: function (request, reply) {
             akey = request.headers.akey || config.kafka.default;
-            request.payload.ipa = request.info.remoteAddress;
-            data = request.payload;
-            data.type = "begin";
+            data = {};
+            data.val = request.payload;
+            data.val.mt = "B";
+            data.val.ipa = getIPAddress(request);
+            data.type = Collection["begin"];
             payloads = [{
                 topic: akey,
                 messages: JSON.stringify(data),
@@ -29,8 +31,7 @@ exports.begin = function(server, producer) {
                 }        
             });
             reply.statusCode = 200;
-            console.log("return reply");
-            reply({ message: "Success!!"});
+            reply({ message: "Success"});
         }
     });
 };
@@ -41,7 +42,24 @@ exports.crash = function(server, producer) {
         method: 'POST',
         path: '/api/i/single/C',
         handler: function (request, reply) {
-            // TODO
+            akey = request.headers.akey || config.kafka.default;
+            data = request.payload;
+            data.mt = "C";
+            data.ipa = getIPAddress(request);
+            payloads = [{
+                topic: akey,
+                messages: JSON.stringify(data),
+                partition: 0
+            }];
+            producer.send(payloads, function(err, data){
+                if(err){
+                    logger.error(getErrorMessageFrom(err));
+                    reply.statusCode = 400;
+                    return reply;
+                }        
+            });
+            reply.statusCode = 200;
+            reply({ message: "Success"});
         }
     });
 };
@@ -52,12 +70,31 @@ exports.end = function(server, producer) {
         method: 'POST',
         path: '/api/i/single/E',
         handler: function (request, reply) {
-            // TODO
+            akey = request.headers.akey || config.kafka.default;
+            data = request.payload;
+            data.mt = "E";
+            data.ipa = getIPAddress(request);
+            payloads = [{
+                topic: akey,
+                messages: JSON.stringify(data),
+                partition: 0
+            }];
+            producer.send(payloads, function(err, data){
+                if(err){
+                    logger.error(getErrorMessageFrom(err));
+                    reply.statusCode = 400;
+                    return reply;
+                }        
+            });
+            reply.statusCode = 200;
+            reply({ message: "Success"});
         }
     });
 };
 
-
+function getIPAddress(request){
+    return request.info.remoteAddress;
+}
 function getErrorMessageFrom(err) {
     var errorMessage = '';
     if (err.errors) {

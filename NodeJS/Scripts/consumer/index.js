@@ -1,8 +1,6 @@
 var Kafka = require('kafka-node');
-var BeginEvent = require('../models/analyticEvent').BeginEvent;
-var CrashEvent = require('../models/analyticEvent').CrashEvent;
-var EndEvent = require('../models/analyticEvent').EndEvent;
 var Model = require('../models/analyticEvent');
+var Collection = Model.Collection;
 var EventFactory = new Model.EventFactory();
 var logger = require('../conf/log.js');
 var Mongoose = require('mongoose');
@@ -30,9 +28,8 @@ var consumer = new HighLevelConsumer(client, payloads, options);
 var offset = new Offset(client);
 
 consumer.on('message', function (message) {
-    console.log("There was a message!");
-    message_data = JSON.parse(message.value);
-    event = EventFactory.getEvent(message_data);
+    data = JSON.parse(message.value);
+    event = EventFactory.getEvent(data);
     event.save(function (err) {
         if (!err) {
             logger.info('/api/i/single/B/' + event._id); 
@@ -43,11 +40,11 @@ consumer.on('message', function (message) {
 });
 
 consumer.on('error', function (err) {
-    console.log('error', err);
+    logger.error(err);
 });
 
 consumer.on('offsetOutOfRange', function (topic) {
-    console.log("------------- offsetOutOfRange ------------");
+    logger.info("------------- offsetOutOfRange ------------");
     topic.maxNum = 2;
     offset.fetch([topic], function (err, offsets) {
         var min = Math.min.apply(null, offsets[topic.topic][topic.partition]);
