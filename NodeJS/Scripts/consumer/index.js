@@ -30,6 +30,7 @@ var offset = new Offset(client);
 consumer.on('message', function (message) {
     data = JSON.parse(message.value);
     event = EventFactory.getEvent(data);
+    // TODO: Based on event type parse and perform respective db updates.
     event.save(function (err) {
         if (!err) {
             logger.info('/api/i/single/B/' + event._id); 
