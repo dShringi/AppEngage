@@ -7,7 +7,7 @@ const Collection = {
                      "dashboard"      : "coll_dashboard", 
                      "begin"          : "coll_begins", 
                      "end"            : "coll_ends", 
-                     "begin"          : "coll_crashes",
+                     "crash"          : "coll_crashes",
                      "activesessions" : "coll_activesessions"
                    };
 
@@ -22,9 +22,12 @@ var realtimeSchema = new Schema({
     _id  : { type: Number, required: true },
     val  : { type: String }
 });
+var dashboardVal = new Schema({tce: {type: Number}},{ _id : false, __v:false });
 var dashboardSchema = new Schema({
-    _id  : { type: String, require: true },
-    val  : { type: String }
+    _id  : { type: Object, require: true },
+    val  : { type: dashboardVal }
+}, {
+    collection : 'coll_dashboard'
 });
 var beginSchema = new Schema({val: {type: Object}});
 var endSchema = new Schema({val: {type: Object}});
@@ -65,8 +68,19 @@ function eventFactory(){
                 });
             case Collection["dashboard"]:
                 return new dashboardCollection({
-                    _id : _event.id,
-                    val : _event.val
+                    _id : {
+                        key : _event.key,
+                        ty  : _event.ty,
+                        dt  : _event.dt
+                    },
+                    val : {
+                        tse : _event.tse,
+                        tts : _event.tts,
+                        tce : _event.tce,
+                        te  : _event.te,
+                        tuu : _event.tuu,
+                        tnu : _event.tnu
+                    }
                 });
             case Collection["begin"]:
                 return new beginCollection({
@@ -96,5 +110,7 @@ function eventFactory(){
 
 module.exports = {
   EventFactory: eventFactory,
-  Collection: Collection
+  Collection: Collection,
+  Begin: beginCollection,
+  Dashboard: dashboardCollection    
 };

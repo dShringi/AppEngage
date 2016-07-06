@@ -30,14 +30,69 @@ var offset = new Offset(client);
 consumer.on('message', function (message) {
     data = JSON.parse(message.value);
     event = EventFactory.getEvent(data);
-    // TODO: Based on event type parse and perform respective db updates.
     event.save(function (err) {
         if (!err) {
             logger.info('/api/i/single/B/' + event._id); 
         } else {
             logger.error(err);
+            return;
         }
     });
+
+    switch(data.type){
+        case Collection["begin"]:
+            break;
+        case Collection["crash"]:
+            // Insert/Update in dashboard collection
+            eventDate = new Date(data.val.rtc);
+            year = eventDate.getFullYear();
+            month = eventDate.getMonth();
+            date = eventDate.getDate();
+            
+            // For Year
+            dashboardData = {
+                key : year+month+date,
+                ty  : 'Y',
+                dt  : data.val.dt
+            };
+            
+            Model.Dashboard.findOne({ 
+                _id: dashboardData
+            }, function(err, doc){
+                if(!err){
+                    if(doc === undefined || doc === null){
+                        logger.info("No records found!");
+                        dashboardData.tce = 1;
+                        dashboardData.type = Collection["dashboard"];
+                        doc = EventFactory.getEvent(dashboardData);
+                        doc.save(function(err){
+                           if(err){
+                               logger.error("Error saving "+getErrorMessageFrom(err));
+                           } 
+                        });
+                    } else {
+                        doc.val.tce = doc.val.tce+1;   
+//                        doc.save(function(err){
+//                            if(err){
+//                                logger.error("Error updating model");
+//                            }
+//                        })
+                        Model.Dashboard.findOneAndUpdate({
+                            _id: dashboardData
+                        }, doc, {upsert:true}, function(err){
+                           if(err){
+                               logger.error("Error updating model "+getErrorMessageFrom(err));
+                           } 
+                        });
+                    }
+                } else {
+                    logger.error(err);
+                }
+            });
+            break;
+        case Collection["end"]:
+            break;
+    }
 });
 
 consumer.on('error', function (err) {
@@ -52,3 +107,17 @@ consumer.on('offsetOutOfRange', function (topic) {
         consumer.setOffset(topic.topic, topic.partition, min);
     });
 });
+
+function getErrorMessageFrom(err) {
+    var errorMessage = '';
+    if (err.errors) {
+        for (var prop in err.errors) {
+            if(err.errors.hasOwnProperty(prop)) {
+                errorMessage += err.errors[prop].message + ' '
+            }
+        }
+    } else {
+        errorMessage = err.message;
+    }
+    return errorMessage;
+}

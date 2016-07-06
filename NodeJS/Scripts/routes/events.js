@@ -1,4 +1,5 @@
 var logger = require('../conf/log.js');
+var config = require('../conf/config.js');
 var Collection = require('../models/analyticEvent').Collection;
 
 module.exports = exports = function (server, producer) {
@@ -12,26 +13,32 @@ exports.begin = function(server, producer) {
         method: 'POST',
         path: '/api/i/single/B',
         handler: function (request, reply) {
-            akey = request.headers.akey || config.kafka.default;
+            akey = request.headers.akey;
+            if(akey === undefined || akey === null){
+                logger.info("Application key not provided!");
+                logger.info("Data"+ request.payload);
+                reply.statusCode = 200;
+                reply({ message: "Success" });
+                return
+            }
             data = {};
             data.val = request.payload;
-            data.val.mt = "B";
+            if(data.val.rtc === undefined || data.val.rtc === null){
+                data.val.rtc = Date.now();
+            }
             data.val.ipa = getIPAddress(request);
             data.type = Collection["begin"];
-            payloads = [{
-                topic: akey,
-                messages: JSON.stringify(data),
-                partition: 0
-            }];
+            payloads = [{ topic: akey, messages: JSON.stringify(data), partition: 0 }];
             producer.send(payloads, function(err, data){
                 if(err){
                     logger.error(getErrorMessageFrom(err));
                     reply.statusCode = 400;
-                    return reply;
-                }        
+                    reply({ message: getErrorMessageFrom(err) });
+                } else {
+                    reply.statusCode = 200;
+                    reply({ message: "Success" });
+                }       
             });
-            reply.statusCode = 200;
-            reply({ message: "Success"});
         }
     });
 };
@@ -43,23 +50,31 @@ exports.crash = function(server, producer) {
         path: '/api/i/single/C',
         handler: function (request, reply) {
             akey = request.headers.akey || config.kafka.default;
-            data = request.payload;
-            data.mt = "C";
-            data.ipa = getIPAddress(request);
-            payloads = [{
-                topic: akey,
-                messages: JSON.stringify(data),
-                partition: 0
-            }];
+            if(akey === undefined || akey === null){
+                logger.info("Application key not provided!");
+                logger.info("Data"+ request.payload);
+                reply.statusCode = 200;
+                reply({ message: "Success" });
+                return
+            }
+            data = {};
+            data.val = request.payload;
+            if(data.val.rtc === undefined || data.val.rtc === null){
+                data.val.rtc = Date.now();
+            }
+            data.val.ipa = getIPAddress(request);
+            data.type = Collection["crash"];
+            payloads = [{ topic: akey, messages: JSON.stringify(data), partition: 0 }];
             producer.send(payloads, function(err, data){
                 if(err){
                     logger.error(getErrorMessageFrom(err));
                     reply.statusCode = 400;
-                    return reply;
-                }        
+                    reply({ message: getErrorMessageFrom(err) });
+                } else {
+                    reply.statusCode = 200;
+                    reply({ message: "Success" });
+                }       
             });
-            reply.statusCode = 200;
-            reply({ message: "Success"});
         }
     });
 };
@@ -71,23 +86,31 @@ exports.end = function(server, producer) {
         path: '/api/i/single/E',
         handler: function (request, reply) {
             akey = request.headers.akey || config.kafka.default;
-            data = request.payload;
-            data.mt = "E";
-            data.ipa = getIPAddress(request);
-            payloads = [{
-                topic: akey,
-                messages: JSON.stringify(data),
-                partition: 0
-            }];
+            if(akey === undefined || akey === null){
+                logger.info("Application key not provided!");
+                logger.info("Data"+ request.payload);
+                reply.statusCode = 200;
+                reply({ message: "Success" });
+                return
+            }
+            data = {};
+            data.val = request.payload;
+            if(data.val.rtc === undefined || data.val.rtc === null){
+                data.val.rtc = Date.now();
+            }
+            data.val.ipa = getIPAddress(request);
+            data.type = Collection["end"];
+            payloads = [{ topic: akey, messages: JSON.stringify(data), partition: 0 }];
             producer.send(payloads, function(err, data){
                 if(err){
                     logger.error(getErrorMessageFrom(err));
                     reply.statusCode = 400;
-                    return reply;
-                }        
+                    reply({ message: getErrorMessageFrom(err) });
+                } else {
+                    reply.statusCode = 200;
+                    reply({ message: "Success" });
+                }       
             });
-            reply.statusCode = 200;
-            reply({ message: "Success"});
         }
     });
 };
