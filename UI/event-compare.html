@@ -1,0 +1,261 @@
+	<!doctype html>
+	<html>
+	<head>
+		<title>Mobile Analytics</title>
+		<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+		<!-- Optional theme -->
+		<link rel="stylesheet" href="assets/css/bootstrap-theme.min.css">
+		<link rel="stylesheet" href="assets/css/style.css">
+		<script src="assets/js/jquery.js"></script>
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="assets/js/bootstrap.min.js"></script>
+		<script src="assets/js/d3.v3.min.js"></script>
+		<script src="assets/js/d3.legend.js"></script>
+		<script src="assets/js/custom-script.js"></script>
+		<script src="assets/js/moment.min.js"></script>
+		<script type="text/javascript" src="assets/js/daterangepicker.js"></script>
+		<link rel="stylesheet" type="text/css" href="assets/css/daterangepicker.css" />
+		<link rel="stylesheet" href="assets/css/bootstrap-select.min.css">
+		<script src="assets/js/bootstrap-select.min.js"></script>
+		<script src="https://d3js.org/d3-time.v1.min.js"></script>
+		<style>path { stroke-width: 2;} .chart-title{text-align: left}</style>
+	</head>
+	<body>
+		<aside class="left-side sticky-left-side" tabindex="5000"></aside>
+		<aside class="main-container" >
+			<section class="breadcrumb bg-white border-bottom paddl30">
+				<ul>
+					<li><a href="">Events</a></li>
+					<li> &gt; </li>
+					<li>Compare</li>
+				</ul>
+			</section>    
+
+			<section class="border-bottom paddl50 mrgnBtm0">
+				<div class="row chart-header">
+					<div class="col-md-6 txt-drk-gray"></div>
+					<div class="col-md-6 txt-drk-gray margnTp-5 text-right">
+						<div>
+							<span class="glyphicon glyphicon-calendar txt-green sel-range" aria-hidden="true"></span> &nbsp;<span class="date-range">May 01, 2016 - May 24, 2016</span> &nbsp;
+							<select class="form-control selectpicker" data-width="150px">
+								<option value="Today">Today</option>
+								<option value="Yesterday">Yesterday</option>
+								<option value="Today">Current Month</option>
+								<option value="Today">Previous Month</option>
+								<option value="Today">3 Months</option>
+								<option value="Today">6 Months</option>
+								<option value="Today">1 Year</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</section>
+			<section class="bg-white paddl50 ">
+				<div class="paddb40 paddt25">
+					<div class="row">
+						<div class="col-md-3 col-sm-12">
+							<div class="table-responsive"> 
+								<table class="table text-left" id="tbl-event"> 
+									<thead> 
+										<tr> 
+											<th>Event</th>
+										</tr> 
+									</thead> 
+									<tbody></tbody> 
+								</table>
+								<button type="button" class="btn btn-primary" id="compareEvent">Compare</button>
+							</div>
+						</div>
+						<div class="col-md-9 col-sm-12">
+							<div class="mdlAdd2Cart">
+								<h2 class="chart-title mrgnTp0 paddb0 mrgnBtm0">Total Number of Events</h2>
+								<div class="event-chart-container chart-container" style="height: 270px;"></div>
+								<h2 class="chart-title paddb0 mrgnBtm0 paddt25">Unique Number of Users</h2>
+								<div class="user-chart-container chart-container" style="height: 270px;"></div>
+								
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</aside>
+		<div class="overlay"></div>
+		<script>
+			$(document).ready(function() {
+				$('.toggleThis').click(function(){
+					$('.toggleThis').toggle();
+					$(".line").toggle()
+				});
+				// Show Event Table
+				d3.json("assets/json/ok-data-total-events-Summary.json", function (error, data) {
+					if (error) { alert(error); }
+					showEventCompareTable(data, "tbl-event");
+				});
+				// Show Event Table - END
+
+				var showEventCompareTable = function(data, tableId) {
+					"use strict";
+					var tableHTML = "";
+					$.each(data, function (index, row) {
+						//alert(JSON.stringify(row));
+						tableHTML += "<tr><td><input type='checkbox' class='' name='event[]' id='event_" + row.key.replace(" ","_") + "' value='" + row.key + "'> &nbsp;" + row.key + "</td></tr>";
+
+					});
+					$("#" + tableId + " tbody").html(tableHTML);
+				};
+				
+				$('#compareEvent').click(function(){
+					var Arr = new Array;
+					$('input:checkbox:checked').each(function(){
+						Arr.push($(this).val());
+					});
+					//alert(JSON.stringify(Arr));
+					showChart(Arr);
+				});
+			});
+			function showChart(eventArray){
+				/*$('a[rel="user_count"]').show();
+				$('a[rel="event_count"]').hide();*/
+				var margin = {top: 30, right: 60, bottom: 30, left: 40},
+					width = $(".chart-container").width() - margin.left - margin.right,
+					height = 270 - margin.top - margin.bottom;
+				$(".chart-container").empty();
+				var x = d3.time.scale()
+					.range([0, width]);
+
+				var y = d3.scale.linear()
+					.range([height, 0]);
+
+				var color = d3.scale.ordinal().range(["#f47321", "#76bce6", "#75d3c5", "#379154", "#39B4BF", "#FFE666", "#E54E67", "#F75B49"]);
+
+				var xAxis = d3.svg.axis()
+					.scale(x)
+					.ticks(d3.time.hour, 1)
+					.tickFormat(d3.time.format('%H'))
+					.orient("bottom");
+
+				var yAxis = d3.svg.axis()
+					.scale(y)
+					.ticks(2)
+					.orient("left");
+
+				var line = d3.svg.line()
+					//.interpolate("monotone")
+					.x(function(d) { return x(d.date); })
+					.y(function(d) { return y(d.count); });
+
+				var svg = d3.select(".event-chart-container").append("svg")
+					.attr("width", width + margin.left + margin.right)
+					.attr("height", height + margin.top + margin.bottom)
+				  	.append("g")
+					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+				
+				var svg1 = d3.select(".user-chart-container").append("svg")
+					.attr("width", width + margin.left + margin.right)
+					.attr("height", height + margin.top + margin.bottom)
+				  	.append("g")
+					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+				//d3.tsv("data.tsv", function(error, data) {
+				d3.json("assets/json/ok-data-total-events-Comparison.json", function(error, data) {
+					if (error) throw error;
+
+				  	color.domain(eventArray.filter(function(key) {return key; }));
+
+				  	data.forEach(function(d) {
+				  		d.date = parseEventDate(d.event_date);
+				  	});
+					var eventArr = color.domain().map(function(name) {
+						return {
+							name: name,
+							values: data.map(function(d) {
+								if(d.event_name == name){
+									//console.log(d.event_name + " : " + name);
+									return {date: d.date, count: +d.event_count};
+							}
+							})
+						};
+					});
+					var userArr = color.domain().map(function(name) {
+						return {
+							name: name,
+							values: data.map(function(d) {
+								if(d.event_name == name){
+									//console.log(d.event_name + " : " + name);
+									return {date: d.date, count: +d.user_count};
+								}
+							})
+						};
+					});
+					
+					eventArr = removeNulls(eventArr);
+					userArr = removeNulls(userArr);
+					
+					drawChart(eventArr, svg, data);
+					drawChart(userArr, svg1, data);
+					
+					
+					/*$('.event_count').hide();
+					$('.user_count').show();*/
+					
+					// draw the scatterplot
+                    /*svg.selectAll("dot")									
+                        .data(data)											
+                        .enter().append("circle")								
+                        .attr("r", 3)
+                        .attr("fill", "#7ABEE7")
+                        .attr("cx", function(d) { return x(d.values); })		 
+                        .attr("cy", function(d) { return y(d.name); })
+                    // Tooltip stuff after this
+                        .on("mouseover", function(d) {		
+                            div.transition().duration(200).style("opacity", .9);	
+                            div	.html(d.count1).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
+                        });*/
+					});
+				
+					var drawChart = function(arr,svg,data){
+						x.domain(d3.extent(data, function(d) { return d.date; }));
+
+					y.domain([
+						d3.min(arr, function(c) { return d3.min(c.values, function(v) { return v.count; }); }),
+						d3.max(arr, function(c) { return d3.max(c.values, function(v) { return v.count; }); })
+					]);
+
+					  svg.append("g")
+						  .attr("class", "x axis")
+						  .attr("transform", "translate(0," + height + ")")
+						  .call(xAxis);
+
+					  svg.append("g")
+						  .attr("class", "y axis")
+						  .call(yAxis);
+						/*.append("text")
+						  .attr("transform", "rotate(-90)")
+						  .attr("y", 10)
+						  .attr("dy", ".71em")
+						  .style("text-anchor", "end")
+						  .text("Count");*/
+
+					  var event = svg.selectAll(".event")
+						  .data(arr)
+							.enter().append("g")
+						  .attr("class", "event");
+
+					  event.append("path")
+						  .attr("class", function(d) { return "line "+d.name; })
+						  .attr("d", function(d) { return line(d.values); })
+						  .style("stroke", function(d) { return color(d.name); });
+						var counter = 0;
+						event.append("text")
+						  .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
+						  .attr("transform", function(d) {xCord = (counter*100)+30;counter++;return "translate("+xCord+",-10)"; })
+						  .attr("x", 2)
+						  .attr("dy", ".35em")
+					  		.style("stroke", function(d) { return color(d.name); })
+						  .text(function(d) { return d.name; });
+					}
+				};
+		</script>
+	</body>
+	</html>

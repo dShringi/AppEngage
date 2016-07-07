@@ -114,7 +114,7 @@
         <div class="overlay"></div>
 		
 		<script>
-			var width = $(".div-total-crashes").width(), height = 250, radius = Math.min(width, height) / 2;
+			var width = $(".div-total-crashes").width(), height = width, radius = Math.min(width, height) / 2;
             var legendPosY = (height / 2) - 20;
 			var totalCrashes = 0;
 
@@ -125,10 +125,10 @@
             var arc = d3.svg.arc().innerRadius(radius - 35).outerRadius(radius - 60);
             var arcOver = d3.svg.arc().outerRadius(radius - 32).innerRadius(radius - 63);
 
-            var pie = d3.layout.pie().sort(null).value(function (d) { return d.crashes; });
-			var pie1 = d3.layout.pie().sort(null).value(function (d) { return d.totalCrashes; });
-			var pie2 = d3.layout.pie().sort(null).value(function (d) { return d.totalCrashes; });
-			var pie3 = d3.layout.pie().sort(null).value(function (d) { return d.totalCrashes; });
+            var pie = d3.layout.pie().sort(null).value(function (d) {return d.TotalCrashes; });
+			var pie1 = d3.layout.pie().sort(null).value(function (d) { return d.crash; });
+			var pie2 = d3.layout.pie().sort(null).value(function (d) { return d.crash; });
+			var pie3 = d3.layout.pie().sort(null).value(function (d) { return d.crash; });
 
             var svg = d3.select(".div-total-crashes").append("svg")
                 .attr("width", width)
@@ -150,41 +150,41 @@
                 .attr("height", height)
                 .append("g")
                 .attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
-            
-			/************************ Total Crashes Chart *****************/
-			d3.json("assets/json/data-total-crashes-datewise.json", function (error, data) {
+
+			d3.json("assets/json/ok-data-total-crashes-Counters.json", function (error, data) {
                 if (error) { throw error; }
-				var dataArr = new Array();
-				$.each(data, function(i, value){
-					totalCrashes += value.totalCrashes;
+				totalCrashes = data[0].TotalCrashes;
+				showTotalCrashesChart(data, svg, pie);
+				
+				// Manufacturer Crashes Chart
+				//showManufacturerCrashesChart(dataManuArray, svg1, pie1);
+				showCrashesDonutChart(getArray(data, 1, 'mnu'), svg1, pie1);
+				// Manufacturer Crashes Chart - END
+				
+				// Platform Crashes Chart
+				showCrashesDonutChart(getArray(data, 3, 'pf'), svg2, pie2);
+				// Platform Crashes Chart - END
+				
+				// Platform Crashes Chart
+				showCrashesDonutChart(getArray(data, 2, 'osv'), svg3, pie3);
+				// Platform Crashes Chart - END
+				
+            });
+			
+			var getArray = function(arr, idx, idx1){
+				var arr1 = new Array();
+				$.each(arr[idx][idx1], function(id, crsh){
+					$.each(crsh, function(key, val){
+						arr1.push({
+							"name" : key,
+							"crash" : val
+						});
+					});
 				});
-				dataArr.push({'crashes':totalCrashes});
-				showTotalCrashesChart(dataArr, svg, pie);
-            });
-			/************************ Total Crashes Chart - End************/
-			/************************ Manufacturer Crashes Chart *****************/
-			d3.json("assets/json/data-crashes-manufacturer.json", function (error, data) {
-                if (error) { throw error; }
-				
-				showManufacturerCrashesChart(data, svg1, pie1);
-            });
-			/************************ Manufacturer Crashes Chart - End************/
-			/************************ Platform Crashes Chart *****************/
-			d3.json("assets/json/data-crashes-platform.json", function (error, data) {
-                if (error) { throw error; }
-				
-				showPlatformCrashesChart(data, svg2, pie2);
-            });
-			/************************ Platform Crashes Chart - End************/
-			/************************ OS Version Crashes Chart *****************/
-			d3.json("assets/json/data-crashes-os-version.json", function (error, data) {
-                if (error) { throw error; }
-				
-				showOsVersionCrashesChart(data, svg3, pie3);
-            });
-			/************************ OS Version Crashes Chart - End************/
+				return arr1;
+			}
 			/*************************** For Table ************************/
-			d3.json("assets/json/data-crash-reports.json", function (error, data) {
+			d3.json("assets/json/ok-data-total-crashes.json", function (error, data) {
 				showCrashReportTable(data, 'tbl-crash-report');
 			});
 			/*************************** For Table - END ******************/

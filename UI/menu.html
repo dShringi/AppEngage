@@ -20,7 +20,12 @@
             </ul>
         </li>              
         <li class=""><a href="cities.html"><img src="assets/img/Cities.png" /></a><span><a href="cities.html">Cities</a></span></li>      
-        <li class=""><a href="event-summery.html"><img src="assets/img/Events.png" /></a><span><a href="event-summery.html">Events</a></span></li>
+        <li class="menu-event"><a href="#"><img src="assets/img/Events.png" /></a><span><a href="#">Events</a></span>
+			<ul class="sub-menu">
+                <li class=""><a href="event-summary.html">Summary</a></li>
+                <li class=""><a href="event-compare.html">Compare</a></li>
+            </ul>
+		</li>
         <li class=""><a href="#"><img src="assets/img/Cohort.png" /></a><span><a href="#">Cohort</a></span></li>
         <li class=""><a href="crash-report.html"><img src="assets/img/Crash-Reports.png" /></a><span><a href="crash-report.html">Crash Reports</a></span></li>
     </ul>
@@ -58,12 +63,12 @@ $('.arrow-icon').on('click', function(e){
     $( ".left-side" ).removeClass("shadow");
     $('.overlay').hide();
 });
-$('.menu-device').click(function(){
+$('.menu-device, .menu-event').click(function(){
 	if( $( ".left-side" ).width() != 210){
 		showMenu();
 	}
-	
-    $('ul.sub-menu').toggle(animateTime,function(){});
+	$('ul.sub-menu').hide(animateTime);
+    $(this).find('ul').toggle(animateTime,function(){});
 });
 
 </script>

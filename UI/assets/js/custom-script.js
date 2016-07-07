@@ -142,11 +142,49 @@ var showCrashReportTable = function (data, tableId) {
 	var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.date + "</td><td>" + row.plateform + "</td><td>" + row.os + "</td><td>" + row.app + "</td><td>" + row.totalCrashes + "</td></tr>";
+        tableHTML += "<tr><td>" + row.dt + "</td><td>" + row.pf + "</td><td>" + row.os + "</td><td>" + row.av + "</td><td>" + row.totalCrashes + "</td></tr>";
         
     });
     $("#" + tableId + " tbody").html(tableHTML);
 	sortTable();
+};
+
+
+
+var parseEventDate = function(eDate){
+	if(eDate.length == "10"){
+		year = eDate.substring(0,4);
+		month = eDate.substring(4,6);
+		day = eDate.substring(6,8);
+		hour = eDate.substring(8,10);
+	} else {
+		year = eDate.substring(0,4);
+		month = eDate.substring(4,6);
+		day = eDate.substring(6,8);
+		hour = 0;
+	}
+	
+	//return date object
+	return new Date(year,month-1,day,hour,0,0);
+};
+
+var removeNulls = function(arr){
+	var arr1 = new Array(), arr2 = new Array();
+	$.each(arr, function(i,v){
+		//console.log("Outer Each" + JSON.stringify(v));
+		arr2 = [];
+		$.each(v.values, function(i1,v1){
+			//console.log("Inner Each" + JSON.stringify(v1));
+			if(v1 !== undefined){
+				arr2.push(v1);
+			}
+		});
+		arr1.push({
+			"name":v.name,
+			"values":arr2
+		});
+	});
+	return arr1;
 };
 
 /*
@@ -208,7 +246,7 @@ var getDateObj = function(dateEle){
 
 var totalCrashes = 0;
 
-var showTotalCrashesChart = function(data,svg,pie, jsonItem){
+var showTotalCrashesChart = function(data,svg,pie){
 	var g = svg.selectAll(".arc")
 		.data(pie(data))
 		.enter().append("g")
@@ -216,23 +254,19 @@ var showTotalCrashesChart = function(data,svg,pie, jsonItem){
 
 	g.append("path")
 		.attr("d", arc)
-		.attr("data-legend", function (d) {return d.data.crashes; })
-		//.attr("id", function(d) {'tag'+d.data.manufacturer.replace(/\s+/g, '')}) // assign ID
-		.style("fill", function (d) { return color(d.data.crashes); });
+		.style("fill", function (d) { return color(d.data.TotalCrashes); });
 
 	g.append("text")
 		.attr("dy", ".35em")
 		.style("text-anchor", "middle")
 		.attr("class", "inside")
 		.attr("fill", "#616161")
-		.text(totalCrashes)
+		//.text(totalCrashes)
+		.text(function (d) { return d.data.TotalCrashes; });
 };
-var tooltip = d3.select("body")
-		.append("div")  // declare the tooltip div 
-		.attr("class", "map-tooltip shadow")              // apply the 'tooltip' class
-		.style("opacity", 0);                  // set the opacity to nil
-var showManufacturerCrashesChart = function(data,svg,pie){
-	tooltip = d3.select("body")
+var showCrashesDonutChart = function(data,svg,pie){
+	//console.log(JSON.stringify(data));
+	var tooltip = d3.select("body")
 		.append("div")  // declare the tooltip div 
 		.attr("class", "map-tooltip shadow")              // apply the 'tooltip' class
 		.style("opacity", 0);                  // set the opacity to nil
@@ -244,63 +278,25 @@ var showManufacturerCrashesChart = function(data,svg,pie){
 
 	g.append("path")
 		.attr("d", arc)
-		.attr("data-legend", function (d) { return d.data.manufacturer; })
+		.attr("data-legend", function (d) {return d.data.manufacturer; })
 		//.attr("id", function(d) {'tag'+d.data.manufacturer.replace(/\s+/g, '')}) // assign ID
 		.on("mouseenter", function (d) {
-			/*d3.select(this)
+			d3.select(this)
 				.transition()
 				.duration(1000)
 				.attr("class", "shadow")
-				.attr("d", arcOver);*/
+				.attr("d", arcOver);
 			tooltip.transition().duration(200).style("opacity", 1);	
-			tooltip.html(d.data.manufacturer +" : "+d.data.totalCrashes).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
+			tooltip.html(d.data.name +" : "+d.data.crash).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
 		})
 		.on("mouseleave", function (d) {
-			/*d3.select(this)
+			d3.select(this)
 				.transition()
 				.duration(1000)
-				.attr("d", arc);*/
+				.attr("d", arc);
 			tooltip.transition().duration(200).style("opacity", 0);	
 		})
-		.style("fill", function (d) { return color(d.data.manufacturer); });
-
-	g.append("text")
-		.attr("dy", ".35em")
-		.style("text-anchor", "middle")
-		.attr("class", "inside")
-		.attr("fill", "#616161")
-		.text(totalCrashes)
-		.on("click", function (d) {
-			//alert("aaa");
-		});
-};
-var showPlatformCrashesChart = function(data,svg,pie){
-	var g = svg.selectAll(".arc")
-		.data(pie(data))
-		.enter().append("g")
-		.attr("class", "arc");
-
-	g.append("path")
-		.attr("d", arc)
-		.attr("data-legend", function (d) { return d.data.platform; })
-		//.attr("id", function(d) {'tag'+d.data.manufacturer.replace(/\s+/g, '')}) // assign ID
-		.on("mouseenter", function (d) {
-			/*d3.select(this)
-				.transition()
-				.duration(1000)
-				.attr("class", "shadow")
-				.attr("d", arcOver);*/
-			tooltip.transition().duration(200).style("opacity", 1);	
-			tooltip.html(d.data.platform +" : "+d.data.totalCrashes).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
-		})
-		.on("mouseleave", function (d) {
-			/*d3.select(this)
-				.transition()
-				.duration(1000)
-				.attr("d", arc);*/
-			tooltip.transition().duration(200).style("opacity", 0);	
-		})
-		.style("fill", function (d) { return color(d.data.platform); });
+		.style("fill", function (d) { return color(d.data.name); });
 
 	g.append("text")
 		.attr("dy", ".35em")
@@ -313,45 +309,14 @@ var showPlatformCrashesChart = function(data,svg,pie){
 		});
 };
 
-var showOsVersionCrashesChart = function(data,svg,pie){
-
-	var g = svg.selectAll(".arc")
-		.data(pie(data))
-		.enter().append("g")
-		.attr("class", "arc");
-
-	g.append("path")
-		.attr("d", arc)
-		.attr("data-legend", function (d) { return d.data.version; })
-		//.attr("id", function(d) {'tag'+d.data.manufacturer.replace(/\s+/g, '')}) // assign ID
-		.on("mouseenter", function (d) {
-			/*d3.select(this)
-				.transition()
-				.duration(1000)
-				.attr("class", "shadow")
-				.attr("d", arcOver);*/
-			tooltip.transition().duration(200).style("opacity", 1);	
-			tooltip.html(d.data.platform + " " + d.data.version +" : "+d.data.totalCrashes).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
-		})
-		.on("mouseleave", function (d) {
-			/*d3.select(this)
-				.transition()
-				.duration(1000)
-				.attr("d", arc);*/
-			tooltip.transition().duration(200).style("opacity", 0);	
-		})
-		.style("fill", function (d) { return color(d.data.version); });
-
-	g.append("text")
-		.attr("dy", ".35em")
-		.style("text-anchor", "middle")
-		.attr("class", "inside")
-		.attr("fill", "#616161")
-		.text(totalCrashes)
-		.on("click", function (d) {
-			//alert("aaa");
-		});
+/*********Return date in the format yyyymmdd **********/
+var getFormatedDate = function(dateObj){
+	year = dateObj.getFullYear();
+	month = dateObj.getMonth()<10?"0"+dateObj.getMonth():dateObj.getMonth();
+	date = dateObj.getDate()<10?"0"+dateObj.getDate():dateObj.getDate();;
+	return year+month+date;
 };
+/*********Return date in the format yyyymmdd - END **********/
 
 var sortTable = function(){
 	var pagerOptions = {

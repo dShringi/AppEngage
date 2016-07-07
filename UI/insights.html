@@ -17,6 +17,7 @@
         <link rel="stylesheet" type="text/css" href="assets/css/daterangepicker.css" />
 		<link rel="stylesheet" href="assets/css/bootstrap-select.min.css">
 		<script src="assets/js/bootstrap-select.min.js"></script>
+		<style>path { stroke-width: 1;}</style>
     </head>
     <body>
         <aside class="left-side sticky-left-side" tabindex="5000"></aside>
@@ -85,11 +86,13 @@
 
                 // Define the line
                 var	valueline = d3.svg.line()
+					//.interpolate("basis")
                     .x(function(d) { return x(d.date); })
                     .y(function(d) { return y(d.count); });
                 
                 // Define the line
                 var	valueline1 = d3.svg.line()
+					//.interpolate("basis")
                     .x(function(d) { return x(d.date); })
                     .y(function(d) { return y(d.totalTime); });
 

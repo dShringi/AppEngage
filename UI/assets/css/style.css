@@ -138,13 +138,13 @@ section>header{/*border-bottom:1px solid #dadada;*/ padding:8px;display: inline-
 /************************** For Column Chart *******************************/
 path { 
 	stroke: rgb(122,190,231);
-	stroke-width: 1;
+	stroke-width: 0;
 	fill: none;
 }
 .bar{ fill: rgb(134,163,176); }
 .bar:hover{fill: rgb(67,194,199);}
 .axis {font-size: 12px;}
-.axis path, .axis line {fill: none;stroke: #000;shape-rendering: crispEdges;}
+.axis path, .axis line {fill: none;stroke: #000;shape-rendering: crispEdges;stroke-width: 1;}
 div.tooltip {
     position: absolute;	
     text-align: center;	
@@ -200,8 +200,9 @@ div.tooltip {
 .paddb40{padding-bottom: 40px}
 .paddb15{padding-bottom: 15px;}
 .paddb0{padding-bottom: 0 !important}
-.paddt25{padding-top: 25px}
+.paddt25{padding-top: 25px !important}
 .mrgnBtm0{margin-bottom: 0}
+.mrgnTp0{margin-top: 0 !important}
 .margnTp-5{margin-top: -5px;}
 .chart-header{padding-bottom: 15px;}
 .ht150{height: 150px}
@@ -250,7 +251,7 @@ ul.usr-submenu li{
 }
 ul.usr-submenu li a{display: block;padding:3px;color:#fff}
 ul.usr-submenu li a:hover{background-color: rgb(58,90,99);color:#fff}
-.chart-title{text-transform: uppercase;display: block; text-align: center; font-size: 18px; padding-bottom: 40px;}
+.chart-title{text-transform: uppercase;display: block; text-align: center; font-size: 18px; padding-bottom: 15px;padding-top: 0;}
 
 
 /* pager wrapper, div */
