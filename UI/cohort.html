@@ -38,16 +38,9 @@
                     <div class="col-md-6 txt-drk-gray"></div>
                     <div class="col-md-6 txt-drk-gray margnTp-5 text-right">
 						<div>
-							<span class="glyphicon glyphicon-calendar txt-green sel-range" aria-hidden="true"></span> &nbsp;<span class="date-range">May 01, 2016 - May 24, 2016</span> &nbsp;
-							<select class="form-control selectpicker" data-width="150px">
-								<option value="Today">Today</option>
-								<option value="Yesterday">Yesterday</option>
-								<option value="Today">Current Month</option>
-								<option value="Today">Previous Month</option>
-								<option value="Today">3 Months</option>
-								<option value="Today">6 Months</option>
-								<option value="Today">1 Year</option>
-							</select>
+							<div id="dateRange" class="pull-right">
+								<i class="glyphicon glyphicon-calendar txt-green fa fa-calendar"></i><span></span><b class="caret"></b>
+							</div>
 						</div>
                     </div>
                 </div>
@@ -58,11 +51,9 @@
 				</div>
 				<div class="paddt25 paddr50">
 					<div class="table-responsive"> 
-						<table class="table text-left" id="tbl-cohort"> 
+						<table class="table text-left table-bordered" id="tbl-cohort"> 
 							<thead></thead> 
-							<tbody> 
-
-							</tbody> 
+							<tbody></tbody> 
 						</table>
 					</div>
 					
@@ -72,6 +63,9 @@
 		<div class="overlay"></div>
 		<script>
 			$(document).ready(function(){
+				$('[data-toggle="tooltip"]').tooltip()
+				var colorChart = [{100:"#117B9E",90:"#238BAD",80:"#2B93B5",70:"#3D9FBF",60:"#4FA7C4",50:"#5EB1CC",40:"#6DB8D1",30:"#86C4D9",20:"#C7E4ED",10:"#fff"}];
+				
 				$.getJSON("assets/json/cohort1.json", function(data){
 					//alert(data.length);
 					$('#tbl-cohort thead').append("<tr><th></th></tr>");
@@ -80,15 +74,19 @@
 					}
 					
 					$.each(data, function(i,v){
-						$.each(v, function(i1,v1){
-							$('#tbl-cohort tbody').append("<tr><th>"+i1+"</th></tr>");
-							console.log(JSON.stringify(v1));
-							$.each(v1, function(i2,v2){
-								console.log(JSON.stringify(v2));
-								$('#tbl-cohort tbody tr').append("<td>"+v2+"</td>");
-							});
-							
-							
+						//console.log("Outer"+JSON.stringify(v.date));
+						date1 = getFormattedDate(parseEventDate(v.date));
+						
+						$('#tbl-cohort tbody').append("<tr><th>"+date1+"</th></tr>");
+						$.each(v.values, function(i1,v1){
+							//console.log(i1+ " : "+JSON.stringify(v1));
+							val = Math.ceil(v1 / 10) * 10;
+							if(val >= 30){
+								textColor = "#fff";
+							} else {
+								textColor = "#000";
+							}
+							$('#tbl-cohort tbody tr').last().append("<td title='"+v.users[i1]+" Users' style=\"background-color:"+colorChart[0][val]+"; color:"+textColor+"\" data-toggle=\"tooltip\">"+v1+"</td>");
 						});
 					});
 				})

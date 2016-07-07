@@ -17,7 +17,7 @@
         <link rel="stylesheet" type="text/css" href="assets/css/daterangepicker.css" />
 		<link rel="stylesheet" href="assets/css/bootstrap-select.min.css">
 		<script src="assets/js/bootstrap-select.min.js"></script>
-		<style>path { stroke-width: 1;}</style>
+		<style>path { stroke-width: 2;}</style>
     </head>
     <body>
         <aside class="left-side sticky-left-side" tabindex="5000"></aside>
@@ -35,16 +35,9 @@
                     <div class="col-md-6 txt-drk-gray"></div>
                     <div class="col-md-6 txt-drk-gray margnTp-5 text-right">
 						<div>
-							<span class="glyphicon glyphicon-calendar txt-green sel-range" aria-hidden="true"></span> &nbsp;<span class="date-range">May 01, 2016 - May 24, 2016</span> &nbsp;
-							<select class="form-control selectpicker" data-width="150px">
-								<option value="Today">Today</option>
-								<option value="Yesterday">Yesterday</option>
-								<option value="Today">Current Month</option>
-								<option value="Today">Previous Month</option>
-								<option value="Today">3 Months</option>
-								<option value="Today">6 Months</option>
-								<option value="Today">1 Year</option>
-							</select>
+							<div id="dateRange" class="pull-right">
+								<i class="glyphicon glyphicon-calendar txt-green fa fa-calendar"></i><span></span><b class="caret"></b>
+							</div>
 						</div>
                     </div>
                 </div>
@@ -101,6 +94,11 @@
                     .append("div")  // declare the tooltip div 
                     .attr("class", "tooltip")              // apply the 'tooltip' class
                     .style("opacity", 0);                  // set the opacity to nil
+				// Define 'div' for tooltips
+                var div1 = d3.select("body")
+                    .append("div")  // declare the tooltip div 
+                    .attr("class", "map-tooltip shadow")              // apply the 'tooltip' class
+                    .style("opacity", 0);                  // set the opacity to nil
 
                 // Adds the svg canvas
                 var	svg = d3.select("#line-chart-container-1")
@@ -117,7 +115,7 @@
                         d.date = parseDate(d.date);
                         d.count1 = d.count;
                     });
-                    plotChart(data,svg);
+                    plotChart(data,svg, div);
                     
                     // Add the valueline path.
                     svg.append("path")		
@@ -141,7 +139,7 @@
                         d.date = parseDate(d.date);
                         d.count1 = d.totalTime;
                     });
-                    plotChart(data,svg1);
+                    plotChart(data,svg1, div1, true);
                     
                     // Add the valueline path.
                     svg1.append("path")		
@@ -149,7 +147,7 @@
                         .attr("d", valueline1(data));
                 });
                 
-                function plotChart(data, svg){
+                function plotChart(data, svg, div,timestamp=false){
                     // Scale the range of the data
                     x.domain(d3.extent(data, function(d) { return d.date; }));
                     y.domain([0, d3.max(data, function(d) { return d.count1; })]);
@@ -163,9 +161,15 @@
                         .attr("cx", function(d) { return x(d.date); })		 
                         .attr("cy", function(d) { return y(d.count1); })
                     // Tooltip stuff after this
-                        .on("mouseover", function(d) {		
+						/*.on("mouseleave", function(d) {div.transition().duration(200).style("opacity", 0);})*/
+                        .on("mouseenter", function(d) {
+							if(timestamp){
+								cnt = sec2ISO(d.count1);
+							} else {
+								cnt = d.count1;
+							}
                             div.transition().duration(200).style("opacity", .9);	
-                            div	.html(d.count1).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
+                            div	.html(cnt).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
                         });
                     drawAxes(svg);
                 }

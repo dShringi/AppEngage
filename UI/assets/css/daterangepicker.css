@@ -189,6 +189,7 @@
     color: #08c;
     padding: 3px 12px;
     margin-bottom: 8px;
+	display: block;
     cursor: pointer; }
     .ranges li:hover {
       background: #08c;
@@ -262,7 +263,7 @@
   .daterangepicker .ranges {
     width: auto; }
   .daterangepicker.ltr .ranges {
-    float: left; }
+    float: right; }
   .daterangepicker.rtl .ranges {
     float: right; }
   .daterangepicker .calendar.left {

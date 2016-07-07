@@ -151,7 +151,7 @@
 
             for (var i = 0; i < monthLength; i++) {
                 if (i > config.maxColumns) break;
-                //var text = i === 0 ? config.labels.people : config.formatHeaderLabel(i);
+                var text = i === 0 ? config.labels.people : config.formatHeaderLabel(i);
                 th.appendChild(create('th', { text: text, className: 'people' }));
             }
             return th;

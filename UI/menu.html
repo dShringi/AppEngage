@@ -26,7 +26,7 @@
                 <li class=""><a href="event-compare.html">Compare</a></li>
             </ul>
 		</li>
-        <li class=""><a href="#"><img src="assets/img/Cohort.png" /></a><span><a href="#">Cohort</a></span></li>
+        <li class=""><a href="cohort.html"><img src="assets/img/Cohort.png" /></a><span><a href="cohort.html">Cohort</a></span></li>
         <li class=""><a href="crash-report.html"><img src="assets/img/Crash-Reports.png" /></a><span><a href="crash-report.html">Crash Reports</a></span></li>
     </ul>
     <!--sidebar nav end-->
@@ -37,7 +37,7 @@ $('.bar-icon').on('click', function(e){
     e.preventDefault();
     showMenu();
 });
-var animateTime = 1000;
+var animateTime = 200;
 var showMenu = function(){
 	$('.overlay').show();
 	$('.bar-icon').hide();
@@ -67,7 +67,7 @@ $('.menu-device, .menu-event').click(function(){
 	if( $( ".left-side" ).width() != 210){
 		showMenu();
 	}
-	$('ul.sub-menu').hide(animateTime);
+	//$('ul.sub-menu').hide(animateTime);
     $(this).find('ul').toggle(animateTime,function(){});
 });
 

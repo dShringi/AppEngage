@@ -83,7 +83,8 @@ section>header{/*border-bottom:1px solid #dadada;*/ padding:8px;display: inline-
 
 .event-box{}
 .event-box:last{border-right:none}
-.event-box span{display:block; font-size:12px; font-weight:bold; padding:15px 0 0; line-height:1.3em;text-transform: uppercase;}
+.event-box span{display:inline-block; font-size:12px; font-weight:bold; padding:15px 0 0; line-height:1.3em;text-transform: uppercase; margin:0}
+.event-box img{margin-bottom: 15px}
 .event-box span.glyphicon{font-size: 25px;}
 .event-box span span{padding:10px 0 ;}
 
@@ -104,7 +105,7 @@ section>header{/*border-bottom:1px solid #dadada;*/ padding:8px;display: inline-
 .event-container{padding-left:0; width:100%; display:inline-block;}
 .event-container li{border-right: 1px solid #dadada;}
 
-.event-container li label, .chart-title{display:block;padding:13px 0; font-size:15px; font-family: Proxima-Nova-Semibold;}
+.event-container li label, .chart-title{display:block;padding:13px 0; font-size:18px; font-family: Proxima-Nova-Semibold;}
 
 .paddT27{padding-top:27px}
 .paddT8{padding-top:8px}
@@ -200,6 +201,7 @@ div.tooltip {
 .paddb40{padding-bottom: 40px}
 .paddb15{padding-bottom: 15px;}
 .paddb0{padding-bottom: 0 !important}
+.paddl0{padding-left: 0 !important}
 .paddt25{padding-top: 25px !important}
 .mrgnBtm0{margin-bottom: 0}
 .mrgnTp0{margin-top: 0 !important}
@@ -227,7 +229,7 @@ div.tooltip {
 .spacer12{width: 100%; height: 12px}
 .btn-primary{background-color: rgb(54,101,124); border: 1px solid rgb(54,101,124)}
 
-#tbl-event{color: rgb(54,101,124); font-size: 90%}
+#tbl-event{color: $666; font-size: 90%}
 
 .usr-menu{display: inline-block;}
 .usr-menu .arrow{
@@ -242,7 +244,7 @@ ul.usr-submenu{
 	border: 1px solid;
 	width:130px;
 	position: absolute;
-	margin-left: 50px;
+	margin-left: 30px;
 	display: none;
 	background-color: rgb(62,76,86);
 	color:#fff;
@@ -307,3 +309,5 @@ td.tablesorter-pager {
     overflow-x:inherit;
 }
 .pagedisplay input{background-color: #fff;border: 1px solid #ccc;border-radius: 4px;color: #555;padding: 6px 3px;}
+#dateRange i{padding-top: 7px; padding-right: 4px}
+.caret{margin-left: 3px;}

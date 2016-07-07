@@ -21,24 +21,32 @@ $(document).ready(function () {
         var backdate = new Date(year, month - 1, date);
         
         return backdate;
-    }, getFormattedDate = function (input) {
-        var year = input.getFullYear(), month = input.getMonth(), date = input.getDate();
-		/*var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];*/
-        return months[month] + " " + date + ", " + year;
     }, todayObj = new Date(), oneMonthAgoDateObj = displayDate(todayObj);
     
-    $('.date-range').html(getFormattedDate(oneMonthAgoDateObj) + ' - ' + getFormattedDate(todayObj));
+    //$('.date-range').html(getFormattedDate(oneMonthAgoDateObj) + ' - ' + getFormattedDate(todayObj));
     
-    $('.sel-range').daterangepicker({
+	function cb(start, end) {
+        $('#dateRange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+    }
+    cb(moment().subtract(29, 'days'), moment());
+	
+    $('#dateRange').daterangepicker({
+		ranges: {
+           'Today': [moment(), moment()],
+           'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+           'This Month': [moment().startOf('month'), moment().endOf('month')],
+           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+		
         locale: {
             format: 'YYYY-MM-DD',
             applyLabel: "Select"
         },
         startDate: new Date(),
         endDate: displayDate(new Date())
-    }, function (start, end, label) {
-        $('.date-range').html(start.format('MMM DD, YYYY') + ' - ' + end.format('MMM DD, YYYY'));
-    });
+    }, cb);
 });
 
 var showDeviceModelTable = function (data, tableId) {
@@ -46,7 +54,19 @@ var showDeviceModelTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.model + "</td><td>" + row.users + "</td><td>" + row.time + "</td></tr>";
+        tableHTML += "<tr><td>" + row.model + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
+        
+    });
+    $("#" + tableId + " tbody").html(tableHTML);
+	sortTable();
+};
+
+var showCitiesTable = function (data, tableId) {
+	"use strict";
+    var tableHTML = "";
+    $.each(data, function (index, row) {
+        //alert(JSON.stringify(row));
+        tableHTML += "<tr><td>" + row.city + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     $("#" + tableId + " tbody").html(tableHTML);
@@ -58,7 +78,7 @@ var showDeviceCarrierTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.carrier + "</td><td>" + row.users + "</td><td>" + row.time + "</td></tr>";
+        tableHTML += "<tr><td>" + row.carrier + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     $("#" + tableId + " tbody").html(tableHTML);
@@ -70,7 +90,7 @@ var showDeviceResolutionTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.resolution + "</td><td>" + row.users + "</td><td>" + row.time + "</td></tr>";
+        tableHTML += "<tr><td>" + row.resolution + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     $("#" + tableId + " tbody").html(tableHTML);
@@ -82,7 +102,7 @@ var showDeviceOSVersionTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.os + "</td><td>" + row.users + "</td><td>" + row.time + "</td></tr>";
+        tableHTML += "<tr><td>" + row.os + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     $("#" + tableId + " tbody").html(tableHTML);
@@ -94,7 +114,7 @@ var showDeviceAppVersionTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.app + "</td><td>" + row.users + "</td><td>" + row.time + "</td></tr>";
+        tableHTML += "<tr><td>" + row.app + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     $("#" + tableId + " tbody").html(tableHTML);
@@ -106,7 +126,7 @@ var showDevicePlatformTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.platform + "</td><td>" + row.users + "</td><td>" + row.time + "</td></tr>";
+        tableHTML += "<tr><td>" + row.platform + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     $("#" + tableId + " tbody").html(tableHTML);
@@ -118,7 +138,7 @@ var showDeviceTypeTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.type + "</td><td>" + row.users + "</td><td>" + row.time + "</td></tr>";
+        tableHTML += "<tr><td>" + row.type + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     $("#" + tableId + " tbody").html(tableHTML);
@@ -130,7 +150,7 @@ var showDeviceMenufacturerTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.manufacturer + "</td><td>" + row.users + "</td><td>" + row.time + "</td></tr>";
+        tableHTML += "<tr><td>" + row.manufacturer + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     $("#" + tableId + " tbody").html(tableHTML);
@@ -317,6 +337,20 @@ var getFormatedDate = function(dateObj){
 	return year+month+date;
 };
 /*********Return date in the format yyyymmdd - END **********/
+
+var getFormattedDate = function (input) {
+	var year = input.getFullYear(), month = input.getMonth(), date = input.getDate();
+	/*var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];*/
+	return months[month] + " " + date + ", " + year;
+};
+
+/******************* Convert time in format hh:mm:ss *****************/
+var sec2ISO = function(SECONDS){
+	var date = new Date(null);
+	date.setSeconds(SECONDS); // specify value for SECONDS here
+	return date.toISOString().substr(11, 8);
+};
+/******************* Convert time in format hh:mm:ss - END *****************/
 
 var sortTable = function(){
 	var pagerOptions = {
