@@ -352,6 +352,65 @@ var sec2ISO = function(SECONDS){
 };
 /******************* Convert time in format hh:mm:ss - END *****************/
 
+/*************************  For Line Chart ************************/
+function plotLineChart(data, svg, div,timestamp=false, ele, valueline, x, y, width, height, xAxis="", yAxis = ""){
+	console.log(typeof xAxis+" :: "+typeof yAxis);
+	// Scale the range of the data
+	x.domain(d3.extent(data, function(d) { return d.date; }));
+	y.domain([0, d3.max(data, function(d) { return d[ele]; })]);
+
+	svg.append("path")		
+		.attr("class", "line")
+		.attr("d", valueline(data));
+
+	// draw the scatterplot
+	svg.selectAll("dot")									
+		.data(data)											
+		.enter().append("circle")								
+		.attr("r", 4)
+		.attr("stroke", "#7ABEE7")
+		.attr("fill", "white")
+		.attr("stroke-width", "2px")
+		.attr("cx", function(d) { return x(d.date); })		 
+		.attr("cy", function(d) { return y(d[ele]); })
+		// Tooltip stuff after this
+		/*.on("mouseleave", function(d) {div.transition().duration(200).style("opacity", 0);})*/
+		.on("mouseenter", function(d) {
+			if(timestamp){
+				cnt = sec2ISO(d[ele]);
+			} else {
+				cnt = d[ele];
+			}
+			div.transition().duration(200).style("opacity", .9);	
+			div	.html(cnt).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
+		});
+	drawAxes(svg, x, y, width, height, xAxis, yAxis);
+}
+
+function drawAxes(svg, x, y, width, height, xAxis, yAxis){
+	// Define the axes
+	console.log(xAxis+" : "+yAxis);
+	if(typeof xAxis === "string"){
+		xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5);
+	}
+	if(typeof yAxis === "string"){
+		yAxis = d3.svg.axis().scale(y).orient("left").ticks(5)
+	}
+	console.log(typeof xAxis+" :: "+typeof yAxis);
+	// Add the X Axis
+	svg.append("g")	
+		.attr("class", "x axis")
+		.attr("transform", "translate(0," + height + ")")
+		.call(xAxis);
+
+	// Add the Y Axis
+	svg.append("g")	
+		.attr("class", "y axis")
+		.call(yAxis);
+}
+/*************************  For Line Chart - END ************************/
+
+
 var sortTable = function(){
 	var pagerOptions = {
 

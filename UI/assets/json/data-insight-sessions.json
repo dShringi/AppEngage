@@ -1,106 +1,132 @@
 [
     {
         "date":"1-May-12",
-        "totalTime":158
+        "count":2,
+		"totalTime":158
     },
     {
         "date":"30-Apr-12",
-        "totalTime":453
+        "count":3,
+		"totalTime":241
     },
     {
         "date":"27-Apr-12",
-        "totalTime":267
+        "count":1,
+		"totalTime":267
     },
     {
         "date":"26-Apr-12",
-        "totalTime":289
+        "count":0,
+		"totalTime":0
     },
     {
         "date":"25-Apr-12",
-        "totalTime":287
+        "count":1,
+		"totalTime":185
     },
     {
         "date":"24-Apr-12",
-        "totalTime":330
+        "count":3,
+		"totalTime":330
     },
     {
         "date":"23-Apr-12",
-        "totalTime":366
+        "count":5,
+		"totalTime":366
     },
     {
         "date":"20-Apr-12",
-        "totalTime":385
+        "count":2,
+		"totalTime":268
     },
     {
         "date":"19-Apr-12",
-        "totalTime":300
+        "count":4,
+		"totalTime":384
     },
     {
         "date":"18-Apr-12",
-        "totalTime":415
+        "count":3,
+		"totalTime":362
     },
     {
         "date":"17-Apr-12",
-        "totalTime":543
+        "count":2,
+		"totalTime":198
     },
     {
         "date":"16-Apr-12",
-        "totalTime":580
+        "count":4,
+		"totalTime":475
     },
     {
         "date":"13-Apr-12",
-        "totalTime":605
+        "count":0,
+		"totalTime":0
     },
     {
         "date":"12-Apr-12",
-        "totalTime":622
+        "count":2,
+		"totalTime":95
     },
     {
         "date":"11-Apr-12",
-        "totalTime":626
+        "count":5,
+		"totalTime":524
     },
     {
         "date":"10-Apr-12",
-        "totalTime":628
+        "count":4,
+		"totalTime":425
     },
     {
         "date":"9-Apr-12",
-        "totalTime":636
+        "count":1,
+		"totalTime":154
     },
     {
         "date":"5-Apr-12",
-        "totalTime":633
+        "count":2,
+		"totalTime":198
     },
     {
         "date":"4-Apr-12",
-        "totalTime":624
+        "count":2,
+		"totalTime":284
     },
     {
         "date":"3-Apr-12",
-        "totalTime":629
+        "count":5,
+		"totalTime":512
     },
     {
         "date":"2-Apr-12",
-        "totalTime":618
+        "count":5,
+		"totalTime":487
     },
     {
         "date":"30-Mar-12",
-        "totalTime":599
+        "count":3,
+		"totalTime":311
     },
     {
         "date":"29-Mar-12",
-        "totalTime":609
+        "count":1,
+		"totalTime":85
     },
     {
         "date":"28-Mar-12",
-        "totalTime":617
+        "count":4,
+		"totalTime":547
     },
     {
         "date":"27-Mar-12",
-        "totalTime":614
+        "count":4,
+		"totalTime":614
     },
     {
         "date":"26-Mar-12",
-        "totalTime":606
+        "count":5,
+		"totalTime":606
     }
 ]

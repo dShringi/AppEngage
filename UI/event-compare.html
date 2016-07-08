@@ -19,7 +19,7 @@
 		<link rel="stylesheet" href="assets/css/bootstrap-select.min.css">
 		<script src="assets/js/bootstrap-select.min.js"></script>
 		<script src="https://d3js.org/d3-time.v1.min.js"></script>
-		<style>path { stroke-width: 2;} .chart-title{text-align: left}</style>
+		<style>path { stroke-width: 2;} .chart-title{text-align: left}.chart-container{height:270px}</style>
 	</head>
 	<body>
 		<aside class="left-side sticky-left-side" tabindex="5000"></aside>
@@ -45,9 +45,9 @@
 				</div>
 			</section>
 			<section class="bg-white paddl50 ">
-				<div class="paddb40 paddt25">
+				<div class="paddt25">
 					<div class="row">
-						<div class="col-md-3 col-sm-12">
+						<div class="col-md-3 col-sm-12 paddb40">
 							<div class="table-responsive"> 
 								<table class="table text-left" id="tbl-event"> 
 									<thead> 
@@ -63,9 +63,9 @@
 						<div class="col-md-9 col-sm-12">
 							<div class="mdlAdd2Cart" style="display:none">
 								<h2 class="chart-title mrgnTp0 paddb0 mrgnBtm0">Total Number of Events</h2>
-								<div class="event-chart-container chart-container" style="height: 270px;"></div>
-								<h2 class="chart-title paddb0 mrgnBtm0 paddt25">Unique Number of Users</h2>
-								<div class="user-chart-container chart-container" style="height: 270px;"></div>
+								<div class="event-chart-container chart-container"></div>
+								<h2 class="chart-title paddb0 mrgnBtm0">Unique Number of Users</h2>
+								<div class="user-chart-container chart-container"></div>
 								
 							</div>
 						</div>
@@ -114,7 +114,7 @@
 				$('a[rel="event_count"]').hide();*/
 				var margin = {top: 30, right: 60, bottom: 30, left: 40},
 					width = $(".chart-container").width() - margin.left - margin.right,
-					height = 270 - margin.top - margin.bottom;
+					height = 250 - margin.top - margin.bottom;
 				$(".chart-container").empty();
 				var x = d3.time.scale()
 					.range([0, width]);

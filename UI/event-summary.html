@@ -18,7 +18,10 @@
 		<link rel="stylesheet" type="text/css" href="assets/css/daterangepicker.css" />
 		<link rel="stylesheet" href="assets/css/bootstrap-select.min.css">
 		<script src="assets/js/bootstrap-select.min.js"></script>
-		<style>path { stroke-width: 2;}</style>
+		<style>
+			path { stroke-width: 2;}.chart-title {text-align: left;}
+			.chart-container{height:270px}
+		</style>
 	</head>
 	<body>
 		<aside class="left-side sticky-left-side" tabindex="5000"></aside>
@@ -59,10 +62,21 @@
 								</table>
 							</div>
 						</div>
-						<div class="col-md-9 col-sm-12">
-							<div class="modal-body mdlAdd2Cart">
-								<div class="chart-container" style="height: 270px;"></div>
+						<div class="col-md-9 col-sm-12 chart-main-div">
+							<div class="row">
+								<h2 class="chart-title mrgnTp0 paddb0 mrgnBtm0">Total Number of Events</h2>
+								<div id="chart-container_1" class="col-md-12 col-sm-12 chart-container"></div>
 							</div>
+
+							<div class="paddt25 row">
+								<h2 class="chart-title mrgnTp0 paddb0 mrgnBtm0">Total Number of Users</h2>
+								<div id="chart-container_2" class="col-md-12 col-sm-12 chart-container"></div>
+							</div>
+							
+							
+							<!--<div class="modal-body mdlAdd2Cart">
+								<div class="chart-container" style="height: 270px;"></div>
+							</div>-->
 						</div>
 					</div>
 				</div>
@@ -71,6 +85,7 @@
 		<div class="overlay"></div>
 		<script>
 			$(document).ready(function() {
+				$('.chart-main-div').hide();
 				// Show Event Table
 				d3.json("assets/json/ok-data-total-events-Summary.json", function (error, data) {
 					if (error) { alert(error); }
@@ -89,7 +104,81 @@
 					$("#" + tableId + " tbody").html(tableHTML);
 				};
 			});
+			
 			function showChart(event){
+				$('.chart-main-div').show();
+				$("#chart-container_1").empty();
+				$("#chart-container_2").empty();
+				// Set the dimensions of the canvas / graph
+                var	margin = {top: 30, right: 50, bottom: 30, left: 50}, divWidth = $("#chart-container_1").width(), width = (divWidth - 30) - margin.left - margin.right,
+                    height = 250 - margin.top - margin.bottom;
+
+                // Parse the date / time
+                var	parseDate = d3.time.format("%d-%b-%y").parse;
+                var formatTime = d3.time.format("%e %B");// Format tooltip date / time
+
+                // Set the ranges
+                var	x = d3.time.scale().range([0, width]);
+                var	y = d3.scale.linear().range([height, 0]);
+
+				var xAxis = d3.svg.axis()
+					.scale(x)
+					.ticks(d3.time.hour, 1)
+					.tickFormat(d3.time.format('%H'))
+					.orient("bottom");
+
+				var yAxis = d3.svg.axis()
+					.scale(y)
+					.ticks(2)
+					.orient("left");
+				
+                // Define the line
+                var	valueline = d3.svg.line()
+					//.interpolate("basis")
+                    .x(function(d) { return x(d.date); })
+                    .y(function(d) { return y(d.event_count); });
+                
+                // Define the line
+                var	valueline1 = d3.svg.line()
+					//.interpolate("basis")
+                    .x(function(d) { return x(d.date); })
+                    .y(function(d) { return y(d.user_count); });
+
+                // Define 'div' for tooltips
+                var div = d3.select("body")
+                    .append("div")  // declare the tooltip div 
+                    .attr("class", "tooltip")              // apply the 'tooltip' class
+                    .style("opacity", 0);                  // set the opacity to nil
+				
+                // Adds the svg canvas
+                var	svg = d3.select("#chart-container_1")
+                    .append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+				
+				// Adds the svg canvas
+                var	svg1 = d3.select("#chart-container_2")
+                    .append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                // Get the data for total session
+                d3.json("assets/json/ok-data-total-events-Detail.json", function(error, data) {
+                    //alert(data);
+                    data.forEach(function(d) {
+					  	d.date = parseEventDate(d.event_date);
+				  	});
+                    plotLineChart(data,svg, div, false, "event_count", valueline, x, y, width, height, xAxis, yAxis);
+                    
+                    plotLineChart(data,svg1, div, false, "user_count", valueline1, x, y, width, height, xAxis, yAxis);
+                    
+                });
+			}
+			/*function showChart(event){
 				$('a[rel="user_count"]').show();
 				$('a[rel="event_count"]').hide();
 				var margin = {top: 30, right: 30, bottom: 30, left: 40},
@@ -156,13 +245,7 @@
 
 					  svg.append("g")
 						  .attr("class", "y axis")
-						  .call(yAxis)
-						/*.append("text")
-						  .attr("transform", "rotate(-90)")
-						  .attr("y", 10)
-						  .attr("dy", ".71em")
-						  .style("text-anchor", "end")
-						  .text("Count");*/
+						  .call(yAxis);
 
 					  var event = svg.selectAll(".event")
 						  .data(eventArr)
@@ -174,19 +257,7 @@
 						  .attr("d", function(d) { return line(d.values); })
 						  .style("stroke", function(d) { return color(d.name); });
 					
-					// draw the scatterplot
-                    /*svg.selectAll("dot")									
-                        .data(data)											
-                        .enter().append("circle")								
-                        .attr("r", 3)
-                        .attr("fill", "#7ABEE7")
-                        .attr("cx", function(d) { return x(d.values); })		 
-                        .attr("cy", function(d) { return y(d.name); })
-                    // Tooltip stuff after this
-                        .on("mouseover", function(d) {		
-                            div.transition().duration(200).style("opacity", .9);	
-                            div	.html(d.count1).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
-                        });*/
+					
 
 					  var counter = 0;
 						event.append("text")
@@ -198,6 +269,9 @@
 						  .text(function(d) { return d.name.replace("_"," "); });
 					});
 				};
+			*/
+			
+			
 		</script>
 	</body>
 	</html>
