@@ -1,6 +1,8 @@
 var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 // Define 'div' for tooltips
 
+var todayObj = new Date();
+
 $(document).ready(function () {
     "use strict";
     $('.left-side').load("menu.html");
@@ -21,24 +23,32 @@ $(document).ready(function () {
         var backdate = new Date(year, month - 1, date);
         
         return backdate;
-    }, getFormattedDate = function (input) {
-        var year = input.getFullYear(), month = input.getMonth(), date = input.getDate();
-		/*var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];*/
-        return months[month] + " " + date + ", " + year;
-    }, todayObj = new Date(), oneMonthAgoDateObj = displayDate(todayObj);
+    }, oneMonthAgoDateObj = displayDate(todayObj);
     
-    $('.date-range').html(getFormattedDate(oneMonthAgoDateObj) + ' - ' + getFormattedDate(todayObj));
+    //$('.date-range').html(getFormattedDate(oneMonthAgoDateObj) + ' - ' + getFormattedDate(todayObj));
     
-    $('.sel-range').daterangepicker({
+	function cb(start, end) {
+        $('#dateRange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+    }
+    cb(moment().subtract(29, 'days'), moment());
+	
+    $('#dateRange').daterangepicker({
+		ranges: {
+           'Today': [moment(), moment()],
+           'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+           'This Month': [moment().startOf('month'), moment().endOf('month')],
+           'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+        },
+		
         locale: {
             format: 'YYYY-MM-DD',
             applyLabel: "Select"
         },
         startDate: new Date(),
         endDate: displayDate(new Date())
-    }, function (start, end, label) {
-        $('.date-range').html(start.format('MMM DD, YYYY') + ' - ' + end.format('MMM DD, YYYY'));
-    });
+    }, cb);
 });
 
 var showDeviceModelTable = function (data, tableId) {
@@ -46,7 +56,19 @@ var showDeviceModelTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.model + "</td><td>" + row.users + "</td><td>" + row.time + "</td></tr>";
+        tableHTML += "<tr><td>" + row.model + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
+        
+    });
+    $("#" + tableId + " tbody").html(tableHTML);
+	sortTable();
+};
+
+var showCitiesTable = function (data, tableId) {
+	"use strict";
+    var tableHTML = "";
+    $.each(data, function (index, row) {
+        //alert(JSON.stringify(row));
+        tableHTML += "<tr><td>" + row.city + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     $("#" + tableId + " tbody").html(tableHTML);
@@ -58,7 +80,7 @@ var showDeviceCarrierTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.carrier + "</td><td>" + row.users + "</td><td>" + row.time + "</td></tr>";
+        tableHTML += "<tr><td>" + row.carrier + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     $("#" + tableId + " tbody").html(tableHTML);
@@ -70,7 +92,7 @@ var showDeviceResolutionTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.resolution + "</td><td>" + row.users + "</td><td>" + row.time + "</td></tr>";
+        tableHTML += "<tr><td>" + row.resolution + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     $("#" + tableId + " tbody").html(tableHTML);
@@ -82,7 +104,7 @@ var showDeviceOSVersionTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.os + "</td><td>" + row.users + "</td><td>" + row.time + "</td></tr>";
+        tableHTML += "<tr><td>" + row.os + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     $("#" + tableId + " tbody").html(tableHTML);
@@ -94,7 +116,7 @@ var showDeviceAppVersionTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.app + "</td><td>" + row.users + "</td><td>" + row.time + "</td></tr>";
+        tableHTML += "<tr><td>" + row.app + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     $("#" + tableId + " tbody").html(tableHTML);
@@ -106,7 +128,7 @@ var showDevicePlatformTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.platform + "</td><td>" + row.users + "</td><td>" + row.time + "</td></tr>";
+        tableHTML += "<tr><td>" + row.platform + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     $("#" + tableId + " tbody").html(tableHTML);
@@ -118,7 +140,7 @@ var showDeviceTypeTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.type + "</td><td>" + row.users + "</td><td>" + row.time + "</td></tr>";
+        tableHTML += "<tr><td>" + row.type + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     $("#" + tableId + " tbody").html(tableHTML);
@@ -130,7 +152,7 @@ var showDeviceMenufacturerTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.manufacturer + "</td><td>" + row.users + "</td><td>" + row.time + "</td></tr>";
+        tableHTML += "<tr><td>" + row.manufacturer + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     $("#" + tableId + " tbody").html(tableHTML);
@@ -142,11 +164,49 @@ var showCrashReportTable = function (data, tableId) {
 	var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.date + "</td><td>" + row.plateform + "</td><td>" + row.os + "</td><td>" + row.app + "</td><td>" + row.totalCrashes + "</td></tr>";
+        tableHTML += "<tr><td>" + row.dt + "</td><td>" + row.pf + "</td><td>" + row.os + "</td><td>" + row.av + "</td><td>" + row.totalCrashes + "</td></tr>";
         
     });
     $("#" + tableId + " tbody").html(tableHTML);
 	sortTable();
+};
+
+
+
+var parseEventDate = function(eDate){
+	if(eDate.length == "10"){
+		year = eDate.substring(0,4);
+		month = eDate.substring(4,6);
+		day = eDate.substring(6,8);
+		hour = eDate.substring(8,10);
+	} else {
+		year = eDate.substring(0,4);
+		month = eDate.substring(4,6);
+		day = eDate.substring(6,8);
+		hour = 0;
+	}
+	
+	//return date object
+	return new Date(year,month-1,day,hour,0,0);
+};
+
+var removeNulls = function(arr){
+	var arr1 = new Array(), arr2 = new Array();
+	$.each(arr, function(i,v){
+		//console.log("Outer Each" + JSON.stringify(v));
+		arr2 = [];
+		$.each(v.values, function(i1,v1){
+			//console.log("Inner Each" + JSON.stringify(v1));
+			if(v1 !== undefined){
+				arr2.push(v1);
+			}
+		});
+		arr1.push({
+			"name":v.name,
+			"values":arr2
+		});
+	});
+	return arr1;
 };
 
 /*
@@ -208,7 +268,7 @@ var getDateObj = function(dateEle){
 
 var totalCrashes = 0;
 
-var showTotalCrashesChart = function(data,svg,pie, jsonItem){
+var showTotalCrashesChart = function(data,svg,pie){
 	var g = svg.selectAll(".arc")
 		.data(pie(data))
 		.enter().append("g")
@@ -216,23 +276,19 @@ var showTotalCrashesChart = function(data,svg,pie, jsonItem){
 
 	g.append("path")
 		.attr("d", arc)
-		.attr("data-legend", function (d) {return d.data.crashes; })
-		//.attr("id", function(d) {'tag'+d.data.manufacturer.replace(/\s+/g, '')}) // assign ID
-		.style("fill", function (d) { return color(d.data.crashes); });
+		.style("fill", function (d) { return color(d.data.TotalCrashes); });
 
 	g.append("text")
 		.attr("dy", ".35em")
 		.style("text-anchor", "middle")
 		.attr("class", "inside")
 		.attr("fill", "#616161")
-		.text(totalCrashes)
+		//.text(totalCrashes)
+		.text(function (d) { return d.data.TotalCrashes; });
 };
-var tooltip = d3.select("body")
-		.append("div")  // declare the tooltip div 
-		.attr("class", "map-tooltip shadow")              // apply the 'tooltip' class
-		.style("opacity", 0);                  // set the opacity to nil
-var showManufacturerCrashesChart = function(data,svg,pie){
-	tooltip = d3.select("body")
+var showCrashesDonutChart = function(data,svg,pie){
+	//console.log(JSON.stringify(data));
+	var tooltip = d3.select("body")
 		.append("div")  // declare the tooltip div 
 		.attr("class", "map-tooltip shadow")              // apply the 'tooltip' class
 		.style("opacity", 0);                  // set the opacity to nil
@@ -244,63 +300,25 @@ var showManufacturerCrashesChart = function(data,svg,pie){
 
 	g.append("path")
 		.attr("d", arc)
-		.attr("data-legend", function (d) { return d.data.manufacturer; })
+		.attr("data-legend", function (d) {return d.data.manufacturer; })
 		//.attr("id", function(d) {'tag'+d.data.manufacturer.replace(/\s+/g, '')}) // assign ID
 		.on("mouseenter", function (d) {
-			/*d3.select(this)
+			d3.select(this)
 				.transition()
 				.duration(1000)
 				.attr("class", "shadow")
-				.attr("d", arcOver);*/
+				.attr("d", arcOver);
 			tooltip.transition().duration(200).style("opacity", 1);	
-			tooltip.html(d.data.manufacturer +" : "+d.data.totalCrashes).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
+			tooltip.html(d.data.name +" : "+d.data.crash).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
 		})
 		.on("mouseleave", function (d) {
-			/*d3.select(this)
+			d3.select(this)
 				.transition()
 				.duration(1000)
-				.attr("d", arc);*/
+				.attr("d", arc);
 			tooltip.transition().duration(200).style("opacity", 0);	
 		})
-		.style("fill", function (d) { return color(d.data.manufacturer); });
-
-	g.append("text")
-		.attr("dy", ".35em")
-		.style("text-anchor", "middle")
-		.attr("class", "inside")
-		.attr("fill", "#616161")
-		.text(totalCrashes)
-		.on("click", function (d) {
-			//alert("aaa");
-		});
-};
-var showPlatformCrashesChart = function(data,svg,pie){
-	var g = svg.selectAll(".arc")
-		.data(pie(data))
-		.enter().append("g")
-		.attr("class", "arc");
-
-	g.append("path")
-		.attr("d", arc)
-		.attr("data-legend", function (d) { return d.data.platform; })
-		//.attr("id", function(d) {'tag'+d.data.manufacturer.replace(/\s+/g, '')}) // assign ID
-		.on("mouseenter", function (d) {
-			/*d3.select(this)
-				.transition()
-				.duration(1000)
-				.attr("class", "shadow")
-				.attr("d", arcOver);*/
-			tooltip.transition().duration(200).style("opacity", 1);	
-			tooltip.html(d.data.platform +" : "+d.data.totalCrashes).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
-		})
-		.on("mouseleave", function (d) {
-			/*d3.select(this)
-				.transition()
-				.duration(1000)
-				.attr("d", arc);*/
-			tooltip.transition().duration(200).style("opacity", 0);	
-		})
-		.style("fill", function (d) { return color(d.data.platform); });
+		.style("fill", function (d) { return color(d.data.name); });
 
 	g.append("text")
 		.attr("dy", ".35em")
@@ -313,45 +331,102 @@ var showPlatformCrashesChart = function(data,svg,pie){
 		});
 };
 
-var showOsVersionCrashesChart = function(data,svg,pie){
-
-	var g = svg.selectAll(".arc")
-		.data(pie(data))
-		.enter().append("g")
-		.attr("class", "arc");
-
-	g.append("path")
-		.attr("d", arc)
-		.attr("data-legend", function (d) { return d.data.version; })
-		//.attr("id", function(d) {'tag'+d.data.manufacturer.replace(/\s+/g, '')}) // assign ID
-		.on("mouseenter", function (d) {
-			/*d3.select(this)
-				.transition()
-				.duration(1000)
-				.attr("class", "shadow")
-				.attr("d", arcOver);*/
-			tooltip.transition().duration(200).style("opacity", 1);	
-			tooltip.html(d.data.platform + " " + d.data.version +" : "+d.data.totalCrashes).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
-		})
-		.on("mouseleave", function (d) {
-			/*d3.select(this)
-				.transition()
-				.duration(1000)
-				.attr("d", arc);*/
-			tooltip.transition().duration(200).style("opacity", 0);	
-		})
-		.style("fill", function (d) { return color(d.data.version); });
-
-	g.append("text")
-		.attr("dy", ".35em")
-		.style("text-anchor", "middle")
-		.attr("class", "inside")
-		.attr("fill", "#616161")
-		.text(totalCrashes)
-		.on("click", function (d) {
-			//alert("aaa");
-		});
+/*********Return date in the format yyyymmdd **********/
+var getFormatedDate = function(dateObj){
+	year = dateObj.getFullYear();
+	month = dateObj.getMonth()<10?"0"+dateObj.getMonth():dateObj.getMonth();
+	date = dateObj.getDate()<10?"0"+dateObj.getDate():dateObj.getDate();;
+	return year+month+date;
 };
+/*********Return date in the format yyyymmdd - END **********/
+
+/******************* Convert hhmmss to date and time object ***********************/
+var parseTime = function(eTime){
+	hh = eDate.substring(0,2);
+	mm = eDate.substring(2,4);
+	ss = eDate.substring(4,6);
+	
+	year = dateObj.getFullYear();
+	month = dateObj.getMonth()
+	date = dateObj.getDate()
+	
+	//return date object
+	return new Date(year,month,day,hh,mm,ss);
+};
+/******************* Convert hhmmss to date and time object - END ***********************/
+
+var getFormattedDate = function (input) {
+	var year = input.getFullYear(), month = input.getMonth(), date = input.getDate();
+	/*var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];*/
+	return months[month] + " " + date + ", " + year;
+};
+
+/******************* Convert time in format hh:mm:ss *****************/
+var sec2ISO = function(SECONDS){
+	var date = new Date(null);
+	date.setSeconds(SECONDS); // specify value for SECONDS here
+	return date.toISOString().substr(11, 8);
+};
+/******************* Convert time in format hh:mm:ss - END *****************/
+
+/*************************  For Line Chart ************************/
+function plotLineChart(data, svg, div,timestamp=false, ele, valueline, x, y, width, height, xAxis="", yAxis = ""){
+	//console.log(typeof xAxis+" :: "+typeof yAxis);
+	// Scale the range of the data
+	x.domain(d3.extent(data, function(d) { return d.date; }));
+	y.domain([0, d3.max(data, function(d) { return d[ele]; })]);
+
+	svg.append("path")		
+		.attr("class", "line")
+		.attr("d", valueline(data));
+
+	// draw the scatterplot
+	svg.selectAll("dot")									
+		.data(data)											
+		.enter().append("circle")								
+		.attr("r", 4)
+		.attr("stroke", "#7ABEE7")
+		.attr("fill", "white")
+		.attr("stroke-width", "2px")
+		.attr("cx", function(d) { return x(d.date); })		 
+		.attr("cy", function(d) { return y(d[ele]); })
+		// Tooltip stuff after this
+		/*.on("mouseleave", function(d) {div.transition().duration(200).style("opacity", 0);})*/
+		.on("mouseenter", function(d) {
+			if(timestamp){
+				cnt = sec2ISO(d[ele]);
+			} else {
+				cnt = d[ele];
+			}
+			div.transition().duration(200).style("opacity", .9);	
+			div	.html(cnt).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
+		});
+	drawAxes(svg, x, y, width, height, xAxis, yAxis);
+}
+
+function drawAxes(svg, x, y, width, height, xAxis, yAxis){
+	// Define the axes
+	console.log(xAxis+" : "+yAxis);
+	if(typeof xAxis === "string"){
+		xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5);
+	}
+	if(typeof yAxis === "string"){
+		yAxis = d3.svg.axis().scale(y).orient("left").ticks(5)
+	}
+	console.log(typeof xAxis+" :: "+typeof yAxis);
+	// Add the X Axis
+	svg.append("g")	
+		.attr("class", "x axis")
+		.attr("transform", "translate(0," + height + ")")
+		.call(xAxis);
+
+	// Add the Y Axis
+	svg.append("g")	
+		.attr("class", "y axis")
+		.call(yAxis);
+}
+/*************************  For Line Chart - END ************************/
+
 
 var sortTable = function(){
 	var pagerOptions = {

@@ -35,11 +35,22 @@
                 </section>
                 <section class="">
                     <header>
-                        <div class="col-md-6 txt-drk-gray"></div>
+                        <div class="col-md-6 txt-drk-gray">
+							<!--<span class="glyphicon glyphicon-calendar txt-green sel-range" aria-hidden="true"></span> &nbsp;<span class="date-range">May 01, 2016 - May 24, 2016</span> -->
+						</div>
 						<div class="col-md-6 txt-drk-gray margnTp-5 text-right">
-							<div>
-								<span class="glyphicon glyphicon-calendar txt-green sel-range" aria-hidden="true"></span> &nbsp;<span class="date-range">May 01, 2016 - May 24, 2016</span> &nbsp;
+							<div style="display:inline; padding-right:15px">
 								<select class="form-control selectpicker" data-width="150px">
+									<option value="All">All</option>
+									<option value="SmartPhone">SmartPhone</option>
+									<option value="Tablet">Tablet</option>
+								</select>
+							</div>
+							<div  style="display:inline">
+								<div id="dateRange" class="pull-right">
+									<i class="glyphicon glyphicon-calendar txt-green fa fa-calendar"></i><span></span><b class="caret"></b>
+								</div>
+								<!--<select class="form-control selectpicker" id="selDate" name="selDate" data-width="150px">
 									<option value="Today">Today</option>
 									<option value="Yesterday">Yesterday</option>
 									<option value="Today">Current Month</option>
@@ -47,7 +58,7 @@
 									<option value="Today">3 Months</option>
 									<option value="Today">6 Months</option>
 									<option value="Today">1 Year</option>
-								</select>
+								</select>-->
 							</div>
 						</div>
                     </header>
@@ -138,28 +149,38 @@
         </aside>
         <div class="overlay"></div>
         <script>
+			var apiURL = "assets/json/data1.json";
             $(document).ready(function() {
-                $.getJSON( "/assets/json/data1.json", function( data ) {
-                    var evntBx = "";
-                    $.each(data, function(index, values){
-                        evntBx += '<li class="col-md-2 col-sm-4 ">'+
-                            '<section class="text-center box-blue">'+
-                                '<div class="event-box">'+
-                                    '<span class="text-center">'+
-                                        '<img src="assets/img/'+values.img+'" />'+
-                                        '<label>'+values.Title+'</label>'+
-                                    '</span>'+
-                                    '<div class="inner-grey-box text-center">'+values.Total+'</div>'+
-                                '</div>'+
-                            '</section>'+
-                        '</li>';
-                    });
-                    $('.event-container').html(evntBx);
-                });
+				function eventBoxes(startDate, endDate){
+					$.getJSON( apiURL + "?startdate="+startDate+"&enddate="+endDate, function( data ) {
+						var evntBx = "";
+						$.each(data, function(index, values){
+							console.log(values.Total);
+							if(values.Title == "Total Time Spent"){
+								values.Total = sec2ISO(values.Total);
+							}
+							
+							evntBx += '<li class="col-xs-12 col-sm-4 col-md-2 ">'+
+								'<section class="text-center box-blue">'+
+									'<div class="event-box">'+
+										'<div class="text-center"><div class="row"><div class="col-sm-2 col-xs-2"></div>'+
+											'<img src="assets/img/'+values.img+'" class="col-sm-8 col-xs-8 img-responsive"/><div class="col-sm-2 col-xs-2"></div></div>'+
+											'<label>'+values.Title+'</label>'+
+										'</div>'+
+										'<div class="inner-grey-box text-center">'+values.Total+'</div>'+
+									'</div>'+
+								'</section>'+
+							'</li>';
+						});
+						$('.event-container').html(evntBx);
+					});
+				}
+				
+				var today = new Date();
+				eventBoxes(getFormatedDate(today), getFormatedDate(today));
                 
                 // set the dimensions of the canvas
-                var margin = {top: 20, right: 0, bottom: 70, left: 40}, divWidth = $("#chart-container").width(), width = (divWidth - 40) - margin.left - margin.right, height = 350 - margin.top - margin.bottom;
-
+                var margin = {top: 20, right: 0, bottom: 70, left: 40}, divWidth = $("#chart-container").width(), width = (divWidth - 40) - margin.left - margin.right, height = 290 - margin.top - margin.bottom;
 
                 // set the ranges
                 var x = d3.scale.ordinal().rangeRoundBands([0, width], .6);
@@ -169,72 +190,82 @@
                 // define the axis
                 var xAxis = d3.svg.axis()
                     .scale(x)
-                    .tickValues(["2:50", "2:55", "3:00", "3:05", "3:10", "3:15", "3:20", "3:25"])
+					//.ticks(d3.time.minute, 1)
+					.tickFormat(d3.time.format('%H:%M:%S'))
                     .orient("bottom");
-
 
                 var yAxis = d3.svg.axis()
                     .scale(y)
                     .orient("left")
                     .ticks(5);
 
-
-                // add the SVG element
-                var svg = d3.select("#chart-container").append("svg")
-                    .attr("width", width + margin.left + margin.right)
-                    .attr("height", height + margin.top + margin.bottom)
-                  .append("g")
-                    .attr("transform", 
-                          "translate(" + margin.left + "," + margin.top + ")");
-
+                plotChart();
 
                 // load the data
-                //alert("2323");
-                d3.json("/assets/json/data.json", function(error, data) {
+                var jsonFile = 1; // This is for loading different json files
+                function plotChart(){
+					
+					if(typeof jsonFile == 'undefined'){
+						jsonFile = 1;
+					} else {
+						if(++jsonFile == 11)
+						jsonFile = 1;
+					}
+					
+					$("#chart-container").empty();
+					
+					// add the SVG element
+					var svg = d3.select("#chart-container").append("svg")
+						.attr("width", width + margin.left + margin.right)
+						.attr("height", height + margin.top + margin.bottom)
+						.append("g")
+						.attr("transform", 
+							  "translate(" + margin.left + "," + margin.top + ")");
+					console.log("JSON : "+jsonFile);
+					d3.json("assets/json/data-"+Number(jsonFile)+".json", function(error, data) {
+					   // alert(error);
+						data.forEach(function(d) {
+							d.TimeObj = new Date(d.Time*1000);
+						});
+					  // scale the range of the data
+					  x.domain(data.map(function(d) { return d.TimeObj; }));
+					  y.domain([0, d3.max(data, function(d) { return d.DeviceCount; })]);
 
-                   // alert(error);
-                    data.forEach(function(d) {
-                        d.Time = d.Time;
-                        d.DeviceCount = +d.DeviceCount;
-                    });
+					  // add axis
+					  svg.append("g")
+						  .attr("class", "x axis")
+						  .attr("transform", "translate(0," + height + ")")
+						  .call(xAxis)
+						  .selectAll("text")
+						  .style("text-anchor", "end")
+						  .attr("dx", "-.8em")
+						  .attr("dy", "-.55em")
+						  .attr("transform", "rotate(-90)" );
 
-                  // scale the range of the data
-                  x.domain(data.map(function(d) { return d.Time; }));
-                  y.domain([0, d3.max(data, function(d) { return d.DeviceCount; })]);
-
-                  // add axis
-                  svg.append("g")
-                      .attr("class", "x axis")
-                      .attr("transform", "translate(0," + height + ")")
-                      .call(xAxis)
-                      .selectAll("text")
-                      .style("text-anchor", "end")
-                      .attr("dx", "-.8em")
-                      .attr("dy", "-.55em")
-                      .attr("transform", "rotate(-90)" );
-
-                  svg.append("g")
-                      .attr("class", "y axis")
-                      .call(yAxis)
-                      .append("text")
-                      .attr("transform", "rotate(-90)")
-                      .attr("y", 5)
-                      .attr("dy", ".71em")
-                      .style("text-anchor", "end")
-                      .text("Device Count");
+					  svg.append("g")
+						  .attr("class", "y axis")
+						  .call(yAxis)
+						  .append("text")
+						  .attr("transform", "rotate(-90)")
+						  .attr("y", 5)
+						  .attr("dy", ".71em")
+						  .style("text-anchor", "end")
+						  .text("Device Count");
 
 
-                  // Add bar chart
-                  svg.selectAll("bar")
-                      .data(data)
-                      .enter().append("rect")
-                      .attr("class", "bar")
-                      .attr("x", function(d) { return x(d.Time); })
-                      .attr("width", x.rangeBand())
-                      .attr("y", function(d) { return y(d.DeviceCount); })
-                      .attr("height", function(d) { return height - y(d.DeviceCount); });
+					  // Add bar chart
+					  svg.selectAll("bar")
+						  .data(data)
+						  .enter().append("rect")
+						  .attr("class", "bar")
+						  .attr("x", function(d) { return x(d.TimeObj); })
+						  .attr("width", x.rangeBand())
+						  .attr("y", function(d) { return y(d.DeviceCount); })
+						  .attr("height", function(d) { return height - y(d.DeviceCount); });
 
-                });
+					});
+					timer = setTimeout(plotChart, 5000);
+				}
             });
 
         </script>

@@ -1,0 +1,121 @@
+	<!doctype html>
+	<html>
+	<head>
+		<title>Mobile Analytics</title>
+		<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+		<!-- Optional theme -->
+		<link rel="stylesheet" href="assets/css/bootstrap-theme.min.css">
+		<link rel="stylesheet" href="assets/css/style.css">
+		<script src="assets/js/jquery.js"></script>
+		<!-- Latest compiled and minified JavaScript -->
+		<script src="assets/js/bootstrap.min.js"></script>
+		<script src="assets/js/d3.v3.min.js"></script>
+		<script src="assets/js/d3.legend.js"></script>
+		<script src="assets/js/custom-script.js"></script>
+		<script src="assets/js/moment.min.js"></script>
+		<script type="text/javascript" src="assets/js/daterangepicker.js"></script>
+		<link rel="stylesheet" type="text/css" href="assets/css/daterangepicker.css" />
+		<link rel="stylesheet" href="assets/css/bootstrap-select.min.css">
+		<script src="assets/js/bootstrap-select.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="assets/css/cornelius.css" />
+		<script type="text/javascript" src="assets/js/cornelius.js"></script>
+		<style>path { stroke-width: 2;}</style>
+	</head>
+	<body>
+		<aside class="left-side sticky-left-side" tabindex="5000"></aside>
+		<aside class="main-container" >
+			<section class=""><!--breadcrumb bg-white border-bottom paddl30">-->
+                <!--<ul>
+                    <li><a href="">Events</a></li>
+                    <li> &gt; </li>
+                    <li>Summary</li>
+                </ul>-->
+            </section>    
+            
+            <section class="border-bottom paddl50 mrgnBtm0">
+                <div class="row chart-header">
+                    <div class="col-md-6 txt-drk-gray"></div>
+                    <div class="col-md-6 txt-drk-gray margnTp-5 text-right">
+						<div>
+							<div id="dateRange" class="pull-right">
+								<i class="glyphicon glyphicon-calendar txt-green fa fa-calendar"></i><span></span><b class="caret"></b>
+							</div>
+						</div>
+                    </div>
+                </div>
+            </section>
+            <section class="bg-white paddl50 border-bottom mrgnBtm0">
+                <div class="paddt25" id="cohort-container1">
+					
+				</div>
+				<div class="paddt25 paddr50">
+					<div class="table-responsive"> 
+						<table class="table text-left table-bordered" id="tbl-cohort"> 
+							<thead></thead> 
+							<tbody></tbody> 
+						</table>
+					</div>
+					
+				</div>
+            </section>
+		</aside>
+		<div class="overlay"></div>
+		<script>
+			$(document).ready(function(){
+				$('[data-toggle="tooltip"]').tooltip()
+				var colorChart = [{100:"#117B9E",90:"#238BAD",80:"#2B93B5",70:"#3D9FBF",60:"#4FA7C4",50:"#5EB1CC",40:"#6DB8D1",30:"#86C4D9",20:"#C7E4ED",10:"#fff"}];
+				
+				$.getJSON("assets/json/cohort1.json", function(data){
+					//alert(data.length);
+					$('#tbl-cohort thead').append("<tr><th></th></tr>");
+					for(i=0;i<data.length;i++){
+						$('#tbl-cohort thead tr').append("<th>" + i + "</th>");
+					}
+					
+					$.each(data, function(i,v){
+						//console.log("Outer"+JSON.stringify(v.date));
+						date1 = getFormattedDate(parseEventDate(v.date));
+						
+						$('#tbl-cohort tbody').append("<tr><th>"+date1+"</th></tr>");
+						$.each(v.values, function(i1,v1){
+							//console.log(i1+ " : "+JSON.stringify(v1));
+							val = Math.ceil(v1 / 10) * 10;
+							if(val >= 30){
+								textColor = "#fff";
+							} else {
+								textColor = "#000";
+							}
+							$('#tbl-cohort tbody tr').last().append("<td title='"+v.users[i1]+" Users' style=\"background-color:"+colorChart[0][val]+"; color:"+textColor+"\" data-toggle=\"tooltip\">"+v1+"</td>");
+						});
+					});
+				})
+			});
+			
+			
+			
+			/*
+			
+			var data = [
+				[1973,1000,750,300,400,70,20],
+				[1268,549,336,221,122,115],
+				[1892,1282,250,32,18],
+				[1832,379,254,314],
+				[1171,256,120],
+				[2533,340]
+			  ],
+			  // The initial date is the date displayed
+			  // in the first column of the first row
+			  initialDate = new Date(2012, 0),
+
+			  // DOM Element where the Cohort Chart will be inserted
+			  container = document.getElementById('cohort-container1');
+
+			  Cornelius.draw({
+				initialDate: initialDate,
+				container: container,
+				cohort: data
+			  });*/
+		</script>
+	</body>
+	</html>

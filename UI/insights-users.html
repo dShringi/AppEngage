@@ -1,0 +1,130 @@
+    <!doctype html>
+    <html>
+    <head>
+        <title>Mobile Analytics</title>
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="assets/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="assets/css/style.css">
+        <script src="assets/js/jquery.js"></script>
+        <script src="assets/js/moment.min.js"></script>
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="assets/js/bootstrap.min.js"></script>
+        <script src="assets/js/d3.v3.min.js"></script>
+        <script src="assets/js/custom-script.js"></script>
+        <script type="text/javascript" src="assets/js/daterangepicker.js"></script>
+        <link rel="stylesheet" type="text/css" href="assets/css/daterangepicker.css" />
+		<link rel="stylesheet" href="assets/css/bootstrap-select.min.css">
+		<script src="assets/js/bootstrap-select.min.js"></script>
+		<style>
+			path { stroke-width: 2;}.chart-title {text-align: left;}
+			.chart-container{height:270px}
+		</style>
+    </head>
+    <body>
+        <aside class="left-side sticky-left-side" tabindex="5000"></aside>
+        <aside class="main-container" >
+            <section class="breadcrumb bg-white border-bottom paddl30">
+                <ul>
+                    <li><a href="">Insights</a></li>
+                    <li> &gt; </li>
+                    <li>Users</li>
+                </ul>
+            </section>    
+            
+            <section class="border-bottom paddl50 mrgnBtm0">
+                <div class="row chart-header">
+                    <div class="col-md-6 txt-drk-gray"></div>
+                    <div class="col-md-6 txt-drk-gray margnTp-5 text-right">
+						<div>
+							<div id="dateRange" class="pull-right">
+								<i class="glyphicon glyphicon-calendar txt-green fa fa-calendar"></i><span></span><b class="caret"></b>
+							</div>
+						</div>
+                    </div>
+                </div>
+            </section>
+            <section class="bg-white paddl50 ">
+                <div class="paddt25">
+					<h2 class="chart-title mrgnTp0 paddb0 mrgnBtm0">Total Users</h2>
+                    <div id="line-chart-container-1"></div>
+                </div>
+                    
+                <div class="paddb40">
+					<h2 class="chart-title mrgnTp0 paddb0 mrgnBtm0 paddt25">Total Time Spent</h2>
+                    <div id="line-chart-container-2"></div>
+                </div>
+            </section>
+        </aside>
+        <div class="overlay"></div>
+        <script>
+            $(document).ready(function() {
+                
+                // Set the dimensions of the canvas / graph
+                var	margin = {top: 30, right: 50, bottom: 30, left: 50}, divWidth = $("#line-chart-container-1").width(), width = (divWidth - 30) - margin.left - margin.right,
+                    height = 250 - margin.top - margin.bottom;
+
+                // Parse the date / time
+                var	parseDate = d3.time.format("%d-%b-%y").parse;
+                var formatTime = d3.time.format("%e %B");// Format tooltip date / time
+
+                // Set the ranges
+                var	x = d3.time.scale().range([0, width]);
+                var	y = d3.scale.linear().range([height, 0]);
+
+                // Define the line
+                var	valueline = d3.svg.line()
+					//.interpolate("basis")
+                    .x(function(d) { return x(d.date); })
+                    .y(function(d) { return y(d.users); });
+                
+                // Define the line
+                var	valueline1 = d3.svg.line()
+					//.interpolate("basis")
+                    .x(function(d) { return x(d.date); })
+                    .y(function(d) { return y(d.totalTime); });
+
+                // Define 'div' for tooltips
+                var div = d3.select("body")
+                    .append("div")  // declare the tooltip div 
+                    .attr("class", "tooltip")              // apply the 'tooltip' class
+                    .style("opacity", 0);                  // set the opacity to nil
+				// Define 'div' for tooltips
+                var div1 = d3.select("body")
+                    .append("div")  // declare the tooltip div 
+                    .attr("class", "map-tooltip shadow")              // apply the 'tooltip' class
+                    .style("opacity", 0);                  // set the opacity to nil
+
+                // Adds the svg canvas
+                var	svg = d3.select("#line-chart-container-1")
+                    .append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+				
+				// Adds the svg canvas
+                var	svg1 = d3.select("#line-chart-container-2")
+                    .append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+                // Get the data for total session
+                d3.json("assets/json/data-insight-users.json", function(error, data) {
+                    //alert(data);
+                    data.forEach(function(d) {
+                        d.date = parseDate(d.date);
+                    });
+                    plotLineChart(data,svg, div, false, "users", valueline, x, y, width, height);
+                    
+                    plotLineChart(data,svg1, div1, true, "totalTime", valueline1, x, y, width, height);
+                    
+                });
+            });
+
+        </script>
+    </body>
+    </html>
