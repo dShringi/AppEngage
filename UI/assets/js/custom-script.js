@@ -1,6 +1,8 @@
 var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 // Define 'div' for tooltips
 
+var todayObj = new Date();
+
 $(document).ready(function () {
     "use strict";
     $('.left-side').load("menu.html");
@@ -21,7 +23,7 @@ $(document).ready(function () {
         var backdate = new Date(year, month - 1, date);
         
         return backdate;
-    }, todayObj = new Date(), oneMonthAgoDateObj = displayDate(todayObj);
+    }, oneMonthAgoDateObj = displayDate(todayObj);
     
     //$('.date-range').html(getFormattedDate(oneMonthAgoDateObj) + ' - ' + getFormattedDate(todayObj));
     
@@ -338,6 +340,21 @@ var getFormatedDate = function(dateObj){
 };
 /*********Return date in the format yyyymmdd - END **********/
 
+/******************* Convert hhmmss to date and time object ***********************/
+var parseTime = function(eTime){
+	hh = eDate.substring(0,2);
+	mm = eDate.substring(2,4);
+	ss = eDate.substring(4,6);
+	
+	year = dateObj.getFullYear();
+	month = dateObj.getMonth()
+	date = dateObj.getDate()
+	
+	//return date object
+	return new Date(year,month,day,hh,mm,ss);
+};
+/******************* Convert hhmmss to date and time object - END ***********************/
+
 var getFormattedDate = function (input) {
 	var year = input.getFullYear(), month = input.getMonth(), date = input.getDate();
 	/*var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];*/
@@ -354,7 +371,7 @@ var sec2ISO = function(SECONDS){
 
 /*************************  For Line Chart ************************/
 function plotLineChart(data, svg, div,timestamp=false, ele, valueline, x, y, width, height, xAxis="", yAxis = ""){
-	console.log(typeof xAxis+" :: "+typeof yAxis);
+	//console.log(typeof xAxis+" :: "+typeof yAxis);
 	// Scale the range of the data
 	x.domain(d3.extent(data, function(d) { return d.date; }));
 	y.domain([0, d3.max(data, function(d) { return d[ele]; })]);

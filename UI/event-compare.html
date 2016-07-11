@@ -168,7 +168,7 @@
 								if(d.event_name == name){
 									//console.log(d.event_name + " : " + name);
 									return {date: d.date, count: +d.event_count};
-							}
+								}
 							})
 						};
 					});
@@ -212,43 +212,65 @@
 					var drawChart = function(arr,svg,data){
 						x.domain(d3.extent(data, function(d) { return d.date; }));
 
-					y.domain([
-						d3.min(arr, function(c) { return d3.min(c.values, function(v) { return v.count; }); }),
-						d3.max(arr, function(c) { return d3.max(c.values, function(v) { return v.count; }); })
-					]);
+						y.domain([
+							d3.min(arr, function(c) { return d3.min(c.values, function(v) { return v.count; }); }),
+							d3.max(arr, function(c) { return d3.max(c.values, function(v) { return v.count; }); })
+						]);
 
-					  svg.append("g")
-						  .attr("class", "x axis")
-						  .attr("transform", "translate(0," + height + ")")
-						  .call(xAxis);
+						svg.append("g")
+							.attr("class", "x axis")
+							.attr("transform", "translate(0," + height + ")")
+							.call(xAxis);
 
-					  svg.append("g")
-						  .attr("class", "y axis")
-						  .call(yAxis);
-						/*.append("text")
-						  .attr("transform", "rotate(-90)")
-						  .attr("y", 10)
-						  .attr("dy", ".71em")
-						  .style("text-anchor", "end")
-						  .text("Count");*/
+						svg.append("g")
+							.attr("class", "y axis")
+							.call(yAxis);
+							/*.append("text")
+							.attr("transform", "rotate(-90)")
+							.attr("y", 10)
+							.attr("dy", ".71em")
+							.style("text-anchor", "end")
+							.text("Count");*/
 
-					  var event = svg.selectAll(".event")
-						  .data(arr)
+						var event = svg.selectAll(".event")
+							.data(arr)
 							.enter().append("g")
-						  .attr("class", "event");
+							.attr("class", "event");
 
-					  event.append("path")
-						  .attr("class", function(d) { return "line "+d.name; })
-						  .attr("d", function(d) { return line(d.values); })
-						  .style("stroke", function(d) { return color(d.name); });
+						event.append("path")
+							.attr("class", function(d) { return "line "+d.name; })
+							.attr("d", function(d) { return line(d.values); })
+							.style("stroke", function(d) { return color(d.name); });
+						console.log(JSON.stringify(data));
+						event.selectAll("dot")									
+							.data(data)											
+							.enter().append("circle")								
+							.attr("r", 4)
+							.attr("stroke", function(d) { return color(d.name); })
+							.attr("fill", "white")
+							.attr("stroke-width", "2px")
+							.attr("cx", function(d) { return x(d.date); })		 
+							.attr("cy", function(d) { return y(d.event_count); })
+							// Tooltip stuff after this
+							/*.on("mouseleave", function(d) {div.transition().duration(200).style("opacity", 0);})*/
+							.on("mouseenter", function(d) {
+								if(timestamp){
+									cnt = sec2ISO(d[ele]);
+								} else {
+									cnt = d[ele];
+								}
+								div.transition().duration(200).style("opacity", .9);	
+								div	.html(cnt).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
+							});
+						
 						var counter = 0;
 						event.append("text")
-						  .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
-						  .attr("transform", function(d) {xCord = (counter*100)+30;counter++;return "translate("+xCord+",-10)"; })
-						  .attr("x", 2)
-						  .attr("dy", ".35em")
-					  		.style("stroke", function(d) { return color(d.name); })
-						  .text(function(d) { return d.name; });
+							.datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
+							.attr("transform", function(d) {xCord = (counter*100)+30;counter++;return "translate("+xCord+",-10)"; })
+							.attr("x", 2)
+							.attr("dy", ".35em")
+							.style("stroke", function(d) { return color(d.name); })
+							.text(function(d) { return d.name; });
 					}
 				};
 		</script>
