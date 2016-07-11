@@ -51,14 +51,16 @@ consumer.on('message', function (message) {
             
             // For Year
             dashboardData = {
-                key : year+month+date,
-                ty  : 'Y',
-                dt  : data.val.dt
+                dt  : data.val.dt,
+                key : ""+year+month+date,
+                ty  : 'Y'
             };
             
-            Model.Dashboard.findOne({ 
+            Model.Dashboard.findOne({
                 _id: dashboardData
             }, function(err, doc){
+                logger.info("Query: "+ JSON.stringify(dashboardData));
+                logger.info(JSON.stringify(doc));
                 if(!err){
                     if(doc === undefined || doc === null){
                         logger.info("No records found!");
@@ -71,18 +73,15 @@ consumer.on('message', function (message) {
                            } 
                         });
                     } else {
-                        doc.val.tce = doc.val.tce+1;   
-//                        doc.save(function(err){
-//                            if(err){
-//                                logger.error("Error updating model");
-//                            }
-//                        })
-                        Model.Dashboard.findOneAndUpdate({
-                            _id: dashboardData
-                        }, doc, {upsert:true}, function(err){
-                           if(err){
-                               logger.error("Error updating model "+getErrorMessageFrom(err));
-                           } 
+                        doc._id = dashboardData;
+                        // TODO Figure out a better way to do it.
+                        dashboardVal = Object.create(doc.val);
+                        dashboardVal.tce = dashboardVal.tce+1;
+                        doc.val = dashboardVal;
+                        doc.save(function(err){
+                            if(err){
+                                logger.error("Error updating model"+getErrorMessageFrom(err));
+                            }
                         });
                     }
                 } else {

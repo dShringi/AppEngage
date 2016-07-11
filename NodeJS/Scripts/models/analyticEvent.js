@@ -22,10 +22,9 @@ var realtimeSchema = new Schema({
     _id  : { type: Number, required: true },
     val  : { type: String }
 });
-var dashboardVal = new Schema({tce: {type: Number}},{ _id : false, __v:false });
 var dashboardSchema = new Schema({
     _id  : { type: Object, require: true },
-    val  : { type: dashboardVal }
+    val  : { type: Object }
 }, {
     collection : 'coll_dashboard'
 });
@@ -67,10 +66,12 @@ function eventFactory(){
                     val : _event.val
                 });
             case Collection["dashboard"]:
+                // https://github.com/Automattic/mongoose/issues/3432
+                // Mongoose by default reverses the key value pair order
                 return new dashboardCollection({
                     _id : {
-                        key : _event.key,
                         ty  : _event.ty,
+                        key : _event.key,
                         dt  : _event.dt
                     },
                     val : {
