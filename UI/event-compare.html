@@ -116,6 +116,13 @@
 					width = $(".chart-container").width() - margin.left - margin.right,
 					height = 250 - margin.top - margin.bottom;
 				$(".chart-container").empty();
+				
+				// Define 'div' for tooltips
+                var div = d3.select("body")
+                    .append("div")  // declare the tooltip div 
+                    .attr("class", "tooltip")              // apply the 'tooltip' class
+                    .style("opacity", 0);                  // set the opacity to nil
+				
 				var x = d3.time.scale()
 					.range([0, width]);
 
@@ -123,6 +130,8 @@
 					.range([height, 0]);
 
 				var color = d3.scale.ordinal().range(["#f47321", "#76bce6", "#75d3c5", "#379154", "#39B4BF", "#FFE666", "#E54E67", "#F75B49"]);
+				
+				var colorArray = ["#f47321", "#76bce6", "#75d3c5", "#379154", "#39B4BF", "#FFE666", "#E54E67", "#F75B49"];
 
 				var xAxis = d3.svg.axis()
 					.scale(x)
@@ -240,28 +249,28 @@
 						event.append("path")
 							.attr("class", function(d) { return "line "+d.name; })
 							.attr("d", function(d) { return line(d.values); })
-							.style("stroke", function(d) { return color(d.name); });
-						console.log(JSON.stringify(data));
-						event.selectAll("dot")									
-							.data(data)											
-							.enter().append("circle")								
-							.attr("r", 4)
-							.attr("stroke", function(d) { return color(d.name); })
-							.attr("fill", "white")
-							.attr("stroke-width", "2px")
-							.attr("cx", function(d) { return x(d.date); })		 
-							.attr("cy", function(d) { return y(d.event_count); })
-							// Tooltip stuff after this
-							/*.on("mouseleave", function(d) {div.transition().duration(200).style("opacity", 0);})*/
-							.on("mouseenter", function(d) {
-								if(timestamp){
-									cnt = sec2ISO(d[ele]);
-								} else {
-									cnt = d[ele];
-								}
-								div.transition().duration(200).style("opacity", .9);	
-								div	.html(cnt).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
-							});
+							.style("stroke", function(d) { return color(d.name); })
+						
+
+						$.each(arr, function(i,v){
+							console.log(JSON.stringify(v));
+							event.selectAll("dot")									
+								.data(v.values)											
+								.enter().append("circle")								
+								.attr("r", 4)
+								.attr("stroke", function(d) { return colorArray[i]; })
+								.attr("fill", "white")
+								.attr("stroke-width", "2px")
+								.attr("cx", function(d) { return x(d.date); })		 
+								.attr("cy", function(d) { return y(d.count); })
+								// Tooltip stuff after this
+								/*.on("mouseleave", function(d) {div.transition().duration(200).style("opacity", 0);})*/
+								.on("mouseenter", function(d) {
+									div.transition().duration(200).style("opacity", .9);	
+									div	.html(d.count).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
+								});
+						});
+							
 						
 						var counter = 0;
 						event.append("text")

@@ -178,6 +178,7 @@
 				
 				var today = new Date();
 				eventBoxes(getFormatedDate(today), getFormatedDate(today));
+				var dataLiveChart;
                 
                 // set the dimensions of the canvas
                 var margin = {top: 20, right: 0, bottom: 70, left: 40}, divWidth = $("#chart-container").width(), width = (divWidth - 40) - margin.left - margin.right, height = 290 - margin.top - margin.bottom;
@@ -212,7 +213,7 @@
 						jsonFile = 1;
 					}
 					
-					$("#chart-container").empty();
+					//$("#chart-container").empty();
 					
 					// add the SVG element
 					var svg = d3.select("#chart-container").append("svg")
@@ -222,17 +223,71 @@
 						.attr("transform", 
 							  "translate(" + margin.left + "," + margin.top + ")");
 					
-					d3.json("assets/json/data-"+Number(jsonFile)+".json", function(error, data) {
-					   // alert(error);
-						data.forEach(function(d) {
-							d.TimeObj = new Date(d.Time*1000);
+					setInterval(function() {
+						dataLiveChart.shift();
+						//data.push(next());
+						d3.json("assets/json/data-small-dashboard.json", function(error, data) {
+							
+							//dataLiveChart.push({'Time':data[0].Time, 'DeviceCount':data[0].DeviceCount});
+							dataLiveChart.push({
+								"Time":Math.round(new Date().getTime()/1000),
+								"DeviceCount":data[0].DeviceCount,
+								"TimeObj":new Date()
+							});
 						});
+						console.log(JSON.stringify(dataLiveChart));
+						redraw();
+					}, 1000);
+					
+					
+					function redraw() {
+						
+						var rect = svg.selectAll("rect")
+							.data(dataLiveChart, function(d) { return d.TimeObj; });
+
+						rect.enter().insert("svg:rect", "bar")
+							.attr("x", function(d) { return x(d.TimeObj); })
+							.attr("y", function(d) { return y(d.DeviceCount); })
+							.attr("class", "bar")
+							.attr("width", x.rangeBand())
+							.attr("height", function(d) { return height - y(d.DeviceCount); })
+							.transition()
+							.duration(1000);
+
+						// scale the range of the data
+						  x.domain(data.map(function(d) { return d.TimeObj; }));
+						  y.domain([0, d3.max(data, function(d) { return d.DeviceCount; })]);
+						
+						axis.transition()
+							.duration(1000)
+							.ease("linear");
+						
+						rect.transition()
+							.duration(1000)
+							.attr("x", function(d, i) { return x(i); });
+
+						rect.exit().transition()
+							.duration(1000)
+							.attr("x", function(d, i) { return x(i - 1); })
+							.remove();
+					}
+					
+					
+					
+					d3.json("assets/json/data-1.json", function(error, data) {
+					   // alert(error);
+						var currentEpochTime = (new Date().getTime())-30000
+						data.forEach(function(d) {
+							d.TimeObj = new Date(currentEpochTime+=1000);
+							d.Time = currentEpochTime*1000
+						});
+						
 					  // scale the range of the data
 					  x.domain(data.map(function(d) { return d.TimeObj; }));
 					  y.domain([0, d3.max(data, function(d) { return d.DeviceCount; })]);
 
 					  // add axis
-					  svg.append("g")
+					  axis = svg.append("g")
 						  .attr("class", "x axis")
 						  .attr("transform", "translate(0," + height + ")")
 						  .call(xAxis)
@@ -247,7 +302,7 @@
 						  .call(yAxis)
 						  .append("text")
 						  .attr("transform", "rotate(-90)")
-						  .attr("y", 5)
+						  
 						  .attr("dy", ".71em")
 						  .style("text-anchor", "end")
 						  .text("Device Count");
@@ -262,9 +317,11 @@
 						  .attr("width", x.rangeBand())
 						  .attr("y", function(d) { return y(d.DeviceCount); })
 						  .attr("height", function(d) { return height - y(d.DeviceCount); });
+						dataLiveChart = data;
+						
 
 					});
-					timer = setTimeout(plotChart, 5000);
+					//timer = setTimeout(plotChart, 5000);
 				}
             });
 

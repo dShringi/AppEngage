@@ -17,6 +17,11 @@
         <link rel="stylesheet" type="text/css" href="assets/css/daterangepicker.css" />
 		<link rel="stylesheet" href="assets/css/bootstrap-select.min.css">
 		<script src="assets/js/bootstrap-select.min.js"></script>
+		<style>
+		.chart rect {
+		   stroke: white;
+		}
+		</style>
     </head>
     <body>
         <aside class="left-side sticky-left-side" tabindex="5000">
@@ -149,125 +154,167 @@
         </aside>
         <div class="overlay"></div>
         <script>
-			var apiURL = "assets/json/data1.json";
-            $(document).ready(function() {
-				function eventBoxes(startDate, endDate){
-					$.getJSON( apiURL + "?startdate="+startDate+"&enddate="+endDate, function( data ) {
-						var evntBx = "";
-						$.each(data, function(index, values){
-							console.log(values.Total);
-							if(values.Title == "Total Time Spent"){
-								values.Total = sec2ISO(values.Total);
-							}
-							
-							evntBx += '<li class="col-xs-12 col-sm-4 col-md-2 ">'+
-								'<section class="text-center box-blue">'+
-									'<div class="event-box">'+
-										'<div class="text-center"><div class="row"><div class="col-sm-2 col-xs-2"></div>'+
-											'<img src="assets/img/'+values.img+'" class="col-sm-8 col-xs-8 img-responsive"/><div class="col-sm-2 col-xs-2"></div></div>'+
-											'<label>'+values.Title+'</label>'+
-										'</div>'+
-										'<div class="inner-grey-box text-center">'+values.Total+'</div>'+
-									'</div>'+
-								'</section>'+
-							'</li>';
-						});
-						$('.event-container').html(evntBx);
-					});
-				}
+		var margin = {top: -30, right: 0, bottom: 40, left: 40}, lastTime = 0, divWidth = $("#chart-container").width()-margin.left - margin.right, data = new Array(), w = $("#chart-container").width()/30, h = 310 - margin.top - margin.bottom, startTime = 0, endTime = 0, xAxisArr = new Array();
+			
+			var x = d3.scale.linear().domain([0, 1]).range([0, w]);
+		  	var y = d3.scale.linear().domain([10, 0]).rangeRound([0, h]);
+			
+			/*var x = d3.scale.ordinal().rangeRoundBands([0, divWidth], .6);
+			var y = d3.scale.linear().range([h, 0]);
+			*/
+			var xAxis = d3.svg.axis()
+			.scale(x)
+			//.tickFormat(d3.time.format('%H:%M:%S'))
+			.orient("bottom");
+
+			var yAxis = d3.svg.axis().scale(y).orient("left");
+			
+			var chart = d3.select("#chart-container")
+				.append("svg:svg")
+				//.attr("class", "chart")
+				.attr("width", divWidth)
+				.attr("height", h)
+				.append("g")
+				.attr("transform", 
+					  "translate(" + margin.left + "," + margin.top + ")");
+			
+			d3.json("assets/json/data-1.json", function(error, data1) {
+				data1.forEach(function(d) {
+					d.TimeObj = new Date(d.Time*1000);
+					lastTime = d.Time;
+				});
+			  /*// scale the range of the data
+			  x.domain(data.map(function(d) { return d.TimeObj; }));
+			  y.domain([0, d3.max(data, function(d) { return d.DeviceCount; })]);
+			  */
+		  	/*axis = chart.append("g")
+		  		.attr("class", "x axis")
+			  	.attr("width",divWidth)
+			  	.attr("transform", "translate(0," + h + ")")
+			  	  
+			  	.call(xAxis)
+			  	.selectAll("text")
+			  	.style("text-anchor", "end")
+			  	.attr("dx", "-.8em")
+			  	.attr("dy", "-.55em")
+			  	.attr("transform", "rotate(-90)" );*/
+
+			// Create X axis
+			chart.append("g")
+			  	.attr("class", "x axis")
+				.attr("transform", "translate(" + (divWidth-50) + ", " + (h+40) + ")")
+				.append("text")
+				.attr("dx", "-.8em")
+			  	.attr("dy", "-.55em")
+				.style("text-anchor", "end")
+				.text("Time");
 				
-				var today = new Date();
-				eventBoxes(getFormatedDate(today), getFormatedDate(today));
-                
-                // set the dimensions of the canvas
-                var margin = {top: 20, right: 0, bottom: 70, left: 40}, divWidth = $("#chart-container").width(), width = (divWidth - 40) - margin.left - margin.right, height = 290 - margin.top - margin.bottom;
-
-                // set the ranges
-                var x = d3.scale.ordinal().rangeRoundBands([0, width], .6);
-
-                var y = d3.scale.linear().range([height, 0]);
-
-                // define the axis
-                var xAxis = d3.svg.axis()
-                    .scale(x)
-					//.ticks(d3.time.minute, 1)
-					.tickFormat(d3.time.format('%H:%M:%S'))
-                    .orient("bottom");
-
-                var yAxis = d3.svg.axis()
-                    .scale(y)
-                    .orient("left")
-                    .ticks(5);
-
-                plotChart();
-
-                // load the data
-                var jsonFile = 1; // This is for loading different json files
-                function plotChart(){
-					
-					if(typeof jsonFile == 'undefined'){
-						jsonFile = 1;
-					} else {
-						if(++jsonFile == 11)
-						jsonFile = 1;
-					}
-					
-					$("#chart-container").empty();
-					
-					// add the SVG element
-					var svg = d3.select("#chart-container").append("svg")
-						.attr("width", width + margin.left + margin.right)
-						.attr("height", height + margin.top + margin.bottom)
-						.append("g")
-						.attr("transform", 
-							  "translate(" + margin.left + "," + margin.top + ")");
-					
-					d3.json("assets/json/data-"+Number(jsonFile)+".json", function(error, data) {
-					   // alert(error);
-						data.forEach(function(d) {
-							d.TimeObj = new Date(d.Time*1000);
-						});
-					  // scale the range of the data
-					  x.domain(data.map(function(d) { return d.TimeObj; }));
-					  y.domain([0, d3.max(data, function(d) { return d.DeviceCount; })]);
-
-					  // add axis
-					  svg.append("g")
-						  .attr("class", "x axis")
-						  .attr("transform", "translate(0," + height + ")")
-						  .call(xAxis)
-						  .selectAll("text")
-						  .style("text-anchor", "end")
-						  .attr("dx", "-.8em")
-						  .attr("dy", "-.55em")
-						  .attr("transform", "rotate(-90)" );
-
-					  svg.append("g")
-						  .attr("class", "y axis")
-						  .call(yAxis)
-						  .append("text")
-						  .attr("transform", "rotate(-90)")
-						  .attr("y", 5)
-						  .attr("dy", ".71em")
-						  .style("text-anchor", "end")
-						  .text("Device Count");
-
-
-					  // Add bar chart
-					  svg.selectAll("bar")
-						  .data(data)
-						  .enter().append("rect")
-						  .attr("class", "bar")
-						  .attr("x", function(d) { return x(d.TimeObj); })
-						  .attr("width", x.rangeBand())
-						  .attr("y", function(d) { return y(d.DeviceCount); })
-						  .attr("height", function(d) { return height - y(d.DeviceCount); });
-
-					});
-					timer = setTimeout(plotChart, 5000);
+	  		chart.append("g")
+			  	.attr("class", "y axis")
+			  	.call(yAxis)
+				.append("text")
+				.attr("transform", "rotate(-90)")
+				.attr("dy", ".71em")
+				.style("text-anchor", "end")
+				.text("Device Count");
+			  
+			  
+				data = data1;
+				
+				startTime = data[0].Time;
+				endTime = data[data.length-1].Time;
+				
+				//alert(startTime + " : " + endTime);
+				
+				for(i = startTime; i < endTime; i+=60){
+					dtObj = new Date(i*1000);
+					xAxisArr.push({"values":dtObj.getHours()+":"+dtObj.getMinutes()})
 				}
-            });
+				//console.log(JSON.stringify(xAxisArr));
+				
+				chart.selectAll("x axis")
+					.data(xAxisArr)
+					.enter().append("g")
+					.attr("class", "tick")
+					.attr("transform", "translate(" + (function(d,i){console.log(JSON.stringify(i));return x(i)}-50) + ", " + (h+20) + ")")
+					
+					.append("text")
+					.attr("dx", "-.8em")
+					.attr("dy", "-.55em")
+					.style("text-anchor", "end")
+					.text(function(d,i){return d.values});
+			});
+ 
+			 function next() {
+				 lastTime += 10;
+			   return {
+				 "Time" : lastTime,
+				 "DeviceCount":Math.floor((Math.random() * 10) + 1),
+				 "TimeObj" : new Date(lastTime*1000)
+			   };
+			 }
+			
+			setInterval(function() {
+				if(data.length >= 30)
+					data.shift();
+			   data.push(next());
+				//console.log(JSON.stringify(data));
+			   redraw();
+				
+			}, 3000);
+			
+		  	chart.selectAll("rect")
+				.data(data)
+				.enter().append("svg:rect")
+				.attr("class", "bar")
+				.attr("x", function(d, i) { return x(d.TimeObj); })
+				.attr("y", function(d) { return h - (y(d.DeviceCount)); })
+				.attr("width", w)
+				.attr("height", function(d) { return y(d.DeviceCount); });
+			
+			
 
-        </script>
+			
+			chart.append("svg:line")
+			 	.attr("x1", 0)
+			 	.attr("x2", $("#chart-container").width())
+			 	.attr("y1", h)
+			 	.attr("y2", h)
+			 	.attr("stroke", "#000");
+			
+		
+			
+		
+			
+			function redraw() {
+			   var rect = chart.selectAll("rect")
+				   .data(data, function(d) { return d.TimeObj; });
+
+			   // Enter…
+			   rect.enter().insert("svg:rect", "line")
+					.attr("class", "bar")
+					.attr("x", function(d, i) { return x(d.TimeObj); })
+					.attr("y", function(d) { return h - (y(d.DeviceCount)); })
+					.attr("width", w)
+					.attr("height", function(d) { return y(d.DeviceCount); })
+					.transition()
+					.duration(1000)
+					.attr("x", function(d, i) { return x(i); });
+
+			   // Update…
+			   rect.transition()
+					.duration(1000)
+					.attr("x", function(d, i) { return x(i); });
+
+			   // Exit…
+			   rect.exit().transition()
+					.duration(1000)
+					.attr("x", function(d, i) { return x(i - 1); })
+			   		.remove();
+
+			}	
+		
+		</script>
+				
     </body>
     </html>
