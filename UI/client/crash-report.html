@@ -166,8 +166,8 @@
 			var CrashReportAPITable = "http://13.66.57.215/appengage/getCrashDetails";
 			
 			var loadChart = function(sd, ed, appKey = 'MastApp'){
-				//d3.json(CrashReportAPI + "?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
-				d3.json("assets/json/ok-data-total-crashes-Counters.json"+"?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
+				d3.json(CrashReportAPI + "?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
+				//d3.json("assets/json/ok-data-total-crashes-Counters.json"+"?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
 					//console.log(data);
 					data = JSON.parse(data);
 					//console.log("Arvind", JSON.stringify(data));
@@ -191,8 +191,8 @@
 				});
 
 				/*************************** For Table ************************/
-				//d3.json(CrashReportAPITable + "?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
-				d3.json("assets/json/ok-data-total-crashes.json"+"?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
+				d3.json(CrashReportAPITable + "?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
+				//d3.json("assets/json/ok-data-total-crashes.json"+"?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
 					//data = data.replace("\\","");
 					//console.log(data);
 					showCrashReportTable(JSON.parse(data), 'tbl-crash-report');

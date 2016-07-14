@@ -147,35 +147,35 @@
         <div class="overlay"></div>
         <script>
 			var apiURL = "assets/json/data1.json";
-			
+			function loadChart(startDate, endDate,appKey){
+				$.getJSON( apiURL + "?sd="+startDate+"&ed="+endDate+"&ed="+endDate+"&akey="+appKey, function( data ) {
+					var evntBx = "";
+					$.each(data, function(index, values){
+						if(values.Title == "Total Time Spent"){
+							values.Total = sec2ISO(values.Total);
+						}
+
+						evntBx += '<li class="col-xs-12 col-sm-4 col-md-2 ">'+
+							'<section class="text-center box-blue">'+
+								'<div class="event-box">'+
+									'<div class="text-center"><div class="row"><div class="col-sm-2 col-xs-2"></div>'+
+										'<img src="assets/img/'+values.img+'" class="col-sm-8 col-xs-8 img-responsive"/><div class="col-sm-2 col-xs-2"></div></div>'+
+										'<label>'+values.Title+'</label>'+
+									'</div>'+
+									'<div class="inner-grey-box text-center">'+values.Total+'</div>'+
+								'</div>'+
+							'</section>'+
+						'</li>';
+					});
+					$('.event-container').html(evntBx);
+				});
+			}
 
             $(document).ready(function() {
-				function eventBoxes(startDate, endDate){
-					$.getJSON( apiURL + "?startdate="+startDate+"&enddate="+endDate, function( data ) {
-						var evntBx = "";
-						$.each(data, function(index, values){
-							if(values.Title == "Total Time Spent"){
-								values.Total = sec2ISO(values.Total);
-							}
-							
-							evntBx += '<li class="col-xs-12 col-sm-4 col-md-2 ">'+
-								'<section class="text-center box-blue">'+
-									'<div class="event-box">'+
-										'<div class="text-center"><div class="row"><div class="col-sm-2 col-xs-2"></div>'+
-											'<img src="assets/img/'+values.img+'" class="col-sm-8 col-xs-8 img-responsive"/><div class="col-sm-2 col-xs-2"></div></div>'+
-											'<label>'+values.Title+'</label>'+
-										'</div>'+
-										'<div class="inner-grey-box text-center">'+values.Total+'</div>'+
-									'</div>'+
-								'</section>'+
-							'</li>';
-						});
-						$('.event-container').html(evntBx);
-					});
-				}
+				
 				
 				var today = new Date();
-				eventBoxes(getFormatedDate(today), getFormatedDate(today));
+				//loadChart(getFormatedDate(today), getFormatedDate(today));
 				
 				var margin = {top: 10, right: 40, bottom: 20, left: 35},
 				width = $("#chart-container").width() - margin.left - margin.right,

@@ -30,7 +30,7 @@ $(document).ready(function () {
 	function cb(start, end) {
         $('#dateRange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
 		//alert(start+"--"+end);
-		loadChart(parseInt(start/1000),parseInt(end/1000));
+		loadChart(parseInt(start/1000),parseInt(end/1000), appKey);
     }
     cb(moment().subtract(29, 'days'), moment());
 	
