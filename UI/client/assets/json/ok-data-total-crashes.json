@@ -1,1 +1,30 @@
-[]
+[[
+    {
+        "dt":"1-May-12",
+		"pf":"Android",
+		"os":"4.3",
+		"av":"1.0.0",
+		"totalCrashes":8
+    },
+    {
+        "dt":"2-May-12",
+		"pf":"Android",
+		"os":"4.3.2",
+		"av":"1.0.0",
+		"totalCrashes":18
+    },
+    {
+        "dt":"2-May-12",
+		"pf":"iOS",
+		"os":"8.0.1",
+		"av":"1.0.0",
+		"totalCrashes":3
+    },
+    {
+        "dt":"3-May-12",
+		"pf":"Android",
+		"os":"4.4.2",
+		"av":"1.0.0",
+		"totalCrashes":98
+    }
+]]

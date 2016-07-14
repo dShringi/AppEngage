@@ -127,56 +127,55 @@
 					if (error) { throw error; }
 					data = JSON.parse(data);
 					
-					$(".div-total-crashes").empty();
-					$(".div-total-crashes-manufacturer").empty();
-					$(".div-total-crashes-platform").empty();
-					$(".div-total-crashes-os-version").empty();
-					
-					var svg = d3.select(".div-total-crashes").append("svg")
-						.attr("width", width)
-						.attr("height", height)
-						.append("g")
-						.attr("class","chart")
-						.attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
-					svg1 = d3.select(".div-total-crashes-manufacturer").append("svg")
-						.attr("width", width)
-						.attr("height", height)
-						.append("g")
-						.attr("class","chart")
-						.attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
-					svg2 = d3.select(".div-total-crashes-platform").append("svg")
-						.attr("width", width)
-						.attr("height", height)
-						.append("g")
-						.attr("class","chart")
-						.attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
-					svg3 = d3.select(".div-total-crashes-os-version").append("svg")
-						.attr("width", width)
-						.attr("height", height)
-						.append("g")
-						.attr("class","chart")
-						.attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
-
-					var getArray = function(arr, idx, idx1){
-						var arr1 = new Array();
-						$.each(arr[idx][idx1], function(id, crsh){
-							$.each(crsh, function(key, val){
-								arr1.push({
-									"name" : key,
-									"crash" : val
-								});
-							});
-						});
-						return arr1;
-					}
-					
-					
 					/*$.each(arr[idx][idx1], function(id, crsh){
 						
 					});*/
 					if(data.length == 0){
 						alert("No data found for the selected parameters.");
 					} else {
+						$(".div-total-crashes").empty();
+						$(".div-total-crashes-manufacturer").empty();
+						$(".div-total-crashes-platform").empty();
+						$(".div-total-crashes-os-version").empty();
+
+						var svg = d3.select(".div-total-crashes").append("svg")
+							.attr("width", width)
+							.attr("height", height)
+							.append("g")
+							.attr("class","chart")
+							.attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
+						svg1 = d3.select(".div-total-crashes-manufacturer").append("svg")
+							.attr("width", width)
+							.attr("height", height)
+							.append("g")
+							.attr("class","chart")
+							.attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
+						svg2 = d3.select(".div-total-crashes-platform").append("svg")
+							.attr("width", width)
+							.attr("height", height)
+							.append("g")
+							.attr("class","chart")
+							.attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
+						svg3 = d3.select(".div-total-crashes-os-version").append("svg")
+							.attr("width", width)
+							.attr("height", height)
+							.append("g")
+							.attr("class","chart")
+							.attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
+
+						var getArray = function(arr, idx, idx1){
+							var arr1 = new Array();
+							$.each(arr[idx][idx1], function(id, crsh){
+								$.each(crsh, function(key, val){
+									arr1.push({
+										"name" : key,
+										"crash" : val
+									});
+								});
+							});
+							return arr1;
+						}
+						
 						totalCrashes = data[0].TotalCrashes;
 						showTotalCrashesChart(data, svg, pie);
 

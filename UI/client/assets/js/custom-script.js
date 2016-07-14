@@ -173,6 +173,7 @@ var showCrashReportTable = function (data, tableId) {
     });
     $("#" + tableId + " tbody").html(tableHTML);
 	sortTable();
+	$("table").trigger("update");
 };
 
 
