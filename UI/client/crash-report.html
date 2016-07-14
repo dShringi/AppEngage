@@ -111,17 +111,11 @@
             var legendPosY = (height / 2) - 20;
 			var totalCrashes = 0;
 
-            var color = d3.scale.ordinal().range(["#f47321", "#76bce6", "#75d3c5", "#379154", "#39B4BF", "#FFE666", "#E54E67", "#F75B49"]);
-
-            //var color = d3.scale.category20();
-            
             var arc = d3.svg.arc().innerRadius(radius - 35).outerRadius(radius - 60);
             var arcOver = d3.svg.arc().outerRadius(radius - 32).innerRadius(radius - 63);
 
             var pie = d3.layout.pie().sort(null).value(function (d) {return d.TotalCrashes; });
 			var pie1 = d3.layout.pie().sort(null).value(function (d) { return d.crash; });
-			var pie2 = d3.layout.pie().sort(null).value(function (d) { return d.crash; });
-			var pie3 = d3.layout.pie().sort(null).value(function (d) { return d.crash; });
 
             var svg = d3.select(".div-total-crashes").append("svg")
                 .attr("width", width)
@@ -168,24 +162,27 @@
 			var loadChart = function(sd, ed, appKey = 'MastApp'){
 				d3.json(CrashReportAPI + "?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
 				//d3.json("assets/json/ok-data-total-crashes-Counters.json"+"?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
-					//console.log(data);
 					data = JSON.parse(data);
-					//console.log("Arvind", JSON.stringify(data));
+					
+					/*$.each(arr[idx][idx1], function(id, crsh){
+						
+					});*/
+					
+					
 					if (error) { throw error; }
 					totalCrashes = data[0].TotalCrashes;
 					showTotalCrashesChart(data, svg, pie);
 
 					// Manufacturer Crashes Chart
-					//showManufacturerCrashesChart(dataManuArray, svg1, pie1);
 					showCrashesDonutChart(getArray(data, 2, 'mnu'), svg1, pie1);
 					// Manufacturer Crashes Chart - END
 
 					// Platform Crashes Chart
-					showCrashesDonutChart(getArray(data, 3, 'pf'), svg2, pie2);
+					showCrashesDonutChart(getArray(data, 3, 'pf'), svg2, pie1);
 					// Platform Crashes Chart - END
 
 					// Platform Crashes Chart
-					showCrashesDonutChart(getArray(data, 1, 'osv'), svg3, pie3);
+					showCrashesDonutChart(getArray(data, 1, 'osv'), svg3, pie1);
 					// Platform Crashes Chart - END
 
 				});
@@ -195,7 +192,11 @@
 				//d3.json("assets/json/ok-data-total-crashes.json"+"?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
 					//data = data.replace("\\","");
 					//console.log(data);
-					showCrashReportTable(JSON.parse(data), 'tbl-crash-report');
+					if(data.length == 0){
+						alert("No data found for the selected parameters.");
+					} else {
+						showCrashReportTable(JSON.parse(data), 'tbl-crash-report');
+					}
 				});
 				/*************************** For Table - END ******************/
 			};
