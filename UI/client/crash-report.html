@@ -162,29 +162,34 @@
 			var loadChart = function(sd, ed, appKey = 'MastApp'){
 				d3.json(CrashReportAPI + "?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
 				//d3.json("assets/json/ok-data-total-crashes-Counters.json"+"?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
+					if (error) { throw error; }
 					data = JSON.parse(data);
 					
 					/*$.each(arr[idx][idx1], function(id, crsh){
 						
 					});*/
+					if(data.length == 0){
+						alert("No data found for the selected parameters.");
+					} else {
+						totalCrashes = data[0].TotalCrashes;
+						showTotalCrashesChart(data, svg, pie);
+
+						// Manufacturer Crashes Chart
+						showCrashesDonutChart(getArray(data, 2, 'mnu'), svg1, pie1);
+						// Manufacturer Crashes Chart - END
+
+						// Platform Crashes Chart
+						showCrashesDonutChart(getArray(data, 3, 'pf'), svg2, pie1);
+						// Platform Crashes Chart - END
+
+						// Platform Crashes Chart
+						showCrashesDonutChart(getArray(data, 1, 'osv'), svg3, pie1);
+						// Platform Crashes Chart - END
+
+					}
 					
 					
-					if (error) { throw error; }
-					totalCrashes = data[0].TotalCrashes;
-					showTotalCrashesChart(data, svg, pie);
-
-					// Manufacturer Crashes Chart
-					showCrashesDonutChart(getArray(data, 2, 'mnu'), svg1, pie1);
-					// Manufacturer Crashes Chart - END
-
-					// Platform Crashes Chart
-					showCrashesDonutChart(getArray(data, 3, 'pf'), svg2, pie1);
-					// Platform Crashes Chart - END
-
-					// Platform Crashes Chart
-					showCrashesDonutChart(getArray(data, 1, 'osv'), svg3, pie1);
-					// Platform Crashes Chart - END
-
+						
 				});
 
 				/*************************** For Table ************************/
@@ -193,7 +198,7 @@
 					//data = data.replace("\\","");
 					//console.log(data);
 					if(data.length == 0){
-						alert("No data found for the selected parameters.");
+						//alert("No data found for the selected parameters.");
 					} else {
 						showCrashReportTable(JSON.parse(data), 'tbl-crash-report');
 					}
