@@ -31,7 +31,7 @@ $(document).ready(function () {
     
 	function cb(start, end) {
         $('#dateRange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
-		alert(start+"--"+end);
+		//alert(start+"--"+end);
 		loadChart(parseInt(start/1000),parseInt(end/1000));
     }
     cb(moment().subtract(29, 'days'), moment());
@@ -166,9 +166,10 @@ var showDeviceMenufacturerTable = function (data, tableId) {
 var showCrashReportTable = function (data, tableId) {
 	"use strict";
 	var tableHTML = "";
+	//console.log("Avi : "+JSON.stringify(data));
     $.each(data, function (index, row) {
-        //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.dt + "</td><td>" + row.pf + "</td><td>" + row.os + "</td><td>" + row.av + "</td><td>" + row.totalCrashes + "</td></tr>";
+        //console.log("Arvind : "+JSON.stringify(row));
+        tableHTML += "<tr><td>" + getFormatedDateDDMMYY(new Date(row.dt*1000)) + "</td><td>" + row.pf + "</td><td>" + row.os + "</td><td>" + row.av + "</td><td>" + row.totalCrashes + "</td></tr>";
         
     });
     $("#" + tableId + " tbody").html(tableHTML);
@@ -363,6 +364,12 @@ var getFormattedDate = function (input) {
 	var year = input.getFullYear(), month = input.getMonth(), date = input.getDate();
 	/*var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];*/
 	return months[month] + " " + date + ", " + year;
+};
+
+var getFormatedDateDDMMYY = function (input) {
+	var year = input.getFullYear(), month = input.getMonth(), date = input.getDate();
+	/*var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];*/
+	return date + "-" + months[month] + "-" + year;
 };
 
 /******************* Convert time in format hh:mm:ss *****************/

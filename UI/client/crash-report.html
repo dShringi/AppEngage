@@ -157,22 +157,23 @@
 				return arr1;
 			}
 			
-			var sd = 1467779495, ed = 1468221060;
+			var sd = 1467347495, ed = 1468297895;
 			var CrashReportAPI = "http://13.66.57.215/appengage/getCrashCounters";
 			var CrashReportAPITable = "http://13.66.57.215/appengage/getCrashDetails";
 			
 			var loadChart = function(sd, ed, appKey = 'MastApp'){
 				d3.json(CrashReportAPI + "?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
 				//d3.json("assets/json/ok-data-total-crashes-Counters.json"+"?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
-					console.log(data);
-
+					//console.log(data);
+					data = JSON.parse(data);
+					console.log("Arvind", JSON.stringify(data));
 					if (error) { throw error; }
 					totalCrashes = data[0].TotalCrashes;
 					showTotalCrashesChart(data, svg, pie);
 
 					// Manufacturer Crashes Chart
 					//showManufacturerCrashesChart(dataManuArray, svg1, pie1);
-					showCrashesDonutChart(getArray(data, 1, 'mnu'), svg1, pie1);
+					showCrashesDonutChart(getArray(data, 2, 'mnu'), svg1, pie1);
 					// Manufacturer Crashes Chart - END
 
 					// Platform Crashes Chart
@@ -180,7 +181,7 @@
 					// Platform Crashes Chart - END
 
 					// Platform Crashes Chart
-					showCrashesDonutChart(getArray(data, 2, 'osv'), svg3, pie3);
+					showCrashesDonutChart(getArray(data, 1, 'osv'), svg3, pie3);
 					// Platform Crashes Chart - END
 
 				});
@@ -188,7 +189,9 @@
 				/*************************** For Table ************************/
 				d3.json(CrashReportAPITable + "?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
 				//d3.json("assets/json/ok-data-total-crashes.json"+"?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
-					showCrashReportTable(data, 'tbl-crash-report');
+					//data = data.replace("\\","");
+					//console.log(data);
+					showCrashReportTable(JSON.parse(data), 'tbl-crash-report');
 				});
 				/*************************** For Table - END ******************/
 			};
