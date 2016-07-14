@@ -99,6 +99,7 @@
                 // Adds the svg canvas
                 var	svg = d3.select("#line-chart-container-1")
                     .append("svg")
+					.attr("class","chart")
                     .attr("width", width + margin.left + margin.right)
                     .attr("height", height + margin.top + margin.bottom)
                     .append("g")
@@ -107,6 +108,7 @@
 				// Adds the svg canvas
                 var	svg1 = d3.select("#line-chart-container-2")
                     .append("svg")
+					.attr("id","chart")
                     .attr("width", width + margin.left + margin.right)
                     .attr("height", height + margin.top + margin.bottom)
                     .append("g")
@@ -125,6 +127,17 @@
                 });
             });
 
+			var the_chart = $("#chart"),
+			aspect = the_chart.width() / the_chart.height(),
+			container = the_chart.parent();
+
+			$(window).on("resize", function() {
+				console.log('resize');
+				var targetWidth = container.width();
+				the_chart.attr("width", targetWidth);
+				the_chart.attr("height", Math.round(targetWidth / aspect));
+			}).trigger("resize");
+			
         </script>
     </body>
     </html>

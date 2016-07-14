@@ -1,7 +1,7 @@
 var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 // Define 'div' for tooltips
 
-var todayObj = new Date();
+var todayObj = new Date(), appKey = 'MastApp';
 
 $(document).ready(function () {
     "use strict";
@@ -11,6 +11,8 @@ $(document).ready(function () {
 		$(".main-container").prepend(data);
 	});
     
+	
+	
     var displayDate = function (date) {
         var today = new Date(), month, day, year;
         year = today.getFullYear();
@@ -29,6 +31,8 @@ $(document).ready(function () {
     
 	function cb(start, end) {
         $('#dateRange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+		alert(start+"--"+end);
+		loadChart(parseInt(start/1000),parseInt(end/1000));
     }
     cb(moment().subtract(29, 'days'), moment());
 	

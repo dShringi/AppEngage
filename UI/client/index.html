@@ -268,7 +268,14 @@
 					var the_chart = $("#chart"),
 					aspect = the_chart.width() / the_chart.height(),
 					container = the_chart.parent();
-
+					
+					$(window).on("resize", function() {
+						console.log('resize');
+						var targetWidth = container.width();
+						the_chart.attr("width", targetWidth);
+						the_chart.attr("height", Math.round(targetWidth / aspect));
+					}).trigger("resize");
+					
 					var tickerstart = moment().subtract(10, 'minutes').startOf('minute');
 					tickerstartdate = moment(tickerstart).valueOf();
 
