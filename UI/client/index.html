@@ -191,10 +191,12 @@
 
 				var xAxis = d3.svg.axis()
 					.scale(x)
+					.ticks(d3.time.minutes, 1)
+					.tickFormat(d3.time.format("%H:%M"))
 					.orient("bottom");
 					//.ticks(5);
 
-				xAxis.ticks(d3.time.seconds, 60);
+				//xAxis.ticks(d3.time.minutes, 1);
 
 				var yAxis = d3.svg.axis()
 					.scale(y)
@@ -278,8 +280,6 @@
 
 							data1.forEach(function(d) {
 								devCount = Math.floor((Math.random() * 10) + 1);
-								//d.time = nextnumber;
-								//d.value = devCount;
 								d.count = devCount;
 								d._id = nextnumber;
 							});

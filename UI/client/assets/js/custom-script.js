@@ -406,9 +406,9 @@ function plotLineChart(data, svg, div,timestamp=false, ele, valueline, x, y, wid
 
 function drawAxes(svg, x, y, width, height, xAxis, yAxis){
 	// Define the axes
-	console.log(xAxis+" : "+yAxis);
+	//console.log(xAxis+" : "+yAxis);
 	if(typeof xAxis === "string"){
-		xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5);
+		xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5).tickFormat(d3.time.format("%b %d"));
 	}
 	if(typeof yAxis === "string"){
 		yAxis = d3.svg.axis().scale(y).orient("left").ticks(5)
