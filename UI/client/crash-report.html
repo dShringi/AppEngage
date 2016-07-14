@@ -50,19 +50,19 @@
             <section class="bg-white paddl50 paddr50 border-bottom">
                 <div class="paddb15 paddt25">
 					<div class="row">
-						<div class="col-md-3 col-lg-3 col-sm-6 col-xs-12">
+						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12">
 							<div class="div-total-crashes"></div>
 							<label class="chart-title">Total Crashes</label>
 						</div>
-						<div class="col-md-3 col-lg-3 col-sm-6 col-xs-12">
+						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12">
 							<div class="div-total-crashes-manufacturer"></div>
 							<label class="chart-title">Top Crashes<br>by Manufacturer</label>
 						</div>
-						<div class="col-md-3 col-lg-3 col-sm-6 col-xs-12">
+						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12">
 							<div class="div-total-crashes-platform"></div>
 							<label class="chart-title">Top Crashes<br>by Platform</label>
 						</div>
-						<div class="col-md-3 col-lg-3 col-sm-6 col-xs-12">
+						<div class="col-md-6 col-lg-3 col-sm-6 col-xs-12">
 							<div class="div-total-crashes-os-version"></div>
 							<label class="chart-title">Top Crashes<br>by OS Version</label>
 						</div>
@@ -127,21 +127,25 @@
                 .attr("width", width)
                 .attr("height", height)
                 .append("g")
+				.attr("class","chart")
                 .attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
 			svg1 = d3.select(".div-total-crashes-manufacturer").append("svg")
                 .attr("width", width)
                 .attr("height", height)
                 .append("g")
+				.attr("class","chart")
                 .attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
 			svg2 = d3.select(".div-total-crashes-platform").append("svg")
                 .attr("width", width)
                 .attr("height", height)
                 .append("g")
+				.attr("class","chart")
                 .attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
 			svg3 = d3.select(".div-total-crashes-os-version").append("svg")
                 .attr("width", width)
                 .attr("height", height)
                 .append("g")
+				.attr("class","chart")
                 .attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
 
 			var getArray = function(arr, idx, idx1){
@@ -162,11 +166,11 @@
 			var CrashReportAPITable = "http://13.66.57.215/appengage/getCrashDetails";
 			
 			var loadChart = function(sd, ed, appKey = 'MastApp'){
-				d3.json(CrashReportAPI + "?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
-				//d3.json("assets/json/ok-data-total-crashes-Counters.json"+"?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
+				//d3.json(CrashReportAPI + "?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
+				d3.json("assets/json/ok-data-total-crashes-Counters.json"+"?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
 					//console.log(data);
 					data = JSON.parse(data);
-					console.log("Arvind", JSON.stringify(data));
+					//console.log("Arvind", JSON.stringify(data));
 					if (error) { throw error; }
 					totalCrashes = data[0].TotalCrashes;
 					showTotalCrashesChart(data, svg, pie);
@@ -187,24 +191,27 @@
 				});
 
 				/*************************** For Table ************************/
-				d3.json(CrashReportAPITable + "?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
-				//d3.json("assets/json/ok-data-total-crashes.json"+"?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
+				//d3.json(CrashReportAPITable + "?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
+				d3.json("assets/json/ok-data-total-crashes.json"+"?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
 					//data = data.replace("\\","");
 					//console.log(data);
 					showCrashReportTable(JSON.parse(data), 'tbl-crash-report');
 				});
 				/*************************** For Table - END ******************/
 			};
-			loadChart(sd,ed,appKey);
+			//loadChart(sd,ed,appKey);
 			
-			$('.table').tablesorter({
+			var the_chart1 = $(".chart"),
+			//aspect1 = the_chart1.width() / the_chart1.height(),
+			container1 = the_chart1.parent();
 
-				// customize header HTML
-				headers: {
-					0: { sorter: 'date' }
-				}
-
-			});
+			$(window).on("resize", function() {
+				//console.log(aspect1);
+				var targetWidth1 = container1.width();
+				the_chart1.attr("width", targetWidth1);
+				the_chart1.attr("height", targetWidth1);
+			}).trigger("resize");
+			
         </script>
     </body>
     </html>

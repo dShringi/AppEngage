@@ -11,9 +11,7 @@ $(document).ready(function () {
 		$(".main-container").prepend(data);
 	});
     
-	
-	
-    var displayDate = function (date) {
+	var displayDate = function (date) {
         var today = new Date(), month, day, year;
         year = today.getFullYear();
         month = today.getMonth();
@@ -227,8 +225,8 @@ var datewiseTotalCrashes = function(data){
 		//console.log("Avi" + JSON.stringify(tempArr));
 		totalCrashCount += value.totalCrashes;
 	});
-	console.log("Total : " + tempArr.length);
-	console.log(JSON.stringify(tempArr));
+	//console.log("Total : " + tempArr.length);
+	//console.log(JSON.stringify(tempArr));
 	return tempArr;
 };
 
@@ -292,7 +290,7 @@ var showTotalCrashesChart = function(data,svg,pie){
 		.text(function (d) { return d.data.TotalCrashes; });
 };
 var showCrashesDonutChart = function(data,svg,pie){
-	console.log(JSON.stringify(data));
+	//console.log(JSON.stringify(data));
 	var tooltip = d3.select("body")
 		.append("div")  // declare the tooltip div 
 		.attr("class", "map-tooltip shadow")              // apply the 'tooltip' class
@@ -437,18 +435,6 @@ function drawAxes(svg, x, y, width, height, xAxis, yAxis){
 		.call(yAxis);
 }
 /*************************  For Line Chart - END ************************/
-
-
-$.tablesorter.addParser({
-	id: "date",
-	is: function (s) {
-		return false;
-	},
-	format: function (s, table) {
-		return new Date(s).getTime() || '';
-	},
-	type: "numeric"
-});
 
 var sortTable = function(){
 	var pagerOptions = {
