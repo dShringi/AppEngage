@@ -111,49 +111,7 @@
             var legendPosY = (height / 2) - 20;
 			var totalCrashes = 0;
 
-            var arc = d3.svg.arc().innerRadius(radius - 35).outerRadius(radius - 60);
-            var arcOver = d3.svg.arc().outerRadius(radius - 32).innerRadius(radius - 63);
-
-            var pie = d3.layout.pie().sort(null).value(function (d) {return d.TotalCrashes; });
-			var pie1 = d3.layout.pie().sort(null).value(function (d) { return d.crash; });
-
-            var svg = d3.select(".div-total-crashes").append("svg")
-                .attr("width", width)
-                .attr("height", height)
-                .append("g")
-				.attr("class","chart")
-                .attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
-			svg1 = d3.select(".div-total-crashes-manufacturer").append("svg")
-                .attr("width", width)
-                .attr("height", height)
-                .append("g")
-				.attr("class","chart")
-                .attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
-			svg2 = d3.select(".div-total-crashes-platform").append("svg")
-                .attr("width", width)
-                .attr("height", height)
-                .append("g")
-				.attr("class","chart")
-                .attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
-			svg3 = d3.select(".div-total-crashes-os-version").append("svg")
-                .attr("width", width)
-                .attr("height", height)
-                .append("g")
-				.attr("class","chart")
-                .attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
-
-			var getArray = function(arr, idx, idx1){
-				var arr1 = new Array();
-				$.each(arr[idx][idx1], function(id, crsh){
-					$.each(crsh, function(key, val){
-						arr1.push({
-							"name" : key,
-							"crash" : val
-						});
-					});
-				});
-				return arr1;
-			}
+					
 			
 			var sd = 1467347495, ed = 1468297895;
 			var CrashReportAPI = "http://13.66.57.215/appengage/getCrashCounters";
@@ -164,6 +122,56 @@
 				//d3.json("assets/json/ok-data-total-crashes-Counters.json"+"?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
 					if (error) { throw error; }
 					data = JSON.parse(data);
+					
+					$(".div-total-crashes").empty();
+					$(".div-total-crashes-manufacturer").empty();
+					$(".div-total-crashes-platform").empty();
+					$(".div-total-crashes-os-version").empty();
+					
+					var arc = d3.svg.arc().innerRadius(radius - 35).outerRadius(radius - 60);
+					var arcOver = d3.svg.arc().outerRadius(radius - 32).innerRadius(radius - 63);
+
+					var pie = d3.layout.pie().sort(null).value(function (d) {return d.TotalCrashes; });
+					var pie1 = d3.layout.pie().sort(null).value(function (d) { return d.crash; });
+
+					var svg = d3.select(".div-total-crashes").append("svg")
+						.attr("width", width)
+						.attr("height", height)
+						.append("g")
+						.attr("class","chart")
+						.attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
+					svg1 = d3.select(".div-total-crashes-manufacturer").append("svg")
+						.attr("width", width)
+						.attr("height", height)
+						.append("g")
+						.attr("class","chart")
+						.attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
+					svg2 = d3.select(".div-total-crashes-platform").append("svg")
+						.attr("width", width)
+						.attr("height", height)
+						.append("g")
+						.attr("class","chart")
+						.attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
+					svg3 = d3.select(".div-total-crashes-os-version").append("svg")
+						.attr("width", width)
+						.attr("height", height)
+						.append("g")
+						.attr("class","chart")
+						.attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
+
+					var getArray = function(arr, idx, idx1){
+						var arr1 = new Array();
+						$.each(arr[idx][idx1], function(id, crsh){
+							$.each(crsh, function(key, val){
+								arr1.push({
+									"name" : key,
+									"crash" : val
+								});
+							});
+						});
+						return arr1;
+					}
+					
 					
 					/*$.each(arr[idx][idx1], function(id, crsh){
 						
@@ -200,6 +208,7 @@
 					if(data.length == 0){
 						//alert("No data found for the selected parameters.");
 					} else {
+						$('#tbl-crash-report tbody').empty();
 						showCrashReportTable(JSON.parse(data), 'tbl-crash-report');
 					}
 				});
