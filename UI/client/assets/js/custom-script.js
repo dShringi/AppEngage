@@ -292,7 +292,7 @@ var showTotalCrashesChart = function(data,svg,pie){
 		.text(function (d) { return d.data.TotalCrashes; });
 };
 var showCrashesDonutChart = function(data,svg,pie){
-	//console.log(JSON.stringify(data));
+	console.log(JSON.stringify(data));
 	var tooltip = d3.select("body")
 		.append("div")  // declare the tooltip div 
 		.attr("class", "map-tooltip shadow")              // apply the 'tooltip' class
@@ -438,6 +438,17 @@ function drawAxes(svg, x, y, width, height, xAxis, yAxis){
 }
 /*************************  For Line Chart - END ************************/
 
+
+$.tablesorter.addParser({
+	id: "date",
+	is: function (s) {
+		return false;
+	},
+	format: function (s, table) {
+		return new Date(s).getTime() || '';
+	},
+	type: "numeric"
+});
 
 var sortTable = function(){
 	var pagerOptions = {

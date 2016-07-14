@@ -196,6 +196,15 @@
 				/*************************** For Table - END ******************/
 			};
 			loadChart(sd,ed,appKey);
+			
+			$('.table').tablesorter({
+
+				// customize header HTML
+				headers: {
+					0: { sorter: 'date' }
+				}
+
+			});
         </script>
     </body>
     </html>
