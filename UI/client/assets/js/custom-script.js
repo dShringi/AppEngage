@@ -4,6 +4,18 @@ var color = d3.scale.ordinal().range(["#f47321", "#76bce6", "#75d3c5", "#379154"
 
 var todayObj = new Date(), appKey = 'MastApp';
 
+// Get donut chart SVG object
+var getDonutSVG = function(chartHolder, width, height){
+	return d3.select(chartHolder).append("svg")
+			.attr("width", width)
+			.attr("height", height)
+			.attr('viewBox', '0 0 '+(width)+' '+(height))
+			.attr('perserveAspectRatio', 'xMinYMid')
+			.attr("class","chart")
+			.append("g")
+			.attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
+}
+
 $(document).ready(function () {
     "use strict";
     $('.left-side').load("menu.html");
@@ -17,7 +29,7 @@ $(document).ready(function () {
 	container = the_chart.parent();
 
 	$(window).on("resize", function() {
-		console.log('resize');
+		console.log('resize window');
 		var targetWidth = container.width();
 		the_chart.attr("width", targetWidth);
 		the_chart.attr("height", Math.round(targetWidth / aspect));

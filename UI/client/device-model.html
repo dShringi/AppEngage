@@ -103,27 +103,10 @@
             var arcOver = d3.svg.arc().outerRadius(radius - 18).innerRadius(radius - 62);
 
             var pie = d3.layout.pie().sort(null).value(function (d) { return d.time; });
-
-            var svg = d3.select(".chart-time-spent").append("svg")
-                .attr("width", width)
-                .attr("height", height)
-				.attr('viewBox', '0 0 '+(width)+' '+(height))
-				.attr('perserveAspectRatio', 'xMinYMid')
-				.attr("class","chart")
-                .append("g")
-                .attr("transform", "translate(" + ((width / 2)-70) + "," + height / 2 + ")");
-            
-            
             var pie1 = d3.layout.pie().sort(null).value(function (d) { return d.users; });
-
-            var svg1 = d3.select(".chart-total-users").append("svg")
-                .attr("width", width)
-                .attr("height", height)
-				.attr('viewBox', '0 0 '+(width)+' '+(height))
-				.attr('perserveAspectRatio', 'xMinYMid')
-				.attr("class","chart")
-                .append("g")
-                .attr("transform", "translate(" + ((width / 2)-70) + "," + height / 2 + ")");
+			
+			var svg = getDonutSVG(".chart-time-spent", width, height),
+			svg1 = getDonutSVG(".chart-total-users", width, height);
             
 
             d3.json("assets/json/data-devices-device-model-tot-users-n-time-spent.json", function (error, data) {

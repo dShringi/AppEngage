@@ -125,7 +125,7 @@
 				d3.json(CrashReportAPI + "?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
 				//d3.json("assets/json/ok-data-total-crashes-Counters.json"+"?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
 					if (error) { throw error; }
-					//data = JSON.parse(data);
+					data = JSON.parse(data);
 					console.log(JSON.stringify(data));
 					if(data.length == 0){
 						alert("No data found for the selected parameters.");
@@ -135,70 +135,26 @@
 						$(".div-total-crashes-platform").empty();
 						$(".div-total-crashes-os-version").empty();
 
-						var svg = d3.select(".div-total-crashes").append("svg")
-							.attr("width", width)
-							.attr("height", height)
-							.attr('viewBox', '0 0 '+(width)+' '+(height))
-							.attr('perserveAspectRatio', 'xMinYMid')
-							.attr("class","chart")
-							.append("g")
-							.attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
-						svg1 = d3.select(".div-total-crashes-manufacturer").append("svg")
-							.attr("width", width)
-							.attr("height", height)
-							.attr('viewBox', '0 0 '+(width)+' '+(height))
-							.attr('perserveAspectRatio', 'xMinYMid')
-							.attr("class","chart")
-							.append("g")
-							.attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
-						svg2 = d3.select(".div-total-crashes-platform").append("svg")
-							.attr("width", width)
-							.attr("height", height)
-							.attr('viewBox', '0 0 '+(width)+' '+(height))
-							.attr('perserveAspectRatio', 'xMinYMid')
-							.attr("class","chart")
-							.append("g")
-							.attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
-						svg3 = d3.select(".div-total-crashes-os-version").append("svg")
-							.attr("width", width)
-							.attr("height", height)
-							.attr('viewBox', '0 0 '+(width)+' '+(height))
-							.attr('perserveAspectRatio', 'xMinYMid')
-							.attr("class","chart")
-							.append("g")
-							.attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
-
-						/*var getArray = function(arr, idx, idx1){
-							var arr1 = new Array();
-							$.each(arr[idx][idx1], function(id, crsh){
-								$.each(crsh, function(key, val){
-									arr1.push({
-										"name" : key,
-										"crash" : val
-									});
-								});
-							});
-							return arr1;
-						}*/
+						var svg = getDonutSVG(".div-total-crashes", width, height),
+						svg1 = getDonutSVG(".div-total-crashes-manufacturer", width, height),
+						svg2 = getDonutSVG(".div-total-crashes-platform", width, height),
+						svg3 = getDonutSVG(".div-total-crashes-os-version", width, height);
+						
 						mnuCrshArr = new Array();
 						pfCrshArr = new Array();
 						osvCrshArr = new Array();
 						$.each(data, function(id, v){
 							$.each(v, function(i, v1){
-								//console.log(i);
 								if(i != 'TotalCrashes'){
 									var tempArr = new Array();
 									$.each(v1, function(key1, val1){
 										$.each(val1, function(key, val){
-											//console.log(key+" : "+JSON.stringify(val));
 											tempArr.push({
 												"name" : key,
 												"crash" : val
 											});
-											//console.log(key+" : "+JSON.stringify(val));
 										});
 									});
-									//console.log(i+" : "+JSON.stringify(tempArr));
 									if(i == 'mnu'){
 										mnuCrshArr = tempArr;
 									} else if(i == 'pf'){
@@ -209,7 +165,7 @@
 								}
 							});
 						});
-						//console.log("Formated Arr : "+JSON.stringify(mnuCrshArr));
+						
 						totalCrashes = data[0].TotalCrashes;
 						showTotalCrashesChart(data, svg, pie);
 
@@ -230,12 +186,10 @@
 				/*************************** For Table ************************/
 				d3.json(CrashReportAPITable + "?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
 				//d3.json("assets/json/ok-data-total-crashes.json"+"?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
-					//data = data.replace("\\","");
-					console.log(error);
+					data = JSON.parse(data)
 					if(data.length == 0){
 						//alert("No data found for the selected parameters.");
 					} else {
-						data = JSON.parse(data)
 						showCrashReportTable(data, 'tbl-crash-report');
 					}
 				});
