@@ -88,7 +88,7 @@
         </aside>
         <div class="overlay"></div>
         <script>
-			var width = $("#map-container").width()-50, height = 740;
+			var width = $("#map-container").width(), height = 650;
 			
 			// Define 'div' for tooltips
 			var tooltipMap = d3.select("body")
@@ -97,13 +97,15 @@
 				.style("opacity", 0);                  // set the opacity to nil
 
 			var projection = d3.geo.mercator()
-				.center([0, 65 ])
-				.scale(170)
+				.center([0, 62 ])
+				.scale(150)
 				.rotate([0, 0]);
 
 			var svg = d3.select("#map-container").append("svg")
 				.attr("width", width)
-				.attr("height", height);
+				.attr('viewBox', '0 0 '+(width)+' '+(height))
+				.attr('perserveAspectRatio', 'xMinYMid')
+				.attr("class","chart");
 			
 			var path = d3.geo.path()
 				.projection(projection);
@@ -134,7 +136,9 @@
 					.append("path")
 					.attr("fill", "url(#bgImg)")
 					.attr("d", path);
-
+			});
+			
+			function loadChart(sd, ed, appKey){
 				// load and display the cities
 				d3.json("assets/json/data-cities.json", function (error, data) {
 					showCitiesTable(data, 'tbl-cities');
@@ -145,7 +149,7 @@
 						.attr('class', 'mark')
 						.attr('width', 21)
 						.attr('height', 21)
-						.attr("xlink:href", '/assets/img/marker.png')
+						.attr("xlink:href", 'assets/img/marker.png')
 						.attr("transform", function (d) {
 							var cx = projection([d.lng, d.lat])[0] - 9, cy = projection([d.lng, d.lat])[1] - 21;
 							return "translate(" + cx + ", " + cy + ")";
@@ -156,7 +160,7 @@
                         })
 						.on("mouseout", function(d) {tooltipMap.transition().duration(200).style("opacity", 0);	});
 				});
-			});
+			}
 
 			// zoom and pan
 			var zoom = d3.behavior.zoom()

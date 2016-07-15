@@ -107,6 +107,9 @@
             var svg = d3.select(".chart-time-spent").append("svg")
                 .attr("width", width)
                 .attr("height", height)
+				.attr('viewBox', '0 0 '+(width)+' '+(height))
+				.attr('perserveAspectRatio', 'xMinYMid')
+				.attr("class","chart")
                 .append("g")
                 .attr("transform", "translate(" + ((width / 2)-70) + "," + height / 2 + ")");
             
@@ -116,6 +119,9 @@
             var svg1 = d3.select(".chart-total-users").append("svg")
                 .attr("width", width)
                 .attr("height", height)
+				.attr('viewBox', '0 0 '+(width)+' '+(height))
+				.attr('perserveAspectRatio', 'xMinYMid')
+				.attr("class","chart")
                 .append("g")
                 .attr("transform", "translate(" + ((width / 2)-70) + "," + height / 2 + ")");
             

@@ -84,28 +84,30 @@
 		</aside>
 		<div class="overlay"></div>
 		<script>
-			$(document).ready(function() {
+			//$(document).ready(function() {
 				$('.chart-main-div').hide();
-				// Show Event Table
-				d3.json("assets/json/ok-data-total-events-Summary.json", function (error, data) {
-					if (error) { alert(error); }
-					showEventSummaryTable(data, "tbl-event");
-				});
-				// Show Event Table - END
+				function loadChart(sd, ed, appKey){
+					// Show Event Table
+					d3.json("assets/json/ok-data-total-events-Summary.json?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
+						if (error) { alert(error); }
+						showEventSummaryTable(data, "tbl-event", sd, ed, appKey);
+					});
+					// Show Event Table - END
+				}
 
-				var showEventSummaryTable = function(data, tableId) {
+				var showEventSummaryTable = function(data, tableId, sd, ed, appKey) {
 					"use strict";
 					var tableHTML = "";
 					$.each(data, function (index, row) {
 						//alert(JSON.stringify(row));
-						tableHTML += "<tr><td><a href='javascript:void(0)' onClick='showChart(\""+row.key+"\")' class='cl_showChart'>" + row.key + "</a></td><td>" + row.Total_Event_Count + "</td></tr>";
+						tableHTML += "<tr><td><a href='javascript:void(0)' onClick='showChart(\""+row.key+"\","+sd+","+ed+",\""+appKey+"\")' class='cl_showChart'>" + row.key + "</a></td><td>" + row.Total_Event_Count + "</td></tr>";
 
 					});
 					$("#" + tableId + " tbody").html(tableHTML);
 				};
-			});
+			//});
 			
-			function showChart(event){
+			function showChart(event, sd, ed, appKey){
 				$('.chart-main-div').show();
 				$("#chart-container_1").empty();
 				$("#chart-container_2").empty();
@@ -155,6 +157,9 @@
                     .append("svg")
                     .attr("width", width + margin.left + margin.right)
                     .attr("height", height + margin.top + margin.bottom)
+					.attr('viewBox', '0 0 '+(width + margin.left + margin.right)+' '+(height + margin.top + margin.bottom))
+					.attr('perserveAspectRatio', 'xMinYMid')
+					.attr("class","chart")
                     .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 				
@@ -163,11 +168,14 @@
                     .append("svg")
                     .attr("width", width + margin.left + margin.right)
                     .attr("height", height + margin.top + margin.bottom)
+					.attr('viewBox', '0 0 '+(width + margin.left + margin.right)+' '+(height + margin.top + margin.bottom))
+					.attr('perserveAspectRatio', 'xMinYMid')
+					.attr("class","chart")
                     .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
                 // Get the data for total session
-                d3.json("assets/json/ok-data-total-events-Detail.json", function(error, data) {
+                d3.json("assets/json/ok-data-total-events-Detail.json?sd="+sd+"&ed="+ed+"&akey="+appKey, function(error, data) {
                     //alert(data);
                     data.forEach(function(d) {
 					  	d.date = parseEventDate(d.event_date);
@@ -178,100 +186,6 @@
                     
                 });
 			}
-			/*function showChart(event){
-				$('a[rel="user_count"]').show();
-				$('a[rel="event_count"]').hide();
-				var margin = {top: 30, right: 30, bottom: 30, left: 40},
-					width = $(".chart-container").width() - margin.left - margin.right,
-					height = 300 - margin.top - margin.bottom;
-				$(".chart-container").empty();
-				var x = d3.time.scale()
-					.range([0, width]);
-
-				var y = d3.scale.linear()
-					.range([height, 0]);
-
-				var color = d3.scale.ordinal().range(["#f47321", "#76bce6", "#75d3c5", "#379154", "#39B4BF", "#FFE666", "#E54E67", "#F75B49"]);
-
-				var xAxis = d3.svg.axis()
-					.scale(x)
-					.ticks(d3.time.hour, 1)
-					.tickFormat(d3.time.format('%H'))
-					.orient("bottom");
-
-				var yAxis = d3.svg.axis()
-					.scale(y)
-					.ticks(2)
-					.orient("left");
-
-				var line = d3.svg.line()
-					//.interpolate("basis")
-					.x(function(d) { return x(d.date); })
-					.y(function(d) { return y(d.count); });
-
-				var svg = d3.select(".chart-container").append("svg")
-					.attr("width", width + margin.left + margin.right)
-					.attr("height", height + margin.top + margin.bottom)
-				  	.append("g")
-					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-				d3.json("assets/json/ok-data-total-events-Detail.json", function(error, data) {
-					  if (error) throw error;
-
-					  color.domain(d3.keys(data[0]).filter(function(key) {return key !== "event_date" && key !== "event_name"; }));
-					  data.forEach(function(d) {
-						  d.date = parseEventDate(d.event_date);
-					  });
-					  var eventArr = color.domain().map(function(name) {
-						return {
-							name: name,
-							values: data.map(function(d) {
-								return {date: d.date, count: +d[name]};
-							})
-						};
-					  });
-
-					  x.domain(d3.extent(data, function(d) { return d.date; }));
-
-					  y.domain([
-						d3.min(eventArr, function(c) { return d3.min(c.values, function(v) { return v.count; }); }),
-						d3.max(eventArr, function(c) { return d3.max(c.values, function(v) { return v.count; }); })
-					  ]);
-
-					  svg.append("g")
-						  .attr("class", "x axis")
-						  .attr("transform", "translate(0," + height + ")")
-						  .call(xAxis);
-
-					  svg.append("g")
-						  .attr("class", "y axis")
-						  .call(yAxis);
-
-					  var event = svg.selectAll(".event")
-						  .data(eventArr)
-						.enter().append("g")
-						  .attr("class", "event");
-
-					  event.append("path")
-						  .attr("class", function(d) { return "line "+d.name; })
-						  .attr("d", function(d) { return line(d.values); })
-						  .style("stroke", function(d) { return color(d.name); });
-					
-					
-
-					  var counter = 0;
-						event.append("text")
-						  .datum(function(d) { return {name: d.name, value: d.values[d.values.length - 1]}; })
-						  .attr("transform", function(d) {xCord = (counter*100)+30;counter++;return "translate("+xCord+",-10)"; })
-						  .attr("x", 2)
-						  .attr("dy", ".35em")
-					  		.style("stroke", function(d) { return color(d.name); })
-						  .text(function(d) { return d.name.replace("_"," "); });
-					});
-				};
-			*/
-			
-			
 		</script>
 	</body>
 	</html>

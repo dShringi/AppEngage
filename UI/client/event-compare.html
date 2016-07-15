@@ -75,17 +75,20 @@
 		</aside>
 		<div class="overlay"></div>
 		<script>
-			$(document).ready(function() {
+			//$(document).ready(function() {
 				$('.toggleThis').click(function(){
 					$('.toggleThis').toggle();
 					$(".line").toggle()
 				});
-				// Show Event Table
-				d3.json("assets/json/ok-data-total-events-Summary.json", function (error, data) {
-					if (error) { alert(error); }
-					showEventCompareTable(data, "tbl-event");
-				});
-				// Show Event Table - END
+				
+				function loadChart(sd, ed, appKey){
+					// Show Event Table
+					d3.json("assets/json/ok-data-total-events-Summary.json?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
+						if (error) { alert(error); }
+						showEventCompareTable(data, "tbl-event");
+					});
+					// Show Event Table - END
+				}
 
 				var showEventCompareTable = function(data, tableId) {
 					"use strict";
@@ -108,7 +111,7 @@
 					showChart(Arr);
 					
 				});
-			});
+			//});
 			function showChart(eventArray){
 				/*$('a[rel="user_count"]').show();
 				$('a[rel="event_count"]').hide();*/
@@ -152,16 +155,21 @@
 				var svg = d3.select(".event-chart-container").append("svg")
 					.attr("width", width + margin.left + margin.right)
 					.attr("height", height + margin.top + margin.bottom)
+					.attr('viewBox', '0 0 '+(width + margin.left + margin.right)+' '+(height + margin.top + margin.bottom))
+					.attr('perserveAspectRatio', 'xMinYMid')
+					.attr("class","chart")
 				  	.append("g")
 					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 				
 				var svg1 = d3.select(".user-chart-container").append("svg")
 					.attr("width", width + margin.left + margin.right)
 					.attr("height", height + margin.top + margin.bottom)
+					.attr('viewBox', '0 0 '+(width + margin.left + margin.right)+' '+(height + margin.top + margin.bottom))
+					.attr('perserveAspectRatio', 'xMinYMid')
+					.attr("class","chart")
 				  	.append("g")
 					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-				//d3.tsv("data.tsv", function(error, data) {
 				d3.json("assets/json/ok-data-total-events-Comparison.json", function(error, data) {
 					if (error) throw error;
 

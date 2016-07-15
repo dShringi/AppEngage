@@ -11,6 +11,17 @@ $(document).ready(function () {
 	$.get("header.html", function (data) {
 		$(".main-container").prepend(data);
 	});
+	
+	var the_chart = $(".chart"),
+	aspect = the_chart.width() / the_chart.height(),
+	container = the_chart.parent();
+
+	$(window).on("resize", function() {
+		console.log('resize');
+		var targetWidth = container.width();
+		the_chart.attr("width", targetWidth);
+		the_chart.attr("height", Math.round(targetWidth / aspect));
+	}).trigger("resize");
     
 	var displayDate = function (date) {
         var today = new Date(), month, day, year;

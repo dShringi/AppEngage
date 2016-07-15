@@ -59,8 +59,6 @@
         </aside>
         <div class="overlay"></div>
         <script>
-            $(document).ready(function() {
-                
                 // Set the dimensions of the canvas / graph
                 var	margin = {top: 30, right: 50, bottom: 30, left: 50}, divWidth = $("#line-chart-container-1").width(), width = (divWidth - 30) - margin.left - margin.right,
                     height = 250 - margin.top - margin.bottom;
@@ -100,20 +98,25 @@
                 var	svg = d3.select("#line-chart-container-1")
                     .append("svg")
 					.attr("class","chart")
-                    .attr("width", width + margin.left + margin.right)
+					.attr("width", width + margin.left + margin.right)
                     .attr("height", height + margin.top + margin.bottom)
+					.attr('viewBox', '0 0 '+(width + margin.left + margin.right)+' '+(height + margin.top + margin.bottom))
+					.attr('perserveAspectRatio', 'xMinYMid')
                     .append("g")
-                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 				
 				// Adds the svg canvas
                 var	svg1 = d3.select("#line-chart-container-2")
                     .append("svg")
-					.attr("id","chart")
+					.attr("class","chart")
                     .attr("width", width + margin.left + margin.right)
                     .attr("height", height + margin.top + margin.bottom)
+					.attr('viewBox', '0 0 '+(width + margin.left + margin.right)+' '+(height + margin.top + margin.bottom))
+					.attr('perserveAspectRatio', 'xMinYMid')
                     .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+			function loadChart(sd, ed, appKey){
                 // Get the data for total session
                 d3.json("assets/json/data-insight-sessions.json", function(error, data) {
                     //alert(data);
@@ -125,19 +128,7 @@
                     plotLineChart(data,svg1, div1, true, "totalTime", valueline1, x, y, width, height);
                     
                 });
-            });
-
-			var the_chart = $("#chart"),
-			aspect = the_chart.width() / the_chart.height(),
-			container = the_chart.parent();
-
-			$(window).on("resize", function() {
-				console.log('resize');
-				var targetWidth = container.width();
-				the_chart.attr("width", targetWidth);
-				the_chart.attr("height", Math.round(targetWidth / aspect));
-			}).trigger("resize");
-			
+			}
         </script>
     </body>
     </html>
