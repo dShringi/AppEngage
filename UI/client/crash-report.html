@@ -123,7 +123,7 @@
 			
 			var loadChart = function(sd, ed, appKey = 'MastApp'){
 				d3.json(CrashReportAPI + "?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
-				d3.json("assets/json/ok-data-total-crashes-Counters.json"+"?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
+				//d3.json("assets/json/ok-data-total-crashes-Counters.json"+"?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
 					if (error) { throw error; }
 					data = JSON.parse(data);
 					
@@ -201,11 +201,11 @@
 				d3.json(CrashReportAPITable + "?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
 				//d3.json("assets/json/ok-data-total-crashes.json"+"?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
 					//data = data.replace("\\","");
-					//console.log(data);
+					console.log(error);
 					if(data.length == 0){
 						//alert("No data found for the selected parameters.");
 					} else {
-						//data = JSON.parse(data)
+						data = JSON.parse(data)
 						showCrashReportTable(data, 'tbl-crash-report');
 					}
 				});
