@@ -126,10 +126,7 @@
 				//d3.json("assets/json/ok-data-total-crashes-Counters.json"+"?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
 					if (error) { throw error; }
 					data = JSON.parse(data);
-					
-					/*$.each(arr[idx][idx1], function(id, crsh){
-						
-					});*/
+					console.log(JSON.stringify(data));
 					if(data.length == 0){
 						alert("No data found for the selected parameters.");
 					} else {
@@ -163,7 +160,7 @@
 							.attr("class","chart")
 							.attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
 
-						var getArray = function(arr, idx, idx1){
+						/*var getArray = function(arr, idx, idx1){
 							var arr1 = new Array();
 							$.each(arr[idx][idx1], function(id, crsh){
 								$.each(crsh, function(key, val){
@@ -174,27 +171,52 @@
 								});
 							});
 							return arr1;
-						}
-						
+						}*/
+						mnuCrshArr = new Array();
+						pfCrshArr = new Array();
+						osvCrshArr = new Array();
+						$.each(data, function(id, v){
+							$.each(v, function(i, v1){
+								//console.log(i);
+								if(i != 'TotalCrashes'){
+									var tempArr = new Array();
+									$.each(v1, function(key1, val1){
+										$.each(val1, function(key, val){
+											//console.log(key+" : "+JSON.stringify(val));
+											tempArr.push({
+												"name" : key,
+												"crash" : val
+											});
+											//console.log(key+" : "+JSON.stringify(val));
+										});
+									});
+									//console.log(i+" : "+JSON.stringify(tempArr));
+									if(i == 'mnu'){
+										mnuCrshArr = tempArr;
+									} else if(i == 'pf'){
+										pfCrshArr = tempArr;
+									} else if(i == 'osv'){
+										osvCrshArr = tempArr;
+									}
+								}
+							});
+						});
+						//console.log("Formated Arr : "+JSON.stringify(mnuCrshArr));
 						totalCrashes = data[0].TotalCrashes;
 						showTotalCrashesChart(data, svg, pie);
 
 						// Manufacturer Crashes Chart
-						showCrashesDonutChart(getArray(data, 2, 'mnu'), svg1, pie1);
+						showCrashesDonutChart(mnuCrshArr, svg1, pie1);
 						// Manufacturer Crashes Chart - END
 
 						// Platform Crashes Chart
-						showCrashesDonutChart(getArray(data, 3, 'pf'), svg2, pie1);
+						showCrashesDonutChart(pfCrshArr, svg2, pie1);
 						// Platform Crashes Chart - END
 
 						// Platform Crashes Chart
-						showCrashesDonutChart(getArray(data, 1, 'osv'), svg3, pie1);
+						showCrashesDonutChart(osvCrshArr, svg3, pie1);
 						// Platform Crashes Chart - END
-
-					}
-					
-					
-						
+					}	
 				});
 
 				/*************************** For Table ************************/
