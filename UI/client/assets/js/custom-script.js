@@ -27,10 +27,12 @@ $(document).ready(function () {
     }, oneMonthAgoDateObj = displayDate(todayObj);
     
     //$('.date-range').html(getFormattedDate(oneMonthAgoDateObj) + ' - ' + getFormattedDate(todayObj));
-    
+    var startDateCal = new Date(), endDateCal = displayDate(new Date());
 	function cb(start, end) {
         $('#dateRange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
 		//alert(start+"--"+end);
+		startDateCal = start;
+		endDateCal = end;
 		loadChart(parseInt(start/1000),parseInt(end/1000), appKey);
     }
     cb(moment().subtract(29, 'days'), moment());
@@ -49,8 +51,8 @@ $(document).ready(function () {
             format: 'YYYY-MM-DD',
             applyLabel: "Select"
         },
-        startDate: new Date(),
-        endDate: displayDate(new Date())
+        startDate: startDateCal,
+        endDate: endDateCal
     }, cb);
 });
 
@@ -62,8 +64,7 @@ var showDeviceModelTable = function (data, tableId) {
         tableHTML += "<tr><td>" + row.model + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
-    $("#" + tableId + " tbody").html(tableHTML);
-	sortTable();
+    updateTable(tableId, tableHTML);
 };
 
 var showCitiesTable = function (data, tableId) {
@@ -74,8 +75,7 @@ var showCitiesTable = function (data, tableId) {
         tableHTML += "<tr><td>" + row.city + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
-    $("#" + tableId + " tbody").html(tableHTML);
-	sortTable();
+    updateTable(tableId, tableHTML);
 };
 
 var showDeviceCarrierTable = function (data, tableId) {
@@ -98,8 +98,7 @@ var showDeviceResolutionTable = function (data, tableId) {
         tableHTML += "<tr><td>" + row.resolution + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
-    $("#" + tableId + " tbody").html(tableHTML);
-	sortTable();
+    updateTable(tableId, tableHTML);
 };
 
 var showDeviceOSVersionTable = function (data, tableId) {
@@ -110,8 +109,7 @@ var showDeviceOSVersionTable = function (data, tableId) {
         tableHTML += "<tr><td>" + row.os + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
-    $("#" + tableId + " tbody").html(tableHTML);
-	sortTable();
+    updateTable(tableId, tableHTML);
 };
 
 var showDeviceAppVersionTable = function (data, tableId) {
@@ -122,8 +120,7 @@ var showDeviceAppVersionTable = function (data, tableId) {
         tableHTML += "<tr><td>" + row.app + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
-    $("#" + tableId + " tbody").html(tableHTML);
-	sortTable();
+    updateTable(tableId, tableHTML);
 };
 
 var showDevicePlatformTable = function (data, tableId) {
@@ -134,8 +131,7 @@ var showDevicePlatformTable = function (data, tableId) {
         tableHTML += "<tr><td>" + row.platform + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
-    $("#" + tableId + " tbody").html(tableHTML);
-	sortTable();
+    updateTable(tableId, tableHTML);
 };
 
 var showDeviceTypeTable = function (data, tableId) {
@@ -146,8 +142,7 @@ var showDeviceTypeTable = function (data, tableId) {
         tableHTML += "<tr><td>" + row.type + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
-    $("#" + tableId + " tbody").html(tableHTML);
-	sortTable();
+    updateTable(tableId, tableHTML);
 };
 
 var showDeviceMenufacturerTable = function (data, tableId) {
@@ -158,24 +153,33 @@ var showDeviceMenufacturerTable = function (data, tableId) {
         tableHTML += "<tr><td>" + row.manufacturer + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
-    $("#" + tableId + " tbody").html(tableHTML);
-	sortTable();
+    updateTable(tableId, tableHTML);
 };
 
 var showCrashReportTable = function (data, tableId) {
 	"use strict";
 	var tableHTML = "";
 	//console.log("Avi : "+JSON.stringify(data));
-    $.each(data, function (index, row) {
-        //console.log("Arvind : "+JSON.stringify(row));
+	//var $table = $('#'+tableId);
+	    $.each(data, function (index, row) {
         tableHTML += "<tr><td>" + getFormatedDateDDMMYY(new Date(row.dt*1000)) + "</td><td>" + row.pf + "</td><td>" + row.os + "</td><td>" + row.av + "</td><td>" + row.totalCrashes + "</td></tr>";
         
     });
-    $("#" + tableId + " tbody").html(tableHTML);
-	sortTable();
-	$("table").trigger("update");
+	updateTable(tableId, tableHTML);
 };
 
+
+function updateTable(tableId, tableHTML){
+	if ($('#'+tableId).find("tr").size() > 1){
+		//console.log("empty table");
+		$.tablesorter.clearTableBody( $('#'+tableId) );
+		$("#" + tableId + " tbody").html(tableHTML);
+		$("#" + tableId).trigger("update");
+	} else {
+		$("#" + tableId + " tbody").html(tableHTML);
+		sortTable();
+	}
+}
 
 
 var parseEventDate = function(eDate){
