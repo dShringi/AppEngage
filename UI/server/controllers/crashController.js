@@ -18,6 +18,8 @@ async.waterfall(
 			{ $group: {_id : {rtc: "$val.rtc", av: "$val.av", osv:"$val.osv",pf:"$val.pf"}, Total : {$sum : 1}}},
 			{ $project: {_id: 1,Total: 1 } }
 			],function(err, result) {
+				//console.log(result);
+				if(result!=null){
 				for(var i=0;i<result.length;i++){
 					tempstring[i] = (' {'+' "dt": "'+result[i]._id.rtc+'","av": "' +result[i]._id.av + '","os": "' +result[i]._id.osv+'","pf":"' +result[i]._id.pf+'","totalCrashes": ' +result[i].Total +' }');
 					tempstr+=tempstring[i].concat(',');
@@ -25,6 +27,10 @@ async.waterfall(
 				 tempstr = tempstr.substr(0,tempstr.length-1);
 			//console.log(tempstr);
 				finaldetailstr='[ '+ tempstr + ']'
+				}else{
+				db.close();
+				return res.json('[]');
+				}
 				callback(null);
 		});
 	},//callback end
@@ -59,11 +65,13 @@ async.waterfall(
 				//console.log("Total result:");
 				//console.log(result);
 				if(!err){
-					if(result!=null){
+					if(result.length!=0){
 						totalstring='{"TotalCrashes":'+ result[0].Total + '}';
 					}
 					else{
-						totalstring='{"TotalCrashes":0}'
+						db.close();
+                                		return res.json('[]');
+						//totalstring='{"TotalCrashes":0}'
 					}
 				}
 				//console.log(totalstring);

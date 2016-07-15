@@ -5,7 +5,8 @@ var bodyParser  	= require('body-parser');
 var config		= require('./config/config');
 
 //API Routes Embeding
-var crashcontroller = require('./server/controllers/crashController');
+var crashController = require('./server/controllers/crashController');
+var dashboardController = require('./server/controllers/dashboardController');
 //console.log('1');
 app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser()); // get information from html forms
@@ -15,8 +16,9 @@ app.get('/', function (req, res) {
   res.sendFile(__dirname + '/client/index.html');
 });
 //console.log('3');
-app.get('/appengage//getCrashCounters', crashcontroller.crashCounters);
-app.get('/appengage//getCrashDetails', crashcontroller.crashDetail);
+app.get('/appengage//getCrashCounters', crashController.crashCounters);
+app.get('/appengage//getCrashDetails', crashController.crashDetail);
+app.get('/appengage//getDashBoardCounters', dashboardController.dashboardCounters);
 //console.log('4');
 var server = app.listen(config.port, function () {
   var host = server.address().address;
