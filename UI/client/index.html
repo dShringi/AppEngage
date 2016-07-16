@@ -11,13 +11,15 @@
         <!-- Latest compiled and minified JavaScript -->
         <script src="assets/js/bootstrap.min.js"></script>
         <script src="http://d3js.org/d3.v3.min.js"></script>
-        <script src="assets/js/custom-script.js"></script>
         <script src="assets/js/moment.min.js"></script>
         <script type="text/javascript" src="assets/js/daterangepicker.js"></script>
         <link rel="stylesheet" type="text/css" href="assets/css/daterangepicker.css" />
 		<link rel="stylesheet" href="assets/css/bootstrap-select.min.css">
 		<script src="assets/js/bootstrap-select.min.js"></script>
 		<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+        <link rel="stylesheet" href="assets/css/sweetalert.css">
+		<script src="assets/js/sweetalert.min.js"></script>
+        <script src="assets/js/custom-script.js"></script>
     </head>
     <body>
         <aside class="left-side sticky-left-side" tabindex="5000"></aside>
@@ -37,10 +39,10 @@
 						</div>
 						<div class="col-md-6 txt-drk-gray margnTp-5 text-right">
 							<div style="display:inline; padding-right:15px">
-								<select class="form-control selectpicker" data-width="150px">
-									<option value="All">All</option>
-									<option value="SmartPhone">SmartPhone</option>
-									<option value="Tablet">Tablet</option>
+								<select class="form-control selectpicker" id="sel_deviceType" data-width="150px">
+									<option value="A">All</option>
+									<option value="S">SmartPhone</option>
+									<option value="T">Tablet</option>
 								</select>
 							</div>
 							<div  style="display:inline">
@@ -61,79 +63,85 @@
                     </header>
                     <div class="">
                         <ul class="event-container">
-                            <li class="col-md-2 col-sm-4 ">
+                            <li class="col-xs-12 col-sm-4 col-md-2">
                                 <section class="text-center box-green">
                                     <div class="event-box">
-                                        <span class="text-center">
-                                             <img src="assets/img/01.png" />
+                                        <div class="text-center"><div class="row"><div class="col-sm-2 col-xs-2"></div>
+                                             <img src="assets/img/01.png" class="col-sm-8 col-xs-8 img-responsive" />
+                                            <div class="col-sm-2 col-xs-2"></div></div>
                                              <label>Total<br />Sessions</label>
-                                        </span>
-                                        <div class="inner-grey-box text-center">
+                                        </div>
+                                        <div class="inner-grey-box text-center cl_ts">
                                             13
                                         </div>
                                     </div>
                                 </section>
                             </li>
-                            <li class="col-md-2 col-sm-4 ">
+                            <li class="col-xs-12 col-sm-4 col-md-2">
                                 <section class="text-center box-aqua">
                                     <div class="event-box">
-                                        <span class="text-center">
-                                            <img src="assets/img/02.png" />
+                                        <div class="text-center"><div class="row"><div class="col-sm-2 col-xs-2"></div>
+                                            <img src="assets/img/02.png" class="col-sm-8 col-xs-8 img-responsive" />
+                                            <div class="col-sm-2 col-xs-2"></div></div>
                                             <label>Total<br />Events </label>
-                                        </span>
-                                        <div class="inner-grey-box text-center">
+                                        </div>
+                                        <div class="inner-grey-box text-center cl_te">
                                             13
                                         </div>
                                     </div>
                                 </section>
                             </li>
-                            <li class="col-md-2 col-sm-4 ">
+                            <li class="col-xs-12 col-sm-4 col-md-2">
                                 <section class="text-center box-yellow">
                                     <div class="event-box">
-                                        <span class="text-center">
-                                            <img src="assets/img/03.png" />
+                                        <div class="text-center"><div class="row"><div class="col-sm-2 col-xs-2"></div>
+                                            <img src="assets/img/03.png" class="col-sm-8 col-xs-8 img-responsive" />
+                                            <div class="col-sm-2 col-xs-2"></div></div>
                                             <label>Total<br />Users </label>
-                                        </span>
-                                        <div class="inner-grey-box text-center">
+                                        </div>
+                                        <div class="inner-grey-box text-center cl_tu">
                                             13
                                         </div>
                                     </div>
                                 </section>
                             </li>
-                            <li class="col-md-2 col-sm-4">
+                            <li class="col-xs-12 col-sm-4 col-md-2">
                                 <section class="text-center box-pink">
                                     <div class="event-box">
-                                        <span class="text-center">
-                                            <img src="assets/img/04.png" />
+                                        <div class="text-center"><div class="row"><div class="col-sm-2 col-xs-2"></div>
+                                            <img src="assets/img/04.png" class="col-sm-8 col-xs-8 img-responsive" />
+                                            <div class="col-sm-2 col-xs-2"></div></div>
                                             <label>New<br />Users </label>
-                                        </span>
-                                        <div class="inner-grey-box text-center">
+                                        </div>
+                                        <div class="inner-grey-box text-center cl_nu">
                                             13
                                         </div>
                                     </div>
                                 </section>
                             </li>
-                            <li class="col-md-2 col-sm-4">
+                            <li class="col-xs-12 col-sm-4 col-md-2">
                                 <section class="text-center box-red">
                                     <div class="event-box">
-                                        <span class="text-center">
-                                            <img src="assets/img/05.png" />
+                                        <div class="text-center"><div class="row"><div class="col-sm-2 col-xs-2"></div>
+                                            <img src="assets/img/05.png" class="col-sm-8 col-xs-8 img-responsive" />
+                                            <div class="col-sm-2 col-xs-2"></div></div>
                                             <label>Total<br />Time Spent </label>
-                                        </span>
-                                        <div class="inner-grey-box text-center">
+                                        </div>
+                                        <div class="inner-grey-box text-center cl_tts">
                                             13
                                         </div>
                                     </div>
                                 </section>
                             </li>
-                            <li class="col-md-2 col-sm-4 ">
+                            <li class="col-xs-12 col-sm-4 col-md-2">
                                 <section class="text-center box-blue">
                                     <div class="event-box">
-                                        <span class="text-center">
-                                            <img src="assets/img/06.png" />
+                                        <div class="text-center"><div class="row"><div class="col-sm-2 col-xs-2"></div>
+                                            <img src="assets/img/06.png" class="col-sm-8 col-xs-8 img-responsive" />
+                                            <div class="col-sm-2 col-xs-2"></div></div>
                                             <label>Total<br />Crashes </label>
-                                        </span>
-                                        <div class="inner-grey-box text-center">
+                                        </div>
+                                        <div class="inner-grey-box text-center cl_tc">
                                             13
                                         </div>
                                     </div>
@@ -146,34 +154,27 @@
         </aside>
         <div class="overlay"></div>
         <script>
-			var apiURL = "assets/json/data1.json";
-			function loadChart(startDate, endDate,appKey){
-				$.getJSON( apiURL + "?sd="+startDate+"&ed="+endDate+"&ed="+endDate+"&akey="+appKey, function( data ) {
-					var evntBx = "";
-					$.each(data, function(index, values){
-						if(values.Title == "Total Time Spent"){
-							values.Total = sec2ISO(values.Total);
-						}
-
-						evntBx += '<li class="col-xs-12 col-sm-4 col-md-2 ">'+
-							'<section class="text-center box-blue">'+
-								'<div class="event-box">'+
-									'<div class="text-center"><div class="row"><div class="col-sm-2 col-xs-2"></div>'+
-										'<img src="assets/img/'+values.img+'" class="col-sm-8 col-xs-8 img-responsive"/><div class="col-sm-2 col-xs-2"></div></div>'+
-										'<label>'+values.Title+'</label>'+
-									'</div>'+
-									'<div class="inner-grey-box text-center">'+values.Total+'</div>'+
-								'</div>'+
-							'</section>'+
-						'</li>';
-					});
-					$('.event-container').html(evntBx);
+			//var apiURL = "assets/json/data1.json";
+            var apiURL = "http://13.66.57.215/appengage/getDashBoardCounters";
+			function loadChart(startDate, endDate, appKey, type){
+				d3.json( apiURL + "?sd="+startDate+"&ed="+endDate+"&type="+type+"&akey="+appKey, function( error, data ) {
+                    //console.log(JSON.stringify(error));
+                    data = JSON.parse(data);
+                    
+                    if(data.length){
+                        $('.cl_ts').html(data[0].tse);
+                        $('.cl_te').html(data[0].te);
+                        $('.cl_tu').html(data[0].tuu);
+                        $('.cl_nu').html(data[0].tnu);
+                        $('.cl_tts').html(sec2ISO(data[0].tts));
+                        $('.cl_tc').html(data[0].tce);
+                    } else {
+                        showError("No data found for the selected parameters.");
+                    }
 				});
 			}
 
             $(document).ready(function() {
-				
-				
 				var today = new Date();
 				//loadChart(getFormatedDate(today), getFormatedDate(today));
 				
@@ -194,10 +195,7 @@
 					.ticks(d3.time.minutes, 1)
 					.tickFormat(d3.time.format("%H:%M"))
 					.orient("bottom");
-					//.ticks(5);
-
-				//xAxis.ticks(d3.time.minutes, 1);
-
+                
 				var yAxis = d3.svg.axis()
 					.scale(y)
 					.orient("left") 
@@ -261,8 +259,7 @@
 						.attr("height", function(d) { return height - y(d.DeviceCount); })
 						.on('mouseover', tip1.show)
 						.on('mouseout', tip1.hide);
-
-
+                    
 					nextnumber = (data[data.length-1]._id + 10000);
 					
 					var the_chart = $("#chart"),
@@ -278,7 +275,6 @@
 					
 					var tickerstart = moment().subtract(10, 'minutes').startOf('minute');
 					tickerstartdate = moment(tickerstart).valueOf();
-
 
 					timer = setInterval(function(){
 						tickerstartdate = tickerstartdate + 10000;
@@ -305,8 +301,6 @@
 							x.domain([d3.min(data, function(d) { return d._id; }), d3.max(data, function(d) { return d._id; })]);
 							y.domain([0, d3.max(data, function(d) { return d.count; })]);
 
-
-
 							var rect = chart.selectAll(".tickerbar")
 								.data(data, function(d) { return d._id; });
 
@@ -315,7 +309,6 @@
 								.duration(10000)
 								.ease("linear")
 								.call(xAxis);
-
 
 							//slide the x-axis left
 							yAxisOrg.transition()
@@ -360,11 +353,9 @@
 
 							nextnumber = nextnumber + 10000;
 						})
-					},10010);
-
-				});
-				
-		});
+                    },10010);
+                });
+            });
         </script>
     </body>
-    </html>
+</html>

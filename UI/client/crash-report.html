@@ -12,7 +12,6 @@
         <script src="assets/js/bootstrap.min.js"></script>
         <script src="assets/js/d3.v3.min.js"></script>
         <script src="assets/js/d3.legend.js"></script>
-        <script src="assets/js/custom-script.js"></script>
         <script src="assets/js/moment.min.js"></script>
         <script type="text/javascript" src="assets/js/daterangepicker.js"></script>
         <link rel="stylesheet" type="text/css" href="assets/css/daterangepicker.css" />
@@ -23,6 +22,9 @@
 		<script src="assets/js/jquery.tablesorter.widgets.js"></script>
 		<link rel="stylesheet" href="assets/css/jquery.tablesorter.pager.css">
 		<script src="assets/js/jquery.tablesorter.pager.js"></script>
+        <link rel="stylesheet" href="assets/css/sweetalert.css">
+		<script src="assets/js/sweetalert.min.js"></script>
+        <script src="assets/js/custom-script.js"></script>
     </head>
     <body>
         <aside class="left-side sticky-left-side" tabindex="5000"></aside>
@@ -128,7 +130,7 @@
 					data = JSON.parse(data);
 					console.log(JSON.stringify(data));
 					if(data.length == 0){
-						alert("No data found for the selected parameters.");
+						showError("No data found for the selected parameters.");
 					} else {
 						$(".div-total-crashes").empty();
 						$(".div-total-crashes-manufacturer").empty();

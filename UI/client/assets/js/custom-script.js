@@ -50,13 +50,19 @@ $(document).ready(function () {
     }, oneMonthAgoDateObj = displayDate(todayObj);
     
     //$('.date-range').html(getFormattedDate(oneMonthAgoDateObj) + ' - ' + getFormattedDate(todayObj));
-    var startDateCal = new Date(), endDateCal = displayDate(new Date());
+    var startDateCal = new Date(), endDateCal = displayDate(new Date()), type;
 	function cb(start, end) {
         $('#dateRange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
 		//alert(start+"--"+end);
 		startDateCal = start;
 		endDateCal = end;
-		loadChart(parseInt(start/1000),parseInt(end/1000), appKey);
+        
+        if($('#sel_deviceType').length){
+            type = $('#sel_deviceType').val();
+        } else {
+            type = "A";
+        }
+		loadChart(parseInt(start/1000),parseInt(end/1000), appKey, type);
     }
     cb(moment().subtract(29, 'days'), moment());
 	
@@ -77,7 +83,15 @@ $(document).ready(function () {
         startDate: startDateCal,
         endDate: endDateCal
     }, cb);
+    
+    $('#sel_deviceType').on('change', function(){
+        loadChart(parseInt(startDateCal/1000),parseInt(endDateCal/1000), appKey, $(this).val());
+    });
 });
+
+var showError = function(err){
+    sweetAlert("Oops...", err, "error");
+}
 
 var showDeviceModelTable = function (data, tableId) {
 	"use strict";
