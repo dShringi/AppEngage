@@ -97,7 +97,7 @@ function eventFactory(){
                 });
             case Collection["activesessions"]:
                 return new activeSessionCollection({
-                    _id : _event.val.id,
+                    _id : _event.val.sid,
                     sst : _event.val.sst,
                     lat : _event.val.lat,
                     dt  : _event.val.dt

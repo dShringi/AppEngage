@@ -31,63 +31,54 @@ consumer.on('message', function (message) {
     data = JSON.parse(message.value);
     event = EventFactory.getEvent(data);
     event.save(function (err) {
-        if (!err) {
-            logger.info('/api/i/single/B/' + event._id); 
-        } else {
-            logger.error(err);
+        if (err) {
+            logger.error(getErrorMessageFrom(err));
             return;
         }
     });
 
+    eventDate = new Date(data.val.rtc);
+    year = eventDate.getFullYear();
+    month = eventDate.getMonth();
+    date = eventDate.getDate();
+            
+    dashboardYearData = {
+        dt  : data.val.dt,
+        key : ""+year,
+        ty  : 'Y'
+    };
+    dashboardMonthData = {
+        dt  : data.val.dt,
+        key : ""+year+month,
+        ty  : 'M'
+    };
+    dashboardDayData = {
+        dt  : data.val.dt,
+        key : ""+year+month+date,
+        ty  : 'D'
+    };
+
     switch(data.type){
         case Collection["begin"]:
+            saveOrUpdate(dashboardYearData);
+            saveOrUpdate(dashboardMonthData);
+            saveOrUpdate(dashboardDayData);
+            
+            // Insert in active sessions
+            if(data.val.sid){
+                sessionEvent = EventFactory.getEvent(data);
+                sessionEvent.save(function(err){
+                   if(err){
+                       logger.error(getErrorMessageFrom(err));
+                       return;
+                   } 
+                });
+            }
             break;
         case Collection["crash"]:
-            // Insert/Update in dashboard collection
-            eventDate = new Date(data.val.rtc);
-            year = eventDate.getFullYear();
-            month = eventDate.getMonth();
-            date = eventDate.getDate();
-            
-            // For Year
-            dashboardData = {
-                dt  : data.val.dt,
-                key : ""+year+month+date,
-                ty  : 'Y'
-            };
-            
-            Model.Dashboard.findOne({
-                _id: dashboardData
-            }, function(err, doc){
-                logger.info("Query: "+ JSON.stringify(dashboardData));
-                logger.info(JSON.stringify(doc));
-                if(!err){
-                    if(doc === undefined || doc === null){
-                        logger.info("No records found!");
-                        dashboardData.tce = 1;
-                        dashboardData.type = Collection["dashboard"];
-                        doc = EventFactory.getEvent(dashboardData);
-                        doc.save(function(err){
-                           if(err){
-                               logger.error("Error saving "+getErrorMessageFrom(err));
-                           } 
-                        });
-                    } else {
-                        doc._id = dashboardData;
-                        // TODO Figure out a better way to do it.
-                        dashboardVal = Object.create(doc.val);
-                        dashboardVal.tce = dashboardVal.tce+1;
-                        doc.val = dashboardVal;
-                        doc.save(function(err){
-                            if(err){
-                                logger.error("Error updating model"+getErrorMessageFrom(err));
-                            }
-                        });
-                    }
-                } else {
-                    logger.error(err);
-                }
-            });
+            saveOrUpdate(dashboardYearData);
+            saveOrUpdate(dashboardMonthData);
+            saveOrUpdate(dashboardDayData);
             break;
         case Collection["end"]:
             break;
@@ -119,4 +110,50 @@ function getErrorMessageFrom(err) {
         errorMessage = err.message;
     }
     return errorMessage;
+}
+
+function saveOrUpdate(dashboardData, eventType){
+    Model.Dashboard.findOne({
+        _id: dashboardData
+    }, function(err, doc){
+        if(!err){
+            if(doc === undefined || doc === null){
+                switch(eventType){
+                    case Collection["begin"]:
+                        dashboardData.tse = 1;
+                        break;
+                    case Collection["crash"]:
+                        dashboardData.tce = 1;
+                        break;
+                }
+                dashboardData.type = Collection["dashboard"];
+                doc = EventFactory.getEvent(dashboardData);
+                doc.save(function(err){
+                   if(err){
+                       logger.error("Error saving "+getErrorMessageFrom(err));
+                   } 
+                });
+            } else {
+                doc._id = dashboardData;
+                // TODO Figure out a better way to do it.
+                dashboardVal = Object.create(doc.val);
+                switch(eventType){
+                    case Collection["begin"]:
+                        dashboardVal.tse = dashboardVal.tse+1;
+                        break;
+                    case Collection["crash"]:
+                        dashboardVal.tce = dashboardVal.tce+1;
+                        break;
+                }                
+                doc.val = dashboardVal;
+                doc.save(function(err){
+                    if(err){
+                        logger.error("Error updating model"+getErrorMessageFrom(err));
+                    }
+                });
+            }
+        } else {
+            logger.error(err);
+        }
+    });
 }
