@@ -5,6 +5,7 @@ var async       = require('async');
 module.exports.dashboardRealTime = function(req,res){
 
 var startdate = req.query["sd"],enddate  = req.query["ed"],akey =req.query["akey"],response="";
+//Finding the extra seconds above rounding to 0.
 startdate = startdate - startdate%10;
 enddate = enddate - enddate%10;
 var db = mongojs(config.connectionstring+akey);
