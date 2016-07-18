@@ -19,6 +19,7 @@ app.get('/', function (req, res) {
 app.get('/appengage//getCrashCounters', crashController.crashCounters);
 app.get('/appengage//getCrashDetails', crashController.crashDetail);
 app.get('/appengage//getDashBoardCounters', dashboardController.dashboardCounters);
+app.get('/appengage//getDashBoardRealTime',dashboardController.dashboardRealTime);
 //console.log('4');
 var server = app.listen(config.port, function () {
   var host = server.address().address;
