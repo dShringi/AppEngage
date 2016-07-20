@@ -108,123 +108,127 @@
 			var svg = getDonutSVG(".chart-time-spent", width, height),
 			svg1 = getDonutSVG(".chart-total-users", width, height);
 
-            d3.json("assets/json/data-devices-device-platform-tot-users-n-time-spent.json", function (error, data) {
-                if (error) { throw error; }
-                
-                var g = svg.selectAll(".arc")
-                    .data(pie(data))
-                    .enter().append("g")
-                    .attr("class", "arc");
+			var DevPlatformAPI = "assets/json/data-devices-device-platform-tot-users-n-time-spent.json";
+			var loadChart = function(sd, ed, appKey = 'MastApp'){
+				d3.json(DevPlatformAPI + "?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
+				//d3.json("assets/json/data-devices-device-platform-tot-users-n-time-spent.json", function (error, data) {
+					if (error) { throw error; }
 
-                g.append("path")
-                    .attr("d", arc)
-                    .attr("data-legend",function(d) { return d.data.platform})
-                    .attr("id", function(d) {'tag'+d.data.platform.replace(/\s+/g, '')}) // assign ID
-                    .on("mouseenter", function(d){
-                        d3.select(this)
-                           	.transition()
-                           	.duration(1000)
-							.attr("class","shadow")
-                           	.attr("d", arcOver);
-                    })
-                    .on("mouseleave", function(d){
-                        d3.select(this)
-                           	.transition()
-                           	.duration(1000)
-                           	.attr("d", arc);
-                    })
-                    .style("fill", function (d) { return color(d.data.platform); });
+					var g = svg.selectAll(".arc")
+						.data(pie(data))
+						.enter().append("g")
+						.attr("class", "arc");
 
-                /*g.append("text")
-                    .attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
-                    //.attr("dy", ".35em")
-                    .on("click", function(d){
-                        alert("aaa");
-                    })
-                    .text(function (d) { return d.data.platform; });*/
-				g.append("svg:image")
-					.attr("xlink:href", "assets/img/B.png")
-				  	.attr("width",124)
-					.attr("height",113)
-					.attr("text-anchor", "middle")
-					.attr("x",-1*124/2)
-  					.attr("y",-1*113/2);
-                
-                
-                
-                
-                
-                
-                
-                var g1 = svg1.selectAll(".arc")
-                    .data(pie1(data))
-                    .enter().append("g")
-                    .attr("class", "arc");
+					g.append("path")
+						.attr("d", arc)
+						.attr("data-legend",function(d) { return d.data.platform})
+						.attr("id", function(d) {'tag'+d.data.platform.replace(/\s+/g, '')}) // assign ID
+						.on("mouseenter", function(d){
+							d3.select(this)
+								.transition()
+								.duration(1000)
+								.attr("class","shadow")
+								.attr("d", arcOver);
+						})
+						.on("mouseleave", function(d){
+							d3.select(this)
+								.transition()
+								.duration(1000)
+								.attr("d", arc);
+						})
+						.style("fill", function (d) { return color(d.data.platform); });
 
-                g1.append("path")
-                    .attr("d", arc)
-                    .attr("data-legend",function(d) { return d.data.platform})
-                    .attr("id", function(d) {'tag'+d.data.platform.replace(/\s+/g, '')}) // assign ID
-                    .on("mouseenter", function(d){
-                        d3.select(this)
-							.attr("class","shadow")
-                           	.transition()
-                           	.duration(1000)
-                           	.attr("d", arcOver);
-                    })
-                    .on("mouseleave", function(d){
-						d3.select(this)
-                           	.transition()
-                           	.duration(1000)
-                           	.attr("d", arc);
-                    })
-                    .style("fill", function (d) { return color(d.data.platform); });
+					/*g.append("text")
+						.attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
+						//.attr("dy", ".35em")
+						.on("click", function(d){
+							alert("aaa");
+						})
+						.text(function (d) { return d.data.platform; });*/
+					g.append("svg:image")
+						.attr("xlink:href", "assets/img/B.png")
+						.attr("width",124)
+						.attr("height",113)
+						.attr("text-anchor", "middle")
+						.attr("x",-1*124/2)
+						.attr("y",-1*113/2);
 
-                /*g1.append("text")
-                    .attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
-                    //.attr("dy", ".35em")
-                    .on("mouseover", function(d){
-                        //alert(d.data.model);
-                        alert("bbb");
-                    });*/
-                    //.text(function (d) { return d.data.platform; });
-                g1.append("svg:image")
-					.attr("xlink:href", "assets/img/A.png")
-				  	.attr("width",124)
-					.attr("height",113)
-					.attr("text-anchor", "middle")
-					.attr("x",-1*124/2)
-  					.attr("y",-1*130/2);
-				
-                showDevicePlatformTable(data, 'tbl-device-platforms');
-                
-                legend = svg.append("g")
-                    .attr("class","legend")
-                    .attr("transform","translate(120,-" + legendPosY + ")")
-                    //.style("font-size","12px")
-                    .call(d3.legend)
 
-                setTimeout(function() { 
-                    legend
-                      //.style("font-size","20px")
-                      .attr("data-style-padding",10)
-                      .call(d3.legend)
-                },1000);
-                
-                legend1 = svg1.append("g")
-                    .attr("class","legend")
-                    .attr("transform","translate(120,-" + legendPosY + ")")
-                    //.style("font-size","12px")
-                    .call(d3.legend)
 
-                setTimeout(function() { 
-                    legend
-                      //.style("font-size","20px")
-                      .attr("data-style-padding",10)
-                      .call(d3.legend)
-                },1000)
-                
-            });
+
+
+
+
+					var g1 = svg1.selectAll(".arc")
+						.data(pie1(data))
+						.enter().append("g")
+						.attr("class", "arc");
+
+					g1.append("path")
+						.attr("d", arc)
+						.attr("data-legend",function(d) { return d.data.platform})
+						.attr("id", function(d) {'tag'+d.data.platform.replace(/\s+/g, '')}) // assign ID
+						.on("mouseenter", function(d){
+							d3.select(this)
+								.attr("class","shadow")
+								.transition()
+								.duration(1000)
+								.attr("d", arcOver);
+						})
+						.on("mouseleave", function(d){
+							d3.select(this)
+								.transition()
+								.duration(1000)
+								.attr("d", arc);
+						})
+						.style("fill", function (d) { return color(d.data.platform); });
+
+					/*g1.append("text")
+						.attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
+						//.attr("dy", ".35em")
+						.on("mouseover", function(d){
+							//alert(d.data.model);
+							alert("bbb");
+						});*/
+						//.text(function (d) { return d.data.platform; });
+					g1.append("svg:image")
+						.attr("xlink:href", "assets/img/A.png")
+						.attr("width",124)
+						.attr("height",113)
+						.attr("text-anchor", "middle")
+						.attr("x",-1*124/2)
+						.attr("y",-1*130/2);
+
+					showDevicePlatformTable(data, 'tbl-device-platforms');
+
+					legend = svg.append("g")
+						.attr("class","legend")
+						.attr("transform","translate(120,-" + legendPosY + ")")
+						//.style("font-size","12px")
+						.call(d3.legend)
+
+					setTimeout(function() { 
+						legend
+						  //.style("font-size","20px")
+						  .attr("data-style-padding",10)
+						  .call(d3.legend)
+					},1000);
+
+					legend1 = svg1.append("g")
+						.attr("class","legend")
+						.attr("transform","translate(120,-" + legendPosY + ")")
+						//.style("font-size","12px")
+						.call(d3.legend)
+
+					setTimeout(function() { 
+						legend
+						  //.style("font-size","20px")
+						  .attr("data-style-padding",10)
+						  .call(d3.legend)
+					},1000)
+
+				});
+			};
         </script>
         
     </body>

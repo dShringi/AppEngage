@@ -1,5 +1,5 @@
-    <!doctype html>
-    <html>
+<!doctype html>
+<html>
     <head>
         <title>Mobile Analytics</title>
         <link rel="stylesheet" href="assets/css/bootstrap.min.css">
@@ -95,10 +95,6 @@
         <script type="text/javascript">
             var width = $(".chart-time-spent").width(), height = 250, radius = Math.min(width, height) / 2, legendPosY = (height / 2)-20;
 
-            var color = d3.scale.ordinal().range(["#f47321", "#76bce6", "#75d3c5", "#379154", "#39B4BF", "#FFE666", "#E54E67", "#F75B49"]);
-
-            //var color = d3.scale.category20();
-            
             var arc = d3.svg.arc().innerRadius(radius - 20).outerRadius(radius - 60);
             var arcOver = d3.svg.arc().outerRadius(radius - 18).innerRadius(radius - 62);
 
@@ -108,124 +104,127 @@
 			var svg = getDonutSVG(".chart-time-spent", width, height),
 			svg1 = getDonutSVG(".chart-total-users", width, height);
 			
-            d3.json("assets/json/data-devices-device-type-tot-users-n-time-spent.json", function (error, data) {
-                if (error) { throw error; }
-                
-                var g = svg.selectAll(".arc")
-                    .data(pie(data))
-                    .enter().append("g")
-                    .attr("class", "arc");
+			var DevTypeAPI = "assets/json/data-devices-device-type-tot-users-n-time-spent.json";
+			var loadChart = function(sd, ed, appKey = 'MastApp'){
+				d3.json(DevTypeAPI + "?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
+				//d3.json("assets/json/data-devices-device-type-tot-users-n-time-spent.json", function (error, data) {
+					if (error) { throw error; }
 
-                g.append("path")
-                    .attr("d", arc)
-                    .attr("data-legend",function(d) { return d.data.type})
-                    .attr("id", function(d) {'tag'+d.data.type.replace(/\s+/g, '')}) // assign ID
-                    .on("mouseenter", function(d){
-                        d3.select(this)
-                           	.transition()
-                           	.duration(1000)
-							.attr("class","shadow")
-                           	.attr("d", arcOver);
-                    })
-                    .on("mouseleave", function(d){
-                        d3.select(this)
-                           	.transition()
-                           	.duration(1000)
-                           	.attr("d", arc);
-                    })
-                    .style("fill", function (d) { return color(d.data.type); });
+					var g = svg.selectAll(".arc")
+						.data(pie(data))
+						.enter().append("g")
+						.attr("class", "arc");
 
-                /*g.append("text")
-                    .attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
-                    //.attr("dy", ".35em")
-                    .on("click", function(d){
-                        alert("aaa");
-                    })
-                    .text(function (d) { return d.data.type; });*/
-				g.append("svg:image")
-					.attr("xlink:href", "assets/img/B.png")
-				  	.attr("width",124)
-					.attr("height",113)
-					.attr("text-anchor", "middle")
-					.attr("x",-1*124/2)
-  					.attr("y",-1*113/2);
-                
-                
-                
-                
-                
-                
-                
-                var g1 = svg1.selectAll(".arc")
-                    .data(pie1(data))
-                    .enter().append("g")
-                    .attr("class", "arc");
+					g.append("path")
+						.attr("d", arc)
+						.attr("data-legend",function(d) { return d.data.type})
+						.attr("id", function(d) {'tag'+d.data.type.replace(/\s+/g, '')}) // assign ID
+						.on("mouseenter", function(d){
+							d3.select(this)
+								.transition()
+								.duration(1000)
+								.attr("class","shadow")
+								.attr("d", arcOver);
+						})
+						.on("mouseleave", function(d){
+							d3.select(this)
+								.transition()
+								.duration(1000)
+								.attr("d", arc);
+						})
+						.style("fill", function (d) { return color(d.data.type); });
 
-                g1.append("path")
-                    .attr("d", arc)
-                    .attr("data-legend",function(d) { return d.data.type})
-                    .attr("id", function(d) {'tag'+d.data.type.replace(/\s+/g, '')}) // assign ID
-                    .on("mouseenter", function(d){
-                        d3.select(this)
-							.attr("class","shadow")
-                           	.transition()
-                           	.duration(1000)
-                           	.attr("d", arcOver);
-                    })
-                    .on("mouseleave", function(d){
-						d3.select(this)
-                           	.transition()
-                           	.duration(1000)
-                           	.attr("d", arc);
-                    })
-                    .style("fill", function (d) { return color(d.data.type); });
+					/*g.append("text")
+						.attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
+						//.attr("dy", ".35em")
+						.on("click", function(d){
+							alert("aaa");
+						})
+						.text(function (d) { return d.data.type; });*/
+					g.append("svg:image")
+						.attr("xlink:href", "assets/img/B.png")
+						.attr("width",124)
+						.attr("height",113)
+						.attr("text-anchor", "middle")
+						.attr("x",-1*124/2)
+						.attr("y",-1*113/2);
 
-                /*g1.append("text")
-                    .attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
-                    //.attr("dy", ".35em")
-                    .on("mouseover", function(d){
-                        //alert(d.data.model);
-                        alert("bbb");
-                    });*/
-                    //.text(function (d) { return d.data.type; });
-                g1.append("svg:image")
-					.attr("xlink:href", "assets/img/A.png")
-				  	.attr("width",124)
-					.attr("height",113)
-					.attr("text-anchor", "middle")
-					.attr("x",-1*124/2)
-  					.attr("y",-1*130/2);
-				
-                showDeviceTypeTable(data, 'tbl-device-types');
-                
-                legend = svg.append("g")
-                    .attr("class","legend")
-                    .attr("transform","translate(120,-" + legendPosY + ")")
-                    //.style("font-size","12px")
-                    .call(d3.legend)
 
-                setTimeout(function() { 
-                    legend
-                      //.style("font-size","20px")
-                      .attr("data-style-padding",10)
-                      .call(d3.legend)
-                },1000);
-                
-                legend1 = svg1.append("g")
-                    .attr("class","legend")
-                    .attr("transform","translate(120,-" + legendPosY + ")")
-                    //.style("font-size","12px")
-                    .call(d3.legend)
 
-                setTimeout(function() { 
-                    legend
-                      //.style("font-size","20px")
-                      .attr("data-style-padding",10)
-                      .call(d3.legend)
-                },1000)
-                
-            });
+
+
+
+
+					var g1 = svg1.selectAll(".arc")
+						.data(pie1(data))
+						.enter().append("g")
+						.attr("class", "arc");
+
+					g1.append("path")
+						.attr("d", arc)
+						.attr("data-legend",function(d) { return d.data.type})
+						.attr("id", function(d) {'tag'+d.data.type.replace(/\s+/g, '')}) // assign ID
+						.on("mouseenter", function(d){
+							d3.select(this)
+								.attr("class","shadow")
+								.transition()
+								.duration(1000)
+								.attr("d", arcOver);
+						})
+						.on("mouseleave", function(d){
+							d3.select(this)
+								.transition()
+								.duration(1000)
+								.attr("d", arc);
+						})
+						.style("fill", function (d) { return color(d.data.type); });
+
+					/*g1.append("text")
+						.attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
+						//.attr("dy", ".35em")
+						.on("mouseover", function(d){
+							//alert(d.data.model);
+							alert("bbb");
+						});*/
+						//.text(function (d) { return d.data.type; });
+					g1.append("svg:image")
+						.attr("xlink:href", "assets/img/A.png")
+						.attr("width",124)
+						.attr("height",113)
+						.attr("text-anchor", "middle")
+						.attr("x",-1*124/2)
+						.attr("y",-1*130/2);
+
+					showDeviceTypeTable(data, 'tbl-device-types');
+
+					legend = svg.append("g")
+						.attr("class","legend")
+						.attr("transform","translate(120,-" + legendPosY + ")")
+						//.style("font-size","12px")
+						.call(d3.legend)
+
+					setTimeout(function() { 
+						legend
+						  //.style("font-size","20px")
+						  .attr("data-style-padding",10)
+						  .call(d3.legend)
+					},1000);
+
+					legend1 = svg1.append("g")
+						.attr("class","legend")
+						.attr("transform","translate(120,-" + legendPosY + ")")
+						//.style("font-size","12px")
+						.call(d3.legend)
+
+					setTimeout(function() { 
+						legend
+						  //.style("font-size","20px")
+						  .attr("data-style-padding",10)
+						  .call(d3.legend)
+					},1000)
+
+				});
+			};
         </script>
-        
     </body>
-    </html>
+</html>

@@ -109,12 +109,12 @@
         <div class="overlay"></div>
 		
 		<script>
-			var width = $(".div-total-crashes").width(), height = width, radius = Math.min(width, height) / 2;
+			var width = $(".div-total-crashes").width(), height = 250, radius = Math.min(width, height) / 2;
             var legendPosY = (height / 2) - 20;
 			var totalCrashes = 0;
 
-			var arc = d3.svg.arc().innerRadius(radius - 35).outerRadius(radius - 60);
-			var arcOver = d3.svg.arc().outerRadius(radius - 32).innerRadius(radius - 63);
+			var arc = d3.svg.arc().innerRadius(radius - 20).outerRadius(radius - 60);
+            var arcOver = d3.svg.arc().outerRadius(radius - 18).innerRadius(radius - 62);
 
 			var pie = d3.layout.pie().sort(null).value(function (d) {return d.TotalCrashes; });
 			var pie1 = d3.layout.pie().sort(null).value(function (d) { return d.crash; });
@@ -128,7 +128,7 @@
 				//d3.json("assets/json/ok-data-total-crashes-Counters.json"+"?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
 					if (error) { throw error; }
 					data = JSON.parse(data);
-					console.log(JSON.stringify(data));
+					//console.log(JSON.stringify(data));
 					if(data.length == 0){
 						showError("No data found for the selected parameters.");
 					} else {

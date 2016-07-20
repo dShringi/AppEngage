@@ -60,13 +60,17 @@ $(document).ready(function () {
 		$(".main-container").prepend(data);
 	});
 	
-	var the_chart = $(".chart"),
-	aspect = the_chart.width() / the_chart.height(),
-	container = the_chart.parent();
+	
+	
 
 	$(window).on("resize", function() {
+		var the_chart = $(".chart");
+		var aspect = the_chart.width() / the_chart.height(),
+		container = the_chart.parent();
+		
 		console.log('resize window');
 		var targetWidth = container.width();
+		console.log(the_chart.width());
 		the_chart.attr("width", targetWidth);
 		the_chart.attr("height", Math.round(targetWidth / aspect));
 	}).trigger("resize");
