@@ -14,6 +14,42 @@ var getDonutSVG = function(chartHolder, width, height){
 			.attr("class","chart")
 			.append("g")
 			.attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
+};
+
+function numFormate(nums){
+	console.log(nums+" : "+nums.toString().length);
+	var retStr = "";
+	switch(nums.toString().length){
+		case 1:
+		case 2:
+		case 3:
+			retStr = nums;
+			break;
+		case 4: //1000
+			retStr = nums.toString().substr(0,1)+"K+";
+			break;
+		case 5: //10000
+			retStr = nums.toString().substr(0,2)+"K+";
+			break;
+		case 6: //100000
+			retStr = nums.toString().substr(0,3)+"K+";
+			break;
+		case 7: //1000000
+			retStr = nums.toString().substr(0,1)+"M+";
+			break;
+		case 8: //10000000
+			retStr = nums.toString().substr(0,2)+"M+";
+			break;
+		case 9: //100000000
+			retStr = nums.toString().substr(0,1)+"B+";
+			break;
+		case 10: //1000000000
+			retStr = nums.toString().substr(0,2)+"B+";
+			break;
+	}
+	//console.log(nums+" : "+nums.toString().length+" : "+retStr);
+	
+	return retStr;
 }
 
 $(document).ready(function () {
@@ -70,8 +106,8 @@ $(document).ready(function () {
 		ranges: {
            'Today': [moment(), moment()],
            'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-           'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-           'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+           'This Week': [moment().startOf('week'), moment().endOf('week')],
+		   'Last Week': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
            'This Month': [moment().startOf('month'), moment().endOf('month')],
            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         },
@@ -98,7 +134,7 @@ var showDeviceModelTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.model + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
+        tableHTML += "<tr><td>" + row.model + "</td><td>" + numFormate(row.users) + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     updateTable(tableId, tableHTML);
@@ -109,7 +145,7 @@ var showCitiesTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.city + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
+        tableHTML += "<tr><td>" + row.city + "</td><td>" + numFormate(row.users) + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     updateTable(tableId, tableHTML);
@@ -120,7 +156,7 @@ var showDeviceCarrierTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.carrier + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
+        tableHTML += "<tr><td>" + row.carrier + "</td><td>" + numFormate(row.users) + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     $("#" + tableId + " tbody").html(tableHTML);
@@ -132,7 +168,7 @@ var showDeviceResolutionTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.resolution + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
+        tableHTML += "<tr><td>" + row.resolution + "</td><td>" + numFormate(row.users) + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     updateTable(tableId, tableHTML);
@@ -143,7 +179,7 @@ var showDeviceOSVersionTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.os + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
+        tableHTML += "<tr><td>" + row.os + "</td><td>" + numFormate(row.users) + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     updateTable(tableId, tableHTML);
@@ -154,7 +190,7 @@ var showDeviceAppVersionTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.app + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
+        tableHTML += "<tr><td>" + row.app + "</td><td>" + numFormate(row.users) + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     updateTable(tableId, tableHTML);
@@ -165,7 +201,7 @@ var showDevicePlatformTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.platform + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
+        tableHTML += "<tr><td>" + row.platform + "</td><td>" + numFormate(row.users) + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     updateTable(tableId, tableHTML);
@@ -176,7 +212,7 @@ var showDeviceTypeTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.type + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
+        tableHTML += "<tr><td>" + row.type + "</td><td>" + numFormate(row.users) + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     updateTable(tableId, tableHTML);
@@ -187,7 +223,7 @@ var showDeviceMenufacturerTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.manufacturer + "</td><td>" + row.users + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
+        tableHTML += "<tr><td>" + row.manufacturer + "</td><td>" + numFormate(row.users) + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     updateTable(tableId, tableHTML);
@@ -199,7 +235,7 @@ var showCrashReportTable = function (data, tableId) {
 	//console.log("Avi : "+JSON.stringify(data));
 	//var $table = $('#'+tableId);
 	    $.each(data, function (index, row) {
-        tableHTML += "<tr><td>" + getFormatedDateDDMMYY(new Date(row.dt*1000)) + "</td><td>" + row.pf + "</td><td>" + row.os + "</td><td>" + row.av + "</td><td>" + row.totalCrashes + "</td></tr>";
+        tableHTML += "<tr><td>" + getFormatedDateDDMMYY(new Date(row.dt*1000)) + "</td><td>" + row.pf + "</td><td>" + row.os + "</td><td>" + row.av + "</td><td>" + numFormate(row.totalCrashes) + "</td></tr>";
         
     });
 	updateTable(tableId, tableHTML);
