@@ -4,6 +4,7 @@ var Collection = Model.Collection;
 var EventFactory = new Model.EventFactory();
 var logger = require('../conf/log.js');
 var Mongoose = require('mongoose');
+var common = require('../commons/common.js');
 
 Mongoose.connect('mongodb://localhost/appengage');
 
@@ -29,9 +30,12 @@ var offset = new Offset(client);
 
 consumer.on('message', function (message) {
     data = JSON.parse(message.value);
-    var currDate = new Date(0);
-    	
-    console.log(currDate+'_'+data.val.rtc); 
+    currDate = Math.floor((new Date).getTime()/1000);
+    
+    if(data.val.rtc > currDate){
+	data.val.rtc = currDate;
+    }
+	
     event = EventFactory.getEvent(data);
     
     event.save(function (err) {
@@ -42,27 +46,25 @@ consumer.on('message', function (message) {
         }
     });
     
-    eventDate = new Date(0);
-    eventDate.setUTCSeconds(data.val.rtc);	
-    //console.log(eventDate);
-    year = eventDate.getFullYear();
-    month = '0'.concat(eventDate.getMonth()+1).slice(-2);
-    date = '0'.concat(eventDate.getDate()+1).slice(-2);
-            
     dashboardYearData = {
         dt  : data.val.dt,
-        key : ""+year+"0101",
+        key : common.getStartYear(data.val.rtc),
         ty  : 'Y'
     };
     dashboardMonthData = {
         dt  : data.val.dt,
-        key : ""+year+month+"01",
+        key : common.getStartMonth(data.val.rtc),
         ty  : 'M'
     };
     dashboardDayData = {
         dt  : data.val.dt,
-        key : ""+year+month+date,
+        key : common.getStartDate(data.val.rtc),
         ty  : 'D'
+    };
+    dashboardWeekData = {
+        dt  : data.val.dt,
+        key : common.getStartWeek(data.val.rtc),
+        ty  : 'W'
     };
 
     switch(data.type){
@@ -70,6 +72,7 @@ consumer.on('message', function (message) {
             saveOrUpdate(dashboardYearData,data.type);
             saveOrUpdate(dashboardMonthData,data.type);
             saveOrUpdate(dashboardDayData,data.type);
+            saveOrUpdate(dashboardWeekData,data.type);
             
             // Insert in active sessions
             if(data.val.sid){
@@ -77,18 +80,23 @@ consumer.on('message', function (message) {
                 sessionEvent = EventFactory.getEvent(data);
                 
 		sessionEvent.save(function(err){
-		//console.log(err);
+		console.log(err);
                    if(err){
                        logger.error(getErrorMessageFrom(err));
                        return;
                    } 
                 });
             }
+
+	    //Insert in Real Time
+	
             break;
         case Collection["crash"]:
             saveOrUpdate(dashboardYearData,data.type);
             saveOrUpdate(dashboardMonthData,data.type);
             saveOrUpdate(dashboardDayData,data.type);
+            saveOrUpdate(dashboardWeekData,data.type);
+
             break;
         case Collection["end"]:
             break;
@@ -126,7 +134,7 @@ function saveOrUpdate(dashboardData, eventType){
     Model.Dashboard.findOne({
         _id: dashboardData
     }, function(err, doc){
-	//console.log(doc);
+	//console.log(err);
         if(!err){
             if(doc == undefined || doc == null){
 		//console.log(eventType+'_'+dashboardData);
