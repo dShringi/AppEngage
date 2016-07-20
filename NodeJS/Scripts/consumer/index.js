@@ -29,27 +29,34 @@ var offset = new Offset(client);
 
 consumer.on('message', function (message) {
     data = JSON.parse(message.value);
+    var currDate = new Date(0);
+    	
+    console.log(currDate+'_'+data.val.rtc); 
     event = EventFactory.getEvent(data);
+    
     event.save(function (err) {
+	console.log(err);
         if (err) {
             logger.error(getErrorMessageFrom(err));
             return;
         }
     });
-
-    eventDate = new Date(data.val.rtc);
+    
+    eventDate = new Date(0);
+    eventDate.setUTCSeconds(data.val.rtc);	
+    //console.log(eventDate);
     year = eventDate.getFullYear();
-    month = eventDate.getMonth();
-    date = eventDate.getDate();
+    month = '0'.concat(eventDate.getMonth()+1).slice(-2);
+    date = '0'.concat(eventDate.getDate()+1).slice(-2);
             
     dashboardYearData = {
         dt  : data.val.dt,
-        key : ""+year,
+        key : ""+year+"0101",
         ty  : 'Y'
     };
     dashboardMonthData = {
         dt  : data.val.dt,
-        key : ""+year+month,
+        key : ""+year+month+"01",
         ty  : 'M'
     };
     dashboardDayData = {
@@ -60,14 +67,17 @@ consumer.on('message', function (message) {
 
     switch(data.type){
         case Collection["begin"]:
-            saveOrUpdate(dashboardYearData);
-            saveOrUpdate(dashboardMonthData);
-            saveOrUpdate(dashboardDayData);
+            saveOrUpdate(dashboardYearData,data.type);
+            saveOrUpdate(dashboardMonthData,data.type);
+            saveOrUpdate(dashboardDayData,data.type);
             
             // Insert in active sessions
             if(data.val.sid){
+		data.type = Collection["activesessions"];
                 sessionEvent = EventFactory.getEvent(data);
-                sessionEvent.save(function(err){
+                
+		sessionEvent.save(function(err){
+		//console.log(err);
                    if(err){
                        logger.error(getErrorMessageFrom(err));
                        return;
@@ -76,9 +86,9 @@ consumer.on('message', function (message) {
             }
             break;
         case Collection["crash"]:
-            saveOrUpdate(dashboardYearData);
-            saveOrUpdate(dashboardMonthData);
-            saveOrUpdate(dashboardDayData);
+            saveOrUpdate(dashboardYearData,data.type);
+            saveOrUpdate(dashboardMonthData,data.type);
+            saveOrUpdate(dashboardDayData,data.type);
             break;
         case Collection["end"]:
             break;
@@ -116,8 +126,10 @@ function saveOrUpdate(dashboardData, eventType){
     Model.Dashboard.findOne({
         _id: dashboardData
     }, function(err, doc){
+	//console.log(doc);
         if(!err){
-            if(doc === undefined || doc === null){
+            if(doc == undefined || doc == null){
+		//console.log(eventType+'_'+dashboardData);
                 switch(eventType){
                     case Collection["begin"]:
                         dashboardData.tse = 1;

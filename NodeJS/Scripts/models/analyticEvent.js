@@ -28,10 +28,10 @@ var dashboardSchema = new Schema({
 }, {
     collection : 'coll_dashboard'
 });
-var beginSchema = new Schema({val: {type: Object}});
-var endSchema = new Schema({val: {type: Object}});
-var crashSchema = new Schema({val: {type: Object}});
-var eventSchema = new Schema({val: {type: String}});
+var beginSchema = new Schema({rtr: {type:Number, required:true},val: {type: Object}});
+var endSchema = new Schema({rtr: {type:Number, required:true},val: {type: Object}});
+var crashSchema = new Schema({rtr: {type:Number, required:true},val: {type: Object}});
+var eventSchema = new Schema({rtr: {type:Number, required:true},val: {type: String}});
 var activeSessionSchema = new Schema({
     _id  : { type: String, require: true },
     sst  : { type: Number },
@@ -85,15 +85,18 @@ function eventFactory(){
                 });
             case Collection["begin"]:
                 return new beginCollection({
-                    val : _event.val
+                   	rtr : _event.val.rtc,	
+			val : _event.val
                 });
             case Collection["end"]:
                 return new endCollection({
-                    val : _event.val
+			rtr : _event.val.rtc,
+                    	val : _event.val
                 });                
             case Collection["crash"]:
                 return new crashCollection({
-                    val : _event.val
+			rtr : _event.val.rtc, 
+                    	val : _event.val
                 });
             case Collection["activesessions"]:
                 return new activeSessionCollection({
