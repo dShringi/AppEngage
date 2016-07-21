@@ -1,6 +1,8 @@
 var logger = require('../conf/log.js');
 var config = require('../conf/config.js');
+var common = require('../commons/common');
 var Collection = require('../models/analyticEvent').Collection;
+//var common1 = require('../commons/common.js');
 
 module.exports = exports = function (server, producer) {
     exports.begin(server, producer);
@@ -26,7 +28,7 @@ exports.begin = function(server, producer) {
             if(data.val.rtc === undefined || data.val.rtc === null){
                 data.val.rtc = Date.now();
             }
-            data.val.ipa = getIPAddress(request);
+        data.val.ipa = common.getIP(request);
             data.type = Collection["begin"];
             payloads = [{ topic: akey, messages: JSON.stringify(data), partition: 0 }];
             producer.send(payloads, function(err, data){
@@ -62,7 +64,7 @@ exports.crash = function(server, producer) {
             if(data.val.rtc === undefined || data.val.rtc === null){
                 data.val.rtc = Date.now();
             }
-            data.val.ipa = getIPAddress(request);
+            data.val.ipa = common.getIP(request);
             data.type = Collection["crash"];
             payloads = [{ topic: akey, messages: JSON.stringify(data), partition: 0 }];
             producer.send(payloads, function(err, data){
@@ -98,7 +100,7 @@ exports.end = function(server, producer) {
             if(data.val.rtc === undefined || data.val.rtc === null){
                 data.val.rtc = Date.now();
             }
-            data.val.ipa = getIPAddress(request);
+            data.val.ipa = common.getIP(request);
             data.type = Collection["end"];
             payloads = [{ topic: akey, messages: JSON.stringify(data), partition: 0 }];
             producer.send(payloads, function(err, data){
@@ -115,9 +117,6 @@ exports.end = function(server, producer) {
     });
 };
 
-function getIPAddress(request){
-    return request.info.remoteAddress;
-}
 function getErrorMessageFrom(err) {
     var errorMessage = '';
     if (err.errors) {

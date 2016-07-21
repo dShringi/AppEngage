@@ -162,12 +162,12 @@
                     data = JSON.parse(data);
                     
                     if(data.length){
-                        $('.cl_ts').html(data[0].tse);
-                        $('.cl_te').html(data[0].te);
-                        $('.cl_tu').html(data[0].tuu);
-                        $('.cl_nu').html(data[0].tnu);
+                        $('.cl_ts').html(numFormate(data[0].tse));
+                        $('.cl_te').html(numFormate(data[0].te));
+                        $('.cl_tu').html(numFormate(data[0].tuu));
+                        $('.cl_nu').html(numFormate(data[0].tnu));
                         $('.cl_tts').html(sec2ISO(data[0].tts));
-                        $('.cl_tc').html(data[0].tce);
+                        $('.cl_tc').html(numFormate(data[0].tce));
                     } else {
                         showError("No data found for the selected parameters.");
                     }

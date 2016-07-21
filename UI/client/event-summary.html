@@ -100,7 +100,7 @@
 					var tableHTML = "";
 					$.each(data, function (index, row) {
 						//alert(JSON.stringify(row));
-						tableHTML += "<tr><td><a href='javascript:void(0)' onClick='showChart(\""+row.key+"\","+sd+","+ed+",\""+appKey+"\")' class='cl_showChart'>" + row.key + "</a></td><td>" + row.Total_Event_Count + "</td></tr>";
+						tableHTML += "<tr><td><a href='javascript:void(0)' onClick='showChart(\""+row.key+"\","+sd+","+ed+",\""+appKey+"\")' class='cl_showChart'>" + row.key + "</a></td><td>" + numFormate(row.Total_Event_Count) + "</td></tr>";
 
 					});
 					$("#" + tableId + " tbody").html(tableHTML);

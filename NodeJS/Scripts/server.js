@@ -18,9 +18,20 @@ server.connection({ host: config.server.host,  port: config.server.port  });
 // Initialize Restful routes
 routes.init(server, producer);
 
+// Start the server
 server.start((err) => {
+    if (err) {
+        throw err;
+    }
+    console.log('Server running at:', server.info.uri);
+});
+
+/*
+server.start((err) => {
+    console.log(err);	
     logger.info('Server started at: ' + server.info.uri);
 });
+
 
 server.route({
         method: 'GET',
@@ -29,3 +40,4 @@ server.route({
             reply({ message: "Hello from AppEngage!"});
         }
 });
+*/

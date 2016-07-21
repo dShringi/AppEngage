@@ -18,22 +18,26 @@ var appSchema = new Schema({
     tz   : { type: String },
     ctg  : { type: String }
 });
+
 var realtimeSchema = new Schema({
     _id  : { type: Number, required: true },
     val  : { type: String }
 });
+
 var dashboardSchema = new Schema({
     _id  : { type: Object, require: true },
     val  : { type: Object }
 }, {
     collection : 'coll_dashboard'
 });
-var beginSchema = new Schema({val: {type: Object}});
-var endSchema = new Schema({val: {type: Object}});
-var crashSchema = new Schema({val: {type: Object}});
-var eventSchema = new Schema({val: {type: String}});
+
+var beginSchema = new Schema({rtr: {type:Number, required:true},val: {type: Object}});
+var endSchema = new Schema({rtr: {type:Number, required:true},val: {type: Object}});
+var crashSchema = new Schema({rtr: {type:Number, required:true},val: {type: Object}});
+var eventSchema = new Schema({rtr: {type:Number, required:true},val: {type: String}});
 var activeSessionSchema = new Schema({
     _id  : { type: String, require: true },
+    did  : { type: String },
     sst  : { type: Number },
     lat  : { type: Number },
     dt   : { type: String }
@@ -51,7 +55,7 @@ var activeSessionCollection = Mongoose.model('coll_activesessions', activeSessio
 
 // Factory to get model based on event type
 function eventFactory(){
-    this.getEvent = function(_event){
+    this.getEvent = function(_event,nEpoch){
         switch(_event.type){
             case Collection["app"]:
                 return new appCollection({
@@ -62,7 +66,7 @@ function eventFactory(){
                 });
             case Collection["realtime"]:
                 return new realtimeCollection({
-                    _id : Date.now(),
+                    _id : nEpoch,
                     val : _event.val
                 });
             case Collection["dashboard"]:
@@ -85,21 +89,25 @@ function eventFactory(){
                 });
             case Collection["begin"]:
                 return new beginCollection({
-                    val : _event.val
+                   	rtr : _event.val.rtc,	
+			val : _event.val
                 });
             case Collection["end"]:
                 return new endCollection({
-                    val : _event.val
+			rtr : _event.val.rtc,
+                    	val : _event.val
                 });                
             case Collection["crash"]:
                 return new crashCollection({
-                    val : _event.val
+			rtr : _event.val.rtc, 
+                    	val : _event.val
                 });
             case Collection["activesessions"]:
                 return new activeSessionCollection({
-                    _id : _event.val.id,
-                    sst : _event.val.sst,
-                    lat : _event.val.lat,
+                    _id : _event.val.sid,
+		    did : _event.val.did,
+                    sst : _event.val.rtc,
+                    lat : _event.val.rtc,
                     dt  : _event.val.dt
                 });
             default:
@@ -113,5 +121,6 @@ module.exports = {
   EventFactory: eventFactory,
   Collection: Collection,
   Begin: beginCollection,
-  Dashboard: dashboardCollection    
+  Dashboard: dashboardCollection,
+  ActiveSession: activeSessionCollection    
 };
