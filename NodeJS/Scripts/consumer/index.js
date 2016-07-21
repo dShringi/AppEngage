@@ -13,6 +13,7 @@ var Offset = Kafka.Offset;
 var Client = Kafka.Client;
 var client = new Client('localhost:2181','consumer'+process.pid);
 var payloads = [ { topic: 'test' }];
+
 var options = {
     groupId: 'kafka-node-group',
     autoCommit: true,
@@ -28,18 +29,20 @@ var options = {
 var consumer = new HighLevelConsumer(client, payloads, options);
 var offset = new Offset(client);
 
-consumer.on('message', function (message) {
+consumer.on('message', function(message) {    
+
     data = JSON.parse(message.value);
-    currDate = Math.floor((new Date).getTime()/1000);
+    currDate = Math.floor(Date.now()/1000);
     
-    if(data.val.rtc > currDate){
-	data.val.rtc = currDate;
+    if(!data.val.rtc){
+	   data.val.rtc = currDate;
+    } else if(data.val.rtc > currDate){
+        data.val.rtc = currDate;
     }
-	
+
+    // Save Begin, Crash or End Event
     event = EventFactory.getEvent(data);
-    
     event.save(function (err) {
-	console.log(err);
         if (err) {
             logger.error(getErrorMessageFrom(err));
             return;
@@ -69,6 +72,7 @@ consumer.on('message', function (message) {
 
     switch(data.type){
         case Collection["begin"]:
+            // Dashboard Update
             saveOrUpdate(dashboardYearData,data.type);
             saveOrUpdate(dashboardMonthData,data.type);
             saveOrUpdate(dashboardDayData,data.type);
@@ -76,11 +80,9 @@ consumer.on('message', function (message) {
             
             // Insert in active sessions
             if(data.val.sid){
-		data.type = Collection["activesessions"];
+    		    data.type = Collection["activesessions"];
                 sessionEvent = EventFactory.getEvent(data);
-                
-		sessionEvent.save(function(err){
-		console.log(err);
+                sessionEvent.save(function(err){
                    if(err){
                        logger.error(getErrorMessageFrom(err));
                        return;
@@ -88,17 +90,23 @@ consumer.on('message', function (message) {
                 });
             }
 
-	    //Insert in Real Time
-	
+	       //Insert in Real Time
             break;
         case Collection["crash"]:
             saveOrUpdate(dashboardYearData,data.type);
             saveOrUpdate(dashboardMonthData,data.type);
             saveOrUpdate(dashboardDayData,data.type);
             saveOrUpdate(dashboardWeekData,data.type);
-
             break;
         case Collection["end"]:
+            // Delete active session
+            if(data.val.sid){
+    		    Model.ActiveSession.find({ _id:data.val.sid }).remove(function(err){
+                   if(err){
+                       logger.error(err);
+                   } 
+                });
+            }
             break;
     }
 });
