@@ -121,5 +121,6 @@ module.exports = {
   EventFactory: eventFactory,
   Collection: Collection,
   Begin: beginCollection,
-  Dashboard: dashboardCollection    
+  Dashboard: dashboardCollection,
+  ActiveSession: activeSessionCollection    
 };
