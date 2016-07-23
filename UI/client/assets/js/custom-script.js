@@ -55,7 +55,8 @@ function numFormate(nums){
 $(document).ready(function () {
     "use strict";
     $('.left-side').load("menu.html");
-	
+	$('.left-side').addClass('wdt80');
+    
 	$.get("header.html", function (data) {
 		$(".main-container").prepend(data);
 	});

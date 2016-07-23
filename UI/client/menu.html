@@ -1,5 +1,9 @@
-<div class="bar-icon"><a href="index.html"><img src="assets/img/Hamburger.png" /></a></div>
-<div class="arrow-icon"><a href="index.html"><img src="assets/img/Back.png" /></a></div>
+<div class="bar-icon">
+    <a href="#"><img src="assets/img/Hamburger.png" /></a>
+    
+</div>
+<!--<div class="arrow-icon"><a href="index.html"><img src="assets/img/Back.png" /></a></div> -->
+
 <!--logo and iconic logo end-->
 <div class="left-side-inner">
 
@@ -7,11 +11,11 @@
     <ul class="nav nav-pills nav-stacked">
         <li class="active"><a href="/"><img src="assets/img/Dashboard.png" /></a><span><a href="/">Dashboard</a></span></li>
         <li class="menu-insights"><a href="javascript:void(0)"><img src="assets/img/Search.png" /></a><span><a href="javascript:void(0)">Insights</a></span>
-			<ul class="sub-menu">
+            <ul class="sub-menu">
                 <li class=""><a href="insights-session.html">Session</a></li>
                 <li class=""><a href="insights-users.html">Users</a></li>
             </ul>
-		</li>
+        </li>
         <li class="menu-device"><a href="javascript:void(0)"><img src="assets/img/Device.png" /></a><span><a href="javascript:void(0)">Device</a></span>
             <ul class="sub-menu">
                 <li class=""><a href="device-manufacturer.html">Manufacturer</a></li>
@@ -26,11 +30,11 @@
         </li>              
         <li class=""><a href="cities.html"><img src="assets/img/Cities.png" /></a><span><a href="cities.html">Cities</a></span></li>      
         <li class="menu-event"><a href="javascript:void(0)"><img src="assets/img/Events.png" /></a><span><a href="javascript:void(0)">Events</a></span>
-			<ul class="sub-menu">
+            <ul class="sub-menu">
                 <li class=""><a href="event-summary.html">Summary</a></li>
                 <li class=""><a href="event-compare.html">Compare</a></li>
             </ul>
-		</li>
+        </li>
         <li class=""><a href="cohort.html"><img src="assets/img/Cohort.png" /></a><span><a href="cohort.html">Cohort</a></span></li>
         <li class=""><a href="crash-report.html"><img src="assets/img/Crash-Reports.png" /></a><span><a href="crash-report.html">Crash Reports</a></span></li>
     </ul>
@@ -38,11 +42,29 @@
 </div>
 
 <script>
-$('.bar-icon').on('click', function(e){
+    var animateTime = 200;
+    $('.bar-icon').on("click", function(){
+        $( ".left-side" ).toggleClass('wdt80');
+        $( ".left-side" ).toggleClass('wdt210');
+        $('.left-side-inner').toggle('fast');
+        $( ".left-side" ).toggleClass("shadow");
+        $('.overlay').toggle();
+    });
+    
+    $('.menu-device, .menu-event, .menu-insights').click(function(){
+        $('ul.sub-menu').hide(animateTime);
+        $(this).find('ul').toggle(animateTime,function(){});
+    });
+    
+    
+    
+    
+    
+/*$('.bar-icon').on('click', function(e){
     e.preventDefault();
     showMenu();
 });
-var animateTime = 200;
+
 var showMenu = function(){
 	$('.overlay').show();
 	$('.bar-icon').hide();
@@ -74,6 +96,6 @@ $('.menu-device, .menu-event, .menu-insights').click(function(){
 	}
 	//$('ul.sub-menu').hide(animateTime);
     $(this).find('ul').toggle(animateTime,function(){});
-});
+});*/
 
 </script>
