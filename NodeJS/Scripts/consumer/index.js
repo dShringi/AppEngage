@@ -2,17 +2,26 @@ var Kafka = require('kafka-node');
 var Model = require('../models/analyticEvent');
 var Collection = Model.Collection;
 var EventFactory = new Model.EventFactory();
+
+var config = require('../conf/config.js');
 var logger = require('../conf/log.js');
 var Mongoose = require('mongoose');
 var common = require('../commons/common.js');
+var akey = process.argv[2];
 
-Mongoose.connect('mongodb://localhost/appengage');
+if(akey==undefined||akey==null){
+    throw new Error("Invalid applicaiton key: "+ akey);
+}
+
+var connectionURL = config.mongodb.url + config.mongodb.port + "/" +akey;
+logger.info("MongoDB connection URL: "+ connectionURL);
+Mongoose.connect(connectionURL);
 
 var HighLevelConsumer = Kafka.HighLevelConsumer;
 var Offset = Kafka.Offset;
 var Client = Kafka.Client;
-var client = new Client('localhost:2181','consumer'+process.pid);
-var payloads = [ { topic: 'test' }];
+var client = new Client(config.consumer.url, 'consumer'+process.pid);
+var payloads = [ { topic: akey }];
 
 var options = {
     groupId: 'kafka-node-group',
