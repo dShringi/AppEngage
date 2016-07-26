@@ -2,38 +2,33 @@ var mongojs   	= require('mongojs');
 var config    	= require('../../config/config');
 var async 	= require('async');
 var startdate ,enddate ,akey ;	
-var mnustring,osvstring,totalstring,pfstring,finalstring,teststring1,teststring2,teststring3;
+var mnuString,osvString,totalString,pfString,finalString;
 var db = mongojs(config.connectionstring+akey);
 
-function AggregateCalulation(searchbyparam,callback){
+function aggregateCalulation(searchByParam,callback){ // function to fetch result mnu,osv and pf .
 
-var paramstring;
-var t1=searchbyparam;
+var paramString;
+var rowData=searchByParam;
 var db = mongojs(config.connectionstring+akey);
-var grpvalue='$val.'+ searchbyparam;
+var grpvalue='$val.'+ searchByParam;
 
 //console.log('Aggregate');
 db.collection(config.coll_crashes).aggregate([
 	{ $match: { $and: [ { 'val.rtc': { $gte: startdate, $lte: enddate } } ] } },
 	{ $group: {_id: grpvalue,Total: { $sum: 1 }}},
-	{ $project: {_id: 0,t1: "$_id",Total: 1}}
+	{ $project: {_id: 0,rowData: "$_id",Total: 1}}
 	],function(err, result) {
-	
-	//console.log("result is :"+ result);
-	//console.log(result.length);
-		paramstring = '{"'+searchbyparam+'":[';
+		
+		paramString = '{"'+searchByParam+'":[';
 		for(var i=0;i<result.length;i++){
-			paramstring = paramstring.concat('{"'+result[i].t1+'":'+result[i].Total+'},');
+			paramString = paramString.concat('{"'+result[i].rowData+'":'+result[i].Total+'},');
 			
 		}
-		paramstring = paramstring.substr(0,paramstring.length-1).concat(']}');;
-		//console.log("paramstring : " + paramstring);
-		callback(paramstring);
+		paramString = paramString.substr(0,paramString.length-1).concat(']}');;
+		callback(paramString);
 }
-
 );
-//return paramstring;
-}
+} // end of aggregateCalulation
 
 module.exports.crashDetail = function(req,res){
 
@@ -82,24 +77,23 @@ async.waterfall(
 module.exports.crashCounters = function(req,res){
 
 startdate = req.query["sd"],enddate = req.query["ed"],akey =req.query["akey"];	
-mnustring,osvstring,totalstring,pfstring,finalstring;
+mnuString,osvString,totalString,pfString,finalString;
 var db = mongojs(config.connectionstring+akey);
 async.series(
     	[	
 	//Aggregate of Total Crashes
 	function(callback) { //callback start
-		//console.log('Aggregate Total');
+		
 		db.collection(config.coll_crashes).aggregate([
 			{ $match: { $and: [ { 'val.rtc': { $gte: startdate, $lte: enddate } } ] } },
 			{ $group: {_id : { mnu:{$sum:"$val.mnu"},osv:{$sum:"$val.osv"},pf:{$sum:"$val.pf"}}, Total : {$sum : 1}}},
 			{ $project: {_id: 0,Total: 1} }
 			],function(err, result) {
 				
-				//console.log("Total result:");
 				console.log(result);
 				if(!err){
 					if(result.length!=0){
-						totalstring='{"TotalCrashes":'+ result[0].Total + '}';
+						totalString='{"TotalCrashes":'+ result[0].Total + '}';
 					}
 					else{
 						db.close();
@@ -114,8 +108,8 @@ async.series(
 	//Aggregate by Manufacturers
 	function(callback) { //callback start
 		//console.log('Aggregate');
-		teststring1=  AggregateCalulation("mnu",function(num){
-		teststring1=num;
+		aggregateCalulation("mnu",function(res){
+		mnuString=res;
 		callback(null);
 		});
 	},//callback end
@@ -123,8 +117,8 @@ async.series(
 	function(callback) { //callback start	
 		
 		
-		teststring2= AggregateCalulation("osv",function(num){
-		teststring2=num;
+		aggregateCalulation("osv",function(res){
+		osvString=res;
 		callback(null);
 		});
 		},//callback end
@@ -132,21 +126,21 @@ async.series(
 	function(callback) { //callback start
 		
 		
-		teststring3= AggregateCalulation("pf",function(num){
-		teststring3=num;
+		aggregateCalulation("pf",function(res){
+		pfString=res;
 		callback(null);
 		});
 		},
 		
-	function(callback) {
-		finalstring='['+ totalstring + ',' + teststring1 + ','+ teststring2 + ',' + teststring3 +']'
-		console.log(finalstring);	
+	function(callback) { // final string after fetching result from total,mnu,osv,pf 
+		finalString='['+ totalString + ',' + mnuString + ','+ osvString + ',' + pfString +']'
+		console.log(finalString);	
 		callback(null);
 		},	
 		
 	function(callback) { //callback start
 		db.close();
-		return res.json(finalstring);
+		return res.json(finalString);
 	}
 ]
 );
