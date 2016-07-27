@@ -1,7 +1,19 @@
+var logger = require('../conf/log.js');
 var common = {};
 
 (function(common){
-
+	
+	common.hasValue = function(dataKeys,dataValues){
+		var msgStatus = true;
+		for(var i=0;i<dataValues.length;i++){
+			if(dataValues[i] === undefined || dataValues[i] === null){
+                		logger.info("Data empty for attribute : "+dataKeys[i]);
+				msgStatus = false;
+			}
+		}
+		return msgStatus;
+	};
+	
         common.getIP = function(req){
             var ip = req.headers['x-forwarded-for'] || req.headers['x-real-ip'] || req.info.remoteAddress || req.connection.remoteAddress || req.socket.remoteAddress || (req.connection.socket ? req.connection.socket.remoteAddress : '');
             return ip.split(',')[0];
