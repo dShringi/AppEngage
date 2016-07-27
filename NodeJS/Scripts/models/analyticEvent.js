@@ -2,13 +2,15 @@ var Mongoose   = require('mongoose');
 var Schema     = Mongoose.Schema;
 
 const Collection = { 
-                     "app"            : "coll_app", 
-                     "realtime"       : "coll_realtime", 
-                     "dashboard"      : "coll_dashboard", 
-                     "begin"          : "coll_begins", 
-                     "end"            : "coll_ends", 
-                     "crash"          : "coll_crashes",
-                     "activesessions" : "coll_activesessions"
+                     	"app"            	: "coll_app", 
+                     	"realtime"       	: "coll_realtime", 
+                     	"dashboard"      	: "coll_dashboard", 
+                     	"begin"          	: "coll_begins", 
+                     	"end"            	: "coll_ends", 
+                     	"crash"			: "coll_crashes",
+                     	"activesessions" 	: "coll_activesessions",
+			"user"			: "coll_users",
+			"event"			: "coll_events"		
                    };
 
 // DB Schemas
@@ -43,15 +45,33 @@ var activeSessionSchema = new Schema({
     dt   : { type: String }
 });
 
+var userSchema = new Schema({
+	_id	:	{type:	String,	require	:	true},
+	lm	:	{type:	String},
+	ldt	:	{type:	String},
+	lmod	:	{type:	String},
+	lpf	:	{type:	String},
+	losv	:	{type:	String},
+	lavn	:	{type:	String},
+	lci	:	{type:	String},
+	lcn	:	{type:	String},
+	lc	:	{type:	String},
+	flog	:	{type:	Number},
+	llog	:	{type:	Number},
+	ts	:	{type:	Number},
+	tts	:	{type:	Number}
+});
+
 // MongoDB Collection
-var appCollection = Mongoose.model('coll_app', appSchema);
-var realtimeCollection = Mongoose.model('coll_realtime', realtimeSchema);
-var dashboardCollection = Mongoose.model('coll_dashboard', dashboardSchema);
-var beginCollection = Mongoose.model('coll_begins', beginSchema);
-var crashCollection = Mongoose.model('coll_crashes', crashSchema);
-var endCollection = Mongoose.model('coll_ends', endSchema);
-var eventCollection = Mongoose.model('coll_events', eventSchema);
-var activeSessionCollection = Mongoose.model('coll_activesessions', activeSessionSchema);
+var appCollection 		= Mongoose.model('coll_app', appSchema);
+var realtimeCollection 		= Mongoose.model('coll_realtime', realtimeSchema);
+var dashboardCollection 	= Mongoose.model('coll_dashboard', dashboardSchema);
+var beginCollection 		= Mongoose.model('coll_begins', beginSchema);
+var crashCollection 		= Mongoose.model('coll_crashes', crashSchema);
+var endCollection 		= Mongoose.model('coll_ends', endSchema);
+var eventCollection 		= Mongoose.model('coll_events', eventSchema);
+var activeSessionCollection 	= Mongoose.model('coll_activesessions', activeSessionSchema);
+var userCollection		= Mongoose.model('coll_users',userSchema);
 
 // Factory to get model based on event type
 function eventFactory(){
@@ -110,6 +130,21 @@ function eventFactory(){
                     lat : _event.val.rtc,
                     dt  : _event.val.dt
                 });
+		case Collection["user"]:
+			return new userCollection({
+				_id	: _event.val.did,
+				lm	: _event.val.mnu,
+				ldt	: _event.val.dt,
+				lmod	: _event.val.mod,
+				lpf	: _event.val.pf,
+				losv	: _event.val.osv,
+				lavn	: _event.val.avn,
+				lc	: _event.val.c,	
+				flog	: _event.val.rtc,
+				llog	: _event.val.rtc,
+				ts	: 1,
+				tts	: 0 	
+			});
             default:
                 logger.error("Invalid event type: "+_event.type)
                 return null;
@@ -122,5 +157,6 @@ module.exports = {
   Collection: Collection,
   Begin: beginCollection,
   Dashboard: dashboardCollection,
-  ActiveSession: activeSessionCollection    
+  ActiveSession: activeSessionCollection,
+  User: userCollection    
 };

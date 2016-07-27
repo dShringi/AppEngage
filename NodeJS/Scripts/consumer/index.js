@@ -2,7 +2,6 @@ var Kafka = require('kafka-node');
 var Model = require('../models/analyticEvent');
 var Collection = Model.Collection;
 var EventFactory = new Model.EventFactory();
-
 var config = require('../conf/config.js');
 var logger = require('../conf/log.js');
 var Mongoose = require('mongoose');
@@ -10,17 +9,18 @@ var common = require('../commons/common.js');
 var akey = process.argv[2];
 
 if(akey==undefined||akey==null){
-    throw new Error("Invalid applicaiton key: "+ akey);
+    throw new Error("Please provide appropriate application key. Invalid applicaiton key: "+ akey);
 }
 
-var connectionURL = config.mongodb.url + config.mongodb.port + "/" +akey;
+var connectionURL = config.mongodb.url + ':' + config.mongodb.port + "/" +akey;
 logger.info("MongoDB connection URL: "+ connectionURL);
+Mongoose.Promise = global.Promise;
 Mongoose.connect(connectionURL);
 
 var HighLevelConsumer = Kafka.HighLevelConsumer;
 var Offset = Kafka.Offset;
 var Client = Kafka.Client;
-var client = new Client(config.consumer.url, 'consumer'+process.pid);
+var client = new Client(config.consumer.url, 'consumer_'+akey+'_'+process.pid);
 var payloads = [ { topic: akey }];
 
 var options = {
@@ -40,84 +40,68 @@ var offset = new Offset(client);
 
 consumer.on('message', function(message) {    
 
-    data = JSON.parse(message.value);
-    currDate = Math.floor(Date.now()/1000);
-    
-    if(!data.val.rtc){
-	   data.val.rtc = currDate;
-    } else if(data.val.rtc > currDate){
-        data.val.rtc = currDate;
-    }
+	data = JSON.parse(message.value);
+	console.log(data);	
+    	
+	currDate = Math.floor(Date.now()/1000);
+    	if(data.val.rtc > currDate){
+        	data.val.rtc = currDate;
+    	}
 
-    // Save Begin, Crash or End Event
-    event = EventFactory.getEvent(data);
-    event.save(function (err) {
-        if (err) {
-            logger.error(getErrorMessageFrom(err));
-            return;
-        }
-    });
+    	// Save Begin, Crash or End Event
+    	event = EventFactory.getEvent(data);
+    	event.save(function (err) {
+        	if (err) {
+            		logger.error(common.getErrorMessageFrom(err));
+            		return;
+        	}
+    	});
     
-    dashboardYearData = {
-        dt  : data.val.dt,
-        key : common.getStartYear(data.val.rtc),
-        ty  : 'Y'
-    };
-    dashboardMonthData = {
-        dt  : data.val.dt,
-        key : common.getStartMonth(data.val.rtc),
-        ty  : 'M'
-    };
-    dashboardDayData = {
-        dt  : data.val.dt,
-        key : common.getStartDate(data.val.rtc),
-        ty  : 'D'
-    };
-    dashboardWeekData = {
-        dt  : data.val.dt,
-        key : common.getStartWeek(data.val.rtc),
-        ty  : 'W'
-    };
+    	dashboardYearData 	= {dt  : data.val.dt	,key : common.getStartYear(data.val.rtc)	,ty  : 'Y'};
+    	dashboardMonthData 	= {dt  : data.val.dt	,key : common.getStartMonth(data.val.rtc)	,ty  : 'M'};
+    	dashboardDayData	= {dt  : data.val.dt	,key : common.getStartDate(data.val.rtc)	,ty  : 'D'};
+    	dashboardWeekData 	= {dt  : data.val.dt	,key : common.getStartWeek(data.val.rtc)	,ty  : 'W'};
+	dashboardHourData	= {dt  : data.val.dt    ,key : common.getStartHour(data.val.rtc)        ,ty  : 'H'};
 
-    switch(data.type){
-        case Collection["begin"]:
-            // Dashboard Update
-            saveOrUpdate(dashboardYearData,data.type);
-            saveOrUpdate(dashboardMonthData,data.type);
-            saveOrUpdate(dashboardDayData,data.type);
-            saveOrUpdate(dashboardWeekData,data.type);
+    	switch(data.type){
+        	case Collection["begin"]:
+            		// Dashboard Update
+            		updateDashboard(dashboardYearData,data.type,1);
+            		updateDashboard(dashboardMonthData,data.type,1);
+            		updateDashboard(dashboardDayData,data.type,1);
+            		updateDashboard(dashboardWeekData,data.type,1);
+			updateDashboard(dashboardHourData,data.type,1);
             
-            // Insert in active sessions
-            if(data.val.sid){
-    		    data.type = Collection["activesessions"];
-                sessionEvent = EventFactory.getEvent(data);
-                sessionEvent.save(function(err){
-                   if(err){
-                       logger.error(getErrorMessageFrom(err));
-                       return;
-                   } 
-                });
-            }
+            		// Insert in active sessions
+			updateActiveSessions(data);
+	       		
+			//Insert in Users Collection
+			updateUsers(data);
+            		break;
+        	case Collection["crash"]:
+			//Increment the crash count in the dashboard collection
+            		updateDashboard(dashboardYearData,data.type,1);
+            		updateDashboard(dashboardMonthData,data.type,1);
+            		updateDashboard(dashboardDayData,data.type,1);
+            		updateDashboard(dashboardWeekData,data.type,1);
+			updateDashboard(dashboardHourData,data.type,1);
+            		break;
+        
+		case Collection["end"]:
+            		// Delete active session
+			removeActiveSession(data.val.sid);
 
-	       //Insert in Real Time
-            break;
-        case Collection["crash"]:
-            saveOrUpdate(dashboardYearData,data.type);
-            saveOrUpdate(dashboardMonthData,data.type);
-            saveOrUpdate(dashboardDayData,data.type);
-            saveOrUpdate(dashboardWeekData,data.type);
-            break;
-        case Collection["end"]:
-            // Delete active session
-            if(data.val.sid){
-    		    Model.ActiveSession.find({ _id:data.val.sid }).remove(function(err){
-                   if(err){
-                       logger.error(err);
-                   } 
-                });
-            }
-            break;
-    }
+			//Increment the timespent in the dashboard collection
+			updateDashboard(dashboardYearData,data.type,data.val.tsd);
+                        updateDashboard(dashboardMonthData,data.type,data.val.tsd);
+                        updateDashboard(dashboardDayData,data.type,data.val.tsd);
+                        updateDashboard(dashboardWeekData,data.type,data.val.tsd);
+			updateDashboard(dashboardHourData,data.type,data.val.tsd);			
+
+			//update user collection for timspent
+			updateUsers(data);
+            		break;
+    	}
 });
 
 consumer.on('error', function (err) {
@@ -133,64 +117,93 @@ consumer.on('offsetOutOfRange', function (topic) {
     });
 });
 
-function getErrorMessageFrom(err) {
-    var errorMessage = '';
-    if (err.errors) {
-        for (var prop in err.errors) {
-            if(err.errors.hasOwnProperty(prop)) {
-                errorMessage += err.errors[prop].message + ' '
-            }
-        }
-    } else {
-        errorMessage = err.message;
-    }
-    return errorMessage;
+
+function updateUsers(req){
+	switch(req.type){
+		case Collection["begin"]:
+        		Model.User.findById(req.val.did,function(err,doc){
+				if(!err){
+					if(doc === null || !doc){
+						data.type = Collection["user"];
+						data.val.ts = 1;
+						data.val.tts = 0;
+        					event = EventFactory.getEvent(data);
+        					event.save(function (err) {
+                					if (err) {
+                        					logger.error(common.getErrorMessageFrom(err));
+                        					return;
+                					}
+        					});
+					}else{
+						Model.User.findByIdAndUpdate(req.val.did,{$set:{'lavn':data.val.avn,'losv':data.val.osv,'llog':data.val.rtc},$inc:{'ts':1}},function(err,doc){
+						if(err){
+							logger.error(common.getErrorMessageFrom(err));
+							return;
+						}
+					});
+					}
+				} else {
+					logger.error(err);				
+                		}	
+        		});
+			break;
+		case Collection["end"]:
+			Model.User.findByIdAndUpdate(req.val.did,{$inc:{'tts':req.val.tsd}},function(err,doc){
+				if(err){
+					logger.error(common.getErrorMessageFrom(err));
+					return;
+				}
+			});
+			break;
+	}
 }
 
-function saveOrUpdate(dashboardData, eventType){
-    Model.Dashboard.findOne({
-        _id: dashboardData
-    }, function(err, doc){
-	//console.log(err);
-        if(!err){
-            if(doc == undefined || doc == null){
-		//console.log(eventType+'_'+dashboardData);
-                switch(eventType){
-                    case Collection["begin"]:
-                        dashboardData.tse = 1;
-                        break;
-                    case Collection["crash"]:
-                        dashboardData.tce = 1;
-                        break;
+function updateActiveSessions(req){
+	Model.ActiveSession.findByIdAndUpdate(req.val.sid,{$set:{'sst':req.val.rtc,'lat':req.val.rtc,'dt':req.val.dt,'did':req.val.did}},{upsert:true},function(err,doc){
+        	if(err){
+                	logger.error(err);
                 }
-                dashboardData.type = Collection["dashboard"];
-                doc = EventFactory.getEvent(dashboardData);
-                doc.save(function(err){
-                   if(err){
-                       logger.error("Error saving "+getErrorMessageFrom(err));
-                   } 
-                });
-            } else {
-                doc._id = dashboardData;
-                // TODO Figure out a better way to do it.
-                dashboardVal = Object.create(doc.val);
-                switch(eventType){
-                    case Collection["begin"]:
-                        dashboardVal.tse = dashboardVal.tse+1;
+        });
+	
+}
+
+function updateDashboard(dashboardData,eventType,valueIncrement){
+	switch(eventType){
+                case Collection["begin"]:
+                        Model.Dashboard.findByIdAndUpdate(dashboardData,{$inc:{'val.tse':valueIncrement}},{upsert:true},function(err,doc){
+                                if(err){
+                                        logger.error(err);
+                                }
+                        });
                         break;
-                    case Collection["crash"]:
-                        dashboardVal.tce = dashboardVal.tce+1;
+		case Collection["end"]:
+			Model.Dashboard.findByIdAndUpdate(dashboardData,{$inc:{'val.tts':valueIncrement}},{upsert:true},function(err,doc){
+				if(err){
+					logger.error(err);
+				}
+			});
+			break;
+		case Collection["crash"]:
+			Model.Dashboard.findByIdAndUpdate(dashboardData,{$inc:{'val.tce':valueIncrement}},{upsert:true},function(err,doc){
+				if(err){
+					logger.error(err);
+				}
+			});
+			break;
+                case Collection["event"]:
+                        Model.Dashboard.findByIdAndUpdate(dashboardData,{$inc:{'val.te':valueIncrement}},{upsert:true},function(err,doc){
+                                if(err){
+                                        logger.error(err);
+                                }
+                        });
                         break;
-                }                
-                doc.val = dashboardVal;
-                doc.save(function(err){
-                    if(err){
-                        logger.error("Error updating model"+getErrorMessageFrom(err));
-                    }
-                });
-            }
-        } else {
-            logger.error(err);
-        }
-    });
+	}
+}
+
+function removeActiveSession(sid){
+	Model.ActiveSession.findByIdAndRemove(sid,function(err){
+        	if(err){
+                	logger.error(err);
+		}
+	});	
 }

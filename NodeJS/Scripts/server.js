@@ -1,5 +1,4 @@
 'use strict'
-
 var Hapi = require('hapi');
 var server = new Hapi.Server();
 
@@ -10,8 +9,8 @@ var Kafka = require('kafka-node');
 var Producer = Kafka.Producer;
 var client = new Kafka.Client(config.consumer.url);
 var producer = new Producer(client);
-// HTTP Server connection
 
+// HTTP Server connection
 server.connection({ host: config.server.host,  port: config.server.port  });
 
 // Initialize Restful routes
