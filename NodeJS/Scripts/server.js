@@ -1,15 +1,13 @@
 'use strict'
-
 var Hapi = require('hapi');
 var server = new Hapi.Server();
 
 var config = require('./conf/config.js');
 var logger = require('./conf/log.js');
 var routes = require('./routes');
-
 var Kafka = require('kafka-node');
 var Producer = Kafka.Producer;
-var client = new Kafka.Client();
+var client = new Kafka.Client(config.consumer.url);
 var producer = new Producer(client);
 
 // HTTP Server connection
@@ -27,12 +25,6 @@ server.start((err) => {
 });
 
 /*
-server.start((err) => {
-    console.log(err);	
-    logger.info('Server started at: ' + server.info.uri);
-});
-
-
 server.route({
         method: 'GET',
         path: '/',
