@@ -58,10 +58,10 @@ section>header{/*border-bottom:1px solid #dadada;*/ padding:8px;display: inline-
 .left-side .bar-icon, .left-side .arrow-icon, .left-side ul li a{font-size: 17px;}
 .left-side .bar-icon, .left-side .arrow-icon{padding: 5px 0;}
 .left-side ul li a{padding: 0;}
-.sticky-left-side {position: fixed;height: 100%; z-index: 100;background: rgb(56,67,75);}
-
+.sticky-left-side {position: absolute;/*height: 100%;*/ z-index: 100;background: rgb(56,67,75);}
+.left-side-inner{display: none}
 .left-side-inner li a{color:rgb(234,239,243);}
-.main-container{padding-left:80px}
+.main-container{/*padding-left:80px*/}
 .chart{background-color:#fff;}
 .chart-container{display:block; height:200px;}
 .row {margin:0;}
@@ -168,26 +168,6 @@ div.tooltip {
 /************************** For Column Chart - END *******************************/
 
 .event-container label, .chart-title{color: rgb(134,163,176)}
-/*.left-side-inner li ul.sub-menu{display: none;}
-
-.bar-icon:hover ul.sub-menu{
-    display: block;	
-    width: 200px; 
-    //display: none;
-    position: fixed;
-    z-index: 999;
-    left: 80px;
-    padding-left: 20px;
-    background-color: rgb(60,70,80);
-    height: 100%;
-    top: 0;
-    padding-top: 80px;
-}
-
-.left-side-inner li ul.sub-menu li{padding:20px;display: inline-block;}*/
-
-
-
 
 .overlay{}
 .breadcrumb ul{margin: 0; padding: 8px 30px }
