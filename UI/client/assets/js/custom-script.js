@@ -1,8 +1,9 @@
 var months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
 var color = d3.scale.ordinal().range(["#f47321", "#76bce6", "#75d3c5", "#379154", "#39B4BF", "#FFE666", "#E54E67", "#F75B49"]);
-
 var todayObj = new Date(), appKey = 'MastApp';
+
+//var APIBaseURL = "http://52.206.121.100/";
+var APIBaseURL = "http://13.66.57.215/appengage/";
 
 // Get donut chart SVG object
 var getDonutSVG = function(chartHolder, width, height){
@@ -55,7 +56,8 @@ function numFormate(nums){
 $(document).ready(function () {
     "use strict";
     $('.left-side').load("menu.html");
-	
+	$('.left-side').addClass('wdt80');
+    
 	$.get("header.html", function (data) {
 		$(".main-container").prepend(data);
 	});

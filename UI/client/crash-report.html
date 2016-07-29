@@ -120,8 +120,8 @@
 			var pie1 = d3.layout.pie().sort(null).value(function (d) { return d.crash; });
 			
 			var sd = 1467347495, ed = 1468297895;
-			var CrashReportAPI = "http://13.66.57.215/appengage/getCrashCounters";
-			var CrashReportAPITable = "http://13.66.57.215/appengage/getCrashDetails";
+			var CrashReportAPI = APIBaseURL+"getCrashCounters";
+			var CrashReportAPITable = APIBaseURL+"getCrashDetails";
 			
 			var loadChart = function(sd, ed, appKey = 'MastApp'){
 				d3.json(CrashReportAPI + "?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
