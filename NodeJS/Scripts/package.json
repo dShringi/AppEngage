@@ -15,7 +15,10 @@
   "dependencies": {
     "hapi": "^13.4.1",
     "kafka-node": "^0.3.3",
+    "maxmind": "^1.1.0",
+    "moment-timezone": "^0.5.5",
     "mongoose": "^4.4.20",
+    "underscore": "^1.8.3",
     "winston": "^2.2.0"
   }
 }

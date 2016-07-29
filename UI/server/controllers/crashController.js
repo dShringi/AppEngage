@@ -1,6 +1,34 @@
 var mongojs   	= require('mongojs');
 var config    	= require('../../config/config');
 var async 	= require('async');
+var startdate ,enddate ,akey ;	
+var mnuString,osvString,totalString,pfString,finalString;
+var db = mongojs(config.connectionstring+akey);
+
+function aggregateCalulation(searchByParam,callback){ // function to fetch result mnu,osv and pf .
+
+var paramString;
+var rowData=searchByParam;
+var db = mongojs(config.connectionstring+akey);
+var grpvalue='$val.'+ searchByParam;
+
+//console.log('Aggregate');
+db.collection(config.coll_crashes).aggregate([
+	{ $match: { $and: [ { 'val.rtc': { $gte: startdate, $lte: enddate } } ] } },
+	{ $group: {_id: grpvalue,Total: { $sum: 1 }}},
+	{ $project: {_id: 0,rowData: "$_id",Total: 1}}
+	],function(err, result) {
+		
+		paramString = '{"'+searchByParam+'":[';
+		for(var i=0;i<result.length;i++){
+			paramString = paramString.concat('{"'+result[i].rowData+'":'+result[i].Total+'},');
+			
+		}
+		paramString = paramString.substr(0,paramString.length-1).concat(']}');;
+		callback(paramString);
+}
+);
+} // end of aggregateCalulation
 
 module.exports.crashDetail = function(req,res){
 
@@ -8,6 +36,8 @@ var startdate = req.query["sd"],enddate = req.query["ed"],akey =req.query["akey"
 var finaldetailstr,tempstring=[],tempstr="";
 //console.log(config.connectionstring+akey);
 var db = mongojs(config.connectionstring+akey);
+
+
 //console.log(db);
 async.waterfall(
     	[	
@@ -46,93 +76,77 @@ async.waterfall(
 
 module.exports.crashCounters = function(req,res){
 
-var startdate = req.query["sd"],enddate = req.query["ed"],akey =req.query["akey"];	
-var mnustring,osvstring,totalstring,pfstring,finalstring;
-//console.log(config.connectionstring+akey);
+startdate = req.query["sd"],enddate = req.query["ed"],akey =req.query["akey"];	
+mnuString,osvString,totalString,pfString,finalString;
 var db = mongojs(config.connectionstring+akey);
-//console.log(db);
-async.waterfall(
+async.series(
     	[	
 	//Aggregate of Total Crashes
 	function(callback) { //callback start
-		//console.log('Aggregate Total');
+		
 		db.collection(config.coll_crashes).aggregate([
-			{ $match: { $and: [ { 'val.rtc': { $gte: startdate, $lte: enddate } }, { 'val.akey' : akey } ] } },
+			{ $match: { $and: [ { 'val.rtc': { $gte: startdate, $lte: enddate } } ] } },
 			{ $group: {_id : { mnu:{$sum:"$val.mnu"},osv:{$sum:"$val.osv"},pf:{$sum:"$val.pf"}}, Total : {$sum : 1}}},
 			{ $project: {_id: 0,Total: 1} }
 			],function(err, result) {
-				//console.log(err);
-				//console.log("Total result:");
-				//console.log(result);
+				
+				console.log(result);
 				if(!err){
 					if(result.length!=0){
-						totalstring='{"TotalCrashes":'+ result[0].Total + '}';
+						totalString='{"TotalCrashes":'+ result[0].Total + '}';
 					}
 					else{
 						db.close();
-                                		return res.json('[]');
-						//totalstring='{"TotalCrashes":0}'
+                  		return res.json('[]');
+						
 					}
 				}
-				//console.log(totalstring);
+				
 				callback(null);
 			});
 	},//callback end
 	//Aggregate by Manufacturers
 	function(callback) { //callback start
 		//console.log('Aggregate');
-		db.collection(config.coll_crashes).aggregate([
-			{ $match: { $and: [ { 'val.rtc': { $gte: startdate, $lte: enddate } }, { 'val.akey' : akey} ] } },
-		  	{ $group: {_id: "$val.mnu",Total: { $sum: 1 }}},
-		  	{ $project: {_id: 0,mnu: "$_id",Total: 1}}
-			],function(err, result) {
-				mnustring = '{"mnu":[';
-				for(var i=0;i<result.length;i++){
-					mnustring = mnustring.concat('{"'+result[i].mnu+'":'+result[i].Total+'},');
-				}
-				mnustring = mnustring.substr(0,mnustring.length-1).concat(']}');;
-				//console.log(mnustring);
-				callback(null);
-			});
+		aggregateCalulation("mnu",function(res){
+		mnuString=res;
+		callback(null);
+		});
 	},//callback end
 	//Aggregate By Operating System Versions
 	function(callback) { //callback start	
-		db.collection(config.coll_crashes).aggregate([
-			{ $match: { $and: [ { 'val.rtc': { $gte: startdate, $lte: enddate } }, { 'val.akey' : akey } ] } },
-		  	{ $group: {_id: "$val.osv",Total: { $sum: 1 }}},
-		  	{ $project: {_id: 0,osv: "$_id",Total: 1}}
-			],function(err, result) {
-				osvstring = '{"osv":[';
-				for(var i=0;i<result.length;i++){
-					osvstring = osvstring.concat('{"'+result[i].osv+'":'+result[i].Total+'},');
-				}
-				osvstring = osvstring.substr(0,osvstring.length-1).concat(']}');;
-				//console.log(osvstring);
-				callback(null);
-			});
+		
+		
+		aggregateCalulation("osv",function(res){
+		osvString=res;
+		callback(null);
+		});
 		},//callback end
 	//Aggregate By Platform
 	function(callback) { //callback start
-		db.collection(config.coll_crashes).aggregate([
-			{ $match: { $and: [ { 'val.rtc': { $gte: startdate, $lte: enddate } }, { 'val.akey' : akey } ] } },
-		  	{ $group: {_id: "$val.pf",Total: { $sum: 1 }}},
-		  	{ $project: {_id: 0,pf: "$_id",Total: 1}}
-			],function(err, result) {
-				pfstring = '{"pf":[';
-				for(var i=0;i<result.length;i++){
-					pfstring = pfstring.concat('{"'+result[i].pf+'":'+result[i].Total+'},');
-				}
-				pfstring = pfstring.substr(0,pfstring.length-1).concat(']}');;
-				finalstring='['+ totalstring + ',' + osvstring + ','+ mnustring + ',' + pfstring +']'
-				//console.log(finalstring);	
-				callback(null);
-			});
+		
+		
+		aggregateCalulation("pf",function(res){
+		pfString=res;
+		callback(null);
+		});
 		},
+		
+	function(callback) { // final string after fetching result from total,mnu,osv,pf 
+		finalString='['+ totalString + ',' + mnuString + ','+ osvString + ',' + pfString +']'
+		console.log(finalString);	
+		callback(null);
+		},	
+		
 	function(callback) { //callback start
 		db.close();
-		return res.json(finalstring);
+		return res.json(finalString);
 	}
 ]
 );
 
 }; //End of crashSummary Function
+
+
+	
+
