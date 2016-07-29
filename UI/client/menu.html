@@ -1,42 +1,45 @@
-<div class="bar-icon"> 
-	<a href="javascript:void(0)"><img src="assets/img/Hamburger.png" /></a>
-	<div class="left-side-inner">
-
-		<!--sidebar nav start-->
-		<ul class="nav nav-pills nav-stacked">
-			<li class="active"><a href="/"><img src="assets/img/Dashboard.png" /></a><span><a href="/">Dashboard</a></span></li>
-			<li class="menu-insights"><a href="javascript:void(0)"><img src="assets/img/Search.png" /></a><span><a href="javascript:void(0)">Insights</a></span>
-				<ul class="sub-menu">
-					<li class=""><a href="insights-session.html">Session</a></li>
-					<li class=""><a href="insights-users.html">Users</a></li>
-				</ul>
-			</li>
-			<li class="menu-device"><a href="javascript:void(0)"><img src="assets/img/Device.png" /></a><span><a href="javascript:void(0)">Device</a></span>
-				<ul class="sub-menu">
-					<li class=""><a href="device-manufacturer.html">Manufacturer</a></li>
-					<li class=""><a href="device-model.html">Model</a></li>
-					<li class=""><a href="device-type.html">Type</a></li>
-					<li class=""><a href="device-platform.html">Platform</a></li>
-					<li class=""><a href="device-os-version.html">OS Version</a></li>
-					<li class=""><a href="device-app-version.html">App Version</a></li>
-					<li class=""><a href="device-carrier.html">Carrier</a></li>
-					<li class=""><a href="device-resolution.html">Resolution</a></li>
-				</ul>
-			</li>              
-			<li class=""><a href="cities.html"><img src="assets/img/Cities.png" /></a><span><a href="cities.html">Cities</a></span></li>      
-			<li class="menu-event"><a href="javascript:void(0)"><img src="assets/img/Events.png" /></a><span><a href="javascript:void(0)">Events</a></span>
-				<ul class="sub-menu">
-					<li class=""><a href="event-summary.html">Summary</a></li>
-					<li class=""><a href="event-compare.html">Compare</a></li>
-				</ul>
-			</li>
-			<li class=""><a href="cohort.html"><img src="assets/img/Cohort.png" /></a><span><a href="cohort.html">Cohort</a></span></li>
-			<li class=""><a href="crash-report.html"><img src="assets/img/Crash-Reports.png" /></a><span><a href="crash-report.html">Crash Reports</a></span></li>
-		</ul>
-		<!--sidebar nav end-->
-	</div>
+<div class="bar-icon">
+    <a href="#"><img src="assets/img/Hamburger.png" /></a>
+    
 </div>
-<div class="arrow-icon"><a href="javascript:void(0)"><img src="assets/img/Back.png" /></a></div>
+<!--<div class="arrow-icon"><a href="index.html"><img src="assets/img/Back.png" /></a></div> -->
+
+<!--logo and iconic logo end-->
+<div class="left-side-inner">
+
+    <!--sidebar nav start-->
+    <ul class="nav nav-pills nav-stacked">
+        <li class="active"><a href="/"><img src="assets/img/Dashboard.png" /></a><span><a href="/">Dashboard</a></span></li>
+        <li class="menu-insights"><a href="javascript:void(0)"><img src="assets/img/Search.png" /></a><span><a href="javascript:void(0)">Insights</a></span>
+            <ul class="sub-menu">
+                <li class=""><a href="insights-session.html">Session</a></li>
+                <li class=""><a href="insights-users.html">Users</a></li>
+            </ul>
+        </li>
+        <li class="menu-device"><a href="javascript:void(0)"><img src="assets/img/Device.png" /></a><span><a href="javascript:void(0)">Device</a></span>
+            <ul class="sub-menu">
+                <li class=""><a href="device-manufacturer.html">Manufacturer</a></li>
+                <li class=""><a href="device-model.html">Model</a></li>
+                <li class=""><a href="device-type.html">Type</a></li>
+                <li class=""><a href="device-platform.html">Platform</a></li>
+                <li class=""><a href="device-os-version.html">OS Version</a></li>
+                <li class=""><a href="device-app-version.html">App Version</a></li>
+                <li class=""><a href="device-carrier.html">Carrier</a></li>
+                <li class=""><a href="device-resolution.html">Resolution</a></li>
+            </ul>
+        </li>              
+        <li class=""><a href="cities.html"><img src="assets/img/Cities.png" /></a><span><a href="cities.html">Cities</a></span></li>      
+        <li class="menu-event"><a href="javascript:void(0)"><img src="assets/img/Events.png" /></a><span><a href="javascript:void(0)">Events</a></span>
+            <ul class="sub-menu">
+                <li class=""><a href="event-summary.html">Summary</a></li>
+                <li class=""><a href="event-compare.html">Compare</a></li>
+            </ul>
+        </li>
+        <li class=""><a href="cohort.html"><img src="assets/img/Cohort.png" /></a><span><a href="cohort.html">Cohort</a></span></li>
+        <li class=""><a href="crash-report.html"><img src="assets/img/Crash-Reports.png" /></a><span><a href="crash-report.html">Crash Reports</a></span></li>
+    </ul>
+    <!--sidebar nav end-->
+</div>
 
 <script>
     var animateTime = 200;
@@ -45,11 +48,56 @@
         $( ".left-side" ).toggleClass('wdt210');
         $('.left-side-inner').toggle('fast');
         $( ".left-side" ).toggleClass("shadow");
+        $('ul.sub-menu').hide(animateTime);
         $('.overlay').toggle();
     });
     
     $('.menu-device, .menu-event, .menu-insights').click(function(){
-        $('ul.sub-menu').not(this).hide(animateTime);
+        var curClass = $(this).attr('class');
+        $('ul.sub-menu').not("."+curClass+" ul").hide(animateTime);
         $(this).find('ul').toggle(animateTime,function(){});
     });
+    
+    
+    
+    
+    
+/*$('.bar-icon').on('click', function(e){
+    e.preventDefault();
+    showMenu();
+});
+
+var showMenu = function(){
+	$('.overlay').show();
+	$('.bar-icon').hide();
+    $('.arrow-icon').show();
+	
+    $( ".left-side" ).animate({
+        width: "210px"
+    }, animateTime, function(){
+        $('.left-side-inner ul li span').show("fast");
+        $( ".left-side" ).addClass("shadow");
+    } );
+};
+	
+$('.arrow-icon').on('click', function(e){
+    e.preventDefault();
+    $( ".left-side" ).animate({
+        width: "80px"
+    }, animateTime );
+    $('.left-side-inner ul li span').hide(animateTime);
+    $('.bar-icon').show();
+    $('.arrow-icon').hide();
+    $('ul.sub-menu').hide(animateTime);
+    $( ".left-side" ).removeClass("shadow");
+    $('.overlay').hide();
+});
+$('.menu-device, .menu-event, .menu-insights').click(function(){
+	if( $( ".left-side" ).width() != 210){
+		showMenu();
+	}
+	//$('ul.sub-menu').hide(animateTime);
+    $(this).find('ul').toggle(animateTime,function(){});
+});*/
+
 </script>
