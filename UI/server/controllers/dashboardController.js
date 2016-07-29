@@ -15,14 +15,14 @@ var tse=0,te=0,tuu=0,tnu=0,tts=0,tce=0,dType,dailyCount=0,weeklyCount=0,monthlyC
 
 var dd = '0'.concat(startdate.getDate()).slice(-2),mm = '0'.concat(startdate.getMonth()+1).slice(-2),yyyy = startdate.getFullYear(),hh='0'.concat(startdate.getHours()).slice(-2);
 sd = ''+yyyy+mm+dd+hh;
-var sdtemp=''+yyyy+mm+dd;
+var sdForDays=''+yyyy+mm+dd;
 var testsd = '0'.concat(startdate.getDate()).slice(-2);
-var tempdatesd=yyyy+"-"+mm+"-"+testsd;
+var sdateparam=yyyy+"-"+mm+"-"+testsd;
 var dd = '0'.concat(enddate.getDate()).slice(-2),mm = '0'.concat(enddate.getMonth()+1).slice(-2),yyyy = enddate.getFullYear(),hh='0'.concat(enddate.getHours()).slice(-2);
 ed = ''+yyyy+mm+dd+hh;
-var edtemp=''+yyyy+mm+dd;
+var edForDays=''+yyyy+mm+dd;
 var tested = '0'.concat(enddate.getDate()).slice(-2);
-var tempdateed=yyyy+"-"+mm+"-"+tested;
+var edateparam=yyyy+"-"+mm+"-"+tested;
 
 var db = mongojs(config.connectionstring+akey);
 var typeListarray=[];
@@ -31,7 +31,7 @@ async.waterfall(
 		
 	function(callback){ //callback start
 	
-	diffDays=common.getDateDiffernce(tempdatesd,tempdateed);  //to find no of days between two dates
+	diffDays=common.getDateDiffernce(sdateparam,edateparam);  //to find no of days between two dates
 	callback(null);
 	}, //callback end
 	
@@ -43,8 +43,8 @@ async.waterfall(
 	
 	else { 
 	t="D";
-	sd = sdtemp;
-	ed = edtemp;
+	sd = sdForDays;
+	ed = edForDays;
 	callback(null);
 	}
 	}, //callback end
@@ -100,14 +100,14 @@ var tse=0,te=0,tuu=0,tnu=0,tts=0,tce=0,dType,dailyCount=0,weeklyCount=0,monthlyC
 
 var dd = '0'.concat(startdate.getDate()).slice(-2),mm = '0'.concat(startdate.getMonth()+1).slice(-2),yyyy = startdate.getFullYear(),hh='0'.concat(startdate.getHours()).slice(-2);
 sd = ''+yyyy+mm+dd+hh;
-var sdtemp=''+yyyy+mm+dd;
+var sdForDays=''+yyyy+mm+dd;
 var testsd = '0'.concat(startdate.getDate()).slice(-2);
-var tempdatesd=yyyy+"-"+mm+"-"+testsd;
+var sdateparam=yyyy+"-"+mm+"-"+testsd;
 var dd = '0'.concat(enddate.getDate()).slice(-2),mm = '0'.concat(enddate.getMonth()+1).slice(-2),yyyy = enddate.getFullYear(),hh='0'.concat(enddate.getHours()).slice(-2);
 ed = ''+yyyy+mm+dd+hh;
-var edtemp=''+yyyy+mm+dd;
+var edForDays=''+yyyy+mm+dd;
 var tested = '0'.concat(enddate.getDate()).slice(-2);
-var tempdateed=yyyy+"-"+mm+"-"+tested;
+var edateparam=yyyy+"-"+mm+"-"+tested;
 
 var db = mongojs(config.connectionstring+akey);
 var typeListarray=[];
@@ -116,7 +116,7 @@ async.waterfall(
 		
 	function(callback){ //callback start
 	
-	diffDays=common.getDateDiffernce(tempdatesd,tempdateed);  //to find no of days between two dates
+	diffDays=common.getDateDiffernce(sdateparam,edateparam);  //to find no of days between two dates
 	callback(null);
 	}, //callback end
 	
@@ -128,8 +128,8 @@ async.waterfall(
 	
 	else { 
 	t="D";
-	sd = sdtemp;
-	ed = edtemp;
+	sd = sdForDays;
+	ed = edForDays;
 	callback(null);
 	}
 	}, //callback end
