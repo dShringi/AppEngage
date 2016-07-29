@@ -52,7 +52,7 @@
     });
     
     $('.menu-device, .menu-event, .menu-insights').click(function(){
-        $('ul.sub-menu').hide(animateTime);
+        $('ul.sub-menu').not(this).hide(animateTime);
         $(this).find('ul').toggle(animateTime,function(){});
     });
     
