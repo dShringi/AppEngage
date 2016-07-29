@@ -5,14 +5,10 @@ var EventFactory = new Model.EventFactory();
 var config = require('../conf/config.js');
 var logger = require('../conf/log.js');
 var Mongoose = require('mongoose');
-try{
 var common = require('../commons/common.js');
-}catch(ex)
-{console.log(ex);
-}
 var _ = require('underscore');
 var akey = process.argv[2];
-var appTZ;
+var appTZ = 'Asia/Kolkata';
 
 if(akey==undefined||akey==null){
     throw new Error("Please provide appropriate application key. Invalid applicaiton key: "+ akey);
@@ -139,10 +135,10 @@ function updateUsers(req){
         		Model.User.findById(req.val.did,function(err,doc){
 				if(!err){
 					if(doc === null || !doc){
-						data.type = Collection["user"];
-						data.val.ts = 1;
-						data.val.tts = 0;
-        					event = EventFactory.getEvent(data);
+						req.type = Collection["user"];
+						req.val.ts = 1;
+						req.val.tts = 0;
+        					event = EventFactory.getEvent(req);
         					event.save(function (err) {
                 					if (err) {
                         					logger.error(common.getErrorMessageFrom(err));
@@ -150,7 +146,7 @@ function updateUsers(req){
                 					}
         					});
 					}else{
-						Model.User.findByIdAndUpdate(req.val.did,{$set:{'lavn':data.val.avn,'losv':data.val.osv,'llog':data.val.rtc},$inc:{'ts':1}},function(err,doc){
+						Model.User.findByIdAndUpdate(req.val.did,{$set:{'lavn':req.val.avn,'losv':req.val.osv,'llog':req.val.rtc},$inc:{'ts':1}},function(err,doc){
 						if(err){
 							logger.error(common.getErrorMessageFrom(err));
 							return;

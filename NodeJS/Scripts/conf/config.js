@@ -35,7 +35,7 @@ config.url.offline = '/api/i/bulk/O';
 config.app = {};
 config.app.details = [
 {app:"test1234",TZ:"America/New_York"},
-{app:"test12345",TZ:"America/New_York"}
+{app:"4170b44d6459bba992acaa857ac5b25d7fac6cc1",TZ:"Asia/Kolkata"}
 ];
 
 module.exports = config;

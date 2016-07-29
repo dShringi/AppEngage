@@ -39,63 +39,32 @@ var common = {};
 
         common.getStartYear = function(rtr,appTZ){
 		var eventdate = moment.tz(rtr*1000,appTZ).format();
-		return ''+eventdate.substring(0,4)+'0101';
-		/*
-		var eventDate = new Date(0);
-		eventDate.setUTCSeconds(rtr);
-            	year = eventDate.getFullYear();
-            	return ''+year+'0101';
-		*/
+		return parseInt(''+eventdate.substring(0,4)+'0101');
         };
 
 	common.getStartMonth = function(rtr,appTZ){
                 var eventdate = moment.tz(rtr*1000,appTZ).format();
-                return ''+eventdate.substring(0,4)+eventdate.substring(5,7)+'01';
-		/*
-            	var eventDate = new Date(0);
-		eventDate.setUTCSeconds(rtr);
-            	year = eventDate.getFullYear();
-		month = '0'.concat(eventDate.getMonth()+1).slice(-2);
-            	return ''+year+month+'01';
-		*/
+                return parseInt(''+eventdate.substring(0,4)+eventdate.substring(5,7)+'01');
         };
 
         common.getStartDate = function(rtr,appTZ){
                 var eventdate = moment.tz(rtr*1000,appTZ).format();
-                return ''+eventdate.substring(0,4)+eventdate.substring(5,7)+eventdate.substring(8,10);		
-		/*
-            	var eventDate = new Date(0);
-		eventDate.setUTCSeconds(rtr);
-            	year = eventDate.getFullYear();
-            	month = '0'.concat(eventDate.getMonth()+1).slice(-2);
-		date = '0'.concat(eventDate.getDate()+1).slice(-2);
-            	return ''+year+month+date;
-		*/
+                return parseInt(''+eventdate.substring(0,4)+eventdate.substring(5,7)+eventdate.substring(8,10));		
         };
 
         common.getStartHour = function(rtr,appTZ){
                 var eventdate = moment.tz(rtr*1000,appTZ).format();
-                return ''+eventdate.substring(0,4)+eventdate.substring(5,7)+eventdate.substring(8,10)+eventdate.substring(11,13);
-		/*
-                var eventDate = new Date(0);
-                eventDate.setUTCSeconds(rtr);
-                year = eventDate.getFullYear();
-                month = '0'.concat(eventDate.getMonth()+1).slice(-2);
-                date = '0'.concat(eventDate.getDate()+1).slice(-2);
-		hour = '0'.concat(eventDate.getHours()+1).slice(-2);
-            	return ''+year+month+date+hour;
-		*/
+                return parseInt(''+eventdate.substring(0,4)+eventdate.substring(5,7)+eventdate.substring(8,10)+eventdate.substring(11,13));
         };
 
 
 	common.getStartWeek = function(rtr,appTZ){
-            	var eventDate = new Date(0);
-            	eventDate.setUTCSeconds(rtr);
-            	var weekdate = new Date(eventDate);
-            	var weekbegin = eventDate.getDate() - eventDate.getDay();
-            	var weekday = new Date(weekdate.setDate(weekbegin));		
-            	return ''+weekday.getFullYear()+('0'.concat(weekday.getMonth()+1).slice(-2))+('0'.concat(weekdate.getDate()).slice(-2));
-	   };
+		var eventdate 	= moment.tz(rtr*1000,appTZ).format();
+		var ndate	= new Date(Date.UTC(eventdate.substring(0,4),parseInt(eventdate.substring(5,7))-1,eventdate.substring(8,10)));
+		var weekdate	= new Date(ndate);
+		var weekday	= new Date(weekdate.setDate(ndate.getDate() - ndate.getDay()));
+		return parseInt(''+weekday.getFullYear()+('0'.concat(weekday.getMonth()+1).slice(-2))+('0'.concat(weekday.getDate()).slice(-2)));
+	};
 
 }(common));
 
