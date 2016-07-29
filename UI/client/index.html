@@ -154,7 +154,7 @@
         <div class="overlay"></div>
         <script>
 			//var apiURL = "assets/json/data1.json";
-            var apiURL = "http://13.66.57.215/appengage/getDashBoardCounters";
+            var apiURL = APIBaseURL+"getDashBoardCounters";
 			function loadChart(startDate, endDate, appKey, type){
 				d3.json( apiURL + "?sd="+startDate+"&ed="+endDate+"&type="+type+"&akey="+appKey, function( error, data ) {
                     //console.log(JSON.stringify(error));
@@ -211,7 +211,7 @@
 
 				var data = new Array();
                 startTime = new Date().getTime()/1000;
-				$.getJSON("http://13.66.57.215/appengage/getDashBoardRealTime?akey=MastApp&sd="+(parseInt(startTime)-300)+"&ed="+(parseInt(startTime)), function(data) {
+				$.getJSON(APIBaseURL+"getDashBoardRealTime?akey=MastApp&sd="+(parseInt(startTime)-300)+"&ed="+(parseInt(startTime)), function(data) {
                     data = JSON.parse(data);
 					data.forEach(function(d) {
 						d.time = d.Time*1000;
@@ -277,7 +277,7 @@
 					timer = setInterval(function(){
 						tickerstartdate = tickerstartdate + 10000;
 						nextTime += 10
-						d3.json("http://13.66.57.215/appengage/getDashBoardRealTime?akey=MastApp&sd="+(parseInt(nextTime))+"&ed="+(parseInt(nextTime)), function(error, data1) {
+						d3.json(APIBaseURL+"getDashBoardRealTime?akey=MastApp&sd="+(parseInt(nextTime))+"&ed="+(parseInt(nextTime)), function(error, data1) {
                             data1 = JSON.parse(data1);
 							data1.forEach(function(d) {
 								devCount = d.DeviceCount;//Math.floor((Math.random() * 10) + 1);
