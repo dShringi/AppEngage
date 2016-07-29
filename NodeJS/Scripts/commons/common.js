@@ -1,4 +1,5 @@
 var logger = require('../conf/log.js');
+var moment = require('moment-timezone');
 var common = {};
 
 (function(common){
@@ -36,42 +37,58 @@ var common = {};
             	return ip.split(',')[0];
         };
 
-        common.getStartYear = function(rtr){
+        common.getStartYear = function(rtr,appTZ){
+		var eventdate = moment.tz(rtr*1000,appTZ).format();
+		return ''+eventdate.substring(0,4)+'0101';
+		/*
 		var eventDate = new Date(0);
 		eventDate.setUTCSeconds(rtr);
             	year = eventDate.getFullYear();
             	return ''+year+'0101';
+		*/
         };
 
-	common.getStartMonth = function(rtr){
+	common.getStartMonth = function(rtr,appTZ){
+                var eventdate = moment.tz(rtr*1000,appTZ).format();
+                return ''+eventdate.substring(0,4)+eventdate.substring(5,7)+'01';
+		/*
             	var eventDate = new Date(0);
 		eventDate.setUTCSeconds(rtr);
             	year = eventDate.getFullYear();
 		month = '0'.concat(eventDate.getMonth()+1).slice(-2);
-            return ''+year+month+'01';
+            	return ''+year+month+'01';
+		*/
         };
 
-        common.getStartDate = function(rtr){
+        common.getStartDate = function(rtr,appTZ){
+                var eventdate = moment.tz(rtr*1000,appTZ).format();
+                return ''+eventdate.substring(0,4)+eventdate.substring(5,7)+eventdate.substring(8,10);		
+		/*
             	var eventDate = new Date(0);
 		eventDate.setUTCSeconds(rtr);
             	year = eventDate.getFullYear();
             	month = '0'.concat(eventDate.getMonth()+1).slice(-2);
 		date = '0'.concat(eventDate.getDate()+1).slice(-2);
-            return ''+year+month+date;
+            	return ''+year+month+date;
+		*/
         };
 
-        common.getStartHour = function(rtr){
+        common.getStartHour = function(rtr,appTZ){
+                var eventdate = moment.tz(rtr*1000,appTZ).format();
+                return ''+eventdate.substring(0,4)+eventdate.substring(5,7)+eventdate.substring(8,10)+eventdate.substring(11,13);
+		/*
                 var eventDate = new Date(0);
                 eventDate.setUTCSeconds(rtr);
                 year = eventDate.getFullYear();
                 month = '0'.concat(eventDate.getMonth()+1).slice(-2);
                 date = '0'.concat(eventDate.getDate()+1).slice(-2);
 		hour = '0'.concat(eventDate.getHours()+1).slice(-2);
-            return ''+year+month+date+hour;
+            	return ''+year+month+date+hour;
+		*/
         };
 
 
-	common.getStartWeek = function(rtr){
+	common.getStartWeek = function(rtr,appTZ){
             	var eventDate = new Date(0);
             	eventDate.setUTCSeconds(rtr);
             	var weekdate = new Date(eventDate);

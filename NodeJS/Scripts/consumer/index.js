@@ -5,12 +5,27 @@ var EventFactory = new Model.EventFactory();
 var config = require('../conf/config.js');
 var logger = require('../conf/log.js');
 var Mongoose = require('mongoose');
+try{
 var common = require('../commons/common.js');
+}catch(ex)
+{console.log(ex);
+}
+var _ = require('underscore');
 var akey = process.argv[2];
+var appTZ;
 
 if(akey==undefined||akey==null){
     throw new Error("Please provide appropriate application key. Invalid applicaiton key: "+ akey);
 }
+
+// TODO : Bring it from AppEngage Database
+var application = config.app.details;
+
+_.each(application,function(data){
+	if(data.app === akey){
+		appTZ = data.TZ;
+	}
+});
 
 var connectionURL = config.mongodb.url + ':' + config.mongodb.port + "/" +akey;
 logger.info("MongoDB connection URL: "+ connectionURL);
@@ -57,11 +72,11 @@ consumer.on('message', function(message) {
         	}
     	});
     
-    	dashboardYearData 	= {dt  : data.val.dt	,key : common.getStartYear(data.val.rtc)	,ty  : 'Y'};
-    	dashboardMonthData 	= {dt  : data.val.dt	,key : common.getStartMonth(data.val.rtc)	,ty  : 'M'};
-    	dashboardDayData	= {dt  : data.val.dt	,key : common.getStartDate(data.val.rtc)	,ty  : 'D'};
-    	dashboardWeekData 	= {dt  : data.val.dt	,key : common.getStartWeek(data.val.rtc)	,ty  : 'W'};
-	dashboardHourData	= {dt  : data.val.dt    ,key : common.getStartHour(data.val.rtc)        ,ty  : 'H'};
+    	dashboardYearData 	= {dt  : data.val.dt	,key : common.getStartYear(data.val.rtc,appTZ)	,ty  : 'Y'};
+    	dashboardMonthData 	= {dt  : data.val.dt	,key : common.getStartMonth(data.val.rtc,appTZ)	,ty  : 'M'};
+    	dashboardDayData	= {dt  : data.val.dt	,key : common.getStartDate(data.val.rtc,appTZ)	,ty  : 'D'};
+    	dashboardWeekData 	= {dt  : data.val.dt	,key : common.getStartWeek(data.val.rtc,appTZ)	,ty  : 'W'};
+	dashboardHourData	= {dt  : data.val.dt    ,key : common.getStartHour(data.val.rtc,appTZ)	,ty  : 'H'};
 
     	switch(data.type){
         	case Collection["begin"]:

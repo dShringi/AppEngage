@@ -9,7 +9,7 @@ config.server.port = '8000';
 config.mongodb = {};
 //For development purpose
 config.mongodb.url = 'mongodb://localhost';
-//config.mongodb.url = 'mongodb://DWHBI-SRV3/appengage';
+//config.mongodb.url = 'mongodb://DWHBI-SRV3';
 config.mongodb.port = process.env.MONGODB_PORT || '27017';
 
 config.kafka = {};
@@ -31,5 +31,11 @@ config.url.endep = '/api/i/single/E'
 config.url.crashep = '/api/i/single/C';
 config.url.eventsep = '/api/i/single/event';
 config.url.offline = '/api/i/bulk/O';
+
+config.app = {};
+config.app.details = [
+{app:"test1234",TZ:"America/New_York"},
+{app:"test12345",TZ:"America/New_York"}
+];
 
 module.exports = config;
