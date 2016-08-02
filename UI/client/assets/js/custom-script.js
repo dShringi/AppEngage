@@ -6,46 +6,46 @@ var APIBaseURL = "http://52.206.121.100/appengage/";
 //var APIBaseURL = "http://13.66.57.215/appengage/";
 
 // Get donut chart SVG object
-var getDonutSVG = function(chartHolder, width, height){
+var getDonutSVG = function (chartHolder, width, height) {
 	return d3.select(chartHolder).append("svg")
 			.attr("width", width)
 			.attr("height", height)
-			.attr('viewBox', '0 0 '+(width)+' '+(height))
+			.attr('viewBox', '0 0 ' + width + ' ' + height)
 			.attr('perserveAspectRatio', 'xMinYMid')
-			.attr("class","chart")
+			.attr("class", "chart")
 			.append("g")
 			.attr("transform", "translate(" + ((width / 2)) + "," + height / 2 + ")");
 };
 
-function numFormate(nums){
-	console.log(nums+" : "+nums.toString().length);
+function numFormate(nums) {
+	//console.log(nums + " : " + nums.toString().length);
 	var retStr = "";
-	switch(nums.toString().length){
+	switch (nums.toString().length) {
 		case 1:
 		case 2:
 		case 3:
 			retStr = nums;
 			break;
 		case 4: //1000
-			retStr = nums.toString().substr(0,1)+"K+";
+			retStr = nums.toString().substr(0, 1) + "K+";
 			break;
 		case 5: //10000
-			retStr = nums.toString().substr(0,2)+"K+";
+			retStr = nums.toString().substr(0, 2) + "K+";
 			break;
 		case 6: //100000
-			retStr = nums.toString().substr(0,3)+"K+";
+			retStr = nums.toString().substr(0, 3) + "K+";
 			break;
 		case 7: //1000000
-			retStr = nums.toString().substr(0,1)+"M+";
+			retStr = nums.toString().substr(0, 1) + "M+";
 			break;
 		case 8: //10000000
-			retStr = nums.toString().substr(0,2)+"M+";
+			retStr = nums.toString().substr(0, 2) + "M+";
 			break;
 		case 9: //100000000
-			retStr = nums.toString().substr(0,1)+"B+";
+			retStr = nums.toString().substr(0, 1) + "B+";
 			break;
 		case 10: //1000000000
-			retStr = nums.toString().substr(0,2)+"B+";
+			retStr = nums.toString().substr(0, 2) + "B+";
 			break;
 	}
 	//console.log(nums+" : "+nums.toString().length+" : "+retStr);
@@ -62,9 +62,6 @@ $(document).ready(function () {
 		$(".main-container").prepend(data);
 	});
 	
-	
-	
-
 	$(window).on("resize", function() {
 		var the_chart = $(".chart");
 		var aspect = the_chart.width() / the_chart.height(),
@@ -91,7 +88,6 @@ $(document).ready(function () {
         return backdate;
     }, oneMonthAgoDateObj = displayDate(todayObj);
     
-    //$('.date-range').html(getFormattedDate(oneMonthAgoDateObj) + ' - ' + getFormattedDate(todayObj));
     var startDateCal = new Date(), endDateCal = displayDate(new Date()), type;
 	function cb(start, end) {
         $('#dateRange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
