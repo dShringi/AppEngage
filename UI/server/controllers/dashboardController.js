@@ -182,19 +182,14 @@ startdate = startdate - startdate%10;
 enddate = enddate - enddate%10;
 var db = mongojs(config.connectionstring+akey);
 if(startdate == enddate){
-	db.collection(config.coll_realtime).find({
-        "_id":parseInt(startdate)
-	},function(err,result){
+	db.collection(config.coll_activesessions).count(function(err,result){
 		if(!err){
-			if(result.length==0){
-				db.close();
-				return res.json('[{"Time":'+startdate+',"DeviceCount":0}]');
-			}else{
-				db.close();
-				return res.json('[{"Time":'+startdate+',"DeviceCount":'+result[0].val+'}]');
+			db.close();
+			return res.json('[{"Time":'+startdate+',"DeviceCount":'+result+'}]');
 			}
 		}else{
 		//TODO Error Logging mechanism
+		db.close();
 		console.log('Some Error Occured');
 		}
 	});

@@ -211,7 +211,7 @@
 
 				var data = new Array();
                 startTime = new Date().getTime()/1000;
-				$.getJSON(APIBaseURL+"getDashBoardRealTime?akey=MastApp&sd="+(parseInt(startTime)-300)+"&ed="+(parseInt(startTime)), function(data) {
+				$.getJSON(APIBaseURL+"getDashBoardRealTime?akey="+appKey+"&sd="+(parseInt(startTime)-300)+"&ed="+(parseInt(startTime)), function(data) {
                     data = JSON.parse(data);
 					data.forEach(function(d) {
 						d.time = d.Time*1000;
@@ -277,7 +277,7 @@
 					timer = setInterval(function(){
 						tickerstartdate = tickerstartdate + 10000;
 						nextTime += 10
-						d3.json(APIBaseURL+"getDashBoardRealTime?akey=MastApp&sd="+(parseInt(nextTime))+"&ed="+(parseInt(nextTime)), function(error, data1) {
+						d3.json(APIBaseURL+"getDashBoardRealTime?akey="+appKey+"&sd="+(parseInt(nextTime))+"&ed="+(parseInt(nextTime)), function(error, data1) {
                             data1 = JSON.parse(data1);
 							data1.forEach(function(d) {
 								devCount = d.DeviceCount;//Math.floor((Math.random() * 10) + 1);
