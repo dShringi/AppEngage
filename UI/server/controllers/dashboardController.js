@@ -186,11 +186,10 @@ if(startdate == enddate){
 		if(!err){
 			db.close();
 			return res.json('[{"Time":'+startdate+',"DeviceCount":'+result+'}]');
-			}
 		}else{
 		//TODO Error Logging mechanism
-		db.close();
-		console.log('Some Error Occured');
+			db.close();
+			console.log('Some Error Occured');
 		}
 	});
 }else{
