@@ -3,7 +3,6 @@ var config    	= require('../../config/config');
 var async 	= require('async');
 var startdate ,enddate ,akey ;	
 var mnuString,osvString,totalString,pfString,finalString;
-var db = mongojs(config.connectionstring+akey);
 
 function aggregateCalulation(searchByParam,callback){ // function to fetch result mnu,osv and pf .
 
@@ -32,13 +31,10 @@ db.collection(config.coll_crashes).aggregate([
 
 module.exports.crashDetail = function(req,res){
 
-var startdate = req.query["sd"],enddate = req.query["ed"],akey =req.query["akey"];	
+var startdate = parseInt(req.query["sd"]),enddate = parseInt(req.query["ed"]),akey =req.query["akey"];	
 var finaldetailstr,tempstring=[],tempstr="";
-//console.log(config.connectionstring+akey);
 var db = mongojs(config.connectionstring+akey);
 
-
-//console.log(db);
 async.waterfall(
     	[	
 	function(callback) { //callback start
@@ -76,7 +72,7 @@ async.waterfall(
 
 module.exports.crashCounters = function(req,res){
 
-startdate = req.query["sd"],enddate = req.query["ed"],akey =req.query["akey"];	
+startdate = parseInt(req.query["sd"]),enddate = parseInt(req.query["ed"]),akey =req.query["akey"];	
 mnuString,osvString,totalString,pfString,finalString;
 var db = mongojs(config.connectionstring+akey);
 async.series(
