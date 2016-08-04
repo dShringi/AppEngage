@@ -28,29 +28,27 @@ exports.begin = function(server, producer) {
 			paramsKeys[4]='sid';	paramsValues[4] = data.val.sid;
                         paramsKeys[5]='did';    paramsValues[5] = data.val.did;
             		msgStatus = common.hasValue(paramsKeys,paramsValues);
+			console.log(msgStatus);
 			if(msgStatus === false){
-				reply.statusCode = 200;
-				reply({ message: "Success" });
+				reply.statusCode = config.msgcodes.success;
+				reply({ message: config.messages.success });
 				return
 			}
 			
-			//Deriving the IP Address of the request for location.
-        		data.val.ipa = common.getIP(request);
             		data.type = Collection["begin"];
-            		payloads = [{ topic: request.headers.akey, messages: JSON.stringify(data), partition: 0 }];
-			
-			//Push the payload to the queue.
-            		producer.send(payloads, function(err, data){
-				if(err){
-                    			logger.error(common.getErrorMessageFrom(err));
-                    			reply.statusCode = 400;
-                    			reply({ message: common.getErrorMessageFrom(err) });
-                		}else{
-                    			reply.statusCode = 200;
-                    			reply({ message: "Success" });
-                		}       
-            		});
-        	}
+                        pushToKafka(data,request,producer,function(err,data){
+                                if(err){
+                                        var errMsg = common.getErrorMessageFrom(err);
+                                        logger.error(errMsg);
+                                        reply.statusCode = config.msgcodes.failure;
+                                        reply({ message: errMsg });
+                                } else {
+                                        reply.statusCode = config.msgcodes.success;
+                                        reply({ message: config.messages.success });
+                                }
+
+                        });
+		}
     	});
 };
 
@@ -73,27 +71,24 @@ exports.crash = function(server, producer) {
                         paramsKeys[5]='did';    paramsValues[5] = data.val.did;
                         msgStatus = common.hasValue(paramsKeys,paramsValues);
                         if(msgStatus === false){
-                                reply.statusCode = 200;
-                                reply({ message: "Success" });
+                                reply.statusCode = config.msgcodes.success;
+                                reply({ message: config.messages.success });
                                 return
                         }
 
-                        //Deriving the IP Address of the request for location.
-            		data.val.ipa = common.getIP(request);
             		data.type = Collection["crash"];
+                        pushToKafka(data,request,producer,function(err,data){
+                                if(err){
+                                        var errMsg = common.getErrorMessageFrom(err);
+                                        logger.error(errMsg);
+                                        reply.statusCode = config.msgcodes.failure;
+                                        reply({ message: errMsg });
+                                } else {
+                                        reply.statusCode = config.msgcodes.success;
+                                        reply({ message: config.messages.success });
+                                }
 
-			//Push the payload to the queue.
-            		payloads = [{ topic: request.headers.akey, messages: JSON.stringify(data), partition: 0 }];
-            		producer.send(payloads, function(err, data){
-                		if(err){
-                    			logger.error(common.getErrorMessageFrom(err));
-                    			reply.statusCode = 400;
-                    			reply({ message: common.getErrorMessageFrom(err) });
-                		}else{
-                    			reply.statusCode = 200;
-                    			reply({ message: "Success" });
-                		}       
-            		});
+                        });
         	}
     	});
 };
@@ -116,27 +111,24 @@ exports.end = function(server, producer) {
                         paramsKeys[5]='did';    paramsValues[5] = data.val.did;
                         msgStatus = common.hasValue(paramsKeys,paramsValues);
                         if(msgStatus === false){
-                                reply.statusCode = 200;
-                                reply({ message: "Success" });
+                                reply.statusCode = config.msgcodes.success;
+                                reply({ message: config.messages.success });
                                 return
                         }
 
-                        //Deriving the IP Address of the request for location.
-            		data.val.ipa = common.getIP(request);
             		data.type = Collection["end"];
-            		payloads = [{ topic: request.headers.akey, messages: JSON.stringify(data), partition: 0 }];
-            		
-			//Push the payload to the queue.
-			producer.send(payloads, function(err, data){
-                		if(err){
-                    			logger.error(common.getErrorMessageFrom(err));
-                    			reply.statusCode = 400;
-                    			reply({ message: common.getErrorMessageFrom(err) });
-                		} else {
-                    			reply.statusCode = 200;
-                    			reply({ message: "Success" });
-                		}       
-            		});
+                        pushToKafka(data,request,producer,function(err,data){
+                                if(err){
+                                        var errMsg = common.getErrorMessageFrom(err);
+                                        logger.error(errMsg);
+                                        reply.statusCode = config.msgcodes.failure;
+                                        reply({ message: errMsg });
+                                } else {
+                                        reply.statusCode = config.msgcodes.success;
+                                        reply({ message: config.messages.success });
+                                }
+
+                        });
         	}
     	});
 };
@@ -159,27 +151,39 @@ exports.events = function(server, producer) {
                         paramsKeys[5]='did';    paramsValues[5] = data.val.did;
                         msgStatus = common.hasValue(paramsKeys,paramsValues);
                         if(msgStatus === false){
-                                reply.statusCode = 200;
-                                reply({ message: "Success" });
+                                reply.statusCode = config.msgcodes.success;
+                                reply({ message: config.messages.success });
                                 return
                         }
 
-                        //Deriving the IP Address of the request for location.
-            		data.val.ipa = common.getIP(request);
-            		data.type = Collection["end"];
-            		payloads = [{ topic: request.headers.akey, messages: JSON.stringify(data), partition: 0 }];
-            		
-			//Push the payload to the queue.
-			producer.send(payloads, function(err, data){
+            		data.type = Collection["event"];
+			pushToKafka(data,request,producer,function(err,data){
                 		if(err){
-                    			logger.error(common.getErrorMessageFrom(err));
-                    			reply.statusCode = 400;
-                    			reply({ message: common.getErrorMessageFrom(err) });
+                        		var errMsg = common.getErrorMessageFrom(err);
+                        		logger.error(errMsg);
+                        		reply.statusCode = config.msgcodes.failure;
+                        		reply({ message: errMsg });
                 		} else {
-                    			reply.statusCode = 200;
-                    			reply({ message: "Success" });
-                		}       
-            		});
+                        		reply.statusCode = config.msgcodes.success;
+                        		reply({ message: config.messages.success });
+                		}
+			
+			});			
         	}
     	});
 };
+
+
+function pushToKafka(data,request,producer,callback){
+	//Deriving the IP Address of the request for location.
+	data.val.ipa = common.getIP(request);
+
+	payloads = [{ topic: request.headers.akey, messages: JSON.stringify(data), partition: 0 }];
+        
+	//Push the payload to the queue.
+        producer.send(payloads, function(err, data){
+		callback(err,data);
+	});
+	
+}
+

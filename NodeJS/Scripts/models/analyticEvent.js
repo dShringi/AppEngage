@@ -36,7 +36,7 @@ var dashboardSchema = new Schema({
 var beginSchema = new Schema({rtr: {type:Number, required:true},val: {type: Object}});
 var endSchema = new Schema({rtr: {type:Number, required:true},val: {type: Object}});
 var crashSchema = new Schema({rtr: {type:Number, required:true},val: {type: Object}});
-var eventSchema = new Schema({rtr: {type:Number, required:true},val: {type: String}});
+var eventSchema = new Schema({rtr: {type:Number, required:true},val: {type: Object}});
 var activeSessionSchema = new Schema({
     _id  : { type: String, require: true },
     did  : { type: String },
@@ -59,8 +59,8 @@ var userSchema = new Schema({
 	flog	:	{type:	Number},
 	llog	:	{type:	Number},
 	ts	:	{type:	Number},
-	tts	:	{type:	Number}
-});
+	tts	:	{type:	Number},
+},{strict:false});
 
 // MongoDB Collection
 var appCollection 		= Mongoose.model('coll_app', appSchema);
@@ -72,6 +72,7 @@ var endCollection 		= Mongoose.model('coll_ends', endSchema);
 var eventCollection 		= Mongoose.model('coll_events', eventSchema);
 var activeSessionCollection 	= Mongoose.model('coll_activesessions', activeSessionSchema);
 var userCollection		= Mongoose.model('coll_users',userSchema);
+var eventCollection		= Mongoose.model('coll_events',eventSchema);
 
 // Factory to get model based on event type
 function eventFactory(){
@@ -121,6 +122,11 @@ function eventFactory(){
                 return new crashCollection({
 			rtr : _event.val.rtc, 
                     	val : _event.val
+                });
+            case Collection["event"]:
+                return new eventCollection({
+                        rtr : _event.val.rtc,
+                        val : _event.val
                 });
             case Collection["activesessions"]:
                 return new activeSessionCollection({

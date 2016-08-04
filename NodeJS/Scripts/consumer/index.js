@@ -25,6 +25,8 @@ _.each(application,function(data){
 
 var connectionURL = config.mongodb.url + ':' + config.mongodb.port + "/" +akey;
 logger.info("MongoDB connection URL: "+ connectionURL);
+
+//TODO : The MongoDB Connection should be implemented using callback.
 Mongoose.Promise = global.Promise;
 Mongoose.connect(connectionURL);
 
@@ -53,7 +55,6 @@ consumer.on('message', function(message) {
 
 	data = JSON.parse(message.value);
 	console.log(data);	
-    	
 	currDate = Math.floor(Date.now()/1000);
     	if(data.val.rtc > currDate){
         	data.val.rtc = currDate;
@@ -73,7 +74,7 @@ consumer.on('message', function(message) {
     	dashboardDayData	= {dt  : data.val.dt	,key : common.getStartDate(data.val.rtc,appTZ)	,ty  : 'D'};
     	dashboardWeekData 	= {dt  : data.val.dt	,key : common.getStartWeek(data.val.rtc,appTZ)	,ty  : 'W'};
 	dashboardHourData	= {dt  : data.val.dt    ,key : common.getStartHour(data.val.rtc,appTZ)	,ty  : 'H'};
-
+	logger.info('DashBoardData Set');
     	switch(data.type){
         	case Collection["begin"]:
             		// Dashboard Update
@@ -87,7 +88,7 @@ consumer.on('message', function(message) {
 			updateActiveSessions(data);
 	       		
 			//Insert in Users Collection
-			updateUsers(data);
+			updateUsers(data,dashboardDayData.key);
             		break;
         	case Collection["crash"]:
 			//Increment the crash count in the dashboard collection
@@ -110,8 +111,15 @@ consumer.on('message', function(message) {
 			updateDashboard(dashboardHourData,data.type,data.val.tsd);			
 
 			//update user collection for timspent
-			updateUsers(data);
+			updateUsers(data,dashboardDayData.key);
             		break;
+		case Collection["event"]:
+			//Increment the total events count in the dashboard collection
+                        updateDashboard(dashboardYearData,data.type,1);
+                        updateDashboard(dashboardMonthData,data.type,1);
+                        updateDashboard(dashboardDayData,data.type,1);
+                        updateDashboard(dashboardWeekData,data.type,1);
+                        updateDashboard(dashboardHourData,data.type,1);
     	}
 });
 
@@ -129,7 +137,10 @@ consumer.on('offsetOutOfRange', function (topic) {
 });
 
 
-function updateUsers(req){
+function updateUsers(req,dateKey){
+	var yyyy	= parseInt(dateKey.toString().substring(0,4));
+	var mm		= dateKey.toString().substring(4,6);
+	var dd		= dateKey.toString().substring(6,8);
 	switch(req.type){
 		case Collection["begin"]:
         		Model.User.findById(req.val.did,function(err,doc){
@@ -144,7 +155,17 @@ function updateUsers(req){
                         					logger.error(common.getErrorMessageFrom(err));
                         					return;
                 					}
-        					});
+							var push = {};
+							push['_'+yyyy] = JSON.parse('{"_id":'+mm.concat(dd)+',"tse":1,"tts":0}');
+							Model.User.findByIdAndUpdate(req.val.did,{$push:push},{upsert:true},function(err,doc){
+								if(err){
+									logger.error(common.getErrorMessageFrom(err));
+									return;
+								}
+							});
+			
+        					});			
+
 					}else{
 						Model.User.findByIdAndUpdate(req.val.did,{$set:{'lavn':req.val.avn,'losv':req.val.osv,'llog':req.val.rtc},$inc:{'ts':1}},function(err,doc){
 						if(err){
@@ -152,6 +173,17 @@ function updateUsers(req){
 							return;
 						}
 					});
+						
+						var sessionIncrement = '_'+yyyy+'.$.tse';
+						var update = {$inc:{}};
+						update.$inc[sessionIncrement] = 1;
+						var search = JSON.parse('{"_id":"'+req.val.did+'","_2015._id":1229}');
+						Model.User.findByIdAndUpdate(search,update,function(err,doc){
+							if(err){
+								logger.error(common.getErrorMessageFrom(err));
+								return;
+							}							
+						});
 					}
 				} else {
 					logger.error(err);				

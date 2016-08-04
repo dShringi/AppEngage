@@ -34,8 +34,17 @@ config.url.offline = '/api/i/bulk/O';
 
 config.app = {};
 config.app.details = [
-{app:"test1234",TZ:"America/New_York"},
-{app:"4170b44d6459bba992acaa857ac5b25d7fac6cc1",TZ:"Asia/Kolkata"}
+{app:"test1234",TZ:"America/New_York",TimeOut:600},
+{app:"4170b44d6459bba992acaa857ac5b25d7fac6cc1",TZ:"Asia/Kolkata",TimeOut:600}
 ];
+
+config.messages = {};
+config.messages.success = 'Success';
+config.messages.failure = 'Failure';
+
+config.msgcodes = {};
+config.msgcodes.success = 200;
+config.msgcodes.failure = 400;
+
 
 module.exports = config;
