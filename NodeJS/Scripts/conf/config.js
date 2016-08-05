@@ -37,6 +37,7 @@ config.app.details = [
 {app:"test1234",TZ:"America/New_York",TimeOut:600},
 {app:"4170b44d6459bba992acaa857ac5b25d7fac6cc1",TZ:"Asia/Kolkata",TimeOut:600}
 ];
+config.app.defaultTZ = 'Asia/Kolkata';
 
 config.messages = {};
 config.messages.success = 'Success';

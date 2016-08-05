@@ -19,12 +19,12 @@ var appSchema = new Schema({
     cty  : { type: String },
     tz   : { type: String },
     ctg  : { type: String }
-});
+},{versionKey:false});
 
 var realtimeSchema = new Schema({
     _id  : { type: Number, required: true },
     val  : { type: String }
-});
+},{versionKey:false});
 
 var dashboardSchema = new Schema({
     _id  : { type: Object, require: true },
@@ -33,17 +33,33 @@ var dashboardSchema = new Schema({
     collection : 'coll_dashboard'
 });
 
-var beginSchema = new Schema({rtr: {type:Number, required:true},val: {type: Object}});
-var endSchema = new Schema({rtr: {type:Number, required:true},val: {type: Object}});
-var crashSchema = new Schema({rtr: {type:Number, required:true},val: {type: Object}});
-var eventSchema = new Schema({rtr: {type:Number, required:true},val: {type: Object}});
+var beginSchema = new Schema({
+	rtr: {type:Number, required:true},
+	val: {type: Object}
+},{versionKey:false});
+
+var endSchema = new Schema({
+	rtr: {type:Number, required:true},
+	val: {type: Object}
+},{versionKey:false});
+
+var crashSchema = new Schema({
+rtr: {type:Number, required:true},
+val: {type: Object}
+},{versionKey:false});
+
+var eventSchema = new Schema({
+rtr: {type:Number, required:true},
+val: {type: Object}
+},{versionKey:false});
+
 var activeSessionSchema = new Schema({
     _id  : { type: String, require: true },
     did  : { type: String },
     sst  : { type: Number },
     lat  : { type: Number },
     dt   : { type: String }
-});
+},{versionKey:false});
 
 var userSchema = new Schema({
 	_id	:	{type:	String,	require	:	true},
@@ -60,7 +76,7 @@ var userSchema = new Schema({
 	llog	:	{type:	Number},
 	ts	:	{type:	Number},
 	tts	:	{type:	Number},
-},{strict:false});
+},{strict:false,versionKey:false});
 
 // MongoDB Collection
 var appCollection 		= Mongoose.model('coll_app', appSchema);

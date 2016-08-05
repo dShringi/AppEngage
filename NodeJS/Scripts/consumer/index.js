@@ -8,7 +8,7 @@ var Mongoose = require('mongoose');
 var common = require('../commons/common.js');
 var _ = require('underscore');
 var akey = process.argv[2];
-var appTZ = 'Asia/Kolkata';
+var appTZ = config.app.defaultTZ;
 
 if(akey==undefined||akey==null){
     throw new Error("Please provide appropriate application key. Invalid applicaiton key: "+ akey);
@@ -74,57 +74,145 @@ consumer.on('message', function(message) {
     	dashboardDayData	= {dt  : data.val.dt	,key : common.getStartDate(data.val.rtc,appTZ)	,ty  : 'D'};
     	dashboardWeekData 	= {dt  : data.val.dt	,key : common.getStartWeek(data.val.rtc,appTZ)	,ty  : 'W'};
 	dashboardHourData	= {dt  : data.val.dt    ,key : common.getStartHour(data.val.rtc,appTZ)	,ty  : 'H'};
-	logger.info('DashBoardData Set');
     	switch(data.type){
         	case Collection["begin"]:
             		// Dashboard Update
-            		updateDashboard(dashboardYearData,data.type,1);
-            		updateDashboard(dashboardMonthData,data.type,1);
-            		updateDashboard(dashboardDayData,data.type,1);
-            		updateDashboard(dashboardWeekData,data.type,1);
-			updateDashboard(dashboardHourData,data.type,1);
-            
+			// TODO : Implement callbacks to store the data.
+			// TODO : Implement Bulk Insert.
+
+                        //Insert in Users and Dashboard Collection
+                        updateUsers(data,dashboardDayData.key,function(err,newUserIncrement){
+				if(!err){
+                        		updateDashboard(dashboardYearData,data.type,1,newUserIncrement,function(err){
+                                		if(err) logError(err);
+                                		return;
+					});
+                        		updateDashboard(dashboardMonthData,data.type,1,newUserIncrement,function(err){
+                                                if(err) logError(err);
+                                                return;					
+					});
+                        		updateDashboard(dashboardDayData,data.type,1,newUserIncrement,function(err){
+                                                if(err) logError(err);
+                                                return;				
+					});
+                        		updateDashboard(dashboardWeekData,data.type,1,newUserIncrement,function(err){
+                                                if(err) logError(err);
+                                                return;
+					});
+                        		updateDashboard(dashboardHourData,data.type,1,newUserIncrement,function(err){
+                                                if(err) logError(err);
+                                                return;
+					});
+				}else{
+					logError(err);
+					return;
+				}
+			});
+
             		// Insert in active sessions
-			updateActiveSessions(data);
+			updateActiveSessions(data,function(err){
+				if(err) logError(err);
+				return;
+			});
 	       		
-			//Insert in Users Collection
-			updateUsers(data,dashboardDayData.key);
             		break;
         	case Collection["crash"]:
+                        // TODO : Implement callbacks to store the data.
+                        // TODO : Implement Bulk Insert.
 			//Increment the crash count in the dashboard collection
-            		updateDashboard(dashboardYearData,data.type,1);
-            		updateDashboard(dashboardMonthData,data.type,1);
-            		updateDashboard(dashboardDayData,data.type,1);
-            		updateDashboard(dashboardWeekData,data.type,1);
-			updateDashboard(dashboardHourData,data.type,1);
+            		updateDashboard(dashboardYearData,data.type,1,0,function(err){
+				if(err) logError(err);	
+				return;
+			});
+            		updateDashboard(dashboardMonthData,data.type,1,0,function(err){
+                                if(err) logError(err);
+                                return;
+			});
+            		updateDashboard(dashboardDayData,data.type,1,0,function(err){
+                                if(err) logError(err);
+                                return;
+			});
+            		updateDashboard(dashboardWeekData,data.type,1,0,function(err){
+                                if(err) logError(err);
+                                return;
+			});
+			updateDashboard(dashboardHourData,data.type,1,0,function(err){
+                                if(err) logError(err);
+                                return;			
+			});
             		break;
         
 		case Collection["end"]:
+                        // TODO : Implement callbacks to store the data.
+                        // TODO : Implement Bulk Insert.
+
             		// Delete active session
-			removeActiveSession(data.val.sid);
+			removeActiveSession(data.val.sid,function(err){
+				if(err) logError(err);
+				return;
+			});
 
 			//Increment the timespent in the dashboard collection
-			updateDashboard(dashboardYearData,data.type,data.val.tsd);
-                        updateDashboard(dashboardMonthData,data.type,data.val.tsd);
-                        updateDashboard(dashboardDayData,data.type,data.val.tsd);
-                        updateDashboard(dashboardWeekData,data.type,data.val.tsd);
-			updateDashboard(dashboardHourData,data.type,data.val.tsd);			
+			updateDashboard(dashboardYearData,data.type,data.val.tsd,0,function(err){
+                                if(err) logError(err);
+                                return;
+			});
+                        updateDashboard(dashboardMonthData,data.type,data.val.tsd,0,function(err){
+                                if(err) logError(err);
+                                return;
+			});
+                        updateDashboard(dashboardDayData,data.type,data.val.tsd,0,function(err){
+                                if(err) logError(err);
+                                return;
+			});
+                        updateDashboard(dashboardWeekData,data.type,data.val.tsd,0,function(err){
+                                if(err) logError(err);
+                                return;
+			});
+			updateDashboard(dashboardHourData,data.type,data.val.tsd,0,function(err){
+                                if(err) logError(err);
+                                return;
+			});			
 
 			//update user collection for timspent
-			updateUsers(data,dashboardDayData.key);
+			updateUsers(data,dashboardDayData.key,function(err,data){});
             		break;
 		case Collection["event"]:
+                        // TODO : Implement callbacks to store the data.
+                        // TODO : Implement Bulk Insert.
 			//Increment the total events count in the dashboard collection
-                        updateDashboard(dashboardYearData,data.type,1);
-                        updateDashboard(dashboardMonthData,data.type,1);
-                        updateDashboard(dashboardDayData,data.type,1);
-                        updateDashboard(dashboardWeekData,data.type,1);
-                        updateDashboard(dashboardHourData,data.type,1);
+                        updateDashboard(dashboardYearData,data.type,1,0,function(err){
+				if(err) logError(err);
+				return;
+			});
+                        updateDashboard(dashboardMonthData,data.type,1,0,function(err){
+                                if(err) logError(err);
+                                return;
+			});
+                        updateDashboard(dashboardDayData,data.type,1,0,function(err){
+                                if(err) logError(err);
+                                return;
+			});
+                        updateDashboard(dashboardWeekData,data.type,1,0,function(err){
+                                if(err) logError(err);
+                                return;
+			});
+                        updateDashboard(dashboardHourData,data.type,1,0,function(err){
+                                if(err) logError(err);
+                                return;
+			});
+
+                        // Insert in active sessions
+                        updateActiveSessions(data,function(err){
+				if(err) logError(err);
+				return;
+			});
+
     	}
 });
 
 consumer.on('error', function (err) {
-    logger.error(err);
+    logError(err);
 });
 
 consumer.on('offsetOutOfRange', function (topic) {
@@ -136,10 +224,14 @@ consumer.on('offsetOutOfRange', function (topic) {
     });
 });
 
+function logError(err){
+	logger.error(common.getErrorMessageFrom(err));
+        return;
+}
 
-function updateUsers(req,dateKey){
+function updateUsers(req,dateKey,callback){
 	var yyyy	= parseInt(dateKey.toString().substring(0,4));
-	var mm		= dateKey.toString().substring(4,6);
+	var mm		= parseInt(dateKey.toString().substring(4,6));
 	var dd		= dateKey.toString().substring(6,8);
 	switch(req.type){
 		case Collection["begin"]:
@@ -156,24 +248,25 @@ function updateUsers(req,dateKey){
                         					return;
                 					}
 							var push = {};
-							push['_'+yyyy] = JSON.parse('{"_id":'+mm.concat(dd)+',"tse":1,"tts":0}');
+							push['_'+yyyy] = JSON.parse('{"_id":'+parseInt(mm.toString().concat(dd))+',"tse":1,"tts":0}');
 							Model.User.findByIdAndUpdate(req.val.did,{$push:push},{upsert:true},function(err,doc){
 								if(err){
 									logger.error(common.getErrorMessageFrom(err));
 									return;
 								}
-							});
-			
-        					});			
-
+								
+								callback(null,1);
+							});										
+        					});
 					}else{
 						Model.User.findByIdAndUpdate(req.val.did,{$set:{'lavn':req.val.avn,'losv':req.val.osv,'llog':req.val.rtc},$inc:{'ts':1}},function(err,doc){
 						if(err){
 							logger.error(common.getErrorMessageFrom(err));
 							return;
 						}
+						callback(err,0);
 					});
-						
+						/*	
 						var sessionIncrement = '_'+yyyy+'.$.tse';
 						var update = {$inc:{}};
 						update.$inc[sessionIncrement] = 1;
@@ -184,6 +277,7 @@ function updateUsers(req,dateKey){
 								return;
 							}							
 						});
+						*/
 					}
 				} else {
 					logger.error(err);				
@@ -201,52 +295,60 @@ function updateUsers(req,dateKey){
 	}
 }
 
-function updateActiveSessions(req){
-	Model.ActiveSession.findByIdAndUpdate(req.val.sid,{$set:{'sst':req.val.rtc,'lat':req.val.rtc,'dt':req.val.dt,'did':req.val.did}},{upsert:true},function(err,doc){
-        	if(err){
-                	logger.error(err);
-                }
-        });
-	
-}
-
-function updateDashboard(dashboardData,eventType,valueIncrement){
-	switch(eventType){
-                case Collection["begin"]:
-                        Model.Dashboard.findByIdAndUpdate(dashboardData,{$inc:{'val.tse':valueIncrement}},{upsert:true},function(err,doc){
+function updateActiveSessions(req,callback){
+	switch(req.type){
+		case Collection["begin"]:
+			Model.ActiveSession.findByIdAndUpdate(req.val.sid,{$set:{'sst':req.val.rtc,'lat':req.val.rtc,'dt':req.val.dt,'did':req.val.did}},{upsert:true},function(err,doc){
+        			if(err){
+                			logger.error(err);
+					return;
+                		}
+				callback(err);
+        		});
+			break;
+		case Collection["event"]:
+                        Model.ActiveSession.findByIdAndUpdate(req.val.sid,{$set:{'lat':req.val.rtc}},function(err,doc){
                                 if(err){
                                         logger.error(err);
+                                        return;
                                 }
+				callback(err);
+                        });
+                        break;			
+	}
+}
+
+function updateDashboard(dashboardData,eventType,valueIncrement,newUserIncrement,callback){
+	switch(eventType){
+                case Collection["user"]:
+                case Collection["begin"]:
+                        Model.Dashboard.findByIdAndUpdate(dashboardData,{$inc:{'val.tse':valueIncrement,'val.tnu':newUserIncrement}},{upsert:true},function(err,doc){
+				callback(err);
                         });
                         break;
 		case Collection["end"]:
 			Model.Dashboard.findByIdAndUpdate(dashboardData,{$inc:{'val.tts':valueIncrement}},{upsert:true},function(err,doc){
-				if(err){
-					logger.error(err);
-				}
+				callback(err);
 			});
 			break;
 		case Collection["crash"]:
 			Model.Dashboard.findByIdAndUpdate(dashboardData,{$inc:{'val.tce':valueIncrement}},{upsert:true},function(err,doc){
-				if(err){
-					logger.error(err);
-				}
+				callback(err);
 			});
 			break;
                 case Collection["event"]:
                         Model.Dashboard.findByIdAndUpdate(dashboardData,{$inc:{'val.te':valueIncrement}},{upsert:true},function(err,doc){
-                                if(err){
-                                        logger.error(err);
-                                }
-                        });
+                        	callback(err);
+			});
                         break;
 	}
 }
 
-function removeActiveSession(sid){
+function removeActiveSession(sid,callback){
 	Model.ActiveSession.findByIdAndRemove(sid,function(err){
         	if(err){
                 	logger.error(err);
 		}
+	callback(err);
 	});	
 }
