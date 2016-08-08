@@ -237,7 +237,7 @@ var showCrashReportTable = function (data, tableId) {
 	//console.log("Avi : "+JSON.stringify(data));
 	//var $table = $('#'+tableId);
 	    $.each(data, function (index, row) {
-        tableHTML += "<tr><td>" + getFormatedDateDDMMYY(new Date(row.dt*1000)) + "</td><td>" + row.pf + "</td><td>" + row.os + "</td><td>" + row.av + "</td><td>" + numFormate(row.totalCrashes) + "</td></tr>";
+        tableHTML += "<tr><td>" + getFormatedDateDDMMYY(new Date(row.dt*1000)) + "</td><td>" + row.pf + "</td><td>" + row.os + "</td><td>" + row.avn + "</td><td>" + numFormate(row.totalCrashes) + "</td></tr>";
         
     });
 	updateTable(tableId, tableHTML);
