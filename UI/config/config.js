@@ -8,8 +8,24 @@ module.exports.connectionstring = 'mongodb://localhost/';
 module.exports.coll_crashes		= 'coll_crashes';
 module.exports.coll_dashboard		= 'coll_dashboard';
 module.exports.coll_realtime		= 'coll_realtime';
-module.exports.coll_users		= 'coll_users';
+module.exports.coll_users 		= 'coll_users';
 module.exports.coll_activesessions	= 'coll_activesessions';
+module.exports.logdir	= 'D:/appengagelogs';
+
+module.exports.searchByModel=[
+{name:'manufacturer',value:'lm'}, 
+{name:'devicetype',value:'ldt'},
+{name:'model',value:'lmod'},
+{name:'platform',value:'lpf'}, 
+{name:'osversion',value:'losv'}, 
+{name:'appvarsion',value:'lavn'}, 
+];
+
+module.exports.appdetails = [
+{app:"test1234",TZ:"America/New_York"},
+{app:"4170b44d6459bba992acaa857ac5b25d7fac6cc1",TZ:"Asia/Kolkata"},
+{app:"MastappDB",TZ:"Asia/Kolkata"},
+];
 
 module.exports.platform=[
 {shortpf:"A",displaypf:"Android"},

@@ -9,6 +9,9 @@
     "cookie-parser": "^1.4.3",
     "express": "^4.13.3",
     "express-session": "^1.13.0",
-    "mongojs": "^2.2.2"
+    "mongojs": "^2.2.2",
+	"moment-timezone": "*",
+	"underscore": "*",
+	"winston": "*"
   }
 }

@@ -1,29 +1,23 @@
 var mongojs     = require('mongojs');
+var moment 		= require('moment-timezone');
 var config      = require('../../config/config');
 var common 		= require('../../commons/common.js');
+var logger 		= require('../../config/log.js');
 var async       = require('async');
+var _ 			= require('underscore');
+var appTZ 		= 'Asia/Kolkata';
 
 module.exports.getUserInsights = function(req,res){
 
-var sd = req.query["sd"],ed = req.query["ed"],akey =req.query["akey"];
-var t="D",diffDays;
-var tempstring=[],tempstr="";
+var startDate = req.query["sd"],endDate = req.query["ed"],akey =req.query["akey"];
+var startDateParam=startDate,endDateParam=endDate,sdateparam,edateparam;
+var type="D",diffDays;
+var resultstring=[],resultstr="";
 var startdate = new Date(0),enddate = new Date(0);
-var tse=0,te=0,tuu=0,tnu=0,tts=0,tce=0,dType,dailyCount=0,weeklyCount=0,monthlyCount=0,yearlyCount=0,hourlyCount=0;
- startdate.setUTCSeconds(sd);
- enddate.setUTCSeconds(ed);
-
-var dd = '0'.concat(startdate.getDate()).slice(-2),mm = '0'.concat(startdate.getMonth()+1).slice(-2),yyyy = startdate.getFullYear(),hh='0'.concat(startdate.getHours()).slice(-2);
-sd = ''+yyyy+mm+dd+hh;
-var sdForDays=''+yyyy+mm+dd;
-var testsd = '0'.concat(startdate.getDate()).slice(-2);
-var sdateparam=yyyy+"-"+mm+"-"+testsd;
-var dd = '0'.concat(enddate.getDate()).slice(-2),mm = '0'.concat(enddate.getMonth()+1).slice(-2),yyyy = enddate.getFullYear(),hh='0'.concat(enddate.getHours()).slice(-2);
-ed = ''+yyyy+mm+dd+hh;
-var edForDays=''+yyyy+mm+dd;
-var tested = '0'.concat(enddate.getDate()).slice(-2);
-var edateparam=yyyy+"-"+mm+"-"+tested;
-
+var tse=0,te=0,tuu=0,tnu=0,tts=0,tce=0,dType;
+startdate.setUTCSeconds(startDate);
+enddate.setUTCSeconds(endDate);
+var startdateMoment,endDateMoment,startdateMomentForHour,enddateMomentForHour;
 var db = mongojs(config.connectionstring+akey);
 var typeListarray=[];
 async.waterfall(
@@ -31,20 +25,49 @@ async.waterfall(
 		
 	function(callback){ //callback start
 	
+	var application = config.appdetails;
+
+	_.each(application,function(data){
+		if(data.app === akey){
+			appTZ = data.TZ;
+		}
+	});
+	
+	var syear=common.getStartYear(startDateParam,appTZ);
+	var smonth=common.getStartMonth(startDateParam,appTZ);
+	smonth='0'.concat(smonth).slice(-2);
+	var sdate=common.getStartDate(startDateParam,appTZ);
+	var shour=common.getStartHour(startDateParam,appTZ);
+	shour='0'.concat(shour).slice(-2);
+	startdateMoment=''+syear+smonth+sdate;
+	startdateMomentForHour=''+syear+smonth+sdate+shour;
+	console.log("startdateMoment: " + startdateMoment);
+	sdateparam=syear+"-"+smonth+"-"+sdate;
+	var eyear=common.getStartYear(endDateParam,appTZ);
+	var emonth=common.getStartMonth(endDateParam,appTZ);
+	emonth='0'.concat(emonth);
+	var edate=common.getStartDate(endDateParam,appTZ);
+	var ehour=common.getStartHour(endDateParam,appTZ);
+	ehour='0'.concat(ehour).slice(-2);
+	endDateMoment=''+eyear+emonth+edate;
+	enddateMomentForHour=''+eyear+emonth+edate+ehour;
+	console.log("endDateMoment: " + endDateMoment);
+	edateparam=eyear+"-"+emonth+"-"+edate;
+	
 	diffDays=common.getDateDiffernce(sdateparam,edateparam);  //to find no of days between two dates
 	callback(null);
 	}, //callback end
 	
 	function(callback){ //callback start
 	if(diffDays==0){ //for weekly fetch
-	t="H";
+	type="H";
+	startdateMoment=startdateMomentForHour;
+	endDateMoment=enddateMomentForHour;
 	callback(null);
 	} 
 	
 	else { 
-	t="D";
-	sd = sdForDays;
-	ed = edForDays;
+	type="D";
 	callback(null);
 	}
 	}, //callback end
@@ -52,28 +75,35 @@ async.waterfall(
 	
 	function(callback) { //callback start
 			
-			//console.log("t value :" + t);
+			//console.log("type value :" + type);
 			db.collection(config.coll_dashboard).aggregate([
-			{ $match: { $and: [{'_id.ty': t},{ '_id.key': { $gte: parseInt(sd), $lte: parseInt(ed) }}]  } },
+			{ $match: { $and: [{'_id.ty': type},{ '_id.key': { $gte: parseInt(startdateMoment), $lte: parseInt(endDateMoment) }}]  } },
 			{ $group: {_id :  "$_id.key", 'tuu' : {$sum : "$val.tuu"},'tts' : {$sum : "$val.tts"}}},
 			{ $sort: {'_id': 1 } },
 			{ $project: {_id:1,tuu:1,tts:1}}
 			],function(err, result) {
 			
+				if(!err){
+			
 				//console.log(result);
 				if(result!=null){
 				for(var i=0;i<result.length;i++){
-					tempstring[i] = (' {'+' "date": "'+result[i]._id+'","tuu": "' +result[i].tuu + '","tts": "' +result[i].tts);
+					resultstring[i] = (' {'+' "date": "'+result[i]._id+'","tuu": "' +result[i].tuu + '","tts": "' +result[i].tts);
 					
-					tempstr+=tempstring[i].concat(',');
+					resultstr+=resultstring[i].concat(',');
 				}
-				 tempstr = tempstr.substr(0,tempstr.length-1);
-				 //console.log(tempstr);
-				finaldetailstr='[ '+ tempstr + ']'
+				 resultstr = resultstr.substr(0,resultstr.length-1);
+				 //console.log(resultstr);
+				finaldetailstr='[ '+ resultstr + ']'
 				console.log(finaldetailstr);
 				}else{
 				db.close();
 				return res.json('[]');
+				}
+				}
+				else{
+				logger.error(common.getErrorMessageFrom(err));
+                 return;
 				}
 				callback(null);
 		});
@@ -90,46 +120,63 @@ async.waterfall(
 
 module.exports.getSessionInsights = function(req,res){
 
-var sd = req.query["sd"],ed = req.query["ed"],akey =req.query["akey"];
-var t="D",diffDays;
-var tempstring=[],tempstr="";
+var startDate = req.query["sd"],endDate = req.query["ed"],akey =req.query["akey"];
+var startDateParam=startDate,endDateParam=endDate,sdateparam,edateparam;
+var type="D",diffDays;
+var resultstring=[],resultstr="";
 var startdate = new Date(0),enddate = new Date(0);
-var tse=0,te=0,tuu=0,tnu=0,tts=0,tce=0,dType,dailyCount=0,weeklyCount=0,monthlyCount=0,yearlyCount=0,hourlyCount=0;
- startdate.setUTCSeconds(sd);
- enddate.setUTCSeconds(ed);
-
-var dd = '0'.concat(startdate.getDate()).slice(-2),mm = '0'.concat(startdate.getMonth()+1).slice(-2),yyyy = startdate.getFullYear(),hh='0'.concat(startdate.getHours()).slice(-2);
-sd = ''+yyyy+mm+dd+hh;
-var sdForDays=''+yyyy+mm+dd;
-var testsd = '0'.concat(startdate.getDate()).slice(-2);
-var sdateparam=yyyy+"-"+mm+"-"+testsd;
-var dd = '0'.concat(enddate.getDate()).slice(-2),mm = '0'.concat(enddate.getMonth()+1).slice(-2),yyyy = enddate.getFullYear(),hh='0'.concat(enddate.getHours()).slice(-2);
-ed = ''+yyyy+mm+dd+hh;
-var edForDays=''+yyyy+mm+dd;
-var tested = '0'.concat(enddate.getDate()).slice(-2);
-var edateparam=yyyy+"-"+mm+"-"+tested;
-
+var tse=0,te=0,tuu=0,tnu=0,tts=0,tce=0,dType;
+startdate.setUTCSeconds(startDate);
+enddate.setUTCSeconds(endDate);
+var startdateMoment,endDateMoment,startdateMomentForHour,enddateMomentForHour;
 var db = mongojs(config.connectionstring+akey);
 var typeListarray=[];
 async.waterfall(
     [	
-		
 	function(callback){ //callback start
 	
+	var application = config.appdetails;
+
+	_.each(application,function(data){
+		if(data.app === akey){
+			appTZ = data.TZ;
+		}
+	});
+	
+	var syear=common.getStartYear(startDateParam,appTZ);
+	var smonth=common.getStartMonth(startDateParam,appTZ);
+	smonth='0'.concat(smonth).slice(-2);
+	var sdate=common.getStartDate(startDateParam,appTZ);
+	var shour=common.getStartHour(startDateParam,appTZ);
+	shour='0'.concat(shour).slice(-2);
+	startdateMoment=''+syear+smonth+sdate;
+	startdateMomentForHour=''+syear+smonth+sdate+shour;
+	console.log("startdateMoment: " + startdateMoment);
+	sdateparam=syear+"-"+smonth+"-"+sdate;
+	var eyear=common.getStartYear(endDateParam,appTZ);
+	var emonth=common.getStartMonth(endDateParam,appTZ);
+	emonth='0'.concat(emonth);
+	var edate=common.getStartDate(endDateParam,appTZ);
+	var ehour=common.getStartHour(endDateParam,appTZ);
+	ehour='0'.concat(ehour).slice(-2);
+	endDateMoment=''+eyear+emonth+edate;
+	enddateMomentForHour=''+eyear+emonth+edate+ehour;
+	console.log("endDateMoment: " + endDateMoment);
+	edateparam=eyear+"-"+emonth+"-"+edate;
 	diffDays=common.getDateDiffernce(sdateparam,edateparam);  //to find no of days between two dates
 	callback(null);
 	}, //callback end
 	
 	function(callback){ //callback start
 	if(diffDays==0){ //for weekly fetch
-	t="H";
+	type="H";
+	startdateMoment=startdateMomentForHour;
+	endDateMoment=enddateMomentForHour;
 	callback(null);
 	} 
 	
 	else { 
-	t="D";
-	sd = sdForDays;
-	ed = edForDays;
+	type="D";
 	callback(null);
 	}
 	}, //callback end
@@ -137,28 +184,36 @@ async.waterfall(
 	
 	function(callback) { //callback start
 			
-			//console.log("t value :" + t);
+			//console.log("type value :" + type);
 			db.collection(config.coll_dashboard).aggregate([
-			{ $match: { $and: [{'_id.ty': t},{ '_id.key': { $gte: parseInt(sd), $lte: parseInt(ed) }}]  } },
+			{ $match: { $and: [{'_id.ty': type},{ '_id.key': { $gte: parseInt(startdateMoment), $lte: parseInt(endDateMoment) }}]  } },
 			{ $group: {_id :  "$_id.key", 'tse' : {$sum : "$val.tse"},'tts' : {$sum : "$val.tts"}}},
 			{ $sort: {'_id': 1 } },
 			{ $project: {_id:1,tse:1,tts:1}}
 			],function(err, result) {
 			
+			
+				if(!err){
 				//console.log(result);
 				if(result!=null){
 				for(var i=0;i<result.length;i++){
-					tempstring[i] = (' {'+' "date": "'+result[i]._id+'","tse": "' +result[i].tse + '","tts": "' +result[i].tts);
+					resultstring[i] = (' {'+' "date": "'+result[i]._id+'","tse": "' +result[i].tse + '","tts": "' +result[i].tts);
 					
-					tempstr+=tempstring[i].concat(',');
+					resultstr+=resultstring[i].concat(',');
 				}
-				 tempstr = tempstr.substr(0,tempstr.length-1);
+				 resultstr = resultstr.substr(0,resultstr.length-1);
 				 
-				finaldetailstr='[ '+ tempstr + ']'
+				finaldetailstr='[ '+ resultstr + ']'
 				console.log(finaldetailstr);
 				}else{
 				db.close();
 				return res.json('[]');
+				}
+				
+				}
+				else{
+				logger.error(common.getErrorMessageFrom(err));
+                 return;
 				}
 				callback(null);
 		});
@@ -228,30 +283,15 @@ if(startdate == enddate){
 module.exports.dashboardCounters = function(req,res){
 
 
-var sd = req.query["sd"],ed = req.query["ed"],akey =req.query["akey"],type=req.query["type"];	
-var t="D",diffDays;
-var startdate = new Date(0),enddate = new Date(0);
+var sDate = req.query["sd"],eDate = req.query["ed"],akey =req.query["akey"],typeOfDevice=req.query["type"];	
 var tse=0,te=0,tuu=0,tnu=0,tts=0,tce=0,dType,dailyCount=0,weeklyCount=0,monthlyCount=0,yearlyCount=0;
-startdate.setUTCSeconds(sd);
-enddate.setUTCSeconds(ed);
-
-var dd = '0'.concat(startdate.getDate()).slice(-2),mm = '0'.concat(startdate.getMonth()+1).slice(-2),yyyy = startdate.getFullYear();
-sd = ''+yyyy+mm+dd;
-var testsd = '0'.concat(startdate.getDate()).slice(-2);
-var tempdatesd=yyyy+"-"+mm+"-"+testsd;
-console.log("tempdatesd :" + tempdatesd);
-var dd = '0'.concat(enddate.getDate()).slice(-2),mm = '0'.concat(enddate.getMonth()+1).slice(-2),yyyy = enddate.getFullYear();
-ed = ''+yyyy+mm+dd;
-var tested = '0'.concat(enddate.getDate()).slice(-2);
-var tempdateed=yyyy+"-"+mm+"-"+tested;
-
-var sdmonth = '0'.concat(startdate.getMonth()+1).slice(-2);  // fetch month of start date
-var edmonth = '0'.concat(enddate.getMonth()+1).slice(-2);	 // fetch month of end date
-var sdyear = startdate.getFullYear();						 // fetch Year of start date
-var edyear = enddate.getFullYear();							 // fetch Year of end date
-console.log("sd:" + sd);
-console.log("ed:" + ed);
-
+var startDateParam=sDate,endDateParam=eDate,sdateparam,edateparam,sdmonth,edmonth,sdyear,edyear;
+var type="D",diffDays;
+var resultstring=[],resultstr="";
+var startdate = new Date(0),enddate = new Date(0);
+startdate.setUTCSeconds(sDate);
+enddate.setUTCSeconds(eDate);
+var startdateMoment,endDateMoment,startdateMomentForHour,enddateMomentForHour;
 var db = mongojs(config.connectionstring+akey);
 var typeListarray=[];
 async.waterfall(
@@ -259,28 +299,63 @@ async.waterfall(
 		
 	function(callback) { //callback start
 	//checking device type and assigning into typeListarray
-	switch (type) { case "A" : typeListarray[0]="S";typeListarray[1]="T"; break; case "S" : typeListarray[0]="S"; break; case "T" : typeListarray[0]="T"; }
-	//console.log(typeListarray);
+	switch (typeOfDevice) { case "A" : typeListarray[0]="S";typeListarray[1]="T"; break; case "S" : typeListarray[0]="S"; break; case "T" : typeListarray[0]="T"; }
+	console.log(typeListarray);
 	callback(null);
 	},
 	
 	function(callback){ //callback start
 	
-	diffDays=common.getDateDiffernce(tempdatesd,tempdateed);  //to find no of days between two dates
+	var application = config.appdetails;
+
+	_.each(application,function(data){
+		if(data.app === akey){
+			appTZ = data.TZ;
+		}
+	});
+	
+	var syear=common.getStartYear(startDateParam,appTZ);
+	var smonth=common.getStartMonth(startDateParam,appTZ);
+	smonth='0'.concat(smonth).slice(-2);
+	var sdate=common.getStartDate(startDateParam,appTZ);
+	sdate='0'.concat(sdate).slice(-2);
+	var shour=common.getStartHour(startDateParam,appTZ);
+	shour='0'.concat(shour).slice(-2);
+	startdateMoment=''+syear+smonth+sdate;
+	startdateMomentForHour=''+syear+smonth+sdate+shour;
+	console.log("startdateMoment: " + startdateMoment);
+	sdateparam=syear+"-"+smonth+"-"+sdate;
+	var eyear=common.getStartYear(endDateParam,appTZ);
+	var emonth=common.getStartMonth(endDateParam,appTZ);
+	emonth='0'.concat(emonth);
+	var edate=common.getStartDate(endDateParam,appTZ);
+	edate='0'.concat(edate).slice(-2);
+	var ehour=common.getStartHour(endDateParam,appTZ);
+	ehour='0'.concat(ehour).slice(-2);
+	endDateMoment=''+eyear+emonth+edate;
+	enddateMomentForHour=''+eyear+emonth+edate+ehour;
+	console.log("endDateMoment: " + endDateMoment);
+	edateparam=eyear+"-"+emonth+"-"+edate;
+	sdmonth = '0'.concat(startdate.getMonth()+1).slice(-2);  // fetch month of start date
+	edmonth = '0'.concat(enddate.getMonth()+1).slice(-2);	 // fetch month of end date
+	sdyear = startdate.getFullYear();						 // fetch Year of start date
+	edyear = enddate.getFullYear();							 // fetch Year of end date
+	
+	diffDays=common.getDateDiffernce(sdateparam,edateparam);  //to find no of days between two dates
 	callback(null);
 	}, //callback end
 	
 	function(callback){ //callback start
 	if(diffDays<=7){ //for weekly fetch
-	var weekFirstDateforStartDate=common.getWeekFirstdateForStartDate(tempdateed);    //find start date of week base on start date
-	var weekFirstDateforEndDate=common.getWeekFirstdateForEndDate(tempdatesd);		 //find start date of week base on end date
+	var weekFirstDateforStartDate=common.getWeekFirstdateForStartDate(sdateparam);    //find start date of week base on start date
+	var weekFirstDateforEndDate=common.getWeekFirstdateForEndDate(edateparam);		 //find start date of week base on end date
 	
-	db.collection(config.coll_dashboard).count({$and: [{ '_id.key': { $gte: parseInt(sd), $lte: parseInt(ed) }},{ "_id.ty": "W"}]},function(err, result) {
+	db.collection(config.coll_dashboard).count({$and: [{ '_id.key': { $gte: parseInt(startdateMoment), $lte: parseInt(endDateMoment) }},{ "_id.ty": "W"}]},function(err, result) {
 	if(!err){
 	weeklyCount=result;		
-	//console.log("weekly count: "+ weeklyCount);
-	if (weeklyCount>=1 && weekFirstDateforStartDate==weekFirstDateforEndDate){t="W";} else {t="D";}
-	//console.log("t value: " + t);
+	console.log("weekly count: "+ weeklyCount);
+	if (weeklyCount>=1 && weekFirstDateforStartDate==weekFirstDateforEndDate){type="W";} else {type="D";}
+	//console.log("type value: " + type);
 	callback(null);
 	}
 	});
@@ -289,20 +364,20 @@ async.waterfall(
 
 	
 	
-	db.collection(config.coll_dashboard).count({$and: [{ '_id.key': { $gte: parseInt(sd), $lte: parseInt(ed) }},{ "_id.ty": "M"}]},function(err, result) {
+	db.collection(config.coll_dashboard).count({$and: [{ '_id.key': { $gte: parseInt(startdateMoment), $lte: parseInt(endDateMoment) }},{ "_id.ty": "M"}]},function(err, result) {
 	if(!err){
 	monthlyCount=result;		
-	if (monthlyCount>=1 ){t="M";} else {t="D";}
+	if (monthlyCount>=1 ){type="M";} else {type="D";}
 	callback(null);
 	}
 	});		
 	} 
 	else if(diffDays>7 && sdmonth != edmonth && sdyear == edyear) {  // checking for year started
  
-	db.collection(config.coll_dashboard).count({$and: [{ '_id.key': { $gte: parseInt(sd), $lte: parseInt(ed) }},{ "_id.ty": "Y"}]},function(err, result) {
+	db.collection(config.coll_dashboard).count({$and: [{ '_id.key': { $gte: parseInt(startdateMoment), $lte: parseInt(endDateMoment) }},{ "_id.ty": "Y"}]},function(err, result) {
 	if(!err){
 	yearlyCount=result;		
-	if (yearlyCount>=1 ){t="Y";} else {t="D";}
+	if (yearlyCount>=1 ){type="Y";} else {type="D";}
 	callback(null);
 	}
 	});
@@ -313,9 +388,9 @@ async.waterfall(
 	
 	
 	function(callback) { //callback start
-		//console.log("final t value" + t);
+		console.log("final type value" + type);
 		db.collection(config.coll_dashboard).aggregate([
-			{ $match: { $and: [{'_id.ty': t},{'_id.dt':{$in:typeListarray}},{ '_id.key': { $gte: parseInt(sd), $lte: parseInt(ed) }}]  } },
+			{ $match: { $and: [{'_id.ty': type},{'_id.dt':{$in:typeListarray}},{ '_id.key': { $gte: parseInt(startdateMoment), $lte: parseInt(endDateMoment) }}]  } },
 			{ $group: {_id : "$_id.key", 'tse' : {$sum : "$val.tse"},'te' : {$sum : "$val.te"},'tuu' : {$sum : "$val.tuu"},'tnu' : {$sum : "$val.tnu"},'tts' : {$sum : "$val.tts"},'tce' : {$sum : "$val.tce"}}},
 			{ $project: {_id:0,tse:1,te:1,tuu:1,tnu:1,tts:1,tce:1}}
 			],function(err, result) {
@@ -339,7 +414,9 @@ async.waterfall(
 					}
 				}else{
 					db.close();
-					return res.json(err);
+					logger.error(common.getErrorMessageFrom(err));
+					return;
+					//return res.json(err);
 				}
 		});
 	

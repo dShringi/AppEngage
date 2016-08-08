@@ -1,12 +1,14 @@
 var mongojs     = require('mongojs');
-var config      = require('../../config/config');
+var config      = require('../../config/config.js');
+var logger 		= require('../../config/log.js');
 var common 		= require('../../commons/common.js');
 var async       = require('async');
 
-var sd ,ed ,akey ,searchBy;
+
+var startDate ,endDate ,akey ,searchBy;
 var db = mongojs(config.connectionstring+akey);
-var tempstring=[],tempstr="";
-var searchParam,grpvalue,finaldetailstr,finaloutput;
+var resultstring=[],resultstr="";
+var searchParam,grpvalue,finaldetailstr,finalResponce;
 var searchByArray=[];
 
 function aggregateCalulation(grpParam,callback){ // function to fetch userCountersounters by searchparameter
@@ -14,8 +16,8 @@ function aggregateCalulation(grpParam,callback){ // function to fetch userCounte
 	var db = mongojs(config.connectionstring+akey);
 			finaldetailstr="";
 			var grpParamVal= grpParam;
-			var startDateVal=Number(sd);
-			var endDateVal=Number(ed);
+			var startDateVal=Number(startDate);
+			var endDateVal=Number(endDate);
 			//console.log("searchParam: " + searchParam);
 			//console.log("grp value:  "+grpParamVal); 
 			
@@ -25,22 +27,29 @@ function aggregateCalulation(grpParam,callback){ // function to fetch userCounte
 			{ $project: {_id:1,users:1,time:1}}
 			],function(err, result) {
 				
+				if(!err){
 				
 				if(result!=null && searchParam!='Notmatch'){
 				for(var i=0;i<result.length;i++){
-					tempstring[i] = (' {'+' "'+searchBy+'": "'+result[i]._id+'","users": "' +result[i].users + '","time": "' +result[i].time + ' }');
+					resultstring[i] = (' {'+' "'+searchBy+'": "'+result[i]._id+'","users": "' +result[i].users + '","time": "' +result[i].time + ' }');
 					
-					tempstr+=tempstring[i].concat(',');
+					resultstr+=resultstring[i].concat(',');
 				}
-				 tempstr = tempstr.substr(0,tempstr.length-1);
+				 resultstr = resultstr.substr(0,resultstr.length-1);
 				 
-				finaldetailstr='[ '+ tempstr + ']'
+				finaldetailstr='[ '+ resultstr + ']'
 				console.log(finaldetailstr);
-				callback(finaldetailstr);
+				callback(err,finaldetailstr);
 				}else {
-				//db.close();
+				db.close();
 				callback('[]');
 				}
+				}
+				else{
+				logger.error(common.getErrorMessageFrom(err));
+                 return;
+				}
+				
 				}
 				
 		);
@@ -50,13 +59,8 @@ function aggregateCalulation(grpParam,callback){ // function to fetch userCounte
 module.exports.getUserDashboardCounters = function(req,res){
 
 var db = mongojs(config.connectionstring+akey);
-sd = req.query["sd"],ed = req.query["ed"],akey =req.query["akey"],searchBy=req.query["searchBy"];
-searchByArray.push({name:'manufacturer',value:'lm'}); 
-searchByArray.push({name:'devicetype',value:'ldt'}); 
-searchByArray.push({name:'model',value:'lmod'}); 
-searchByArray.push({name:'platform',value:'lpf'}); 
-searchByArray.push({name:'osversion',value:'losv'}); 
-searchByArray.push({name:'appvarsion',value:'lavn'}); 
+startDate = req.query["sd"],endDate = req.query["ed"],akey =req.query["akey"],searchBy=req.query["searchBy"];
+var searchByArray=config.searchByModel;
 
 async.waterfall(
     
@@ -72,17 +76,23 @@ async.waterfall(
 	
 	 function(callback) { //callback start
 		//console.log('Aggregate');
-		finaloutput="";
+		finalResponce="";
 		grpvalue='$'+searchParam;
-		aggregateCalulation(grpvalue,function(res){
-		finaloutput=res;
+		aggregateCalulation(grpvalue,function(err, res){
+		if(!err){
+		finalResponce=res;
 		callback(null);
+		}
+		else {
+		logger.error(common.getErrorMessageFrom(err));
+        return;
+		}
 		});
 	},
 	
 	function(callback) { //callback start
 	db.close();
-	return res.json(finaloutput);
+	return res.json(finalResponce);
 	
 	}
 ]);
