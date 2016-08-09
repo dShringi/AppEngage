@@ -142,6 +142,10 @@
 						svg2 = getDonutSVG(".div-total-crashes-platform", width, height),
 						svg3 = getDonutSVG(".div-total-crashes-os-version", width, height);
 						
+						parentdiv1 = "div-total-crashes-manufacturer";
+						parentdiv2 = "div-total-crashes-platform";
+						parentdiv3 = "div-total-crashes-os-version";
+						
 						mnuCrshArr = new Array();
 						pfCrshArr = new Array();
 						osvCrshArr = new Array();
@@ -172,15 +176,15 @@
 						showTotalCrashesChart(data, svg, pie);
 
 						// Manufacturer Crashes Chart
-						showCrashesDonutChart(mnuCrshArr, svg1, pie1);
+						showCrashesDonutChart(mnuCrshArr, svg1, pie1, parentdiv1);
 						// Manufacturer Crashes Chart - END
 
 						// Platform Crashes Chart
-						showCrashesDonutChart(pfCrshArr, svg2, pie1);
+						showCrashesDonutChart(pfCrshArr, svg2, pie1, parentdiv2);
 						// Platform Crashes Chart - END
 
 						// OSV Crashes Chart
-						showCrashesDonutChart(osvCrshArr, svg3, pie1);
+						showCrashesDonutChart(osvCrshArr, svg3, pie1, parentdiv3);
 						// OSV Crashes Chart - END
 					}	
 				});

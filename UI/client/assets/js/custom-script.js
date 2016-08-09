@@ -370,7 +370,7 @@ var showTotalCrashesChart = function(data,svg,pie){
 		//.text(totalCrashes)
 		.text(function (d) { return d.data.TotalCrashes; });
 };
-var showCrashesDonutChart = function(data,svg,pie){
+var showCrashesDonutChart = function(data,svg,pie, parentdiv){
 	//console.log(JSON.stringify(data));
 	var tooltip = d3.select("body")
 		.append("div")  // declare the tooltip div 
@@ -395,12 +395,18 @@ var showCrashesDonutChart = function(data,svg,pie){
 			tooltip.transition().duration(200).style("opacity", 1);	
 			tooltip.html(d.data.name +" : "+d.data.crash).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
 		})
+		.on("mousedown", function(d){
+			$("."+parentdiv+" text.inside").html(d.data.crash);
+		})
+		.on("mouseup", function(d){
+			$("."+parentdiv+" text.inside").text(totalCrashes);
+		})
 		.on("mouseleave", function (d) {
 			d3.select(this)
 				.transition()
 				.duration(1000)
 				.attr("d", arc);
-			tooltip.transition().duration(200).style("opacity", 0);	
+			tooltip.transition().duration(200).style("opacity", 0);
 		})
 		.style("fill", function (d) { return color(d.data.name); });
 
