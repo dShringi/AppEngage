@@ -8,6 +8,77 @@
         <script src="assets/js/jquery.js"></script>
         <script src="assets/js/bootstrap.min.js"></script>
         <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Montserrat">
+
+        <script>
+            var counter;
+            $(document).ready(function () {
+                // Add smooth scrolling to all links
+                
+
+                //$(document).on("scroll", onScroll);
+
+                $("a").on('click', function (event) {
+
+                    var currLink = $(this);
+                    var refElement = $(currLink.attr("href"));
+                    var abc = refElement.attr("id");
+                    var lastChar = abc[abc.length - 1];
+                    counter = parseInt(lastChar);
+
+                    // Make sure this.hash has a value before overriding default behavior
+                    if (this.hash !== "") {
+                        // Prevent default anchor click behavior
+                        event.preventDefault();
+
+                        // Store hash
+                        var hash = this.hash;
+
+                        // Using jQuery's animate() method to add smooth page scroll
+                        // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
+                        $('html, body').animate({
+                            scrollTop: $(hash).offset().top
+                        }, 500, function () {
+
+                            // Add hash (#) to URL when done scrolling (default click behavior)
+                            window.location.hash = hash;
+                        });
+                    } // End if
+                    if ($("#floating-anchor a").attr("href") == "#section5") {
+                        $("#floating-anchor a").attr("href", "#section1");
+                    }
+                    else {
+                        counter++;
+                        $("#floating-anchor a").attr("href", "#section"+counter);
+                    }
+                    
+                });
+            });
+
+            //function onScroll(event) {
+            //    var scrollPos = $(document).scrollTop();
+            //    $('#floating-anchor a').each(function () {
+            //        var currLink = $(this);
+            //        var refElement = $(currLink.attr("href"));
+            //        var abc = refElement.attr("id");
+            //        var lastChar = abc[abc.length - 1];
+            //        counter = parseInt(lastChar);
+            //        console.log(counter);
+                    
+            //        if (refElement.position().top <= scrollPos && refElement.position().top + refElement.height() > scrollPos) {
+
+            //            $("#floating-anchor a").attr("href", "#section" + counter);
+            //            //console.log("abc");
+                       
+            //        }
+            //        else {
+            //            //console.log("abc");
+            //            $("#floating-anchor a").attr("href", "#section" + counter);
+            //            console.log($("#floating-anchor a").attr("href"));
+            //        }
+            //    });
+            //}
+           
+        </script>
     </head>
     <body class="landing-page">
         <nav class="navbar navbar-transparent navbar-top" role="navigation">
@@ -45,9 +116,9 @@
                         </li>
                         <li class="tilde-filler"><span style="padding-left: 15px; padding-right: 15px;">|</span></li>
                         <li>
-                            <span><a href="#" style="background-color: none;">
-                                REGISTER
-                                </a>
+                            <span><a href="#section2" style="background-color: none;">
+                                    REGISTER
+                                    </a>
                             </span>
                         </li>
                     </ul>
@@ -57,7 +128,7 @@
         </nav>
 
         <div class="wrapper">
-            <div class="parallax">
+            <div class="parallax" id="section1">
                 <div class="parallax-background">
                     <img class="parallax-background-image" src="assets/img/landing/H_14.png">
                 </div>
@@ -78,7 +149,7 @@
                     </div>
                 </div>
             </div>
-            <div class="section section-2">
+            <div class="section section-2" id="section2">
                 <div class="container">
                     <h2 class="header-text text-center">Single platform for your Mobile Analytic needs</h2>
                     <div class="row row-1">
@@ -136,16 +207,17 @@
                 </div>
 
             </div>
-            <div class="section section-3">
+            <div class="section section-3" id="section3">
                 <div class="container">
                     <div class="row">
                         <div class="col-md-5">
                             <div class="description">
                                 <h3 class="header-text"><strong>Device Usage Analytics</strong></h3>
-                                <p>Device Analytics will help the app owners to understand how the app is being used across various 
-                                Manufacturers, Models, Platforms, Operating Systems etc. With this, the teams can take a business 
-                                decision to test across devices which has the highest user base as opposed to testing it against 
-                                devices having a low market value and usage.
+                                <p>
+                                    Device Analytics will help the app owners to understand how the app is being used across various
+                                    Manufacturers, Models, Platforms, Operating Systems etc. With this, the teams can take a business
+                                    decision to test across devices which has the highest user base as opposed to testing it against
+                                    devices having a low market value and usage.
                                 </p>
                             </div>
                         </div>
@@ -156,7 +228,7 @@
                 </div>
 
             </div>
-            <div class="section section-4">
+            <div class="section section-4" id="section4">
                 <div class="container">
                     <div class="row">
                         <div class="col-md-7 hidden-xs">
@@ -175,7 +247,7 @@
                     </div>
                 </div>
             </div>
-            <div class="section section-5">
+            <div class="section section-5" id="section5">
                 <div class="container">
                     <div class="row">
                         <div class="col-md-4">
@@ -253,5 +325,9 @@
             </div>
 
             </div>
+
+        <div id="floating-anchor">
+            <a href="#section2"><img src="assets\img\landing\H_12.png" /></a>
+        </div>
 </body>
 </html>
