@@ -10,6 +10,7 @@ var db = mongojs(config.connectionstring+akey);
 var resultstring=[],resultstr="";
 var searchParam,grpvalue,finaldetailstr,finalResponce;
 var searchByArray=[];
+var deviceNumber='"'+0+'"';
 
 function aggregateCalulation(grpParam,callback){ // function to fetch userCountersounters by searchparameter
 	
@@ -89,6 +90,7 @@ async.waterfall(
 		}
 		});
 	},
+	
 	
 	function(callback) { //callback start
 	db.close();

@@ -19,6 +19,7 @@ startdate.setUTCSeconds(startDate);
 enddate.setUTCSeconds(endDate);
 var startdateMoment,endDateMoment,startdateMomentForHour,enddateMomentForHour;
 var db = mongojs(config.connectionstring+akey);
+var startDateWithoutHour,startDateWithHour,endDateWithoutHour,endDateWithHour;
 var typeListarray=[];
 async.waterfall(
     [	
@@ -33,26 +34,14 @@ async.waterfall(
 		}
 	});
 	
-	var syear=common.getStartYear(startDateParam,appTZ);
-	var smonth=common.getStartMonth(startDateParam,appTZ);
-	smonth='0'.concat(smonth).slice(-2);
-	var sdate=common.getStartDate(startDateParam,appTZ);
-	var shour=common.getStartHour(startDateParam,appTZ);
-	shour='0'.concat(shour).slice(-2);
-	startdateMoment=''+syear+smonth+sdate;
-	startdateMomentForHour=''+syear+smonth+sdate+shour;
-	console.log("startdateMoment: " + startdateMoment);
-	sdateparam=syear+"-"+smonth+"-"+sdate;
-	var eyear=common.getStartYear(endDateParam,appTZ);
-	var emonth=common.getStartMonth(endDateParam,appTZ);
-	emonth='0'.concat(emonth);
-	var edate=common.getStartDate(endDateParam,appTZ);
-	var ehour=common.getStartHour(endDateParam,appTZ);
-	ehour='0'.concat(ehour).slice(-2);
-	endDateMoment=''+eyear+emonth+edate;
-	enddateMomentForHour=''+eyear+emonth+edate+ehour;
-	console.log("endDateMoment: " + endDateMoment);
-	edateparam=eyear+"-"+emonth+"-"+edate;
+	
+	 startDateWithoutHour=String(common.getStartDate(startDateParam,appTZ));  //get start moment date without hour
+	 startDateWithHour=String(common.getStartHour(startDateParam,appTZ));	  //get start moment date with hours
+	 endDateWithoutHour=String(common.getStartDate(endDateParam,appTZ));	  //get end moment date without hour
+	 endDateWithHour=String(common.getStartHour(endDateParam,appTZ));		  //get end moment date with hour
+	 
+	sdateparam=startDateWithoutHour.substr(0, 4)+"-"+startDateWithoutHour.substr(4, 2)+"-"+startDateWithoutHour.substr(6, 2);
+	edateparam=endDateWithoutHour.substr(0, 4)+"-"+endDateWithoutHour.substr(4, 2)+"-"+endDateWithoutHour.substr(6, 2);
 	
 	diffDays=common.getDateDiffernce(sdateparam,edateparam);  //to find no of days between two dates
 	callback(null);
@@ -61,13 +50,15 @@ async.waterfall(
 	function(callback){ //callback start
 	if(diffDays==0){ //for weekly fetch
 	type="H";
-	startdateMoment=startdateMomentForHour;
-	endDateMoment=enddateMomentForHour;
+	startdateMoment=startDateWithHour;
+	endDateMoment=endDateWithHour;
 	callback(null);
 	} 
 	
 	else { 
 	type="D";
+	startdateMoment=startDateWithoutHour;
+	endDateMoment=endDateWithoutHour;
 	callback(null);
 	}
 	}, //callback end
@@ -129,6 +120,7 @@ var tse=0,te=0,tuu=0,tnu=0,tts=0,tce=0,dType;
 startdate.setUTCSeconds(startDate);
 enddate.setUTCSeconds(endDate);
 var startdateMoment,endDateMoment,startdateMomentForHour,enddateMomentForHour;
+var startDateWithoutHour,startDateWithHour,endDateWithoutHour,endDateWithHour;
 var db = mongojs(config.connectionstring+akey);
 var typeListarray=[];
 async.waterfall(
@@ -143,26 +135,15 @@ async.waterfall(
 		}
 	});
 	
-	var syear=common.getStartYear(startDateParam,appTZ);
-	var smonth=common.getStartMonth(startDateParam,appTZ);
-	smonth='0'.concat(smonth).slice(-2);
-	var sdate=common.getStartDate(startDateParam,appTZ);
-	var shour=common.getStartHour(startDateParam,appTZ);
-	shour='0'.concat(shour).slice(-2);
-	startdateMoment=''+syear+smonth+sdate;
-	startdateMomentForHour=''+syear+smonth+sdate+shour;
-	console.log("startdateMoment: " + startdateMoment);
-	sdateparam=syear+"-"+smonth+"-"+sdate;
-	var eyear=common.getStartYear(endDateParam,appTZ);
-	var emonth=common.getStartMonth(endDateParam,appTZ);
-	emonth='0'.concat(emonth);
-	var edate=common.getStartDate(endDateParam,appTZ);
-	var ehour=common.getStartHour(endDateParam,appTZ);
-	ehour='0'.concat(ehour).slice(-2);
-	endDateMoment=''+eyear+emonth+edate;
-	enddateMomentForHour=''+eyear+emonth+edate+ehour;
-	console.log("endDateMoment: " + endDateMoment);
-	edateparam=eyear+"-"+emonth+"-"+edate;
+	// code started
+	 startDateWithoutHour=String(common.getStartDate(startDateParam,appTZ));         //get start moment date without hour
+	 startDateWithHour=String(common.getStartHour(startDateParam,appTZ));			 //get start moment date with hour
+	 endDateWithoutHour=String(common.getStartDate(endDateParam,appTZ));			 //get end moment date without hour
+	 endDateWithHour=String(common.getStartHour(endDateParam,appTZ));				 //get end moment date with hour
+	 
+	sdateparam=startDateWithoutHour.substr(0, 4)+"-"+startDateWithoutHour.substr(4, 2)+"-"+startDateWithoutHour.substr(6, 2);
+	edateparam=endDateWithoutHour.substr(0, 4)+"-"+endDateWithoutHour.substr(4, 2)+"-"+endDateWithoutHour.substr(6, 2);
+	
 	diffDays=common.getDateDiffernce(sdateparam,edateparam);  //to find no of days between two dates
 	callback(null);
 	}, //callback end
@@ -170,13 +151,15 @@ async.waterfall(
 	function(callback){ //callback start
 	if(diffDays==0){ //for weekly fetch
 	type="H";
-	startdateMoment=startdateMomentForHour;
-	endDateMoment=enddateMomentForHour;
+	startdateMoment=startDateWithHour;
+	endDateMoment=endDateWithHour;
 	callback(null);
 	} 
 	
 	else { 
 	type="D";
+	startdateMoment=startDateWithoutHour;
+	endDateMoment=endDateWithoutHour;
 	callback(null);
 	}
 	}, //callback end
@@ -292,6 +275,7 @@ var startdate = new Date(0),enddate = new Date(0);
 startdate.setUTCSeconds(sDate);
 enddate.setUTCSeconds(eDate);
 var startdateMoment,endDateMoment,startdateMomentForHour,enddateMomentForHour;
+var startDateWithoutHour,startDateWithHour,endDateWithoutHour,endDateWithHour;
 var db = mongojs(config.connectionstring+akey);
 var typeListarray=[];
 async.waterfall(
@@ -314,33 +298,14 @@ async.waterfall(
 		}
 	});
 	
-	var syear=common.getStartYear(startDateParam,appTZ);
-	var smonth=common.getStartMonth(startDateParam,appTZ);
-	smonth='0'.concat(smonth).slice(-2);
-	var sdate=common.getStartDate(startDateParam,appTZ);
-	sdate='0'.concat(sdate).slice(-2);
-	var shour=common.getStartHour(startDateParam,appTZ);
-	shour='0'.concat(shour).slice(-2);
-	startdateMoment=''+syear+smonth+sdate;
-	startdateMomentForHour=''+syear+smonth+sdate+shour;
-	console.log("startdateMoment: " + startdateMoment);
-	sdateparam=syear+"-"+smonth+"-"+sdate;
-	var eyear=common.getStartYear(endDateParam,appTZ);
-	var emonth=common.getStartMonth(endDateParam,appTZ);
-	emonth='0'.concat(emonth);
-	var edate=common.getStartDate(endDateParam,appTZ);
-	edate='0'.concat(edate).slice(-2);
-	var ehour=common.getStartHour(endDateParam,appTZ);
-	ehour='0'.concat(ehour).slice(-2);
-	endDateMoment=''+eyear+emonth+edate;
-	enddateMomentForHour=''+eyear+emonth+edate+ehour;
-	console.log("endDateMoment: " + endDateMoment);
-	edateparam=eyear+"-"+emonth+"-"+edate;
-	sdmonth = '0'.concat(startdate.getMonth()+1).slice(-2);  // fetch month of start date
-	edmonth = '0'.concat(enddate.getMonth()+1).slice(-2);	 // fetch month of end date
-	sdyear = startdate.getFullYear();						 // fetch Year of start date
-	edyear = enddate.getFullYear();							 // fetch Year of end date
 	
+	 startDateWithoutHour=String(common.getStartDate(startDateParam,appTZ));  		//get start moment date 
+	 endDateWithoutHour=String(common.getStartDate(endDateParam,appTZ));			//get end moment date 
+	 startdateMoment=Number(startDateWithoutHour);
+	 endDateMoment=Number(endDateWithoutHour);
+	 sdateparam=startDateWithoutHour.substr(0, 4)+"-"+startDateWithoutHour.substr(4, 2)+"-"+startDateWithoutHour.substr(6, 2);
+	 edateparam=endDateWithoutHour.substr(0, 4)+"-"+endDateWithoutHour.substr(4, 2)+"-"+endDateWithoutHour.substr(6, 2);
+
 	diffDays=common.getDateDiffernce(sdateparam,edateparam);  //to find no of days between two dates
 	callback(null);
 	}, //callback end
@@ -388,7 +353,7 @@ async.waterfall(
 	
 	
 	function(callback) { //callback start
-		console.log("final type value" + type);
+		//console.log("final type value" + type);
 		db.collection(config.coll_dashboard).aggregate([
 			{ $match: { $and: [{'_id.ty': type},{'_id.dt':{$in:typeListarray}},{ '_id.key': { $gte: parseInt(startdateMoment), $lte: parseInt(endDateMoment) }}]  } },
 			{ $group: {_id : "$_id.key", 'tse' : {$sum : "$val.tse"},'te' : {$sum : "$val.te"},'tuu' : {$sum : "$val.tuu"},'tnu' : {$sum : "$val.tnu"},'tts' : {$sum : "$val.tts"},'tce' : {$sum : "$val.tce"}}},
