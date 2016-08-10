@@ -34,8 +34,8 @@ async.waterfall(
 	});
 	
 	
-	 startDateWithoutHour=String(common.getStartDate(startDateParam,appTZ));  //get start moment date without hour
-	 endDateWithoutHour=String(common.getStartDate(endDateParam,appTZ));	  //get end moment date without hour
+	 startDateWithoutHour=String(common.getStartDate(startDateParam,appTZ));  //get start moment date without hour.
+	 endDateWithoutHour=String(common.getStartDate(endDateParam,appTZ));	  //get end moment date without hour.
 	 
 	 sdateparam=startDateWithoutHour.substr(0, 4)+"-"+startDateWithoutHour.substr(4, 2)+"-"+startDateWithoutHour.substr(6, 2);
 	 edateparam=endDateWithoutHour.substr(0, 4)+"-"+endDateWithoutHour.substr(4, 2)+"-"+endDateWithoutHour.substr(6, 2);
