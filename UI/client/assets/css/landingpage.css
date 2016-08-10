@@ -319,6 +319,13 @@
                     top: 0px;
                 }
 
+                #floating-anchor{
+                    position:fixed;
+                    right: 50%;
+                    bottom: 0;
+                    z-index: 3000;
+                }
+
             @media (max-width: 767px) {
                 .landing-page .parallax .container .row {
                     margin-top: 85px;
@@ -458,5 +465,10 @@
 
                 .footer .col-md-3, .footer .col-md-2{
                     padding-top:20px;
+                }
+
+                #floating-anchor{
+
+                    display:none;
                 }
             }
