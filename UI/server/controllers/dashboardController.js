@@ -36,7 +36,7 @@ async.waterfall(
 	
 	
 	 startDateWithoutHour=String(common.getStartDate(startDateParam,appTZ));  //get start moment date without hour
-	 startDateWithHour=String(common.getStartHour(startDateParam,appTZ));	  //get start moment date with hour
+	 startDateWithHour=String(common.getStartHour(startDateParam,appTZ));	  //get start moment date with hours
 	 endDateWithoutHour=String(common.getStartDate(endDateParam,appTZ));	  //get end moment date without hour
 	 endDateWithHour=String(common.getStartHour(endDateParam,appTZ));		  //get end moment date with hour
 	 

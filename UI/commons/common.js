@@ -66,12 +66,7 @@ var common = {};
                 var eventdate = moment.tz(rtr*1000,appTZ).format();
                 return parseInt(''+eventdate.substring(0,4)+eventdate.substring(5,7)+eventdate.substring(8,10));		
         };
-		/*
-		common.getStartHour = function(rtr,appTZ){
-                var eventdate = moment.tz(rtr*1000,appTZ).format();
-                return parseInt(''+eventdate.substring(11,13));
-        };
-		*/
+		
 		common.getStartHour = function(rtr,appTZ){
                 var eventdate = moment.tz(rtr*1000,appTZ).format();
                 return parseInt(''+eventdate.substring(0,4)+eventdate.substring(5,7)+eventdate.substring(8,10)+eventdate.substring(11,13));
