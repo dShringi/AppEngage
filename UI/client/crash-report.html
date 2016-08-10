@@ -2,6 +2,7 @@
     <html>
     <head>
         <title>Mobile Analytics</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
         <link rel="stylesheet" href="assets/css/bootstrap.min.css">
 
         <!-- Optional theme -->
@@ -132,6 +133,42 @@
 					if(data.length == 0){
 						showError("No data found for the selected parameters.");
 					} else {
+						var mnuall = data[1].mnu;
+						var osvall = data[2].osv;
+						var pfall = data[3].pf;
+						
+						var mnuarr = [];
+						var osvarr = [];
+						var pfarr = [];
+						
+						for (var i = 0; i < mnuall.length; i++) {
+							var obj = mnuall[i];
+							for (var j in obj) {
+								//alert(j);
+								mnuarr.push(obj[j]);
+							}
+						}
+						
+						for (var i = 0; i < osvall.length; i++) {
+							var obj = osvall[i];
+							for (var j in obj) {
+								//alert(j);
+								osvarr.push(obj[j]);
+							}
+						}
+						
+						for (var i = 0; i < pfall.length; i++) {
+							var obj = pfall[i];
+							for (var j in obj) {
+								//alert(j);
+								pfarr.push(obj[j]);
+							}
+						}
+						
+						var maxmnu = d3.max(mnuarr);
+						var maxosv = d3.max(osvarr);
+						var maxpf = d3.max(pfarr);
+
 						$(".div-total-crashes").empty();
 						$(".div-total-crashes-manufacturer").empty();
 						$(".div-total-crashes-platform").empty();
@@ -141,6 +178,10 @@
 						svg1 = getDonutSVG(".div-total-crashes-manufacturer", width, height),
 						svg2 = getDonutSVG(".div-total-crashes-platform", width, height),
 						svg3 = getDonutSVG(".div-total-crashes-os-version", width, height);
+						
+						parentdiv1 = "div-total-crashes-manufacturer";
+						parentdiv2 = "div-total-crashes-platform";
+						parentdiv3 = "div-total-crashes-os-version";
 						
 						mnuCrshArr = new Array();
 						pfCrshArr = new Array();
@@ -172,15 +213,15 @@
 						showTotalCrashesChart(data, svg, pie);
 
 						// Manufacturer Crashes Chart
-						showCrashesDonutChart(mnuCrshArr, svg1, pie1);
+						showCrashesDonutChart(mnuCrshArr, svg1, pie1, parentdiv1, maxmnu);
 						// Manufacturer Crashes Chart - END
 
 						// Platform Crashes Chart
-						showCrashesDonutChart(pfCrshArr, svg2, pie1);
+						showCrashesDonutChart(pfCrshArr, svg2, pie1, parentdiv2, maxpf);
 						// Platform Crashes Chart - END
 
 						// OSV Crashes Chart
-						showCrashesDonutChart(osvCrshArr, svg3, pie1);
+						showCrashesDonutChart(osvCrshArr, svg3, pie1, parentdiv3, maxosv);
 						// OSV Crashes Chart - END
 					}	
 				});

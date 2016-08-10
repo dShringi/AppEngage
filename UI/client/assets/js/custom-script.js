@@ -370,7 +370,7 @@ var showTotalCrashesChart = function(data,svg,pie){
 		//.text(totalCrashes)
 		.text(function (d) { return d.data.TotalCrashes; });
 };
-var showCrashesDonutChart = function(data,svg,pie){
+var showCrashesDonutChart = function(data,svg,pie,parentdiv,maxcrash){
 	//console.log(JSON.stringify(data));
 	var tooltip = d3.select("body")
 		.append("div")  // declare the tooltip div 
@@ -392,15 +392,23 @@ var showCrashesDonutChart = function(data,svg,pie){
 				.duration(1000)
 				.attr("class", "shadow")
 				.attr("d", arcOver);
+				$("."+parentdiv+" text.inside").html(d.data.crash);
 			tooltip.transition().duration(200).style("opacity", 1);	
 			tooltip.html(d.data.name +" : "+d.data.crash).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
+		})
+		.on("mousedown", function(d){
+			$("."+parentdiv+" text.inside").html(d.data.crash);
+		})
+		.on("mouseup", function(d){
+			$("."+parentdiv+" text.inside").text(maxcrash);
 		})
 		.on("mouseleave", function (d) {
 			d3.select(this)
 				.transition()
 				.duration(1000)
 				.attr("d", arc);
-			tooltip.transition().duration(200).style("opacity", 0);	
+				$("."+parentdiv+" text.inside").html(maxcrash);
+			tooltip.transition().duration(200).style("opacity", 0);
 		})
 		.style("fill", function (d) { return color(d.data.name); });
 
@@ -409,7 +417,7 @@ var showCrashesDonutChart = function(data,svg,pie){
 		.style("text-anchor", "middle")
 		.attr("class", "inside")
 		.attr("fill", "#616161")
-		.text(totalCrashes)
+		.text(maxcrash)
 		.on("click", function (d) {
 			//alert("aaa");
 		});
