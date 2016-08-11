@@ -45,12 +45,14 @@
                     } // End if
                     if ($("#floating-anchor a").attr("href") == "#section5") {
                         $("#floating-anchor a").attr("href", "#section1");
+                        $("#floating-anchor a img").attr("src", "assets\\img\\landing\\Arrow_Up.png");
                     }
                     else {
                         counter++;
-                        $("#floating-anchor a").attr("href", "#section"+counter);
+                        $("#floating-anchor a").attr("href", "#section" + counter);
+                        $("#floating-anchor a img").attr("src", "assets\\img\\landing\\Arrow_Down.png");
                     }
-                    
+
                 });
             });
 
@@ -328,7 +330,7 @@
             </div>
 
         <div id="floating-anchor">
-            <a href="#section2"><img src="assets\img\landing\H_12.png" /></a>
+            <a href="#section2"><img src="assets\img\landing\Arrow_Down.png" /></a>
         </div>
 </body>
 </html>

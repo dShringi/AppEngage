@@ -322,8 +322,14 @@
                 #floating-anchor{
                     position:fixed;
                     right: 50%;
-                    bottom: 0;
+                    bottom: 5px;
                     z-index: 3000;
+                }
+
+                #floating-anchor img {
+                    background-color: #000000;
+                    border-radius: 11px;
+                    opacity: 0.7;
                 }
 
             @media (max-width: 767px) {
