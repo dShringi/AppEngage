@@ -4,12 +4,14 @@ module.exports.port             = 3001;
 //module.exports.port             = 6000;
 
 module.exports.connectionstring = 'mongodb://localhost/';
+module.exports.appengageConnString	=	'mongodb://localhost/appengage'
 
-module.exports.coll_crashes			= 'coll_crashes';
-module.exports.coll_dashboard		= 'coll_dashboard';
-module.exports.coll_realtime		= 'coll_realtime';
-module.exports.coll_users 			= 'coll_users';
-module.exports.coll_activesessions	= 'coll_activesessions';
+module.exports.coll_crashes			= 	'coll_crashes';
+module.exports.coll_dashboard		= 	'coll_dashboard';
+module.exports.coll_realtime		= 	'coll_realtime';
+module.exports.coll_users 			= 	'coll_users';
+module.exports.coll_activesessions	= 	'coll_activesessions';
+module.exports.coll_appengageusers	=	'coll_users';
 module.exports.logdir	= 'D:/appengagelogs';
 
 module.exports.searchByModel=[
