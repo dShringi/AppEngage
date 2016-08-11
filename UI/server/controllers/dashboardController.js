@@ -10,23 +10,16 @@ var appTZ 		= 'Asia/Kolkata';
 module.exports.getUserInsights = function(req,res){
 
 var startDate = req.query["sd"],endDate = req.query["ed"],akey =req.query["akey"];
-var sdateparam,edateparam;
+var sdateparam,edateparam,startDateMoment,endDateMoment,startDateWithoutHour,endDateWithoutHour;
 var type="D",diffDays;
 var resultstring=[],resultstr="";
-var startdate = new Date(0),enddate = new Date(0);
-var tse=0,te=0,tuu=0,tnu=0,tts=0,tce=0;
-var startDateMoment,endDateMoment;
-var startDateWithoutHour,endDateWithoutHour;
 var db = mongojs(config.connectionstring+akey);
-
 
 async.waterfall(
     [	
-		
 	function(callback){ //callback start
 	
 	var application = config.appdetails;
-
 	_.each(application,function(data){
 		if(data.app === akey){
 			appTZ = data.TZ;
@@ -106,12 +99,9 @@ async.waterfall(
 module.exports.getSessionInsights = function(req,res){
 
 var startDate = req.query["sd"],endDate = req.query["ed"],akey =req.query["akey"];
-var sdateparam,edateparam;
+var sdateparam,edateparam,startDateMoment,endDateMoment,startDateWithoutHour,endDateWithoutHour;
 var type="D",diffDays;
 var resultstring=[],resultstr="";
-var tse=0,te=0,tuu=0,tnu=0,tts=0,tce=0;
-var startDateMoment,endDateMoment;
-var startDateWithoutHour,endDateWithoutHour;
 var db = mongojs(config.connectionstring+akey);
 
 async.waterfall(
@@ -249,13 +239,9 @@ module.exports.dashboardCounters = function(req,res){
 
 
 var sDate = req.query["sd"],eDate = req.query["ed"],akey =req.query["akey"],typeOfDevice=req.query["type"];	
-var tse=0,te=0,tuu=0,tnu=0,tts=0,tce=0,dType,dailyCount=0,weeklyCount=0,monthlyCount=0,yearlyCount=0;
+var tse=0,te=0,tuu=0,tnu=0,tts=0,tce=0,weeklyCount=0,monthlyCount=0,yearlyCount=0;
 var startDateParam=sDate,endDateParam=eDate,sdateparam,edateparam,sdmonth,edmonth,sdyear,edyear;
 var type="D",diffDays;
-var resultstring=[],resultstr="";
-var startdate = new Date(0),enddate = new Date(0);
-startdate.setUTCSeconds(sDate);
-enddate.setUTCSeconds(eDate);
 var startdateMoment,endDateMoment;
 var startDateWithoutHour,endDateWithoutHour;
 var db = mongojs(config.connectionstring+akey);
