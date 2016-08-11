@@ -13,8 +13,8 @@ var userValidationController = require('./server/controllers/userValidationContr
 app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser()); // get information from html forms
 app.get('/', function (req, res) {
-  console.log(__dirname+'/client/index.html');	
-  res.sendFile(__dirname + '/client/index.html');
+	console.log(__dirname+'/client/index.html');	
+	res.sendFile(__dirname + '/client/index.html');
 });
 
 app.get('/appengage/getCrashCounters', crashController.crashCounters);
@@ -27,10 +27,10 @@ app.get('/appengage/getUserDashboardCounters',userDashboardController.getUserDas
 app.get('/appengage/getUserValidated',userValidationController.validateUser);
 
 var server = app.listen(config.port, function () {
-  var host = server.address().address;
-  var port = server.address().port;
+	var host = server.address().address;
+	var port = server.address().port;
 
-  console.log('Application listening at http://%s:%s', host, port);
+	console.log('Application listening at http://%s:%s', host, port);
 });
 app.use(express.static(__dirname + '/client'));
 app.use(express.static(__dirname));

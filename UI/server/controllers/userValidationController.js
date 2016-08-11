@@ -8,8 +8,6 @@ module.exports.validateUser = function(req,res){
 	db.collection(config.coll_appengageusers).find(
 		{ $and:[{_id:_userName },{pass:_userPassword} ] }
 		,function(err,result){
-			console.log(err);
-			console.log(result);	
 			if(!err){
 				db.close();
 				if(result.length!=0){
