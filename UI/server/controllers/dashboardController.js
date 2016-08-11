@@ -19,7 +19,7 @@ async.waterfall(
     [	
 	function(callback){ //callback start
 	
-	var application = config.appdetails;
+	var application = config.appdetails;								//fetching timezone
 	_.each(application,function(data){
 		if(data.app === akey){
 			appTZ = data.TZ;
