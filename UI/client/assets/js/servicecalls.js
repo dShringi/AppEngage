@@ -21,7 +21,6 @@ var service = {
                 if (data.msg === "Success") {
                     alert("Successful Login");
                     localStorage.setItem("userName", data.name);
-                    
                     window.location.href = "index.html";
                 }
                 else {
