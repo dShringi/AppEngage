@@ -16,3 +16,8 @@
 		</div>
 	</div>
 </header>
+<script>
+	$(document).ready(function(){
+		$("header.bg-white ul.paddl0 span.loggedUser").text(localStorage.getItem("userName"));
+	});
+</script>
