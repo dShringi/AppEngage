@@ -332,6 +332,18 @@
                     opacity: 0.7;
                 }
 
+                .modal {
+                    overflow-y: auto;
+                }
+
+                .modal-open {
+                    overflow: auto;
+                }
+
+                .modal-open[style]{
+                    padding-right: 0px !important;
+                }
+
             @media (max-width: 767px) {
                 .landing-page .parallax .container .row {
                     margin-top: 85px;
