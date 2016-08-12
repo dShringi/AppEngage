@@ -7,10 +7,20 @@
         <link rel="stylesheet" href="assets/css/landingpage.css">
         <script src="assets/js/jquery.js"></script>
         <script src="assets/js/bootstrap.min.js"></script>
+        <script src="assets/js/servicecalls.js"></script>
         <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Montserrat">
 
         <script>
             var counter;
+
+            function validateUser() {
+                var uname = $("input.usrname").val();
+                var pwd = $("input.passwrd").val();
+
+                service.validateLogin(uname, pwd);
+            }
+
+
             $(document).ready(function () {
                 // Add smooth scrolling to all links
                 
@@ -318,9 +328,9 @@
                 <div class="modal-dialog modal-sm">
                     <div class="modal-content">
                         <div>
-                            <input type="text" placeholder="Username" />
-                            <input type="password" placeholder="Password" />
-                            <button class="btn btn-neutral btn-block">Submit</button>
+                            <input type="text" class="usrname" placeholder="Username" />
+                            <input type="password" class="passwrd" placeholder="Password" />
+                            <button class="btn btn-neutral btn-block" onclick="validateUser()">Submit</button>
                             <a href="#">Forgot password?</a>
                         </div>
                     </div>
