@@ -323,12 +323,6 @@ async.waterfall(
 	
 	function(callback) { //callback start
 		//find distinct no of users
-	
-		//	console.log("sdyear " + sdyear);
-		//	console.log("edyear " + edyear);
-		//	console.log("sdmonth " + sdmonth);
-		//	console.log("edmonth " + edmonth);
-		
 		if (sdmonth.substr(0,1)==0){
 			
 			gteval=sdmonth.substr(1,1)+startDateWithoutHour.substr(6, 2);
