@@ -175,185 +175,186 @@
 			}
 
             $(document).ready(function() {
-				var today = new Date(), margin = {top: 10, right: 40, bottom: 20, left: 35},
-				width = $("#chart-container").width() - margin.left - margin.right,
-				height = 175 - margin.top - margin.bottom;
-				
-				var i =0;
 
-				var x = d3.time.scale()
-					.range([0, width]);
-
-				var y = d3.scale.linear()
-					.range([height, 0]);
-
-				var xAxis = d3.svg.axis()
-					.scale(x)
-					.ticks(d3.time.minutes, 1)
-					.tickFormat(d3.time.format("%H:%M"))
-					.orient("bottom");
-                
-				var yAxis = d3.svg.axis()
-					.scale(y)
-					.orient("left") 
-					.ticks(5)
-					.tickFormat(d3.format("d"))
-					.tickSubdivide(0);
-
-				var chart = d3.select("#chart-container").append("svg")
-					.attr("id","chart")
-					.attr("width", width + margin.left + margin.right)
-					.attr("height", height + margin.top + margin.bottom)
-					.attr('viewBox', '0 0 '+width+' 175')
-					.attr('perserveAspectRatio', 'xMinYMid')
-					.append("g")
-					.attr("transform", "translate(0," + margin.top + ")");
-
-
-				var data = new Array();
-                startTime = new Date().getTime()/1000;
-				$.getJSON(APIBaseURL+"getDashBoardRealTime?akey="+appKey+"&sd="+(parseInt(startTime)-300)+"&ed="+(parseInt(startTime)), function(data) {
-                    data = JSON.parse(data);
-					data.forEach(function(d) {
-						d.time = d.Time*1000;
-						d.value = d.DeviceCount;
-						d.count = d.DeviceCount;
-						d._id = d.Time*1000;
-					});
-
-					data.forEach(function(d) {
-						d._id = +d._id;
-						d.count = +d.count;
-					});
-
-					x.domain([d3.min(data, function(d) { return d._id; }), d3.max(data, function(d) { return d._id; })]);
-					y.domain([0, d3.max(data, function(d) { return d.count; })]);
-
-					var xAxisOrg = chart.append("g")
-						.attr("class", "x axisticker")
-						.attr("transform", "translate(0," + height + ")")
-						.call(xAxis);
-
-					var yAxisOrg = chart.append("g")
-						.attr("class", "y axisticker")
-						.call(yAxis);
-
-
-					var tip1 = d3.tip()
-						.attr('class', 'map-tooltip shadow')
-						.offset([-10, 0])
-						.html(function (d) {
-							return "Device : " + d.DeviceCount;
-						})
-
-					chart.call(tip1);
-
-					chart.selectAll(".tickerbar")
-						.data(data)
-						.enter().append("rect")
-						.attr("class", "tickerbar")
-						.attr("x", function(d,i) {return x(d._id) ; })
-						.attr("width", 12)
-						.attr("y", function(d) { return y(d.DeviceCount) ; })
-						.attr("height", function(d) { return height - y(d.DeviceCount); })
-						.on('mouseover', tip1.show)
-						.on('mouseout', tip1.hide);
-                    
-					nextnumber = (data[data.length-1]._id + 10000);
+					var today = new Date(), margin = {top: 10, right: 40, bottom: 20, left: 35},
+					width = $("#chart-container").width() - margin.left - margin.right,
+					height = 175 - margin.top - margin.bottom;
 					
-					var the_chart = $("#chart"),
-					aspect = the_chart.width() / the_chart.height(),
-					container = the_chart.parent();
+					var i =0;
+	
+					var x = d3.time.scale()
+						.range([0, width]);
+	
+					var y = d3.scale.linear()
+						.range([height, 0]);
+	
+					var xAxis = d3.svg.axis()
+						.scale(x)
+						.ticks(d3.time.minutes, 1)
+						.tickFormat(d3.time.format("%H:%M"))
+						.orient("bottom");
 					
-					$(window).on("resize", function() {
-						console.log('resize');
-						var targetWidth = container.width();
-						the_chart.attr("width", targetWidth);
-						the_chart.attr("height", Math.round(targetWidth / aspect));
-					}).trigger("resize");
-					
-					var tickerstart = moment().subtract(10, 'minutes').startOf('minute');
-					tickerstartdate = moment(tickerstart).valueOf();
-                    nextTime = startTime;
-					timer = setInterval(function(){
-						tickerstartdate = tickerstartdate + 10000;
-						nextTime += 10
-						d3.json(APIBaseURL+"getDashBoardRealTime?akey="+appKey+"&sd="+(parseInt(nextTime))+"&ed="+(parseInt(nextTime)), function(error, data1) {
-                            data1 = JSON.parse(data1);
-							data1.forEach(function(d) {
-								devCount = d.DeviceCount;//Math.floor((Math.random() * 10) + 1);
-								d.count = d.DeviceCount;
-								d._id = nextnumber;
-							});
+					var yAxis = d3.svg.axis()
+						.scale(y)
+						.orient("left") 
+						.ticks(5)
+						.tickFormat(d3.format("d"))
+						.tickSubdivide(0);
+	
+					var chart = d3.select("#chart-container").append("svg")
+						.attr("id","chart")
+						.attr("width", width + margin.left + margin.right)
+						.attr("height", height + margin.top + margin.bottom)
+						.attr('viewBox', '0 0 '+width+' 175')
+						.attr('perserveAspectRatio', 'xMinYMid')
+						.append("g")
+						.attr("transform", "translate(0," + margin.top + ")");
+	
+	
+					var data = new Array();
+					startTime = new Date().getTime()/1000;
+					$.getJSON(APIBaseURL+"getDashBoardRealTime?akey="+appKey+"&sd="+(parseInt(startTime)-300)+"&ed="+(parseInt(startTime)), function(data) {
+						data = JSON.parse(data);
+						data.forEach(function(d) {
+							d.time = d.Time*1000;
+							d.value = d.DeviceCount;
+							d.count = d.DeviceCount;
+							d._id = d.Time*1000;
+						});
+	
+						data.forEach(function(d) {
+							d._id = +d._id;
+							d.count = +d.count;
+						});
+	
+						x.domain([d3.min(data, function(d) { return d._id; }), d3.max(data, function(d) { return d._id; })]);
+						y.domain([0, d3.max(data, function(d) { return d.count; })]);
+	
+						var xAxisOrg = chart.append("g")
+							.attr("class", "x axisticker")
+							.attr("transform", "translate(0," + height + ")")
+							.call(xAxis);
+	
+						var yAxisOrg = chart.append("g")
+							.attr("class", "y axisticker")
+							.call(yAxis);
+	
+	
+						var tip1 = d3.tip()
+							.attr('class', 'map-tooltip shadow')
+							.offset([-10, 0])
+							.html(function (d) {
+								return "Device : " + d.DeviceCount;
+							})
+	
+						chart.call(tip1);
+	
+						chart.selectAll(".tickerbar")
+							.data(data)
+							.enter().append("rect")
+							.attr("class", "tickerbar")
+							.attr("x", function(d,i) {return x(d._id) ; })
+							.attr("width", 12)
+							.attr("y", function(d) { return y(d.DeviceCount) ; })
+							.attr("height", function(d) { return height - y(d.DeviceCount); })
+							.on('mouseover', tip1.show)
+							.on('mouseout', tip1.hide);
 						
-							if(data1.length == 0 ){
-								data1.push({'_id' : nextnumber, 'count' : 0});
-							}
-							data.shift();
-							data.push(data1[0]);
-
-							data.forEach(function(d) {
-								d._id = +d._id;
-								d.count = +d.count;
-							});
-
-							x.domain([d3.min(data, function(d) { return d._id; }), d3.max(data, function(d) { return d._id; })]);
-							y.domain([0, d3.max(data, function(d) { return d.count; })]);
-
-							var rect = chart.selectAll(".tickerbar")
-								.data(data, function(d) { return d._id; });
-
-							//slide the x-axis left
-							xAxisOrg.transition()
-								.duration(10000)
-								.ease("linear")
-								.call(xAxis);
-
-							//slide the x-axis left
-							yAxisOrg.transition()
-								.duration(10000)
-								//.ease("linear")
-								.call(yAxis);
-
-							rect
-								.enter().append("rect")
-								.attr("class", "tickerbar")
-								.attr("x", function(d, i) {return x(d._id + 10000);  })
-								//.attr("x", x(findlast(19)))
-								.attr("width", 12)
-								.attr("y", function(d) { return y(d.count) ; })
-								//.attr("y", function(d) { return 100; })
-								.attr("height", function(d) { return height - y(d.count); })
-								.on('mouseover', tip1.show)
-								.on('mouseout', tip1.hide)
-								.transition()
-								.duration(10000)
-								.ease("linear")
-								.attr("x", function(d, i) { return x(d._id) ; })
-								.attr("y", function(d) { return y(d.count) ; })
-								.attr("height", function(d) { return height - y(d.count); });
-
-							rect
-								.transition()
-								.duration(10000)
-								.ease("linear")
-								.attr("x", function(d, i) { return x(d._id) ; })
-								.attr("y", function(d) { return y(d.count) ; })
-								.attr("height", function(d) { return height - y(d.count); });
-
-							rect.exit()
-								.transition()
-								.duration(10)
-								.ease("linear")
-								.attr("x", function(d,i) {return x(0);})
-								.attr("y", function(d) { return y(d.count) ; })
-								.attr("height", function(d) { return height - y(d.count); })
-								.remove();
-
-							nextnumber = nextnumber + 10000;
-						})
-                    },10010);
-                });
+						nextnumber = (data[data.length-1]._id + 10000);
+						
+						var the_chart = $("#chart"),
+						aspect = the_chart.width() / the_chart.height(),
+						container = the_chart.parent();
+						
+						$(window).on("resize", function() {
+							console.log('resize');
+							var targetWidth = container.width();
+							the_chart.attr("width", targetWidth);
+							the_chart.attr("height", Math.round(targetWidth / aspect));
+						}).trigger("resize");
+						
+						var tickerstart = moment().subtract(10, 'minutes').startOf('minute');
+						tickerstartdate = moment(tickerstart).valueOf();
+						nextTime = startTime;
+						timer = setInterval(function(){
+							tickerstartdate = tickerstartdate + 10000;
+							nextTime += 10
+							d3.json(APIBaseURL+"getDashBoardRealTime?akey="+appKey+"&sd="+(parseInt(nextTime))+"&ed="+(parseInt(nextTime)), function(error, data1) {
+								data1 = JSON.parse(data1);
+								data1.forEach(function(d) {
+									devCount = d.DeviceCount;//Math.floor((Math.random() * 10) + 1);
+									d.count = d.DeviceCount;
+									d._id = nextnumber;
+								});
+							
+								if(data1.length == 0 ){
+									data1.push({'_id' : nextnumber, 'count' : 0});
+								}
+								data.shift();
+								data.push(data1[0]);
+	
+								data.forEach(function(d) {
+									d._id = +d._id;
+									d.count = +d.count;
+								});
+	
+								x.domain([d3.min(data, function(d) { return d._id; }), d3.max(data, function(d) { return d._id; })]);
+								y.domain([0, d3.max(data, function(d) { return d.count; })]);
+	
+								var rect = chart.selectAll(".tickerbar")
+									.data(data, function(d) { return d._id; });
+	
+								//slide the x-axis left
+								xAxisOrg.transition()
+									.duration(10000)
+									.ease("linear")
+									.call(xAxis);
+	
+								//slide the x-axis left
+								yAxisOrg.transition()
+									.duration(10000)
+									//.ease("linear")
+									.call(yAxis);
+	
+								rect
+									.enter().append("rect")
+									.attr("class", "tickerbar")
+									.attr("x", function(d, i) {return x(d._id + 10000);  })
+									//.attr("x", x(findlast(19)))
+									.attr("width", 12)
+									.attr("y", function(d) { return y(d.count) ; })
+									//.attr("y", function(d) { return 100; })
+									.attr("height", function(d) { return height - y(d.count); })
+									.on('mouseover', tip1.show)
+									.on('mouseout', tip1.hide)
+									.transition()
+									.duration(10000)
+									.ease("linear")
+									.attr("x", function(d, i) { return x(d._id) ; })
+									.attr("y", function(d) { return y(d.count) ; })
+									.attr("height", function(d) { return height - y(d.count); });
+	
+								rect
+									.transition()
+									.duration(10000)
+									.ease("linear")
+									.attr("x", function(d, i) { return x(d._id) ; })
+									.attr("y", function(d) { return y(d.count) ; })
+									.attr("height", function(d) { return height - y(d.count); });
+	
+								rect.exit()
+									.transition()
+									.duration(10)
+									.ease("linear")
+									.attr("x", function(d,i) {return x(0);})
+									.attr("y", function(d) { return y(d.count) ; })
+									.attr("height", function(d) { return height - y(d.count); })
+									.remove();
+	
+								nextnumber = nextnumber + 10000;
+							})
+						},10010);
+					});
             });
         </script>
     </body>

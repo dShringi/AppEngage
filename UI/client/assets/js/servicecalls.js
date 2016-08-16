@@ -19,7 +19,6 @@ var service = {
             success: function (data) {
                 console.log(data);
                 if (data.msg === "Success") {
-                    alert("Successful Login");
                     sessionStorage.setItem("userName", data.name);
                     window.location.href = "index.html";
                 }
