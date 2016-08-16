@@ -18,16 +18,24 @@
 </header>
 <script>
 	$(document).ready(function(){
-		$("header.bg-white ul.paddl0 span.loggedUser").text(sessionStorage.getItem("userName"));
-	});
 	
-	$(document).on("pagecontainerbeforeload",function(){
-		alert("Redirecting to landing-page");
-		window.location.href = "landing-page.html";
+		$("body").css("display", "none");
+		
+		if(sessionStorage.getItem("userName") === null){
+				alert("Redirecting to landing-page");
+				window.location.href = "landing-page.html";
+			}
+			else{
+				$("body").css("display", "block");
+				$("header.bg-white ul.paddl0 span.loggedUser").text(sessionStorage.getItem("userName"));
+			}
+		
 	});
+
 	
 	function logout(){
 		sessionStorage.removeItem("userName");
+		window.location.href = "landing-page.html";
 		
 	}
 	
