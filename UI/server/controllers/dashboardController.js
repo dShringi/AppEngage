@@ -276,8 +276,8 @@ async.waterfall(
 		 edateparam=endDateWithoutHour.substr(0, 4)+"-"+endDateWithoutHour.substr(4, 2)+"-"+endDateWithoutHour.substr(6, 2);
 		 sdmonth=startDateWithoutHour.substr(4, 2);										//get start date month
 		 edmonth=endDateWithoutHour.substr(4, 2);										//get end date month
-		 sdyear=startDateWithoutHour.substr(0, 4);
-		 edyear=endDateWithoutHour.substr(0, 4);
+		 sdyear=startDateWithoutHour.substr(0, 4);										//get start date year
+		 edyear=endDateWithoutHour.substr(0, 4);										//get end date year
 		 
 		diffDays=common.getDateDiffernce(sdateparam,edateparam);  //to find no of days between two dates
 		callback(null);
