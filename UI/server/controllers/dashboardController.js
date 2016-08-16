@@ -75,33 +75,38 @@ async.waterfall(
 		
 	function(callback) { //callback start
 		//checking device type and assigning into typeListarray
-		switch (typeOfDevice) { case "A" : typeListarray[0]="S";typeListarray[1]="T"; break; case "S" : typeListarray[0]="S"; break; case "T" : typeListarray[0]="T"; }
-		console.log(typeListarray);
+		switch (typeOfDevice) { 
+			case "A" : 
+				typeListarray[0]="S";
+				typeListarray[1]="T"; 
+			break; 
+			case "S" : 
+				typeListarray[0]="S"; 
+			break; 
+			case "T" : 
+				typeListarray[0]="T"; 
+		}
 		callback(null);
-	},
-	
+	},	
 	function(callback){ //callback start
-	
 		var application = config.appdetails;
-
 		_.each(application,function(data){
 			if(data.app === akey){
 				appTZ = data.TZ;
 				return;
 			}
-	});
+		});
 	
-	
-		 startDateWithoutHour=String(common.getStartDate(startDateParam,appTZ));  		//get start moment date 
-		 endDateWithoutHour=String(common.getStartDate(endDateParam,appTZ));			//get end moment date 
-		 startdateMoment=Number(startDateWithoutHour);
-		 endDateMoment=Number(endDateWithoutHour);
-		 sdateparam=startDateWithoutHour.substr(0, 4)+"-"+startDateWithoutHour.substr(4, 2)+"-"+startDateWithoutHour.substr(6, 2);
-		 edateparam=endDateWithoutHour.substr(0, 4)+"-"+endDateWithoutHour.substr(4, 2)+"-"+endDateWithoutHour.substr(6, 2);
-		 sdmonth=startDateWithoutHour.substr(4, 2);										//get start date month
-		 edmonth=endDateWithoutHour.substr(4, 2);										//get end date month
-		 sdyear=startDateWithoutHour.substr(0, 4);										//get start date year
-		 edyear=endDateWithoutHour.substr(0, 4);										//get end date year
+		startDateWithoutHour=String(common.getStartDate(startDateParam,appTZ));  		//get start moment date 
+		endDateWithoutHour=String(common.getStartDate(endDateParam,appTZ));			//get end moment date 
+		startdateMoment=Number(startDateWithoutHour);
+		endDateMoment=Number(endDateWithoutHour);
+		sdateparam=startDateWithoutHour.substr(0, 4)+"-"+startDateWithoutHour.substr(4, 2)+"-"+startDateWithoutHour.substr(6, 2);
+		edateparam=endDateWithoutHour.substr(0, 4)+"-"+endDateWithoutHour.substr(4, 2)+"-"+endDateWithoutHour.substr(6, 2);
+		sdmonth=startDateWithoutHour.substr(4, 2);										//get start date month
+		edmonth=endDateWithoutHour.substr(4, 2);										//get end date month
+		sdyear=startDateWithoutHour.substr(0, 4);										//get start date year
+		edyear=endDateWithoutHour.substr(0, 4);										//get end date year
 		 
 		diffDays=common.getDateDiffernce(sdateparam,edateparam);  //to find no of days between two dates
 		callback(null);
@@ -149,12 +154,11 @@ async.waterfall(
 		//find distinct no of users
 	
 			var sdmonthPart=parseInt(sdmonth),edmonthpart=parseInt(edmonth);
-			gteval=sdmonthPart+startDateWithoutHour.substr(6, 2);
-			lteval=edmonthpart+endDateWithoutHour.substr(6, 2);
+			gteval=parseInt(sdmonthPart+startDateWithoutHour.substr(6, 2));
+			lteval=parseInt(edmonthpart+endDateWithoutHour.substr(6, 2));
 			
-			var gtevalNumeric=parseInt(gteval),ltevalNumeric=parseInt(lteval),yyyy=Number(sdyear);
-			var keyVal='{ "_'+ yyyy +'" : { "$elemMatch": { "_id": { "$gte": '+ gtevalNumeric +' }, "_id": { "$lte": '+ ltevalNumeric +' } } } }';
-			console.log(keyVal);
+			var yyyy=Number(sdyear);
+			var keyVal='{ "_'+ yyyy +'" : { "$elemMatch":{"$and":[{ "_id": { "$gte": '+ gtevalNumeric +' }},{"_id": { "$lte": '+ ltevalNumeric +' }}]}}})';
 			var resultObject=JSON.parse(keyVal);
 			
 			db.collection(config.coll_users).count(resultObject,function(err,res){
