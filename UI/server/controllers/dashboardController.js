@@ -19,12 +19,12 @@ async.waterfall(
     [	
 	function(callback){ //callback start
 	
-	var application = config.appdetails;		//fetching timezone
-	_.each(application,function(data){
-		if(data.app === akey){
-			appTZ = data.TZ;
-			return;
-		}
+		var application = config.appdetails;		//fetching timezone
+		_.each(application,function(data){
+			if(data.app === akey){
+				appTZ = data.TZ;
+				return;
+			}
 	});
 	
 	
@@ -323,17 +323,11 @@ async.waterfall(
 	
 	function(callback) { //callback start
 		//find distinct no of users
-		if (sdmonth.substr(0,1)==0){
+	
+			var sdmonthPart=parseInt(sdmonth),edmonthpart=parseInt(edmonth);
+			gteval=sdmonthPart+startDateWithoutHour.substr(6, 2);
+			lteval=edmonthpart+endDateWithoutHour.substr(6, 2);
 			
-			gteval=sdmonth.substr(1,1)+startDateWithoutHour.substr(6, 2);
-			lteval=edmonth.substr(1,1)+endDateWithoutHour.substr(6, 2);
-		}
-		else {
-		
-			gteval=sdmonth+startDateWithoutHour.substr(6, 2);
-			lteval=edmonth+endDateWithoutHour.substr(6, 2);
-		
-		}
 			var gtevalNumeric=parseInt(gteval),ltevalNumeric=parseInt(lteval),yyyy=Number(sdyear);
 			var keyVal='{ "_'+ yyyy +'" : { "$elemMatch": { "_id": { "$gte": '+ gtevalNumeric +' }, "_id": { "$lte": '+ ltevalNumeric +' } } } }';
 			console.log(keyVal);
@@ -341,10 +335,9 @@ async.waterfall(
 			
 			db.collection(config.coll_users).count(resultObject,function(err,res){
 			distinctUsers=res;
-			console.log(distinctUsers);
+			//console.log(distinctUsers);
 			});
 			
-	
 	callback(null);
 	}, //callback end
 	
@@ -352,7 +345,7 @@ async.waterfall(
 		//console.log("final type value" + type);
 		db.collection(config.coll_dashboard).aggregate([
 			{ $match: { $and: [{'_id.ty': type},{'_id.dt':{$in:typeListarray}},{ '_id.key': { $gte: parseInt(startdateMoment), $lte: parseInt(endDateMoment) }}]  } },
-			{ $group: {_id : "$_id.key", 'tse' : {$sum : "$val.tse"},'te' : {$sum : "$val.te"},'tuu' : {$sum : "$val.tuu"},'tnu' : {$sum : "$val.tnu"},'tts' : {$sum : "$val.tts"},'tce' : {$sum : "$val.tce"}}},
+			{ $group: {_id : "$_id.key", 'tse' : {$sum : "$val.tse"},'te' : {$sum : "$val.te"},'tnu' : {$sum : "$val.tnu"},'tts' : {$sum : "$val.tts"},'tce' : {$sum : "$val.tce"}}},
 			{ $project: {_id:0,tse:1,te:1,tuu:1,tnu:1,tts:1,tce:1}}
 			],function(err, result) {
 				//console.log(result);
@@ -362,12 +355,12 @@ async.waterfall(
 						for(var i=0;i<result.length;i++){
 							tse+=result[i].tse;
 							te+=result[i].te;
-							tuu+=result[i].tuu;
+							//tuu+=result[i].tuu;
 							tnu+=result[i].tnu;
 							tts+=result[i].tts;
 							tce+=result[i].tce;
 						}; 
-						response = '[{"tse":'+tse+',"te":' +te+',"tuu":' +tuu+',"tnu":' +distinctUsers+',"tts":' +tts+',"tce":' +tce+'}]';
+						response = '[{"tse":'+tse+',"te":' +te+',"tuu":' +distinctUsers+',"tnu":' +tnu+',"tts":' +tts+',"tce":' +tce+'}]';
 						console.log(response);
 						callback(null);
 					}else{
