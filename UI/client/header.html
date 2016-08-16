@@ -9,7 +9,7 @@
 				<li class="separator">|</li>
 				<li class="usr-menu"><span class="glyphicon glyphicon-user" aria-hidden="true"></span> <a href="javascript:void(0)" >Welcome, <span class="loggedUser"></span> <span class="glyphicon glyphicon-triangle-bottom arrow" aria-hidden="true"></span></a>
 					<ul class="usr-submenu text-left">
-						<li><a href="">Logout</a></li>
+						<li><a href="" onclick="logout()">Logout</a></li>
 					</ul>
 				</li>
 			</ul>
@@ -20,4 +20,9 @@
 	$(document).ready(function(){
 		$("header.bg-white ul.paddl0 span.loggedUser").text(localStorage.getItem("userName"));
 	});
+	
+	function logout(){
+		localStorage.removeItem("username");
+	}
+	
 </script>
