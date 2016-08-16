@@ -19,7 +19,7 @@ async.waterfall(
     [	
 	function(callback){ //callback start
 	
-	var application = config.appdetails;								//fetching timezone
+	var application = config.appdetails;		//fetching timezone
 	_.each(application,function(data){
 		if(data.app === akey){
 			appTZ = data.TZ;
@@ -240,7 +240,7 @@ module.exports.dashboardCounters = function(req,res){
 
 var sDate = req.query["sd"],eDate = req.query["ed"],akey =req.query["akey"],typeOfDevice=req.query["type"];	
 var tse=0,te=0,tuu=0,tnu=0,tts=0,tce=0,weeklyCount=0,monthlyCount=0,yearlyCount=0;
-var startDateParam=sDate,endDateParam=eDate,sdateparam,edateparam,sdmonth,edmonth,sdyear,edyear;
+var startDateParam=sDate,endDateParam=eDate,sdateparam,edateparam,sdmonth,edmonth,sdyear,edyear,gteval,lteval,distinctUsers;
 var type="D",diffDays;
 var startdateMoment,endDateMoment;
 var startDateWithoutHour,endDateWithoutHour;
@@ -274,7 +274,11 @@ async.waterfall(
 		 endDateMoment=Number(endDateWithoutHour);
 		 sdateparam=startDateWithoutHour.substr(0, 4)+"-"+startDateWithoutHour.substr(4, 2)+"-"+startDateWithoutHour.substr(6, 2);
 		 edateparam=endDateWithoutHour.substr(0, 4)+"-"+endDateWithoutHour.substr(4, 2)+"-"+endDateWithoutHour.substr(6, 2);
-
+		 sdmonth=startDateWithoutHour.substr(4, 2);										//get start date month
+		 edmonth=endDateWithoutHour.substr(4, 2);										//get end date month
+		 sdyear=startDateWithoutHour.substr(0, 4);
+		 edyear=endDateWithoutHour.substr(0, 4);
+		 
 		diffDays=common.getDateDiffernce(sdateparam,edateparam);  //to find no of days between two dates
 		callback(null);
 	}, //callback end
@@ -317,6 +321,38 @@ async.waterfall(
 		else { callback(null)}
 	}, //callback end
 	
+	function(callback) { //callback start
+		//find distinct no of users
+	
+		//	console.log("sdyear " + sdyear);
+		//	console.log("edyear " + edyear);
+		//	console.log("sdmonth " + sdmonth);
+		//	console.log("edmonth " + edmonth);
+		
+		if (sdmonth.substr(0,1)==0){
+			
+			gteval=sdmonth.substr(1,1)+startDateWithoutHour.substr(6, 2);
+			lteval=edmonth.substr(1,1)+endDateWithoutHour.substr(6, 2);
+		}
+		else {
+		
+			gteval=sdmonth+startDateWithoutHour.substr(6, 2);
+			lteval=edmonth+endDateWithoutHour.substr(6, 2);
+		
+		}
+			var gtevalNumeric=parseInt(gteval),ltevalNumeric=parseInt(lteval),yyyy=Number(sdyear);
+			var keyVal='{ "_'+ yyyy +'" : { "$elemMatch": { "_id": { "$gte": '+ gtevalNumeric +' }, "_id": { "$lte": '+ ltevalNumeric +' } } } }';
+			console.log(keyVal);
+			var resultObject=JSON.parse(keyVal);
+			
+			db.collection(config.coll_users).count(resultObject,function(err,res){
+			distinctUsers=res;
+			console.log(distinctUsers);
+			});
+			
+	
+	callback(null);
+	}, //callback end
 	
 	function(callback) { //callback start
 		//console.log("final type value" + type);
@@ -325,7 +361,7 @@ async.waterfall(
 			{ $group: {_id : "$_id.key", 'tse' : {$sum : "$val.tse"},'te' : {$sum : "$val.te"},'tuu' : {$sum : "$val.tuu"},'tnu' : {$sum : "$val.tnu"},'tts' : {$sum : "$val.tts"},'tce' : {$sum : "$val.tce"}}},
 			{ $project: {_id:0,tse:1,te:1,tuu:1,tnu:1,tts:1,tce:1}}
 			],function(err, result) {
-				console.log(result);
+				//console.log(result);
 				if(!err){
 					if(result.length!=0){
 				//console.log(result[0]);
@@ -337,7 +373,8 @@ async.waterfall(
 							tts+=result[i].tts;
 							tce+=result[i].tce;
 						}; 
-						response = '[{"tse":'+tse+',"te":' +te+',"tuu":' +tuu+',"tnu":' +tnu+',"tts":' +tts+',"tce":' +tce+'}]';
+						response = '[{"tse":'+tse+',"te":' +te+',"tuu":' +tuu+',"tnu":' +distinctUsers+',"tts":' +tts+',"tce":' +tce+'}]';
+						console.log(response);
 						callback(null);
 					}else{
 						response='[]';
