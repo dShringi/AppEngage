@@ -18,11 +18,17 @@
 </header>
 <script>
 	$(document).ready(function(){
-		$("header.bg-white ul.paddl0 span.loggedUser").text(localStorage.getItem("userName"));
+		$("header.bg-white ul.paddl0 span.loggedUser").text(sessionStorage.getItem("userName"));
+	});
+	
+	$(document).on("pagecontainerbeforeload",function(){
+		alert("Redirecting to landing-page");
+		window.location.href = "landing-page.html";
 	});
 	
 	function logout(){
-		localStorage.removeItem("username");
+		sessionStorage.removeItem("userName");
+		
 	}
 	
 </script>

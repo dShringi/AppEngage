@@ -20,7 +20,7 @@ var service = {
                 console.log(data);
                 if (data.msg === "Success") {
                     alert("Successful Login");
-                    localStorage.setItem("userName", data.name);
+                    sessionStorage.setItem("userName", data.name);
                     window.location.href = "index.html";
                 }
                 else {
