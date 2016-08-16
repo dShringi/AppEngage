@@ -55,7 +55,7 @@ function aggregateCalulation(grpParam,callback){ // function to fetch userCounte
 				
 		);
 		
-} // end of aggregateCalulation
+} // end of aggregateCalulation function
 
 module.exports.getUserDashboardCounters = function(req,res){
 
@@ -90,7 +90,6 @@ async.waterfall(
 		}
 		});
 	},
-	
 	
 	function(callback) { //callback start
 	db.close();
