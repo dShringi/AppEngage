@@ -90,7 +90,7 @@ section>header{/*border-bottom:1px solid #dadada;*/ padding:8px;display: inline-
 .event-box span.glyphicon{font-size: 25px;}
 .event-box span span{padding:10px 0 ;}
 
-.inner-grey-box{font-size:45px; color:#333;font-weight:bold;font-family: Proxima-Nova-Bold;}
+.inner-grey-box{font-size:3vw; color:#333;font-weight:bold;font-family: Proxima-Nova-Bold;}
 
 .box-green{color:rgb(96,219,162);}
 .box-aqua{color:rgb(54,204,219); }
@@ -313,3 +313,9 @@ td.tablesorter-pager {
 .pagedisplay input{background-color: #fff;border: 1px solid #ccc;border-radius: 4px;color: #555;padding: 6px 3px;}
 #dateRange i{padding-top: 7px; padding-right: 4px}
 .caret{margin-left: 3px;}
+
+ @media (max-width: 767px) {
+ 
+	.inner-grey-box{font-size: 45px;}
+ 
+ }

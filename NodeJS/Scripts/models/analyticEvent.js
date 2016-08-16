@@ -2,15 +2,15 @@ var Mongoose   = require('mongoose');
 var Schema     = Mongoose.Schema;
 
 const Collection = { 
-                     	"app"            	: "coll_app", 
-                     	"realtime"       	: "coll_realtime", 
-                     	"dashboard"      	: "coll_dashboard", 
-                     	"begin"          	: "coll_begins", 
-                     	"end"            	: "coll_ends", 
-                     	"crash"			: "coll_crashes",
-                     	"activesessions" 	: "coll_activesessions",
-			"user"			: "coll_users",
-			"event"			: "coll_events"		
+                    "app"               : "coll_app", 
+                    "realtime"          : "coll_realtime", 
+                    "dashboard"         : "coll_dashboard", 
+                    "begin"             : "coll_begins", 
+                    "end"               : "coll_ends", 
+                    "crash"             : "coll_crashes",
+                    "activesessions" 	: "coll_activesessions",
+                    "user"              : "coll_users",
+                    "event"             : "coll_events"		
                    };
 
 // DB Schemas
@@ -23,7 +23,7 @@ var appSchema = new Schema({
 
 var realtimeSchema = new Schema({
     _id  : { type: Number, required: true },
-    val  : { type: String }
+    val  : { type: Number }
 },{versionKey:false});
 
 var dashboardSchema = new Schema({
@@ -180,5 +180,6 @@ module.exports = {
   Begin: beginCollection,
   Dashboard: dashboardCollection,
   ActiveSession: activeSessionCollection,
-  User: userCollection    
+  User: userCollection,
+  RealTime: realtimeCollection    
 };
