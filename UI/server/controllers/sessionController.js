@@ -5,7 +5,7 @@ var common 		= require('../../commons/common.js');
 var logger 		= require('../../config/log.js');
 var async       = require('async');
 var _ 			= require('underscore');
-var appTZ 		= config.gmtTimeZone;
+var appTZ 		= config.defaultAppTimeZone;
 
 module.exports.getUserInsights = function(req,res){
 
@@ -19,6 +19,14 @@ var db = mongojs(config.connectionstring+akey);
 async.waterfall(
     [	
 	function(callback){ //callback start
+
+		var application = config.appdetails;
+		_.each(application,function(data){		
+			if(data.app === akey){		
+				appTZ = data.TZ;		
+				return;		
+			}		
+		});		
 
 		startDateWithoutHour=common.getStartDate(startDate,appTZ);  //get start moment date without hour.
 		endDateWithoutHour=common.getStartDate(endDate,appTZ);	  //get end moment date without hour.
@@ -108,6 +116,14 @@ var db = mongojs(config.connectionstring+akey);
 async.waterfall(
     [	
 	function(callback){ //callback start
+
+		var application = config.appdetails;
+		_.each(application,function(data){		
+			if(data.app === akey){		
+				appTZ = data.TZ;		
+				return;		
+			}		
+		});		
 
 		// code started
 		startDateWithoutHour=common.getStartDate(startDate,appTZ);         //get start moment date without hour

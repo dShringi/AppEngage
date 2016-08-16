@@ -5,7 +5,7 @@ var common 		= require('../../commons/common.js');
 var logger 		= require('../../config/log.js');
 var async       = require('async');
 var _ 			= require('underscore');
-var appTZ 		= config.gmtTimeZone;
+var appTZ 		= config.defaultAppTimeZone;
 
 
 module.exports.dashboardRealTime = function(req,res){
@@ -74,6 +74,15 @@ async.waterfall(
     [	
 		
 	function(callback) { //callback start
+
+		var application = config.appdetails;
+		_.each(application,function(data){		
+			if(data.app === akey){		
+				appTZ = data.TZ;		
+				return;		
+			}		
+		});
+
 		//checking device type and assigning into typeListarray
 		switch (typeOfDevice) { 
 			case "A" : 
@@ -86,9 +95,6 @@ async.waterfall(
 			case "T" : 
 				typeListarray[0]="T"; 
 		}
-		callback(null);
-	},	
-	function(callback){ //callback start
 
 		startDateWithoutHour=String(common.getStartDate(startDateParam,appTZ));  		//get start moment date 
 		endDateWithoutHour=String(common.getStartDate(endDateParam,appTZ));			//get end moment date 
@@ -102,10 +108,7 @@ async.waterfall(
 		edyear=endDateWithoutHour.substr(0, 4);										//get end date year
 		 
 		diffDays=common.getDateDiffernce(sdateparam,edateparam);  //to find no of days between two dates
-		callback(null);
-	}, //callback end
-	
-	function(callback){ //callback start
+
 		if(diffDays<=7){ //for weekly fetch
 			var weekFirstDateforStartDate=common.getWeekFirstdateForStartDate(sdateparam);    //find start date of week base on start date
 			var weekFirstDateforEndDate=common.getWeekFirstdateForEndDate(edateparam);		 //find start date of week base on end date
