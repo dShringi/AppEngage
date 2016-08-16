@@ -1,9 +1,9 @@
 var express 		= require('express');
-var app 		= express();
+var app 			= express();
 var cookieParser 	= require('cookie-parser');
 var bodyParser  	= require('body-parser');
-var config		= require('./config/config');
-var logger 		= require('./config/log.js');
+var config			= require('./config/config');
+var logger 			= require('./config/log.js');
 //API Routes Embeding
 var crashController = require('./server/controllers/crashController');
 var dashboardController = require('./server/controllers/dashboardController');

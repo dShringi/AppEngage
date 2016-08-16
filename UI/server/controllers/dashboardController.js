@@ -5,7 +5,7 @@ var common 		= require('../../commons/common.js');
 var logger 		= require('../../config/log.js');
 var async       = require('async');
 var _ 			= require('underscore');
-var appTZ 		= 'Asia/Kolkata';
+var appTZ 		= config.gmtTimeZone;
 
 
 module.exports.dashboardRealTime = function(req,res){
@@ -89,14 +89,7 @@ async.waterfall(
 		callback(null);
 	},	
 	function(callback){ //callback start
-		var application = config.appdetails;
-		_.each(application,function(data){
-			if(data.app === akey){
-				appTZ = data.TZ;
-				return;
-			}
-		});
-	
+
 		startDateWithoutHour=String(common.getStartDate(startDateParam,appTZ));  		//get start moment date 
 		endDateWithoutHour=String(common.getStartDate(endDateParam,appTZ));			//get end moment date 
 		startdateMoment=Number(startDateWithoutHour);

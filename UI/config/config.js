@@ -1,7 +1,7 @@
 //For Development
-//module.exports.port             = 3001;
+module.exports.port             = 3001;
 //For Production
-module.exports.port             = 6000;
+//module.exports.port             = 6000;
 
 module.exports.connectionstring = 'mongodb://localhost/';
 module.exports.appengageConnString	=	'mongodb://localhost/appengage'
@@ -24,6 +24,9 @@ module.exports.searchByModel=[
 {name:'appvarsion',value:'lavn'}, 
 ];
 
+module.exports.defaultAppTimeZone = 'Asia/Kolkata';
+module.exports.gmtTimeZone = 'Atlantic/Azores';
+
 module.exports.appdetails = [
 {app:"test1234",TZ:"America/New_York"},
 {app:"4170b44d6459bba992acaa857ac5b25d7fac6cc1",TZ:"Asia/Kolkata"},
@@ -38,3 +41,8 @@ module.exports.platform=[
 {shortpf:"i",displaypf:"iOS"},
 {shortpf:"w",displaypf:"Windows"}
 ]
+
+module.exports.YYYYMMDDHH = 'YYYYMMDDHH';
+module.exports.YYYYMMDD = 'YYYYMMDD';
+module.exports.HOUR = 'hour';
+module.exports.DAY = 'day';
