@@ -98,7 +98,7 @@ async.waterfall(
 	},//callback end
 	function(callback) { //callback start
 		db.close();
-		return res.json(JSON.parse(response));
+		return res.json(response);
 	}
 ]);
 
@@ -195,7 +195,7 @@ async.waterfall(
 	},//callback end
 	function(callback) { //callback start
 		db.close();
-		return res.json(JSON.parse(response));	
+		return res.json(response);	
 	}
 ]);
 }
