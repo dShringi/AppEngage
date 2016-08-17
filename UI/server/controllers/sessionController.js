@@ -1,5 +1,5 @@
 var mongojs     = require('mongojs');
-var moment 		= require('moment-timezone');
+var moment 		= require('moment');
 var config      = require('../../config/config');
 var common 		= require('../../commons/common.js');
 var logger 		= require('../../config/log.js');
@@ -98,7 +98,7 @@ async.waterfall(
 	},//callback end
 	function(callback) { //callback start
 		db.close();
-		return res.json(JSON.parse(response));
+		return res.json(response);
 	}
 ]);
 
@@ -195,7 +195,7 @@ async.waterfall(
 	},//callback end
 	function(callback) { //callback start
 		db.close();
-		return res.json(JSON.parse(response));	
+		return res.json(response);	
 	}
 ]);
 }
