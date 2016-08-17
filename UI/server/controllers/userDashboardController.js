@@ -15,7 +15,7 @@ var searchParam,grpvalue,finaldetailstr,finalResponce,YearValue,resultObject;
 var searchByArray=[];
 var deviceNumber='"'+0+'"';
 
-function aggregateCalulation(grpParam,resulObjParam,yearParam,callback){ // function to fetch userCountersounters by searchparameter
+function aggregateCalulation(grpParam,resulObjParam,yearParam,callback){ // function to fetch userCountersounter by searchparameter
 	
 		var db = mongojs(config.connectionstring+akey);
 		finaldetailstr="";
