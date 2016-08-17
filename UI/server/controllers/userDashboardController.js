@@ -23,10 +23,7 @@ function aggregateCalulation(grpParam,resulObjParam,yearParam,callback){ // func
 		var startDateVal=Number(startDate);
 		var endDateVal=Number(endDate);
 		var ttsKeyValue=yearParam+'.tts';
-		//console.log("searchParam: " + searchParam);
-		//console.log("grp value:  "+grpParamVal); 
-		//console.log("resulObjParam " + resulObjParam);	
-		
+			
 		db.collection(config.coll_users).aggregate([
 			{ $match: { $and: [ { 'flog': { $gte: startDateVal }, 'llog': { $lte: endDateVal } },resulObjParam ]}},
 			{$unwind: yearParam}, 
@@ -53,8 +50,8 @@ function aggregateCalulation(grpParam,resulObjParam,yearParam,callback){ // func
 					db.close();
 					callback('[]');
 				}
-				}
-				else{
+			}
+				else {
 					logger.error(common.getErrorMessageFrom(err));
 					return;
 				}
@@ -96,7 +93,7 @@ async.waterfall(
 		var sdmonthPart=parseInt(sdmonth),edmonthpart=parseInt(edmonth);
 		var gteval=sdmonthPart+startDateWithoutHour.substr(6, 2),lteval=edmonthpart+endDateWithoutHour.substr(6, 2);
 		var gtevalNumeric=parseInt(gteval),ltevalNumeric=parseInt(lteval);
-		var keyVal='{ "_'+ yyyy +'" : { "$elemMatch": { "_id": { "$gte": '+ gtevalNumeric +' }, "_id": { "$lte": '+ ltevalNumeric +' } } } }';
+		var keyVal='{ "_'+ yyyy +'" : { "$elemMatch":{ "$and" :[ { "_id": { "$gte": '+ gtevalNumeric +' }, "_id": { "$lte": '+ ltevalNumeric +' } }]}} }';
 		//console.log(keyVal);
 		resultObject=JSON.parse(keyVal);
 		
@@ -119,8 +116,8 @@ async.waterfall(
 			YearValue='$_'+yyyy;
 			aggregateCalulation(grpvalue,resultObject,YearValue,function(err, res){
 			if(!err){
-			finalResponce=res;
-			callback(null);
+				finalResponce=res;
+				callback(null);
 			}
 			else {
 				logger.error(common.getErrorMessageFrom(err));
