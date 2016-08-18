@@ -17,11 +17,12 @@ module.exports.logdir	= '/var/log/appengage/UI/logs';
 
 module.exports.searchByModel=[
 {name:'manufacturer',value:'lm'}, 
-{name:'devicetype',value:'ldt'},
+{name:'type',value:'ldt'},
 {name:'model',value:'lmod'},
 {name:'platform',value:'lpf'}, 
 {name:'osversion',value:'losv'}, 
-{name:'appversion',value:'lavn'}, 
+{name:'appversion',value:'lavn'},
+{name:'resolution',value:'lres'}, 
 ];
 
 module.exports.defaultAppTimeZone = 'Asia/Kolkata';

@@ -23,7 +23,7 @@ function aggregateCalulation(grpParam,resulObjParam,yearParam,callback){ // func
 			
 		db.collection(config.coll_users).aggregate([
 			{ $match: { $and: [ { 'flog': { $gte: startDateVal }, 'llog': { $lte: endDateVal } },resulObjParam ]}},
-			{$unwind: yearParam}, 
+			{ $unwind: yearParam}, 
 			{ $group: {_id : grpParamVal ,'users' :  {$sum : 1},'time' : {$sum : ttsKeyValue}}},
 			{ $project: {_id:1,users:1,time:1}}
 			],function(err, result) {
