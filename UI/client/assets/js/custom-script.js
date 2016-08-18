@@ -735,3 +735,136 @@ var sortTable = function(){
       $('table').trigger('pageAndSize', [1, 10]);
     });
 }
+
+//***************************** DEVICE DONUT CHARTS ***********************************
+function plotDonutChart(data, ele, arc, arcOver, pie, svg, width, color){
+	
+	var g = svg.selectAll(".arc")
+						.data(pie(data))
+						.enter().append("g")
+						.attr("class", "arc");
+
+					g.append("path")
+						.attr("d", arc)
+						.attr("data-legend", function (d) { return d.data[ele]; })
+						//.attr("id", function(d) {'tag'+d.data.manufacturer.replace(/\s+/g, '')}) // assign ID
+						.on("mouseenter", function (d) {
+							d3.select(this)
+								.transition()
+								.duration(1000)
+								.attr("class", "shadow")
+								.attr("d", arcOver);
+						})
+						.on("mouseleave", function (d) {
+							d3.select(this)
+								.transition()
+								.duration(1000)
+								.attr("d", arc);
+						})
+						.style("fill", function (d) { return color(d.data[ele]); });
+
+					/*g.append("text")
+						.attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
+						//.attr("dy", ".35em")
+						.on("click", function (d) {
+							//alert("aaa");
+						});*/
+
+					g.append("svg:image")
+						.attr("xlink:href", "assets/img/B.png")
+						.attr("width", 124)
+						.attr("height", 113)
+						.attr("text-anchor", "middle")
+						.attr("x", -1 * 124 / 2)
+						.attr("y", -1 * 113 / 2);
+
+
+					var g1 = svg1.selectAll(".arc")
+						.data(pie1(data))
+						.enter().append("g")
+						.attr("class", "arc");
+
+					g1.append("path")
+						.attr("d", arc)
+						.attr("data-legend", function (d) { return d.data[ele]; })
+						//.attr("id", function(d) {'tag'+d.data.manufacturer.replace(/\s+/g, '')}) // assign ID
+						.on("mouseenter", function (d) {
+							d3.select(this)
+								.attr("class", "shadow")
+								.transition()
+								.duration(1000)
+								.attr("d", arcOver);
+						})
+						.on("mouseleave", function (d) {
+							d3.select(this)
+								.transition()
+								.duration(1000)
+								.attr("d", arc);
+						})
+						.style("fill", function (d) { return color(d.data[ele]); });
+
+					/*g1.append("text")
+						.attr("transform", function (d) { return "translate(" + arc.centroid(d) + ")"; })
+						//.attr("dy", ".35em")
+						.on("mouseover", function (d) {
+							//alert("bbb");
+						});*/
+						//.text(function (d) { return d.data.manufacturer; });
+					g1.append("svg:image")
+						.attr("xlink:href", "assets/img/A.png")
+						.attr("width", 124)
+						.attr("height", 113)
+						.attr("text-anchor", "middle")
+						.attr("x", -1 * 124 / 2)
+						.attr("y", -1 * 113 / 2);
+						
+					switch(ele){
+						case "manufacturer":
+							showDeviceMenufacturerTable(data, 'tbl-device-manufacturers');
+							break;
+						case "osversion":
+							showDeviceOSVersionTable(data, 'tbl-device-os-version');
+							break;
+						case "type":
+							showDeviceTypeTable(data, 'tbl-device-types');
+							break;
+						case "resolution":
+							showDeviceResolutionTable(data, 'tbl-device-resolutions');
+							break;
+						case "platform":
+							showDevicePlatformTable(data, 'tbl-device-platforms');
+							break;
+						case "model":
+							showDeviceModelTable(data, 'tbl-device-models');
+							break;
+						case "appversion":
+							showDeviceAppVersionTable(data, 'tbl-device-app-version');
+							break;
+					
+					}
+
+					
+
+					var legend = svg.append("g")
+						.attr("class", "legend")
+						.attr("transform", "translate(120,-" + legendPosY + ")")
+						.call(d3.legend);
+
+					setTimeout(function () {
+						legend
+							.attr("data-style-padding", 10)
+							.call(d3.legend);
+					}, 1000);
+
+					var legend1 = svg1.append("g")
+						.attr("class", "legend")
+						.attr("transform", "translate(120,-" + legendPosY + ")")
+						.call(d3.legend);
+
+					setTimeout(function () {
+						legend
+							.attr("data-style-padding", 10)
+							.call(d3.legend);
+					}, 1000);
+
+}

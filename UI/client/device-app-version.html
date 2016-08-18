@@ -102,109 +102,30 @@
             var arc = d3.svg.arc().innerRadius(radius - 20).outerRadius(radius - 60);
             var arcOver = d3.svg.arc().outerRadius(radius - 18).innerRadius(radius - 62);
 
-            var pie = d3.layout.pie().sort(null).value(function (d) { return d.time; });
+            var pie = d3.layout.pie().sort(null).value(function (d) { return parseInt(d.time); });
+			var pie1 = d3.layout.pie().sort(null).value(function (d) { return parseInt(d.users); });
 
 			var svg = getDonutSVG(".chart-time-spent", width, height),
 			svg1 = getDonutSVG(".chart-total-users", width, height);
             
-            var pie1 = d3.layout.pie().sort(null).value(function (d) { return d.users; });
-            var DevAppVerAPI = "assets/json/data-devices-device-app-version-tot-users-n-time-spent.json";
-			var loadChart = function(sd, ed, appKey = 'MastApp'){
-				d3.json(DevAppVerAPI + "?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
+            
+			var API = APIBaseURL+"getDeviceCounters";
+			
+			var loadChart = function(startDate, endDate, appKey, type){
+			console.log(API + "?searchBy=appversion&=devicetype&sd="+startDate+"&ed="+endDate+"&type="+type+"&akey="+appKey);
+				d3.json(API + "?searchBy=appversion&=devicetype&sd="+startDate+"&ed="+endDate+"&type="+type+"&akey="+appKey, function (error, data) {
 					if (error) { throw error; }
-
-					var g = svg.selectAll(".arc")
-						.data(pie(data))
-						.enter().append("g")
-						.attr("class", "arc");
-
-					g.append("path")
-						.attr("d", arc)
-						.attr("data-legend",function(d) { return d.data.app})
-						.attr("id", function(d) {'tag'+d.data.app.replace(/\s+/g, '')}) // assign ID
-						.on("mouseenter", function(d){
-							d3.select(this)
-								.transition()
-								.duration(1000)
-								.attr("class","shadow")
-								.attr("d", arcOver);
-						})
-						.on("mouseleave", function(d){
-							d3.select(this)
-								.transition()
-								.duration(1000)
-								.attr("d", arc);
-						})
-						.style("fill", function (d) { return color(d.data.app); });
-
-					g.append("svg:image")
-						.attr("xlink:href", "assets/img/B.png")
-						.attr("width",124)
-						.attr("height",113)
-						.attr("text-anchor", "middle")
-						.attr("x",-1*124/2)
-						.attr("y",-1*113/2);
+					console.log(data);
+					data = JSON.parse(data);
+					console.log(data);
 					
-					var g1 = svg1.selectAll(".arc")
-						.data(pie1(data))
-						.enter().append("g")
-						.attr("class", "arc");
-
-					g1.append("path")
-						.attr("d", arc)
-						.attr("data-legend",function(d) { return d.data.app})
-						.attr("id", function(d) {'tag'+d.data.app.replace(/\s+/g, '')}) // assign ID
-						.on("mouseenter", function(d){
-							d3.select(this)
-								.attr("class","shadow")
-								.transition()
-								.duration(1000)
-								.attr("d", arcOver);
-						})
-						.on("mouseleave", function(d){
-							d3.select(this)
-								.transition()
-								.duration(1000)
-								.attr("d", arc);
-						})
-						.style("fill", function (d) { return color(d.data.app); });
-
-					g1.append("svg:image")
-						.attr("xlink:href", "assets/img/A.png")
-						.attr("width",124)
-						.attr("height",113)
-						.attr("text-anchor", "middle")
-						.attr("x",-1*124/2)
-						.attr("y",-1*130/2);
-
-					showDeviceAppVersionTable(data, 'tbl-device-app-version');
-
-					legend = svg.append("g")
-						.attr("class","legend")
-						.attr("transform","translate(120,-" + legendPosY + ")")
-						//.style("font-size","12px")
-						.call(d3.legend)
-
-					setTimeout(function() { 
-						legend
-						  .attr("data-style-padding",10)
-						  .call(d3.legend)
-					},1000);
-
-					legend1 = svg1.append("g")
-						.attr("class","legend")
-						.attr("transform","translate(120,-" + legendPosY + ")")
-						.call(d3.legend)
-
-					setTimeout(function() { 
-						legend
-						  .attr("data-style-padding",10)
-						  .call(d3.legend)
-					},1000)
-
+					plotDonutChart(data, "appversion", arc, arcOver, pie, svg, width, color);
+					plotDonutChart(data, "appversion", arc, arcOver, pie1, svg1, width, color);
+					
 				});
-			};
-        </script>
+
+			}; 
+		</script>
         
     </body>
     </html>
