@@ -45,21 +45,28 @@ module.exports.dashboardRealTime = function(req,res){
 				db.collection(config.coll_realtime).find(
 				{ '_id': {$gte: parseInt(startdate), $lte: parseInt(enddate)}}
 				,function(err,result){
-					for(i=0;i<result.length;i++){
-						outArray[result[i]._id] = {
-							totalUsers : result[i].val
+					if(!err){
+						for(i=0;i<result.length;i++){
+							outArray[result[i]._id] = {
+								totalUsers : result[i].val
+							}
 						}
-					}			
+
+						for(i=startdate;i<=enddate;i=i+10){
+
+							response+='{"Time":'+i+',"DeviceCount":'+(parseInt(outArray[i].totalUsers)+parseInt(totalUsers))+'},'
+							totalUsers = (parseInt(totalUsers) + parseInt(outArray[i].totalUsers));
+						}
+
+						response = response.substr(0,response.length-1);
+						db.close();
+						return res.json('['+response+']');
+					}else{
+						db.close();
+						logger.error(common.getErrorMessageFrom(err));
+						return res.json('[]');						
+					}
 				});		
-
-				for(i=startdate;i<=enddate;i=i+10){
-					response+='{"Time":'+i+',"DeviceCount":'+(parseInt(outArray[i].totalUsers)+parseInt(totalUsers))+'},'
-					totalUsers = totalUsers + outArray[i].totalUsers;
-				}
-
-				response = response.substr(0,response.length-1);
-				db.close();
-				return res.json('['+response+']');
 			}else{
 				db.close();
 				logger.error(common.getErrorMessageFrom(err));
