@@ -21,7 +21,7 @@ module.exports.searchByModel=[
 {name:'model',value:'lmod'},
 {name:'platform',value:'lpf'}, 
 {name:'osversion',value:'losv'}, 
-{name:'appvarsion',value:'lavn'}, 
+{name:'appversion',value:'lavn'}, 
 ];
 
 module.exports.defaultAppTimeZone = 'Asia/Kolkata';

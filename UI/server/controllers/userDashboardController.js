@@ -9,7 +9,7 @@ var appTZ 		= config.defaultAppTimeZone;
 var startDate ,endDate ,akey ,searchBy;
 var db = mongojs(config.connectionstring+akey);
 var startDateWithoutHour,endDateWithoutHour,sdmonth,edmonth,sdyear,edyear,yyyy;
-var searchParam;
+var searchParam='Notmatch';
 
 function aggregateCalulation(grpParam,resulObjParam,yearParam,callback){ // function to fetch userCountersounter by searchparameter
 	
@@ -99,10 +99,6 @@ async.waterfall(
 			
 			if (searchByArray[i].name==searchBy){
 				searchParam=searchByArray[i].value;  
-				//break;
-			} else { 
-				searchParam= 'Notmatch';
-
 			}
 		}
 			callback(null);
