@@ -120,6 +120,8 @@
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
                 function loadChart(startDate, endDate, appKey){
+					svg.selectAll("*").remove();
+					svg1.selectAll("*").remove();
 					// Get the data for total session
 					console.log(apiURL + "?sd="+startDate+"&ed="+endDate+"&akey="+appKey);
 					d3.json( apiURL + "?sd="+startDate+"&ed="+endDate+"&akey="+appKey, function(error, data)  {

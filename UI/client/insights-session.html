@@ -12,8 +12,9 @@
         <!-- Latest compiled and minified JavaScript -->
         <script src="assets/js/bootstrap.min.js"></script>
         <script src="assets/js/d3.v3.min.js"></script>
+		<script type="text/javascript" src="assets/js/daterangepicker.js"></script>
         <script src="assets/js/custom-script.js"></script>
-        <script type="text/javascript" src="assets/js/daterangepicker.js"></script>
+        
         <link rel="stylesheet" type="text/css" href="assets/css/daterangepicker.css" />
 		<link rel="stylesheet" href="assets/css/bootstrap-select.min.css">
 		<script src="assets/js/bootstrap-select.min.js"></script>
@@ -60,6 +61,7 @@
         <div class="overlay"></div>
         <script>
 		
+				
 				var apiURL = APIBaseURL+"getSessionInsights";
 				
                 // Set the dimensions of the canvas / graph
@@ -98,7 +100,8 @@
                     .attr("class", "map-tooltip shadow")              // apply the 'tooltip' class
                     .style("opacity", 0);                  // set the opacity to nil
 
-                // Adds the svg canvas
+                
+				// Adds the svg canvas
                 var	svg = d3.select("#line-chart-container-1")
                     .append("svg")
 					.attr("class","chart")
@@ -119,9 +122,12 @@
 					.attr('perserveAspectRatio', 'xMinYMid')
                     .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+					
 
 			function loadChart(startDate, endDate, appKey){
-                // Get the data for total session
+				svg.selectAll("*").remove();
+                svg1.selectAll("*").remove();
+				// Get the data for total session
 				console.log(apiURL + "?sd="+startDate+"&ed="+endDate+"&akey="+appKey);
                 d3.json( apiURL + "?sd="+startDate+"&ed="+endDate+"&akey="+appKey, function(error, data) {
                     console.log(data);

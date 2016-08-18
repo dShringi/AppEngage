@@ -411,14 +411,6 @@ var showCrashesDonutChart = function(data,svg,pie,parentdiv,maxcrash){
 			tooltip.transition().duration(200).style("opacity", 1);	
 			tooltip.html(d.data.name +" : "+d.data.crash).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
 		})
-		.on("mousedown", function(d){
-			$("."+parentdiv+" text.inside").html(d.data.crash);
-			$("."+parentdiv+" text.inside-text").html(d.data.name);
-		})
-		.on("mouseup", function(d){
-			$("."+parentdiv+" text.inside").text(maxcrash);
-			$("."+parentdiv+" text.inside-text").text(maxcrashName);
-		})
 		.on("mouseleave", function (d) {
 			d3.select(this)
 				.transition()
@@ -502,9 +494,7 @@ function plotLineChart(data, svg, div,timestamp=false, ele, valueline, x, y, wid
 	// Scale the range of the data
 	x.domain(d3.extent(data, function(d) { return new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2)); }));
 	y.domain([0, d3.max(data, function(d) { return parseInt(d[ele]); })]);
-	console.log(d3.max(data, function(d) { return parseInt(d[ele]); }));
 	//return new Date((d.date).substr(0,4)+"/"+(d.date).substr(4,2)+"/"+(d.date).substr(6,2));
-	
 
 	svg.append("path")		
 		.attr("class", "line")
@@ -529,7 +519,7 @@ function plotLineChart(data, svg, div,timestamp=false, ele, valueline, x, y, wid
 				cnt = d[ele];
 			}
 			div.transition().duration(200).style("opacity", .9);	
-			div	.html(cnt).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
+			div.html(cnt).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
 		});
 	drawAxes(svg, x, y, width, height, xAxis, yAxis);
 }
