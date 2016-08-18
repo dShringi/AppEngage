@@ -9,6 +9,7 @@ var common = require('../commons/common.js');
 var _ = require('underscore');
 var akey = process.argv[2];
 var appTZ = config.app.defaultTZ;
+var geoip = require('geoip-lite');
 
 if(akey==undefined||akey==null){
     throw new Error("Please provide appropriate application key. Invalid applicaiton key: "+ akey);
@@ -20,6 +21,7 @@ var application = config.app.details;
 _.each(application,function(data){
 	if(data.app === akey){
 		appTZ = data.TZ;
+		return;
 	}
 });
 
@@ -61,6 +63,23 @@ consumer.on('message', function(message) {
 	if(data.val.rtc > currDate){
 		data.val.rtc = currDate;
 	}
+
+	if(data.type === Collection["begin"]){
+		var geo = geoip.lookup(data.val.ipa);
+		if(geo.city == undefined || geo.city == null) {
+			data.val.city = 'Unknown';
+			data.val.ctry = 'Unknown' 
+			data.val.dlat = '0';
+			data.val.dlog = '0';
+		}
+		else {
+			data.val.city = geo.city;
+			data.val.ctry = geo.country;
+			data.val.dlat = geo.ll[0];
+			data.val.dlog = geo.ll[1];
+		}
+
+	};
 
 	// Save Begin, Crash End & Event data
 	event = EventFactory.getEvent(data);
@@ -153,13 +172,7 @@ consumer.on('message', function(message) {
 			updateDashboard(dashboardHourData,data.type,1,0,function(err){
 				if(err) logError(err);
 				return;			
-			});
-
-			//update user collection for timspent
-			updateUsers(data,dashboardDayData.key,function(err,data){
-				if(err) log(err);
-				return;
-			});			
+			});	
 		break;
 
 		case Collection["end"]:
@@ -305,7 +318,7 @@ function updateUsers(req,dateKey,callback){
 					}else{
 						//This path executes if the user alredy exists
 						//Updating the latest values of the existing user.
-						Model.User.findByIdAndUpdate(req.val.did,{$set:{'lavn':req.val.avn,'losv':req.val.osv,'llog':req.val.rtc},$inc:{'ts':1}},function(err,doc){
+						Model.User.findByIdAndUpdate(req.val.did,{$set:{'lavn':req.val.avn,'losv':req.val.osv,'llog':req.val.rtc,'lres':req.val.res,'lcty':req.val.city,'lctry':req.val.ctry,'llat':req.val.dlat,'llong':req.val.dlog},$inc:{'ts':1}},function(err,doc){
 							if(err){
 								logger.error(common.getErrorMessageFrom(err));
 								return;

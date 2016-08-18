@@ -72,6 +72,11 @@ var userSchema = new Schema({
 	lci	:	{type:	String},
 	lcn	:	{type:	String},
 	lc	:	{type:	String},
+    lres:   {type:  String},
+    lcty:   {type:  String},
+    lctry:  {type:  String},
+    llat:   {type:  String},    
+    llong:  {type:  String},
 	flog	:	{type:	Number},
 	llog	:	{type:	Number},
 	ts	:	{type:	Number},
@@ -136,37 +141,42 @@ function eventFactory(){
                 });                
             case Collection["crash"]:
                 return new crashCollection({
-			rtr : _event.val.rtc, 
-                    	val : _event.val
+                    rtr : _event.val.rtc, 
+                    val : _event.val
                 });
             case Collection["event"]:
                 return new eventCollection({
-                        rtr : _event.val.rtc,
-                        val : _event.val
+                    rtr : _event.val.rtc,
+                    val : _event.val
                 });
             case Collection["activesessions"]:
                 return new activeSessionCollection({
                     _id : _event.val.sid,
-		    did : _event.val.did,
+                    did : _event.val.did,
                     sst : _event.val.rtc,
                     lat : _event.val.rtc,
                     dt  : _event.val.dt
                 });
-		case Collection["user"]:
-			return new userCollection({
-				_id	: _event.val.did,
-				lm	: _event.val.mnu,
-				ldt	: _event.val.dt,
-				lmod	: _event.val.mod,
-				lpf	: _event.val.pf,
-				losv	: _event.val.osv,
-				lavn	: _event.val.avn,
-				lc	: _event.val.c,	
-				flog	: _event.val.rtc,
-				llog	: _event.val.rtc,
-				ts	: 1,
-				tts	: 0 	
-			});
+            case Collection["user"]:
+                return new userCollection({
+				    _id	: _event.val.did,
+				    lm	: _event.val.mnu,
+				    ldt	: _event.val.dt,
+				    lmod	: _event.val.mod,
+                    lpf	: _event.val.pf,
+				    losv	: _event.val.osv,
+				    lavn	: _event.val.avn,
+				    lc	: _event.val.c,
+                    lres: _event.val.res,      
+                    lcty:	_event.val.city,
+                    lctry:   _event.val.ctry,   
+                    llat:   _event.val.dlat,
+                    llong:   _event.val.dlog,                                        
+				    flog	: _event.val.rtc,
+				    llog	: _event.val.rtc,
+				    ts	: 1,
+				    tts	: 0 	
+                });
             default:
                 logger.error("Invalid event type: "+_event.type)
                 return null;

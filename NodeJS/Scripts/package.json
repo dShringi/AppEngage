@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "geoip-lite": "^1.1.8",
     "hapi": "^13.4.1",
     "kafka-node": "^0.3.3",
     "maxmind": "^1.1.0",
