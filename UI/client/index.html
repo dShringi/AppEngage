@@ -157,6 +157,7 @@
 			//var apiURL = "assets/json/data1.json";
             var apiURL = APIBaseURL+"getDashBoardCounters";
 			function loadChart(startDate, endDate, appKey, type){
+			console.log(apiURL + "?sd="+startDate+"&ed="+endDate+"&type="+type+"&akey="+appKey);
 				d3.json( apiURL + "?sd="+startDate+"&ed="+endDate+"&type="+type+"&akey="+appKey, function( error, data ) {
                     //console.log(JSON.stringify(error));
                     data = JSON.parse(data);

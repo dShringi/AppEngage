@@ -59,6 +59,9 @@
         </aside>
         <div class="overlay"></div>
         <script>
+		
+				var apiURL = APIBaseURL+"getSessionInsights";
+				
                 // Set the dimensions of the canvas / graph
                 var	margin = {top: 30, right: 50, bottom: 30, left: 50}, divWidth = $("#line-chart-container-1").width(), width = (divWidth - 30) - margin.left - margin.right,
                     height = 250 - margin.top - margin.bottom;
@@ -66,22 +69,23 @@
                 // Parse the date / time
                 var	parseDate = d3.time.format("%d-%b-%y").parse;
                 var formatTime = d3.time.format("%e %B");// Format tooltip date / time
-
+				
                 // Set the ranges
                 var	x = d3.time.scale().range([0, width]);
                 var	y = d3.scale.linear().range([height, 0]);
+				y.clamp(true);
 
                 // Define the line
                 var	valueline = d3.svg.line()
 					//.interpolate("basis")
-                    .x(function(d) { return x(d.date); })
-                    .y(function(d) { return y(d.count); });
+                    .x(function(d) { return x(new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2))); })
+                    .y(function(d) { return y(parseInt(d.tse)); });
                 
                 // Define the line
                 var	valueline1 = d3.svg.line()
 					//.interpolate("basis")
-                    .x(function(d) { return x(d.date); })
-                    .y(function(d) { return y(d.totalTime); });
+                    .x(function(d) { return x(new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2))); })
+                    .y(function(d) { return y(parseInt(d.tts)); });
 
                 // Define 'div' for tooltips
                 var div = d3.select("body")
@@ -116,16 +120,16 @@
                     .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-			function loadChart(sd, ed, appKey){
+			function loadChart(startDate, endDate, appKey){
                 // Get the data for total session
-                d3.json("assets/json/data-insight-sessions.json", function(error, data) {
-                    //alert(data);
-                    data.forEach(function(d) {
-                        d.date = parseDate(d.date);
-                    });
-                    plotLineChart(data,svg, div, false, "count", valueline, x, y, width, height);
+				console.log(apiURL + "?sd="+startDate+"&ed="+endDate+"&akey="+appKey);
+                d3.json( apiURL + "?sd="+startDate+"&ed="+endDate+"&akey="+appKey, function(error, data) {
+                    console.log(data);
+					data = JSON.parse(data);
+					
+                    plotLineChart(data,svg, div, false, "tse", valueline, x, y, width, height);
                     
-                    plotLineChart(data,svg1, div1, true, "totalTime", valueline1, x, y, width, height);
+                    plotLineChart(data,svg1, div1, true, "tts", valueline1, x, y, width, height);
                     
                 });
 			}

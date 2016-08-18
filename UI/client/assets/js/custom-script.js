@@ -357,7 +357,6 @@ var showTotalCrashesChart = function(data,svg,pie){
 		.data(pie(data))
 		.enter().append("g")
 		.attr("class", "arc");
-
 	g.append("path")
 		.attr("d", arc)
 		.style("fill", function (d) { return color(d.data.TotalCrashes); });
@@ -382,6 +381,20 @@ var showCrashesDonutChart = function(data,svg,pie,parentdiv,maxcrash){
 		.enter().append("g")
 		.attr("class", "arc");
 
+	var maxcrashName;
+	
+	for(var i = 0; i<data.length; i++){
+		if(data[i].crash === maxcrash){
+			var obj = data[i];
+			console.log(obj);
+			for(var j in obj){
+				console.log(obj.name);
+				maxcrashName = obj.name;
+			}
+		}
+	
+	}
+
 	g.append("path")
 		.attr("d", arc)
 		.attr("data-legend", function (d) {return d.data.manufacturer; })
@@ -393,14 +406,18 @@ var showCrashesDonutChart = function(data,svg,pie,parentdiv,maxcrash){
 				.attr("class", "shadow")
 				.attr("d", arcOver);
 				$("."+parentdiv+" text.inside").html(d.data.crash);
+				$("."+parentdiv+" text.inside-text").html(d.data.name);
+				console.log(d.data);
 			tooltip.transition().duration(200).style("opacity", 1);	
 			tooltip.html(d.data.name +" : "+d.data.crash).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
 		})
 		.on("mousedown", function(d){
 			$("."+parentdiv+" text.inside").html(d.data.crash);
+			$("."+parentdiv+" text.inside-text").html(d.data.name);
 		})
 		.on("mouseup", function(d){
 			$("."+parentdiv+" text.inside").text(maxcrash);
+			$("."+parentdiv+" text.inside-text").text(maxcrashName);
 		})
 		.on("mouseleave", function (d) {
 			d3.select(this)
@@ -408,6 +425,7 @@ var showCrashesDonutChart = function(data,svg,pie,parentdiv,maxcrash){
 				.duration(1000)
 				.attr("d", arc);
 				$("."+parentdiv+" text.inside").html(maxcrash);
+				$("."+parentdiv+" text.inside-text").html(maxcrashName);
 			tooltip.transition().duration(200).style("opacity", 0);
 		})
 		.style("fill", function (d) { return color(d.data.name); });
@@ -418,6 +436,17 @@ var showCrashesDonutChart = function(data,svg,pie,parentdiv,maxcrash){
 		.attr("class", "inside")
 		.attr("fill", "#616161")
 		.text(maxcrash)
+		.on("click", function (d) {
+			//alert("aaa");
+		});
+		
+	g.append("text")
+		.attr("dy", "2.7em")
+		.style("text-anchor", "middle")
+		.style("font-size", "14px")
+		.attr("class", "inside-text")
+		.attr("fill", "#616161")
+		.text(maxcrashName)
 		.on("click", function (d) {
 			//alert("aaa");
 		});
@@ -471,8 +500,11 @@ var sec2ISO = function(SECONDS){
 function plotLineChart(data, svg, div,timestamp=false, ele, valueline, x, y, width, height, xAxis="", yAxis = ""){
 	//console.log(typeof xAxis+" :: "+typeof yAxis);
 	// Scale the range of the data
-	x.domain(d3.extent(data, function(d) { return d.date; }));
-	y.domain([0, d3.max(data, function(d) { return d[ele]; })]);
+	x.domain(d3.extent(data, function(d) { return new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2)); }));
+	y.domain([0, d3.max(data, function(d) { return parseInt(d[ele]); })]);
+	console.log(d3.max(data, function(d) { return parseInt(d[ele]); }));
+	//return new Date((d.date).substr(0,4)+"/"+(d.date).substr(4,2)+"/"+(d.date).substr(6,2));
+	
 
 	svg.append("path")		
 		.attr("class", "line")
@@ -486,8 +518,8 @@ function plotLineChart(data, svg, div,timestamp=false, ele, valueline, x, y, wid
 		.attr("stroke", "#7ABEE7")
 		.attr("fill", "white")
 		.attr("stroke-width", "2px")
-		.attr("cx", function(d) { return x(d.date); })		 
-		.attr("cy", function(d) { return y(d[ele]); })
+		.attr("cx", function(d) { return x(new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2))); })		 
+		.attr("cy", function(d) { return y(parseInt(d[ele])); })
 		// Tooltip stuff after this
 		/*.on("mouseleave", function(d) {div.transition().duration(200).style("opacity", 0);})*/
 		.on("mouseenter", function(d) {
@@ -509,9 +541,9 @@ function drawAxes(svg, x, y, width, height, xAxis, yAxis){
 		xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5).tickFormat(d3.time.format("%b %d"));
 	}
 	if(typeof yAxis === "string"){
-		yAxis = d3.svg.axis().scale(y).orient("left").ticks(5)
+		yAxis = d3.svg.axis().scale(y).orient("left").ticks(5);
 	}
-	console.log(typeof xAxis+" :: "+typeof yAxis);
+	//console.log(typeof xAxis+" :: "+typeof yAxis);
 	// Add the X Axis
 	svg.append("g")	
 		.attr("class", "x axis")
