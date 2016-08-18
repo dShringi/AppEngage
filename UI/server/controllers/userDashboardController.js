@@ -1,5 +1,4 @@
 var mongojs     = require('mongojs');
-var moment 		= require('moment-timezone');
 var config      = require('../../config/config.js');
 var logger 		= require('../../config/log.js');
 var common 		= require('../../commons/common.js');
@@ -9,20 +8,18 @@ var _ 			= require('underscore');
 var appTZ 		= config.defaultAppTimeZone;
 var startDate ,endDate ,akey ,searchBy;
 var db = mongojs(config.connectionstring+akey);
-var resultstring=[],resultstr="";
 var startDateWithoutHour,endDateWithoutHour,sdmonth,edmonth,sdyear,edyear,yyyy;
-var searchParam,grpvalue,finaldetailstr,finalResponce,YearValue,resultObject;
-var searchByArray=[];
-var deviceNumber='"'+0+'"';
+var searchParam;
 
 function aggregateCalulation(grpParam,resulObjParam,yearParam,callback){ // function to fetch userCountersounter by searchparameter
 	
 		var db = mongojs(config.connectionstring+akey);
-		finaldetailstr="";
+		var finaldetailstr="";
 		var grpParamVal= grpParam;
 		var startDateVal=Number(startDate);
 		var endDateVal=Number(endDate);
 		var ttsKeyValue=yearParam+'.tts';
+		var resultstring=[],resultstr="";
 			
 		db.collection(config.coll_users).aggregate([
 			{ $match: { $and: [ { 'flog': { $gte: startDateVal }, 'llog': { $lte: endDateVal } },resulObjParam ]}},
@@ -30,8 +27,6 @@ function aggregateCalulation(grpParam,resulObjParam,yearParam,callback){ // func
 			{ $group: {_id : grpParamVal ,'users' :  {$sum : 1},'time' : {$sum : ttsKeyValue}}},
 			{ $project: {_id:1,users:1,time:1}}
 			],function(err, result) {
-			
-			
 			
 			if(!err){
 				
@@ -48,7 +43,7 @@ function aggregateCalulation(grpParam,resulObjParam,yearParam,callback){ // func
 					callback(err,finaldetailstr);
 				}else {
 					db.close();
-					callback('[]');
+					callback(false,'[]');
 				}
 			}
 				else {
@@ -67,6 +62,7 @@ module.exports.getUserDashboardCounters = function(req,res){
 var db = mongojs(config.connectionstring+akey);
 startDate = req.query["sd"],endDate = req.query["ed"],akey =req.query["akey"],searchBy=req.query["searchBy"];
 var searchByArray=config.searchByModel;
+var finalResponce="",grpvalue,YearValue,resultObject;
 
 async.waterfall(
     
@@ -81,8 +77,7 @@ async.waterfall(
 				appTZ = data.TZ;
 				return;
 			}
-	});
-	
+		});
 	
 		startDateWithoutHour=String(common.getStartDate(startDate,appTZ));  				//get start date after timezone
 		endDateWithoutHour=String(common.getStartDate(endDate,appTZ));						//get start date after timezone
@@ -94,7 +89,6 @@ async.waterfall(
 		var gteval=sdmonthPart+startDateWithoutHour.substr(6, 2),lteval=edmonthpart+endDateWithoutHour.substr(6, 2);
 		var gtevalNumeric=parseInt(gteval),ltevalNumeric=parseInt(lteval);
 		var keyVal='{ "_'+ yyyy +'" : { "$elemMatch":{ "$and" :[ { "_id": { "$gte": '+ gtevalNumeric +' }, "_id": { "$lte": '+ ltevalNumeric +' } }]}} }';
-		//console.log(keyVal);
 		resultObject=JSON.parse(keyVal);
 		
 		callback(null);
@@ -103,14 +97,19 @@ async.waterfall(
 	 function(callback) { //callback start
 		for(i=0;i<searchByArray.length;i++){
 			
-			if (searchByArray[i].name==searchBy){ searchParam=searchByArray[i].value;  break;} else { searchParam= 'Notmatch'; }
+			if (searchByArray[i].name==searchBy){
+				searchParam=searchByArray[i].value;  
+				//break;
+			} else { 
+				searchParam= 'Notmatch';
+
+			}
 		}
 			callback(null);
 	},
 	
 	
 	 function(callback) { //callback start
-			//console.log('Aggregate');
 			finalResponce="";
 			grpvalue='$'+searchParam;
 			YearValue='$_'+yyyy;

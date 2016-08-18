@@ -14,7 +14,6 @@ var sessionController = require('./server/controllers/sessionController');
 app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser()); // get information from html forms
 app.get('/', function (req, res) {
-	console.log(__dirname+'/client/index.html');	
 	res.sendFile(__dirname + '/client/index.html');
 });
 
@@ -24,7 +23,7 @@ app.get('/appengage/getDashBoardCounters', dashboardController.dashboardCounters
 app.get('/appengage/getDashBoardRealTime',dashboardController.dashboardRealTime);
 app.get('/appengage/getUserInsights',sessionController.getUserInsights);
 app.get('/appengage/getSessionInsights',sessionController.getSessionInsights);
-app.get('/appengage/getUserDashboardCounters',userDashboardController.getUserDashboardCounters);
+app.get('/appengage/getDeviceCounters',userDashboardController.getUserDashboardCounters);
 app.get('/appengage/getUserValidated',userValidationController.validateUser);
 
 var server = app.listen(config.port, function () {
