@@ -8,7 +8,7 @@ module.exports.appengageConnString	=	'mongodb://localhost/appengage'
 
 module.exports.coll_crashes			= 	'coll_crashes';
 module.exports.coll_dashboard		= 	'coll_dashboard';
-module.exports.coll_realtime		= 	'coll_realtime';
+module.exports.coll_realtime		= 	'coll_realtimes';
 module.exports.coll_users 			= 	'coll_users';
 module.exports.coll_activesessions	= 	'coll_activesessions';
 module.exports.coll_appengageusers	=	'coll_users';

@@ -1,5 +1,4 @@
 var mongojs     = require('mongojs');
-var moment 		= require('moment-timezone');
 var config      = require('../../config/config');
 var common 		= require('../../commons/common.js');
 var logger 		= require('../../config/log.js');
@@ -10,53 +9,64 @@ var appTZ 		= config.defaultAppTimeZone;
 
 module.exports.dashboardRealTime = function(req,res){
 
-var startdate = req.query["sd"],enddate  = req.query["ed"],akey =req.query["akey"],response="";
-//Finding the extra seconds above rounding to 0.
-startdate = startdate - startdate%10;
-enddate = enddate - enddate%10;
-var db = mongojs(config.connectionstring+akey);
-if(startdate == enddate){
-	db.collection(config.coll_activesessions).count(function(err,result){
-		if(!err){
-			db.close();
-			return res.json('[{"Time":'+startdate+',"DeviceCount":'+result+'}]');
-		}else{
-		//TODO Error Logging mechanism
-			db.close();
-			console.log('Some Error Occured');
-		}
-	});
-}else{
-	db.collection(config.coll_realtime).find(
-	{ '_id': {$gte: parseInt(startdate), $lte: parseInt(enddate)}}
-	,function(err,result){
-		if(!err){
-			if(result.length==0){
+	var startdate = req.query["sd"],enddate  = req.query["ed"],akey =req.query["akey"],response="";
+	//Finding the extra seconds above rounding to 0.
+	startdate = parseInt(startdate - startdate%10);
+	enddate = parseInt(enddate - enddate%10);
+	var db = mongojs(config.connectionstring+akey);
+	if(startdate == enddate){
+		db.collection(config.coll_activesessions).count(function(err,result){
+			if(!err){
 				db.close();
-				for(i=0;i<30;i++){
-					response+='{"Time":'+startdate+',"DeviceCount":0},';
-					startdate = startdate + 10;
+				return res.json('[{"Time":'+startdate+',"DeviceCount":'+result+'}]');
+			}else{
+				db.close();
+				logger.error(common.getErrorMessageFrom(err));
+			}
+		});
+	}else{
+		var totalUsers=0,outArray = [];
+
+		db.collection(config.coll_realtime).aggregate(
+		{ $match:{_id:{$lt:startdate}}},
+		{ $group:{_id:null,totalUsers:{$sum:"$val"}}}
+		,function(err,result){
+			if(!err){
+				if(result.length != 0){	
+					totalUsers=result[0].totalUsers;
 				}
+
+				for(i=startdate;i<=enddate;i=i+10){
+					outArray[i] = {
+						totalUsers : 0	
+					}	
+				}
+
+				db.collection(config.coll_realtime).find(
+				{ '_id': {$gte: parseInt(startdate), $lte: parseInt(enddate)}}
+				,function(err,result){
+					for(i=0;i<result.length;i++){
+						outArray[result[i]._id] = {
+							totalUsers : result[i].val
+						}
+					}			
+				});		
+
+				for(i=startdate;i<=enddate;i=i+10){
+					response+='{"Time":'+i+',"DeviceCount":'+(parseInt(outArray[i].totalUsers)+parseInt(totalUsers))+'},'
+					totalUsers = totalUsers + outArray[i].totalUsers;
+				}
+
 				response = response.substr(0,response.length-1);
+				db.close();
 				return res.json('['+response+']');
 			}else{
 				db.close();
-				for(i=0;i<result.length;i++){
-					response+='{"Time":'+result[i]._id+',"DeviceCount":'+result[i].val+'},'	
-				}
-				response = response.substr(0,response.length-1);
-				return res.json('['+response+']');
+				logger.error(common.getErrorMessageFrom(err));
+				return res.json('[]');
 			}
-		}else{
-                //TODO Error Logging mechanism
-                console.log('Some Error Occured');
-		}
-		console.log(result)
-		console.log(err)
-		db.close();
-		return res.json(result);	
-	});
-}
+		});
+	}
 };
 
 module.exports.dashboardCounters = function(req,res){
@@ -116,7 +126,7 @@ async.waterfall(
 			db.collection(config.coll_dashboard).count({$and: [{ '_id.key': { $gte: parseInt(startdateMoment), $lte: parseInt(endDateMoment) }},{ "_id.ty": "W"}]},function(err, result) {
 				if(!err){
 					weeklyCount=result;		
-					console.log("weekly count: "+ weeklyCount);
+					//console.log("weekly count: "+ weeklyCount);
 						if (weeklyCount>=1 && weekFirstDateforStartDate==weekFirstDateforEndDate){type="W";} else {type="D";}
 							//console.log("type value: " + type);
 							callback(null);
@@ -158,7 +168,7 @@ async.waterfall(
 			var resultObject=JSON.parse(keyVal);			
 			db.collection(config.coll_users).count(resultObject,function(err,res){
 			distinctUsers=res;
-			console.log(distinctUsers);
+			//console.log(distinctUsers);
 			});
 			
 	callback(null);
@@ -184,7 +194,7 @@ async.waterfall(
 							tce+=result[i].tce;
 						}; 
 						response = '[{"tse":'+tse+',"te":' +te+',"tuu":' +distinctUsers+',"tnu":' +tnu+',"tts":' +tts+',"tce":' +tce+'}]';
-						console.log(response);
+						//console.log(response);
 						callback(null);
 					}else{
 						response='[]';
