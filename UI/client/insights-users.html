@@ -77,13 +77,27 @@
                 // Define the line
                 var	valueline = d3.svg.line()
 					//.interpolate("basis")
-                    .x(function(d) { return x(new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2))); })
+                    .x(function(d) { 
+						if((d.date).length === 8){
+							return x(new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2))); 
+						}
+						else{
+							return x((d.date).substr(8,2));
+						}
+					})
                     .y(function(d) { return y(parseInt(d.tuu)); });
                 
                 // Define the line
                 var	valueline1 = d3.svg.line()
 					//.interpolate("basis")
-                    .x(function(d) { return x(new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2))); })
+                    .x(function(d) { 
+						if((d.date).length === 8){
+							return x(new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2))); 
+						}
+						else{
+							return x((d.date).substr(8,2));
+						}
+					})
                     .y(function(d) { return y(parseInt(d.tts)); });
 
                 // Define 'div' for tooltips

@@ -492,9 +492,23 @@ var sec2ISO = function(SECONDS){
 function plotLineChart(data, svg, div,timestamp=false, ele, valueline, x, y, width, height, xAxis="", yAxis = ""){
 	//console.log(typeof xAxis+" :: "+typeof yAxis);
 	// Scale the range of the data
-	x.domain(d3.extent(data, function(d) { return new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2)); }));
+	
+	var hoursFlag;
+	
+	x.domain(d3.extent(data, function(d) { 
+		if((d.date).length === 8){
+			return new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2)); 
+		}
+		else{
+			console.log((d.date).substr(8,2));
+			hoursFlag = true;
+			return (d.date).substr(8,2);
+		}
+		
+	}));
 	y.domain([0, d3.max(data, function(d) { return parseInt(d[ele]); })]);
 	//return new Date((d.date).substr(0,4)+"/"+(d.date).substr(4,2)+"/"+(d.date).substr(6,2));
+	
 
 	svg.append("path")		
 		.attr("class", "line")
@@ -508,10 +522,17 @@ function plotLineChart(data, svg, div,timestamp=false, ele, valueline, x, y, wid
 		.attr("stroke", "#7ABEE7")
 		.attr("fill", "white")
 		.attr("stroke-width", "2px")
-		.attr("cx", function(d) { return x(new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2))); })		 
+		.attr("cx", function(d) { 
+			if((d.date).length === 8){
+				return x(new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2))); 
+			}
+			else{
+				return x((d.date).substr(8,2));
+				
+			}
+		})		 
 		.attr("cy", function(d) { return y(parseInt(d[ele])); })
 		// Tooltip stuff after this
-		/*.on("mouseleave", function(d) {div.transition().duration(200).style("opacity", 0);})*/
 		.on("mouseenter", function(d) {
 			if(timestamp){
 				cnt = sec2ISO(d[ele]);
@@ -520,15 +541,21 @@ function plotLineChart(data, svg, div,timestamp=false, ele, valueline, x, y, wid
 			}
 			div.transition().duration(200).style("opacity", .9);	
 			div.html(cnt).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
-		});
-	drawAxes(svg, x, y, width, height, xAxis, yAxis);
+		})
+		.on("mouseleave", function(d){div.transition().duration(200).style("opacity", 0);});
+	drawAxes(svg, x, y, width, height, xAxis, yAxis, hoursFlag);
 }
 
-function drawAxes(svg, x, y, width, height, xAxis, yAxis){
+function drawAxes(svg, x, y, width, height, xAxis, yAxis, hoursFlag){
 	// Define the axes
 	//console.log(xAxis+" : "+yAxis);
 	if(typeof xAxis === "string"){
-		xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5).tickFormat(d3.time.format("%b %d"));
+		if(hoursFlag === true){
+			xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(24).tickFormat(d3.format("d"));
+		}
+		else{
+			xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(7).tickFormat(d3.time.format("%b %d"));
+		}
 	}
 	if(typeof yAxis === "string"){
 		yAxis = d3.svg.axis().scale(y).orient("left").ticks(5);
