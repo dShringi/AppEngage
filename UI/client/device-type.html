@@ -94,6 +94,8 @@
         <div class="overlay"></div>
         <script type="text/javascript">
             var width = $(".chart-time-spent").width(), height = 250, radius = Math.min(width, height) / 2, legendPosY = (height / 2)-20;
+			
+			var color = d3.scale.ordinal().range(["#99ecf0", "#1cb5bb", "#10538c", "#75c6f3", "#60d3ff", "#4ec3d7", "#37c2a5", "#8bcb6b"]);
 
             var arc = d3.svg.arc().innerRadius(radius - 20).outerRadius(radius - 60);
             var arcOver = d3.svg.arc().outerRadius(radius - 18).innerRadius(radius - 62);

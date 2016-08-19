@@ -181,7 +181,7 @@ var showDeviceOSVersionTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.os + "</td><td>" + numFormate(row.users) + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
+        tableHTML += "<tr><td>" + row.osversion + "</td><td>" + numFormate(row.users) + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     updateTable(tableId, tableHTML);
@@ -192,7 +192,7 @@ var showDeviceAppVersionTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.app + "</td><td>" + numFormate(row.users) + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
+        tableHTML += "<tr><td>" + row.appversion + "</td><td>" + numFormate(row.users) + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
         
     });
     updateTable(tableId, tableHTML);
@@ -500,7 +500,6 @@ function plotLineChart(data, svg, div,timestamp=false, ele, valueline, x, y, wid
 			return new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2)); 
 		}
 		else{
-			console.log((d.date).substr(8,2));
 			hoursFlag = true;
 			return (d.date).substr(8,2);
 		}
@@ -522,7 +521,7 @@ function plotLineChart(data, svg, div,timestamp=false, ele, valueline, x, y, wid
 		.attr("stroke", "#7ABEE7")
 		.attr("fill", "white")
 		.attr("stroke-width", "2px")
-		.attr("cx", function(d) { 
+		.attr("cx", function(d) {
 			if((d.date).length === 8){
 				return x(new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2))); 
 			}
@@ -554,13 +553,12 @@ function drawAxes(svg, x, y, width, height, xAxis, yAxis, hoursFlag){
 			xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(24).tickFormat(d3.format("d"));
 		}
 		else{
-			xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(7).tickFormat(d3.time.format("%b %d"));
+			xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5).tickFormat(d3.time.format("%b %d"));
 		}
 	}
 	if(typeof yAxis === "string"){
 		yAxis = d3.svg.axis().scale(y).orient("left").ticks(5);
 	}
-	//console.log(typeof xAxis+" :: "+typeof yAxis);
 	// Add the X Axis
 	svg.append("g")	
 		.attr("class", "x axis")
