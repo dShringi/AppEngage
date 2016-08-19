@@ -3,10 +3,20 @@ var config      = require('../../config/config.js');
 var logger 		= require('../../config/log.js');
 var common 		= require('../../commons/common.js');
 var _ 			= require('underscore');
-
 var appTZ 		= config.defaultAppTimeZone;
-var startDate ,endDate ,akey;
 var searchParam='Notmatch';
+var arrPlatform = [],arrType=[];
+var platform    = config.platform;
+var type    	= config.type;
+var startDate ,endDate ,akey;
+
+for(i=0;i<platform.length;i++){
+	arrPlatform[platform[i].shortpf] = platform[i].displaypf;
+}
+
+for(i=0;i<type.length;i++){
+	arrType[type[i].shortpf] = type[i].displaypf;
+}
 
 function aggregateCalulation(akey,yyyy,searchBy,searchParam,gtevalNumeric,ltevalNumeric,callback){ // function to fetch userCountersounter by searchparameter
 		var db = mongojs(config.connectionstring+akey);
@@ -35,7 +45,13 @@ function aggregateCalulation(akey,yyyy,searchBy,searchParam,gtevalNumeric,lteval
 			if(!err){
 				if(result.length != 0 && searchParam!='Notmatch'){
 					for(var i=0;i<result.length;i++){
-						resultstring[i] = (' {'+' "'+searchBy+'": "'+result[i]._id+'","users": "' +result[i].users + '","time": "' +result[i].time + '"}');
+						if(searchBy === 'platform'){
+							resultstring[i] = (' {'+' "'+searchBy+'": "'+arrPlatform[result[i]._id]+'","users": "' +result[i].users + '","time": "' +result[i].time + '"}');
+						}else if(searchBy === 'type'){
+							resultstring[i] = (' {'+' "'+searchBy+'": "'+arrType[result[i]._id]+'","users": "' +result[i].users + '","time": "' +result[i].time + '"}');
+						}else{
+							resultstring[i] = (' {'+' "'+searchBy+'": "'+result[i]._id+'","users": "' +result[i].users + '","time": "' +result[i].time + '"}');
+						}
 						resultstr+=resultstring[i].concat(',');
 					}
 					resultstr = resultstr.substr(0,resultstr.length-1);

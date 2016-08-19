@@ -43,6 +43,13 @@ module.exports.platform=[
 {shortpf:"w",displaypf:"Windows"}
 ]
 
+module.exports.type=[
+{shortpf:"S",displaypf:"SmartPhone"},
+{shortpf:"T",displaypf:"Tablet"},
+{shortpf:"s",displaypf:"SmartPhone"},
+{shortpf:"t",displaypf:"Tablet"}
+]
+
 module.exports.YYYYMMDDHH = 'YYYYMMDDHH';
 module.exports.YYYYMMDD = 'YYYYMMDD';
 module.exports.HOUR = 'hour';
