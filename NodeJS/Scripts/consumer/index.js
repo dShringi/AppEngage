@@ -172,7 +172,14 @@ consumer.on('message', function(message) {
 			updateDashboard(dashboardHourData,data.type,1,0,function(err){
 				if(err) logError(err);
 				return;			
-			});	
+			});
+
+			//update user collection for timspent
+			updateUsers(data,dashboardDayData.key,function(err,data){
+				if(err) log(err);
+				return;
+			});			
+
 		break;
 
 		case Collection["end"]:
@@ -257,6 +264,12 @@ consumer.on('message', function(message) {
 				if(err) logError(err);
 				return;
 			});
+
+			//update user collection for timspent
+			updateUsers(data,dashboardDayData.key,function(err,data){
+				if(err) log(err);
+				return;
+			});			
 		break;
 	}
 });
@@ -393,6 +406,78 @@ function updateUsers(req,dateKey,callback){
 				}
 			});
 		break;
+		case Collection["crash"]:
+			Model.User.findByIdAndUpdate(req.val.did,{$inc:{'tce':1}},function(err,doc){
+				if(err){
+					logger.error(common.getErrorMessageFrom(err));
+					return;
+				}
+				callback(err,0);
+			});
+
+			var updateDoc = JSON.parse('{"$inc":{"_'+yyyy+'.$.tce":1}}');							
+			var searchDoc = JSON.parse('{"_id":"'+req.val.did+'","_'+yyyy+'._id":'+parseInt(mm.toString().concat(dd))+'}');
+			//Update the counters for the user against the respective date.
+			Model.User.findOneAndUpdate(searchDoc,updateDoc,function(err,doc){
+				//If none of the document gets updated.
+				if(doc===null || doc===undefined){
+					// If there are no errors
+					if(!err){
+						var push = {};
+						push['_'+yyyy] = JSON.parse('{"_id":'+parseInt(mm.toString().concat(dd))+',"tce":1}');
+						//Against the user add the counters for data which he has performed a login.
+						Model.User.findByIdAndUpdate(req.val.did,{$push:push},function(err,doc){
+							if(err){
+								logger.error(common.getErrorMessageFrom(err));
+								return;
+							}
+						});
+					}else{
+						logger.error(common.getErrorMessageFrom(err));
+						return;
+					}
+				}else{
+					callback(err,0)
+					return;
+				}
+			});
+		break;
+		case Collection["event"]:
+			Model.User.findByIdAndUpdate(req.val.did,{$inc:{'te':1}},function(err,doc){
+				if(err){
+					logger.error(common.getErrorMessageFrom(err));
+					return;
+				}
+				callback(err,0);
+			});
+
+			var updateDoc = JSON.parse('{"$inc":{"_'+yyyy+'.$.te":1}}');							
+			var searchDoc = JSON.parse('{"_id":"'+req.val.did+'","_'+yyyy+'._id":'+parseInt(mm.toString().concat(dd))+'}');
+			//Update the counters for the user against the respective date.
+			Model.User.findOneAndUpdate(searchDoc,updateDoc,function(err,doc){
+				//If none of the document gets updated.
+				if(doc===null || doc===undefined){
+					// If there are no errors
+					if(!err){
+						var push = {};
+						push['_'+yyyy] = JSON.parse('{"_id":'+parseInt(mm.toString().concat(dd))+',"te":1}');
+						//Against the user add the counters for data which he has performed a login.
+						Model.User.findByIdAndUpdate(req.val.did,{$push:push},function(err,doc){
+							if(err){
+								logger.error(common.getErrorMessageFrom(err));
+								return;
+							}
+						});
+					}else{
+						logger.error(common.getErrorMessageFrom(err));
+						return;
+					}
+				}else{
+					callback(err,0)
+					return;
+				}
+			});
+		break;		
 	}
 }
 

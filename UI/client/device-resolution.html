@@ -23,6 +23,8 @@
 		<script src="assets/js/jquery.tablesorter.widgets.js"></script>
 		<link rel="stylesheet" href="assets/css/jquery.tablesorter.pager.css">
 		<script src="assets/js/jquery.tablesorter.pager.js"></script>
+		<link rel="stylesheet" href="assets/css/sweetalert.css">
+		<script src="assets/js/sweetalert.min.js"></script>
     </head>
     <body>
         <aside class="left-side sticky-left-side" tabindex="5000"></aside>
@@ -117,9 +119,15 @@
 					console.log(data);
 					data = JSON.parse(data);
 					console.log(data);
-					
-					plotDonutChart(data, "resolution", arc, arcOver, pie, svg, width, color);
-					plotDonutChart(data, "resolution", arc, arcOver, pie1, svg1, width, color);
+					if(data.length == 0){
+						showError("No data found for the selected parameters.");
+					} 
+					else {
+						svg.selectAll("*").remove();
+						svg1.selectAll("*").remove();
+						plotDonutChart(data, "resolution", arc, arcOver, pie, svg, width, color);
+						plotDonutChart(data, "resolution", arc, arcOver, pie1, svg1, width, color);
+					}
 					
 				});
 

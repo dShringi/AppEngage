@@ -129,7 +129,7 @@ $(document).ready(function () {
 
 var showError = function(err){
     //sweetAlert("Oops...", err, "error");
-	swal({   title: "OOPS",   text: "Here's a custom image.",   imageUrl: "images/thumbs-up.jpg" });
+	swal({   title: "OOPS",   text: err,   imageUrl: "assets/img/error.png" });
 }
 
 var showDeviceModelTable = function (data, tableId) {
@@ -765,6 +765,11 @@ var sortTable = function(){
 //***************************** DEVICE DONUT CHARTS ***********************************
 function plotDonutChart(data, ele, arc, arcOver, pie, svg, width, color){
 	
+	var tooltip = d3.select("body")
+		.append("div")  // declare the tooltip div 
+		.attr("class", "map-tooltip shadow")              // apply the 'tooltip' class
+		.style("opacity", 0);                  // set the opacity to nil
+		
 	var g = svg.selectAll(".arc")
 						.data(pie(data))
 						.enter().append("g")
@@ -780,12 +785,15 @@ function plotDonutChart(data, ele, arc, arcOver, pie, svg, width, color){
 								.duration(1000)
 								.attr("class", "shadow")
 								.attr("d", arcOver);
+								tooltip.transition().duration(200).style("opacity", 1);	
+								tooltip.html(d.data[ele]+" : "+d.data.users).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
 						})
 						.on("mouseleave", function (d) {
 							d3.select(this)
 								.transition()
 								.duration(1000)
 								.attr("d", arc);
+								tooltip.transition().duration(200).style("opacity", 0);
 						})
 						.style("fill", function (d) { return color(d.data[ele]); });
 
@@ -820,12 +828,15 @@ function plotDonutChart(data, ele, arc, arcOver, pie, svg, width, color){
 								.transition()
 								.duration(1000)
 								.attr("d", arcOver);
+								tooltip.transition().duration(200).style("opacity", 1);	
+								tooltip.html(d.data[ele]+" : "+d.data.users).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
 						})
 						.on("mouseleave", function (d) {
 							d3.select(this)
 								.transition()
 								.duration(1000)
 								.attr("d", arc);
+								tooltip.transition().duration(200).style("opacity", 0);
 						})
 						.style("fill", function (d) { return color(d.data[ele]); });
 
@@ -844,6 +855,29 @@ function plotDonutChart(data, ele, arc, arcOver, pie, svg, width, color){
 						.attr("x", -1 * 124 / 2)
 						.attr("y", -1 * 113 / 2);
 						
+
+					var legend = svg.append("g")
+						.attr("class", "legend")
+						.attr("transform", "translate(120,-" + legendPosY + ")")
+						.call(d3.legend);
+
+					setTimeout(function () {
+						legend
+							.attr("data-style-padding", 10)
+							.call(d3.legend);
+					}, 1000);
+
+					var legend1 = svg1.append("g")
+						.attr("class", "legend")
+						.attr("transform", "translate(120,-" + legendPosY + ")")
+						.call(d3.legend);
+
+					setTimeout(function () {
+						legend
+							.attr("data-style-padding", 10)
+							.call(d3.legend);
+					}, 1000);
+					
 					switch(ele){
 						case "manufacturer":
 							showDeviceMenufacturerTable(data, 'tbl-device-manufacturers');
@@ -868,29 +902,5 @@ function plotDonutChart(data, ele, arc, arcOver, pie, svg, width, color){
 							break;
 					
 					}
-
-					
-
-					var legend = svg.append("g")
-						.attr("class", "legend")
-						.attr("transform", "translate(120,-" + legendPosY + ")")
-						.call(d3.legend);
-
-					setTimeout(function () {
-						legend
-							.attr("data-style-padding", 10)
-							.call(d3.legend);
-					}, 1000);
-
-					var legend1 = svg1.append("g")
-						.attr("class", "legend")
-						.attr("transform", "translate(120,-" + legendPosY + ")")
-						.call(d3.legend);
-
-					setTimeout(function () {
-						legend
-							.attr("data-style-padding", 10)
-							.call(d3.legend);
-					}, 1000);
 
 }

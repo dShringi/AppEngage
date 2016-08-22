@@ -154,7 +154,7 @@
         </aside>
         <div class="overlay"></div>
         <script>
-			$("body").hide();
+
 			//var apiURL = "assets/json/data1.json";
             var apiURL = APIBaseURL+"getDashBoardCounters";
 			function loadChart(startDate, endDate, appKey, type){
@@ -177,7 +177,13 @@
 			}
 
             $(document).ready(function() {
-
+			
+				$("body").css("display", "none");
+				
+				var delay = 1000;
+				
+				setTimeout(function(){
+				
 					var today = new Date(), margin = {top: 10, right: 40, bottom: 20, left: 35},
 					width = $("#chart-container").width() - margin.left - margin.right,
 					height = 175 - margin.top - margin.bottom;
@@ -357,6 +363,7 @@
 							})
 						},10010);
 					});
+				}, delay);
             });
         </script>
     </body>
