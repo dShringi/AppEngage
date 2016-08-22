@@ -19,13 +19,13 @@
 <script>
 	$(document).ready(function(){
 	
-		$("body").css("display", "none");
+		$("body").hide();
 		
 		if(sessionStorage.getItem("userName") === null){
 				window.location.href = "landing-page.html";
 			}
 			else{
-				$("body").css("display", "block");
+				$("body").show();
 				$("header.bg-white ul.paddl0 span.loggedUser").text(sessionStorage.getItem("userName"));
 			}
 		
