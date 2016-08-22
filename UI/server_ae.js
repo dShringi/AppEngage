@@ -7,14 +7,18 @@ var logger 			= require('./config/log.js');
 //API Routes Embeding
 var crashController = require('./server/controllers/crashController');
 var dashboardController = require('./server/controllers/dashboardController');
+try{
 var userDashboardController = require('./server/controllers/userDashboardController');
 var userValidationController = require('./server/controllers/userValidationController');
 var sessionController = require('./server/controllers/sessionController');
+}catch(ex){
+	console.error(ex);
+}
 
 app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser()); // get information from html forms
 app.get('/', function (req, res) {
-	res.sendFile(__dirname + '/client/index.html');
+	res.sendFile(__dirname + '/client/landing-page.html');
 });
 
 app.get('/appengage/getCrashCounters', crashController.crashCounters);

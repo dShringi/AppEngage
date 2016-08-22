@@ -1,7 +1,7 @@
 var mongojs   	= require('mongojs');
 var config    	= require('../../config/config');
-var async 	= require('async');
-var common	= require('../../commons/common.js');
+var async 		= require('async');
+var common		= require('../../commons/common.js');
 var platform    = config.platform;
 var arrPlatform = [];
 var startdate ,enddate ,akey ;	
@@ -22,18 +22,20 @@ db.collection(config.coll_crashes).aggregate([
 	{ $group: {_id: grpvalue,Total: { $sum: 1 }}},
 	{ $project: {_id: 0,rowData: "$_id",Total: 1}}
 	],function(err, result) {
-		
-		paramString = '{"'+searchByParam+'":[';
-		for(var i=0;i<result.length;i++){
-			if(searchByParam != 'pf'){
-				paramString = paramString.concat('{"'+result[i].rowData+'":'+result[i].Total+'},');
-			}else{
-				paramString = paramString.concat('{"'+arrPlatform[result[i].rowData]+'":'+result[i].Total+'},');
-			}			
-		}
+		if(!err){
+			paramString = '{"'+searchByParam+'":[';
+			for(var i=0;i<result.length;i++){
+				if(searchByParam != 'pf'){
+					paramString = paramString.concat('{"'+result[i].rowData+'":'+result[i].Total+'},');
+				}else{
+					paramString = paramString.concat('{"'+arrPlatform[result[i].rowData]+'":'+result[i].Total+'},');
+				}			
+			}
 		paramString = paramString.substr(0,paramString.length-1).concat(']}');;
+		db.close();
 		callback(paramString);
-}
+		}
+	}
 );
 } // end of aggregateCalulation
 
@@ -61,20 +63,23 @@ async.waterfall(
 						cData[i]._id.rtc = parseInt(crashDate.getTime()/1000);
 						_id = cData[i]._id.rtc+','+cData[i]._id.avn+','+cData[i]._id.osv+','+cData[i]._id.pf;	
 						if(intResult[_id] == undefined){
-                                                        intResult[_id] = {	
-							rtc	:cData[i]._id.rtc,
-                                                        avn 	:cData[i]._id.avn,
-                                                        osv 	:cData[i]._id.osv,
-							pf 	:arrPlatform[cData[i]._id.pf],
-							counter :incId
+							
+							intResult[_id] = {	
+								rtc		:cData[i]._id.rtc,
+								avn 	:cData[i]._id.avn,
+								osv 	:cData[i]._id.osv,
+								pf 		:arrPlatform[cData[i]._id.pf],
+								counter :incId
 							};
+							
 							result[incId]	=	{
-                                                        rtc     :cData[i]._id.rtc,
-                                                        avn     :cData[i]._id.avn,
-                                                        osv     :cData[i]._id.osv,
-                                                        pf      :arrPlatform[cData[i]._id.pf],
-                                                        Total   :cData[i].Total
-                                                        };
+                            	rtc     :cData[i]._id.rtc,
+                                avn     :cData[i]._id.avn,
+                                osv     :cData[i]._id.osv,
+                                pf      :arrPlatform[cData[i]._id.pf],
+                                Total   :cData[i].Total
+                            };
+							
 							incId++;							
 						}else{
 							result[intResult[_id].counter].Total = result[intResult[_id].counter].Total + 1;
@@ -85,24 +90,23 @@ async.waterfall(
 				
 				if(result!=null){
 				
-				for(var i=0;i<result.length;i++){
-					tempstring[i] = (' {'+' "dt": "'+result[i].rtc+'","avn": "' +result[i].avn + '","os": "' +result[i].osv+'","pf":"' +result[i].pf+'","totalCrashes": ' +result[i].Total +' }');
-					tempstr+=tempstring[i].concat(',');
-				}
-				 tempstr = tempstr.substr(0,tempstr.length-1);
-				finaldetailstr='[ '+ tempstr + ']'
+					for(var i=0;i<result.length;i++){
+						tempstring[i] = (' {'+' "dt": "'+result[i].rtc+'","avn": "' +result[i].avn + '","os": "' +result[i].osv+'","pf":"' +result[i].pf+'","totalCrashes": ' +result[i].Total +' }');
+						tempstr+=tempstring[i].concat(',');
+					}
+				 	tempstr = tempstr.substr(0,tempstr.length-1);
+					finaldetailstr='[ '+ tempstr + ']'
 				}else{
-				db.close();
-				return res.json('[]');
+					db.close();
+					return res.json('[]');
 				}
 				
 				callback(null);
 		});
 	},//callback end
 	function(callback) { //callback start
-	db.close();
-	return res.json(finaldetailstr);
-	
+		db.close();
+		return res.json(finaldetailstr);
 	}
 ]);
 
