@@ -7,18 +7,18 @@ var logger 			= require('./config/log.js');
 //API Routes Embeding
 var crashController = require('./server/controllers/crashController');
 var dashboardController = require('./server/controllers/dashboardController');
-try{
 var userDashboardController = require('./server/controllers/userDashboardController');
 var userValidationController = require('./server/controllers/userValidationController');
 var sessionController = require('./server/controllers/sessionController');
+try{
+var locationController = require('./server/controllers/locationController');
 }catch(ex){
 	console.error(ex);
 }
-
 app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser()); // get information from html forms
 app.get('/', function (req, res) {
-	res.sendFile(__dirname + '/client/landing-page.html');
+	res.sendFile(__dirname + '/client/index.html');
 });
 
 app.get('/appengage/getCrashCounters', crashController.crashCounters);
@@ -29,6 +29,7 @@ app.get('/appengage/getUserInsights',sessionController.getUserInsights);
 app.get('/appengage/getSessionInsights',sessionController.getSessionInsights);
 app.get('/appengage/getDeviceCounters',userDashboardController.getUserDashboardCounters);
 app.get('/appengage/getUserValidated',userValidationController.validateUser);
+app.get('/appengage/getLocationCounters',locationController.getLocationCounters);
 
 var server = app.listen(config.port, function () {
 	var host = server.address().address;

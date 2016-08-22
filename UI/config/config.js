@@ -54,3 +54,7 @@ module.exports.YYYYMMDDHH = 'YYYYMMDDHH';
 module.exports.YYYYMMDD = 'YYYYMMDD';
 module.exports.HOUR = 'hour';
 module.exports.DAY = 'day';
+
+module.exports.UNDEFINED = undefined;
+module.exports.NULL = null;
+module.exports.EMPTYSTRING ="";
