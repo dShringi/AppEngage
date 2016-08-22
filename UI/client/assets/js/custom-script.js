@@ -128,7 +128,8 @@ $(document).ready(function () {
 });
 
 var showError = function(err){
-    sweetAlert("Oops...", err, "error");
+    //sweetAlert("Oops...", err, "error");
+	swal({   title: "OOPS",   text: "Here's a custom image.",   imageUrl: "images/thumbs-up.jpg" });
 }
 
 var showDeviceModelTable = function (data, tableId) {

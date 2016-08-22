@@ -1,0 +1,90 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Mobile Analytics - Messaging</title>
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="assets/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="assets/css/style.css">
+        <script src="assets/js/jquery.js"></script>
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="assets/js/bootstrap.min.js"></script>
+        <script src="assets/js/d3.v3.min.js"></script>
+        <script src="assets/js/d3.legend.js"></script>
+        <script src="assets/js/moment.min.js"></script>
+        <script type="text/javascript" src="assets/js/daterangepicker.js"></script>
+        <link rel="stylesheet" type="text/css" href="assets/css/daterangepicker.css" />
+        <link rel="stylesheet" href="assets/css/bootstrap-select.min.css">
+        <script src="assets/js/bootstrap-select.min.js"></script>
+        <script src="assets/js/jquery.tablesorter.js"></script>
+        <link rel="stylesheet" href="assets/css/theme.blue.css">
+        <script src="assets/js/jquery.tablesorter.widgets.js"></script>
+        <link rel="stylesheet" href="assets/css/jquery.tablesorter.pager.css">
+        <script src="assets/js/jquery.tablesorter.pager.js"></script>
+        <link rel="stylesheet" href="assets/css/sweetalert.css">
+        <script src="assets/js/sweetalert.min.js"></script>
+        <script src="assets/js/custom-script.js"></script>
+
+    </head>
+    <body>
+        <aside class="left-side sticky-left-side" tabindex="5000"></aside>
+        <aside class="main-container">
+            <section class="breadcrumb bg-white border-bottom paddl30">
+                <ul>
+                    <li>Messaging</li>
+                </ul>
+            </section>
+            <section class="border-bottom paddl50 mrgnBtm0">
+                <div class="row chart-header">
+                    <div class="col-md-12 txt-drk-gray"></div>
+                    <div class="col-md-12 txt-drk-gray margnTp-5 text-right">
+                        <div>
+                            <div id="dateRange" class="pull-left">
+                                <i class="glyphicon glyphicon-calendar txt-green fa fa-calendar"></i><span></span><b class="caret"></b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section class="bg-white paddl50 paddr50 border-bottom">
+                <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12 text-center">
+                        <div class="table-responsive">
+                            <table class="table text-left" id="tbl-crash-report">
+                                <thead>
+                                    <tr>
+                                        <th>Last Updated</th>
+                                        <th>Campaign Name</th>
+                                        <th>Channel</th>
+                                        <th>App Version</th>
+                                        <th>Total Crash Count</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                            <!-- pager -->
+                            <div id="pager" class="pager">
+                                <form>
+                                    <img src="assets/img/first.png" class="first" />
+                                    <img src="assets/img/prev.png" class="prev" />
+                                    <span class="pagedisplay"></span> <!-- this can be any element, including an input -->
+                                    <img src="assets/img/next.png" class="next" />
+                                    <img src="assets/img/last.png" class="last" />
+                                    <select class="pagesize form-control selectpicker" data-width="100px">
+                                        <option value="10">10</option>
+                                        <option value="25">25</option>
+                                        <option value="50">50</option>
+                                        <option value="all">All Rows</option>
+                                    </select>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+            </section>
+        </aside>
+
+</body>
+</html>
