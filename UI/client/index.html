@@ -179,10 +179,11 @@
             $(document).ready(function() {
 			
 				$("body").css("display", "none");
-			
-				if($("body").css("display") == "block"){
-
-
+				
+				var delay = 1000;
+				
+				setTimeout(function(){
+				
 					var today = new Date(), margin = {top: 10, right: 40, bottom: 20, left: 35},
 					width = $("#chart-container").width() - margin.left - margin.right,
 					height = 175 - margin.top - margin.bottom;
@@ -362,7 +363,7 @@
 							})
 						},10010);
 					});
-				}
+				}, delay);
             });
         </script>
     </body>
