@@ -43,6 +43,14 @@ module.exports.platform=[
 {shortpf:"w",displaypf:"Windows"}
 ]
 
+module.exports.model=[
+{shortpf:"GT-I9300",displaypf:"Samsung Galaxy S III"},
+{shortpf:"HTC One",displaypf:"HTC One"},
+{shortpf:"MotoG3",displaypf:"MotoG3"},
+{shortpf:"GT-I8552",displaypf:"Samsung Galaxy Grand Quattro"},
+{shortpf:"XT1052",displaypf:"Moto X"}
+]
+
 module.exports.type=[
 {shortpf:"S",displaypf:"SmartPhone"},
 {shortpf:"T",displaypf:"Tablet"},

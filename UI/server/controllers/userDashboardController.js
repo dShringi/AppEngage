@@ -6,8 +6,10 @@ var _ 			= require('underscore');
 var appTZ 		= config.defaultAppTimeZone;
 var searchParam='Notmatch';
 var arrPlatform = [],arrType=[];
+var arrModel	= [];
 var platform    = config.platform;
 var type    	= config.type;
+var model 		= config.model
 var startDate ,endDate ,akey;
 
 for(i=0;i<platform.length;i++){
@@ -16,6 +18,10 @@ for(i=0;i<platform.length;i++){
 
 for(i=0;i<type.length;i++){
 	arrType[type[i].shortpf] = type[i].displaypf;
+}
+
+for(i=0;i<model.length;i++){
+	arrModel[model[i].shortpf] = model[i].displaypf;
 }
 
 function aggregateCalulation(akey,yyyy,searchBy,searchParam,gtevalNumeric,ltevalNumeric,callback){ // function to fetch userCountersounter by searchparameter
@@ -49,6 +55,8 @@ function aggregateCalulation(akey,yyyy,searchBy,searchParam,gtevalNumeric,lteval
 							resultstring[i] = (' {'+' "'+searchBy+'": "'+arrPlatform[result[i]._id]+'","users": "' +result[i].users + '","time": "' +result[i].time + '"}');
 						}else if(searchBy === 'type'){
 							resultstring[i] = (' {'+' "'+searchBy+'": "'+arrType[result[i]._id]+'","users": "' +result[i].users + '","time": "' +result[i].time + '"}');
+						}else if(searchBy === 'model'){
+							resultstring[i] = (' {'+' "'+searchBy+'": "'+arrModel[result[i]._id]+'","users": "' +result[i].users + '","time": "' +result[i].time + '"}');
 						}else{
 							resultstring[i] = (' {'+' "'+searchBy+'": "'+result[i]._id+'","users": "' +result[i].users + '","time": "' +result[i].time + '"}');
 						}
