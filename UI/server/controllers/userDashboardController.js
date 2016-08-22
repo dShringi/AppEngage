@@ -37,7 +37,8 @@ function aggregateCalulation(akey,yyyy,searchBy,searchParam,gtevalNumeric,lteval
 		var grpParam1='{"dev":"$'+searchParam+'","did":"$_id"}';
 		var grpParamJSON1 = JSON.parse(grpParam1);
 		var grpParam2='{"_id":"$_id.dev","users": {"$sum": 1},"time": {"$sum":"$tts"}}';
-		var grpParamJSON2 = JSON.parse(grpParam2);	
+		var grpParamJSON2 = JSON.parse(grpParam2);
+		var modelVal,typeVal,platformVal;	
 
 		db.collection(config.coll_users).aggregate([
 			{ $match: { $and: matchJSON1 }},
@@ -47,16 +48,21 @@ function aggregateCalulation(akey,yyyy,searchBy,searchParam,gtevalNumeric,lteval
 			{ $group: {_id:'$_id.dev',users: {$sum: 1},time: {$sum:'$tts'}}},			
 			{ $project: {_id:1,users:1,time:1}}
 			],function(err, result) {
-			console.log(result);
 			if(!err){
 				if(result.length != 0 && searchParam!='Notmatch'){
 					for(var i=0;i<result.length;i++){
 						if(searchBy === 'platform'){
-							resultstring[i] = (' {'+' "'+searchBy+'": "'+arrPlatform[result[i]._id]+'","users": "' +result[i].users + '","time": "' +result[i].time + '"}');
+							platformVal = arrModel[result[i]._id];
+							if(platformVal == config.UNDEFINED || platformVal == config.NULL || platformVal == config.EMPTYSTRING) platformVal = result[i]._id;
+							resultstring[i] = (' {'+' "'+searchBy+'": "'+platformVal+'","users": "' +result[i].users + '","time": "' +result[i].time + '"}');
 						}else if(searchBy === 'type'){
-							resultstring[i] = (' {'+' "'+searchBy+'": "'+arrType[result[i]._id]+'","users": "' +result[i].users + '","time": "' +result[i].time + '"}');
+							typeVal = arrModel[result[i]._id];
+							if(typeVal == config.UNDEFINED || typeVal == config.NULL || typeVal == config.EMPTYSTRING) typeVal = result[i]._id;
+							resultstring[i] = (' {'+' "'+searchBy+'": "'+typeVal+'","users": "' +result[i].users + '","time": "' +result[i].time + '"}');
 						}else if(searchBy === 'model'){
-							resultstring[i] = (' {'+' "'+searchBy+'": "'+arrModel[result[i]._id]+'","users": "' +result[i].users + '","time": "' +result[i].time + '"}');
+							modelVal = arrModel[result[i]._id];
+							if(modelVal == config.UNDEFINED || modelVal == config.NULL || modelVal == config.EMPTYSTRING) modelVal = result[i]._id;
+							resultstring[i] = (' {'+' "'+searchBy+'": "'+modelVal+'","users": "' +result[i].users + '","time": "' +result[i].time + '"}');
 						}else{
 							resultstring[i] = (' {'+' "'+searchBy+'": "'+result[i]._id+'","users": "' +result[i].users + '","time": "' +result[i].time + '"}');
 						}

@@ -48,7 +48,8 @@ module.exports.model=[
 {shortpf:"HTC One",displaypf:"HTC One"},
 {shortpf:"MotoG3",displaypf:"MotoG3"},
 {shortpf:"GT-I8552",displaypf:"Samsung Galaxy Grand Quattro"},
-{shortpf:"XT1052",displaypf:"Moto X"}
+{shortpf:"XT1052",displaypf:"Moto X"},
+{shortpf:"MI 5",displaypf:"MI 5"}
 ]
 
 module.exports.type=[
