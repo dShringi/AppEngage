@@ -25,9 +25,10 @@
         <link rel="stylesheet" href="assets/css/sweetalert.css">
         <script src="assets/js/sweetalert.min.js"></script>
         <script src="assets/js/custom-script.js"></script>
+        <link rel="stylesheet" href="assets/css/messaging.css">
 
     </head>
-    <body>
+    <body style="background-color:#fff; height:100vh;">
         <aside class="left-side sticky-left-side" tabindex="5000"></aside>
         <aside class="main-container">
             <section class="breadcrumb bg-white border-bottom paddl30">
@@ -35,30 +36,34 @@
                     <li>Messaging</li>
                 </ul>
             </section>
-            <section class="border-bottom paddl50 mrgnBtm0">
+            <section class="paddl50 paddr50 mrgnBtm0">
                 <div class="row chart-header">
-                    <div class="col-md-12 txt-drk-gray"></div>
-                    <div class="col-md-12 txt-drk-gray margnTp-5 text-right">
+                    <div class="col-md-6 txt-drk-gray"></div>
+                    <div class="col-md-6 txt-drk-gray margnTp-5 text-right">
                         <div>
-                            <div id="dateRange" class="pull-left">
+                            <div id="dateRange" class="pull-right">
                                 <i class="glyphicon glyphicon-calendar txt-green fa fa-calendar"></i><span></span><b class="caret"></b>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
-            <section class="bg-white paddl50 paddr50 border-bottom">
+            <section class="bg-white paddl50 paddr50">
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12 text-center">
                         <div class="table-responsive">
-                            <table class="table text-left" id="tbl-crash-report">
+                            <table class="table text-left" id="tbl-messaging">
                                 <thead>
                                     <tr>
-                                        <th>Time</th>
-                                        <th>Platform</th>
-                                        <th>OS Version</th>
-                                        <th>App Version</th>
-                                        <th>Total Crash Count</th>
+                                        <th>Last Updated</th>
+                                        <th>Campaign Name</th>
+                                        <th>Channel</th>
+                                        <th>Start to End</th>
+                                        <th>Sends</th>
+                                        <th>Open Rate</th>
+                                        <th>Status</th>
+                                        <th></th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -68,7 +73,27 @@
                 </div>
             
             </section>
+            <section class="paddl50">
+                <button class="btn btn-newcampaign">Create a New Campaign</button>
+                
+            </section>
         </aside>
 
+        <script>
+            var loadChart = function (sd, ed, appKey) {
+                d3.json("assets/json/messaging.json" + "?sd=" + sd + "&ed=" + ed + "&akey=" + appKey, function (error, data) {
+                    //d3.json("assets/json/ok-data-total-crashes.json"+"?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
+
+                    data = JSON.parse(data)
+                    if (data.length == 0) {
+                        //alert("No data found for the selected parameters.");
+                    } else {
+                        showMessagingTable(data, 'tbl-messaging');
+                    }
+                });
+
+            }
+            
+        </script>
 </body>
 </html>

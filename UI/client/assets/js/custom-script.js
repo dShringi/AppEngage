@@ -129,7 +129,7 @@ $(document).ready(function () {
 
 var showError = function(err){
     //sweetAlert("Oops...", err, "error");
-	swal({   title: "OOPS",   text: "Here's a custom image.",   imageUrl: "images/thumbs-up.jpg" });
+	swal({   title: "OOPS",   text: err,   imageUrl: "images/thumbs-up.jpg" });
 }
 
 var showDeviceModelTable = function (data, tableId) {
@@ -764,7 +764,6 @@ var sortTable = function(){
 
 //***************************** DEVICE DONUT CHARTS ***********************************
 function plotDonutChart(data, ele, arc, arcOver, pie, svg, width, color){
-	
 	var g = svg.selectAll(".arc")
 						.data(pie(data))
 						.enter().append("g")
@@ -844,6 +843,29 @@ function plotDonutChart(data, ele, arc, arcOver, pie, svg, width, color){
 						.attr("x", -1 * 124 / 2)
 						.attr("y", -1 * 113 / 2);
 						
+
+					var legend = svg.append("g")
+						.attr("class", "legend")
+						.attr("transform", "translate(120,-" + legendPosY + ")")
+						.call(d3.legend);
+
+					setTimeout(function () {
+						legend
+							.attr("data-style-padding", 10)
+							.call(d3.legend);
+					}, 1000);
+
+					var legend1 = svg1.append("g")
+						.attr("class", "legend")
+						.attr("transform", "translate(120,-" + legendPosY + ")")
+						.call(d3.legend);
+
+					setTimeout(function () {
+						legend
+							.attr("data-style-padding", 10)
+							.call(d3.legend);
+					}, 1000);
+					
 					switch(ele){
 						case "manufacturer":
 							showDeviceMenufacturerTable(data, 'tbl-device-manufacturers');
@@ -868,29 +890,5 @@ function plotDonutChart(data, ele, arc, arcOver, pie, svg, width, color){
 							break;
 					
 					}
-
-					
-
-					var legend = svg.append("g")
-						.attr("class", "legend")
-						.attr("transform", "translate(120,-" + legendPosY + ")")
-						.call(d3.legend);
-
-					setTimeout(function () {
-						legend
-							.attr("data-style-padding", 10)
-							.call(d3.legend);
-					}, 1000);
-
-					var legend1 = svg1.append("g")
-						.attr("class", "legend")
-						.attr("transform", "translate(120,-" + legendPosY + ")")
-						.call(d3.legend);
-
-					setTimeout(function () {
-						legend
-							.attr("data-style-padding", 10)
-							.call(d3.legend);
-					}, 1000);
 
 }
