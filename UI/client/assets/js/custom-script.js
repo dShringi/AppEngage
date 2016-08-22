@@ -129,7 +129,7 @@ $(document).ready(function () {
 
 var showError = function(err){
     //sweetAlert("Oops...", err, "error");
-	swal({   title: "OOPS",   text: err,   imageUrl: "assets/img/error.png" });
+	swal({   title: "OOPS",   text: err,   imageUrl: "assets/img/Error.png" });
 }
 
 var showDeviceModelTable = function (data, tableId) {
