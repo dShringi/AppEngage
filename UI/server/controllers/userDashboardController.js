@@ -27,7 +27,7 @@ for(i=0;i<model.length;i++){
 }
 
 for(i=0;i<manufacturer.length;i++){
-	arrManufacturer[manufacturer[i].shortpf] = model[i].displaypf;
+	arrManufacturer[manufacturer[i].shortpf] = manufacturer[i].displaypf;
 }
 
 function aggregateCalulation(akey,yyyy,searchBy,searchParam,gtevalNumeric,ltevalNumeric,callback){ // function to fetch userCountersounter by searchparameter
