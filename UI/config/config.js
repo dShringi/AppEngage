@@ -59,6 +59,13 @@ module.exports.type=[
 {shortpf:"t",displaypf:"Tablet"}
 ]
 
+module.exports.manufacturer=[
+{shortpf:"samsung",displaypf:"Samsung"},
+{shortpf:"Xiaomi",displaypf:"Xiaomi"},
+{shortpf:"HTC",displaypf:"HTC"},
+{shortpf:"motorola",displaypf:"Motorola"}
+]
+
 module.exports.YYYYMMDDHH = 'YYYYMMDDHH';
 module.exports.YYYYMMDD = 'YYYYMMDD';
 module.exports.HOUR = 'hour';
