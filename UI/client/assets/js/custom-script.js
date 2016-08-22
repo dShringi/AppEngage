@@ -786,7 +786,7 @@ function plotDonutChart(data, ele, arc, arcOver, pie, svg, width, color){
 								.attr("class", "shadow")
 								.attr("d", arcOver);
 								tooltip.transition().duration(200).style("opacity", 1);	
-								tooltip.html(d.data[ele]+" : "+d.data.users).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
+								tooltip.html(d.data[ele]+" : "+sec2ISO(d.data.time)).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
 						})
 						.on("mouseleave", function (d) {
 							d3.select(this)
