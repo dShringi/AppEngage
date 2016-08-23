@@ -136,9 +136,11 @@
 					.attr("d", path);
 			});
 			
-			function loadChart(sd, ed, appKey){
+			function loadChart(startDate, endDate, appKey){
 				// load and display the cities
-				d3.json("assets/json/data-cities.json", function (error, data) {
+				d3.json("http://52.206.121.100/appengage/getLocationCounters?sd="+startDate+"&ed="+endDate+"&akey="+appKey, function (error, data) {
+					data = JSON.parse(data);
+					console.log(data);
 					showCitiesTable(data, 'tbl-cities');
 					svg.selectAll(".mark")
 						.data(data)
@@ -149,7 +151,9 @@
 						.attr('height', 21)
 						.attr("xlink:href", 'assets/img/marker.png')
 						.attr("transform", function (d) {
-							var cx = projection([d.lng, d.lat])[0] - 9, cy = projection([d.lng, d.lat])[1] - 21;
+						console.log(d.long);
+						console.log(d.lat);
+							var cx = projection([d.long, d.lat])[0] - 9, cy = projection([d.long, d.lat])[1] - 21;
 							return "translate(" + cx + ", " + cy + ")";
 						})
 						.on("mouseover", function(d) {
