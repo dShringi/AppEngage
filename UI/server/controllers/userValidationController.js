@@ -17,9 +17,14 @@ module.exports.validateUser = function(req,res){
 					return res.json({"msg":"Failed"});
 				}
 			}else{
-				console.error(err);	
+				console.error(err);
 				return res.json({"Err Occured":"Internal"})
 			}
 	});
-	
+
+}
+
+module.exports.getMessagingData = function(req,res){
+	res.json(JSON.parse('[{"date": "1-May-16","campaign": "Lorem Ipsum","channel": "push","startend": "23-May-2016 - 24-May-2016","sends": "","openrate": "","status": "draft"},{"date": "1-May-16","campaign": "Lorem Ipsum","channel": "push","startend":"23-May-2016 - 24-May-2016","sends": "","openrate": "","status": "draft"}, {"date": "1-May-16","campaign": "Lorem Ipsum","channel": "push","startend": "23-May-2016 - 24-May-2016","sends": "","openrate": "","status": "draft"}]'
+		));
 }
