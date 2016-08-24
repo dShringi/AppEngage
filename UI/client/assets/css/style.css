@@ -149,15 +149,19 @@ path {
 .axis, .axisticker {font-size: 12px;}
 .axis path, .axis line, .axisticker path, .axisticker line {fill: none;stroke: #000;shape-rendering: crispEdges;stroke-width: 1;}
 div.tooltip {
-    position: absolute;	
-    text-align: center;	
-    width: 44px;	
-    height: 47px;
-    padding-top: 11px;	
-    /*background: lightsteelblue;	*/
-    background-image: url(../img/RollOver.png);
-	color: #fff;
-	font-size: 104%;
+    position: absolute;
+    /* text-align: center; */
+    padding-left: 10px;
+    padding-right: 10px;
+    /* width: 35px; */
+    height: 35px;
+    padding-top: 9px;
+    /* background-image: url(../img/RollOver.png); */
+    color: #fff;
+    font-size: 104%;
+    border-radius: 4px;
+    background-color: orange;
+    display: block;
 }
 
 .legend rect {

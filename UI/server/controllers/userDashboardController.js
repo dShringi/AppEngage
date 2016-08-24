@@ -6,8 +6,12 @@ var _ 			= require('underscore');
 var appTZ 		= config.defaultAppTimeZone;
 var searchParam='Notmatch';
 var arrPlatform = [],arrType=[];
+var arrModel	= [];
+var arrManufacturer = [];
 var platform    = config.platform;
 var type    	= config.type;
+var model 		= config.model;
+var manufacturer = config.manufacturer;
 var startDate ,endDate ,akey;
 
 for(i=0;i<platform.length;i++){
@@ -16,6 +20,14 @@ for(i=0;i<platform.length;i++){
 
 for(i=0;i<type.length;i++){
 	arrType[type[i].shortpf] = type[i].displaypf;
+}
+
+for(i=0;i<model.length;i++){
+	arrModel[model[i].shortpf] = model[i].displaypf;
+}
+
+for(i=0;i<manufacturer.length;i++){
+	arrManufacturer[manufacturer[i].shortpf] = manufacturer[i].displaypf;
 }
 
 function aggregateCalulation(akey,yyyy,searchBy,searchParam,gtevalNumeric,ltevalNumeric,callback){ // function to fetch userCountersounter by searchparameter
@@ -31,7 +43,8 @@ function aggregateCalulation(akey,yyyy,searchBy,searchParam,gtevalNumeric,lteval
 		var grpParam1='{"dev":"$'+searchParam+'","did":"$_id"}';
 		var grpParamJSON1 = JSON.parse(grpParam1);
 		var grpParam2='{"_id":"$_id.dev","users": {"$sum": 1},"time": {"$sum":"$tts"}}';
-		var grpParamJSON2 = JSON.parse(grpParam2);	
+		var grpParamJSON2 = JSON.parse(grpParam2);
+		var modelVal,typeVal,platformVal,manufacturerVal;	
 
 		db.collection(config.coll_users).aggregate([
 			{ $match: { $and: matchJSON1 }},
@@ -41,14 +54,25 @@ function aggregateCalulation(akey,yyyy,searchBy,searchParam,gtevalNumeric,lteval
 			{ $group: {_id:'$_id.dev',users: {$sum: 1},time: {$sum:'$tts'}}},			
 			{ $project: {_id:1,users:1,time:1}}
 			],function(err, result) {
-			console.log(result);
 			if(!err){
 				if(result.length != 0 && searchParam!='Notmatch'){
 					for(var i=0;i<result.length;i++){
 						if(searchBy === 'platform'){
-							resultstring[i] = (' {'+' "'+searchBy+'": "'+arrPlatform[result[i]._id]+'","users": "' +result[i].users + '","time": "' +result[i].time + '"}');
+							platformVal = arrPlatform[result[i]._id];
+							if(platformVal == config.UNDEFINED || platformVal == config.NULL || platformVal == config.EMPTYSTRING) platformVal = result[i]._id;
+							resultstring[i] = (' {'+' "'+searchBy+'": "'+platformVal+'","users": "' +result[i].users + '","time": "' +result[i].time + '"}');
 						}else if(searchBy === 'type'){
-							resultstring[i] = (' {'+' "'+searchBy+'": "'+arrType[result[i]._id]+'","users": "' +result[i].users + '","time": "' +result[i].time + '"}');
+							typeVal = arrType[result[i]._id];
+							if(typeVal == config.UNDEFINED || typeVal == config.NULL || typeVal == config.EMPTYSTRING) typeVal = result[i]._id;
+							resultstring[i] = (' {'+' "'+searchBy+'": "'+typeVal+'","users": "' +result[i].users + '","time": "' +result[i].time + '"}');
+						}else if(searchBy === 'model'){
+							modelVal = arrModel[result[i]._id];
+							if(modelVal == config.UNDEFINED || modelVal == config.NULL || modelVal == config.EMPTYSTRING) modelVal = result[i]._id;
+							resultstring[i] = (' {'+' "'+searchBy+'": "'+modelVal+'","users": "' +result[i].users + '","time": "' +result[i].time + '"}');
+						}else if(searchBy === 'manufacturer'){
+							manufacturerVal = arrManufacturer[result[i]._id];
+							if(manufacturerVal == config.UNDEFINED || manufacturerVal == config.NULL || manufacturerVal == config.EMPTYSTRING) manufacturerVal = result[i]._id;
+							resultstring[i] = (' {'+' "'+searchBy+'": "'+manufacturerVal+'","users": "' +result[i].users + '","time": "' +result[i].time + '"}');
 						}else{
 							resultstring[i] = (' {'+' "'+searchBy+'": "'+result[i]._id+'","users": "' +result[i].users + '","time": "' +result[i].time + '"}');
 						}

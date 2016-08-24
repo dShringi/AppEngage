@@ -177,7 +177,6 @@ exports.events = function(server, producer) {
 function pushToKafka(data,request,producer,callback){
 	//Deriving the IP Address of the request for location.
 	data.val.ipa = common.getIP(request);
-
 	payloads = [{ topic: request.headers.akey, messages: JSON.stringify(data), partition: 0 }];
         
 	//Push the payload to the queue.

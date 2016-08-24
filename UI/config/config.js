@@ -43,6 +43,15 @@ module.exports.platform=[
 {shortpf:"w",displaypf:"Windows"}
 ]
 
+module.exports.model=[
+{shortpf:"GT-I9300",displaypf:"Samsung Galaxy S III"},
+{shortpf:"HTC One",displaypf:"HTC One"},
+{shortpf:"MotoG3",displaypf:"MotoG3"},
+{shortpf:"GT-I8552",displaypf:"Samsung Galaxy Grand Quattro"},
+{shortpf:"XT1052",displaypf:"Moto X"},
+{shortpf:"MI 5",displaypf:"MI 5"}
+]
+
 module.exports.type=[
 {shortpf:"S",displaypf:"SmartPhone"},
 {shortpf:"T",displaypf:"Tablet"},
@@ -50,7 +59,18 @@ module.exports.type=[
 {shortpf:"t",displaypf:"Tablet"}
 ]
 
+module.exports.manufacturer=[
+{shortpf:"samsung",displaypf:"Samsung"},
+{shortpf:"Xiaomi",displaypf:"Xiaomi"},
+{shortpf:"HTC",displaypf:"HTC"},
+{shortpf:"motorola",displaypf:"Motorola"}
+]
+
 module.exports.YYYYMMDDHH = 'YYYYMMDDHH';
 module.exports.YYYYMMDD = 'YYYYMMDD';
 module.exports.HOUR = 'hour';
 module.exports.DAY = 'day';
+
+module.exports.UNDEFINED = undefined;
+module.exports.NULL = null;
+module.exports.EMPTYSTRING ="";

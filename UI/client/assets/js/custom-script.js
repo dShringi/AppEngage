@@ -129,8 +129,20 @@ $(document).ready(function () {
 
 var showError = function(err){
     //sweetAlert("Oops...", err, "error");
-	swal({   title: "OOPS",   text: err,   imageUrl: "assets/img/error.png" });
+	swal({   title: "OOPS",   text: err,   imageUrl: "assets/img/Error.png" });
 }
+
+var showMessagingTable = function (data, tableId) {
+	"use strict";
+    var tableHTML = "";
+    $.each(data, function (index, row) {
+        //alert(JSON.stringify(row));
+        tableHTML += "<tr><td>" + row.date + "</td><td>" + row.campaign + "</td><td>" + row.channel + "</td><td>" + row.startend + "</td><td>" + row.sends + "</td><td>" + row.openrate + "</td><td>" + row.status + "</td><td><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td><td><i class=\"fa fa-trash-o\" aria-hidden=\"true\"></i></td></tr>";
+		console.log(tableHTML);
+        
+    });
+    updateTable(tableId, tableHTML);
+};
 
 var showDeviceModelTable = function (data, tableId) {
 	"use strict";
@@ -786,7 +798,7 @@ function plotDonutChart(data, ele, arc, arcOver, pie, svg, width, color){
 								.attr("class", "shadow")
 								.attr("d", arcOver);
 								tooltip.transition().duration(200).style("opacity", 1);	
-								tooltip.html(d.data[ele]+" : "+d.data.users).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
+								tooltip.html(d.data[ele]+" : "+sec2ISO(d.data.time)).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
 						})
 						.on("mouseleave", function (d) {
 							d3.select(this)
