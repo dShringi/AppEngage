@@ -21,6 +21,10 @@ var appSchema = new Schema({
     ctg  : { type: String }
 },{versionKey:false});
 
+var eventNameSchema = new Schema({ 
+    _id : { type: String }
+},{versionKey:false});
+
 var realtimeSchema = new Schema({
     _id  : { type: Number, required: true },
     val  : { type: Number }
@@ -94,6 +98,7 @@ var eventCollection 		= Mongoose.model('coll_events', eventSchema);
 var activeSessionCollection 	= Mongoose.model('coll_activesessions', activeSessionSchema);
 var userCollection		= Mongoose.model('coll_users',userSchema);
 var eventCollection		= Mongoose.model('coll_events',eventSchema);
+var eventNamesCollection    =   Mongoose.model('coll_eventNames',eventNameSchema);
 
 // Factory to get model based on event type
 function eventFactory(){
@@ -191,5 +196,6 @@ module.exports = {
   Dashboard: dashboardCollection,
   ActiveSession: activeSessionCollection,
   User: userCollection,
-  RealTime: realtimeCollection    
+  RealTime: realtimeCollection,
+  EventNames: eventNamesCollection
 };

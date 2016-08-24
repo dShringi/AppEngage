@@ -100,29 +100,29 @@ consumer.on('message', function(message) {
 		case Collection["begin"]:
 			// TODO : Implement Bulk Insert.
 			//Insert in Users and Dashboard Collection
-			updateUsers(data,dashboardDayData.key,function(err,newUserIncrement){
+			updateUsers(data,dashboardDayData.key,function onUpdateUsersComplete(err,newUserIncrement){
 				if(!err){
-					updateDashboard(dashboardYearData,data.type,1,newUserIncrement,function(err){
+					updateDashboard(dashboardYearData,data.type,1,newUserIncrement,function onUpdateDashboardComplete(err){
 						if(err) logError(err);
 						return;
 					});
 
-					updateDashboard(dashboardMonthData,data.type,1,newUserIncrement,function(err){
+					updateDashboard(dashboardMonthData,data.type,1,newUserIncrement,function onUpdateDashboardComplete(err){
 						if(err) logError(err);
 						return;					
 					});
 
-					updateDashboard(dashboardDayData,data.type,1,newUserIncrement,function(err){
+					updateDashboard(dashboardDayData,data.type,1,newUserIncrement,function onUpdateDashboardComplete(err){
 						if(err) logError(err);
 						return;				
 					});
 
-					updateDashboard(dashboardWeekData,data.type,1,newUserIncrement,function(err){
+					updateDashboard(dashboardWeekData,data.type,1,newUserIncrement,function onUpdateDashboardComplete(err){
 						if(err) logError(err);
 						return;
 					});
 
-					updateDashboard(dashboardHourData,data.type,1,newUserIncrement,function(err){
+					updateDashboard(dashboardHourData,data.type,1,newUserIncrement,function onUpdateDashboardComplete(err){
 						if(err) logError(err);
 						return;
 					});
@@ -133,13 +133,13 @@ consumer.on('message', function(message) {
 			});
 
 			// Insert in active sessions
-			updateActiveSessions(data,function(err){
+			updateActiveSessions(data,function onUpdateAcriveSessionsComplete(err){
 				if(err) logError(err);
 				return;
 			});
 
 			//Incrementing Active Session Count in the RealTime Collection
-			updateRealTimeSessionCount(data.val.rtc,1,function(err){
+			updateRealTimeSessionCount(data.val.rtc,1,function onupdateRealTimeSessionCountComplete(err){
 				if(err) logError(err);
 				return;
 			});
@@ -149,33 +149,33 @@ consumer.on('message', function(message) {
 		case Collection["crash"]:
 			// TODO : Implement Bulk Insert.
 			//Increment the crash count in the dashboard collection
-			updateDashboard(dashboardYearData,data.type,1,0,function(err){
+			updateDashboard(dashboardYearData,data.type,1,0,function onUpdateDashboardComplete(err){
 				if(err) logError(err);	
 				return;
 			});
 
-			updateDashboard(dashboardMonthData,data.type,1,0,function(err){
+			updateDashboard(dashboardMonthData,data.type,1,0,function onUpdateDashboardComplete(err){
 				if(err) logError(err);
 					return;
 			});
 
-			updateDashboard(dashboardDayData,data.type,1,0,function(err){
+			updateDashboard(dashboardDayData,data.type,1,0,function onUpdateDashboardComplete(err){
 				if(err) logError(err);
 				return;
 			});
 
-			updateDashboard(dashboardWeekData,data.type,1,0,function(err){
+			updateDashboard(dashboardWeekData,data.type,1,0,function onUpdateDashboardComplete(err){
 				if(err) logError(err);
 				return;
 			});
 
-			updateDashboard(dashboardHourData,data.type,1,0,function(err){
+			updateDashboard(dashboardHourData,data.type,1,0,function onUpdateDashboardComplete(err){
 				if(err) logError(err);
 				return;			
 			});
 
 			//update user collection for timspent
-			updateUsers(data,dashboardDayData.key,function(err,data){
+			updateUsers(data,dashboardDayData.key,function onUpdateDashboardComplete(err,data){
 				if(err) log(err);
 				return;
 			});			
@@ -185,45 +185,45 @@ consumer.on('message', function(message) {
 		case Collection["end"]:
 			// TODO : Implement Bulk Insert.
 			//Decrementing Active Session Count in the RealTime Collection
-			updateRealTimeSessionCount(data.val.rtc,-1,function(err){
+			updateRealTimeSessionCount(data.val.rtc,-1,function onupdateRealTimeSessionCountComplete(err){
 				if(err) logError(err);
 				return;
 			});
 
 			// Delete active session
-			removeActiveSession(data.val.sid,function(err){
+			removeActiveSession(data.val.sid,function onremoveActiveSessionComplete(err){
 				if(err) logError(err);
 				return;
 			});
 
 			//Increment the timespent in the dashboard collection
-			updateDashboard(dashboardYearData,data.type,data.val.tsd,0,function(err){
+			updateDashboard(dashboardYearData,data.type,data.val.tsd,0,function onUpdateDashboardComplete(err){
 				if(err) logError(err);
 				return;
 			});
 
-			updateDashboard(dashboardMonthData,data.type,data.val.tsd,0,function(err){
+			updateDashboard(dashboardMonthData,data.type,data.val.tsd,0,function onUpdateDashboardComplete(err){
 				if(err) logError(err);
 				return;
 			});
 
-			updateDashboard(dashboardDayData,data.type,data.val.tsd,0,function(err){
+			updateDashboard(dashboardDayData,data.type,data.val.tsd,0,function onUpdateDashboardComplete(err){
 				if(err) logError(err);
 				return;
 			});
 
-			updateDashboard(dashboardWeekData,data.type,data.val.tsd,0,function(err){
+			updateDashboard(dashboardWeekData,data.type,data.val.tsd,0,function onUpdateDashboardComplete(err){
 				if(err) logError(err);
 				return;
 			});
 
-			updateDashboard(dashboardHourData,data.type,data.val.tsd,0,function(err){
+			updateDashboard(dashboardHourData,data.type,data.val.tsd,0,function onUpdateDashboardComplete(err){
 				if(err) logError(err);
 				return;
 			});			
 
 			//update user collection for timspent
-			updateUsers(data,dashboardDayData.key,function(err,data){
+			updateUsers(data,dashboardDayData.key,function onupdateUsersComplete(err,data){
 				if(err) log(err);
 				return;
 			});
@@ -234,39 +234,39 @@ consumer.on('message', function(message) {
 			// TODO : Implement Bulk Insert.
 			//Increment the total events count in the dashboard collection
 			
-			updateDashboard(dashboardYearData,data.type,1,0,function(err){
+			updateDashboard(dashboardYearData,data.type,1,0,function onUpdateDashboardComplete(err){
 				if(err) logError(err);
 				return;
 			});
 
-			updateDashboard(dashboardMonthData,data.type,1,0,function(err){
+			updateDashboard(dashboardMonthData,data.type,1,0,function onUpdateDashboardComplete(err){
 				if(err) logError(err);
 				return;
 			});
 
-			updateDashboard(dashboardDayData,data.type,1,0,function(err){
+			updateDashboard(dashboardDayData,data.type,1,0,function onUpdateDashboardComplete(err){
 				if(err) logError(err);
 				return;
 			});
 
-			updateDashboard(dashboardWeekData,data.type,1,0,function(err){
+			updateDashboard(dashboardWeekData,data.type,1,0,function onUpdateDashboardComplete(err){
 				if(err) logError(err);
 				return;
 			});
 
-			updateDashboard(dashboardHourData,data.type,1,0,function(err){
+			updateDashboard(dashboardHourData,data.type,1,0,function onUpdateDashboardComplete(err){
 				if(err) logError(err);
 				return;
 			});
 
 			// Insert in active sessions
-			updateActiveSessions(data,function(err){
+			updateActiveSessions(data,function onupdateActiveSessionsComplete(err){
 				if(err) logError(err);
 				return;
 			});
 
 			//update user collection for timspent
-			updateUsers(data,dashboardDayData.key,function(err,data){
+			updateUsers(data,dashboardDayData.key,function onupdateUsersComplete(err,data){
 				if(err) log(err);
 				return;
 			});			
@@ -477,6 +477,41 @@ function updateUsers(req,dateKey,callback){
 					return;
 				}
 			});
+
+			var updateEventsDoc = JSON.parse('{"$inc":{"_'+req.val.key+'.$.te":1}}');							
+			var searchEventsDoc = JSON.parse('{"_id":"'+req.val.did+'","_'+req.val.key+'._id":'+parseInt(mm.toString().concat(dd))+'}');
+			//Update the counters for the user against the respective date for the key.
+			Model.User.findOneAndUpdate(searchEventsDoc,updateEventsDoc,function(err,doc){
+				//If none of the document gets updated.
+				if(doc===null || doc===undefined){
+					// If there are no errors
+					if(!err){
+						var push = {};
+						push['_'+req.val.key] = JSON.parse('{"_id":'+parseInt(mm.toString().concat(dd))+',"te":1}');
+						//Against the user add the counters for data which he has performed a login.
+						Model.User.findByIdAndUpdate(req.val.did,{$push:push},function(err,doc){
+							if(err){
+								logger.error(common.getErrorMessageFrom(err));
+								return;
+							}
+						});
+
+						Model.EventNames.findOneAndUpdate({_id:req.val.key},{_id:req.val.key},{upsert:true},function(err,doc){
+							if(err){
+								//console.log(err);
+								logger.error(common.getErrorMessageFrom(err));
+								return;
+							}							
+						});	
+					}else{
+						logger.error(common.getErrorMessageFrom(err));
+						return;
+					}
+				}else{
+					callback(err,0)
+					return;
+				}
+			});			
 		break;		
 	}
 }
