@@ -32,6 +32,22 @@ var service = {
             }
 
         });
-    }
+    },
+	
+	messaging: function(){
+		console.log("messaging service called");
+		
+		$.ajax({
+			type: 'GET',
+			url: "http://52.206.121.100/appengage/getCampaignData",
+			contentType: "application/json",
+			dataType: "json",
+			timeout: 180000,
+			success: function(data){
+				console.log(data);
+				showMessagingTable(data, 'tbl-messaging');
+			}
+		});
+	}
 	
 };

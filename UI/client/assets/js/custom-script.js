@@ -132,6 +132,18 @@ var showError = function(err){
 	swal({   title: "OOPS",   text: err,   imageUrl: "assets/img/Error.png" });
 }
 
+var showMessagingTable = function (data, tableId) {
+	"use strict";
+    var tableHTML = "";
+    $.each(data, function (index, row) {
+        //alert(JSON.stringify(row));
+        tableHTML += "<tr><td>" + row.date + "</td><td>" + row.campaign + "</td><td>" + row.channel + "</td><td>" + row.startend + "</td><td>" + row.sends + "</td><td>" + row.openrate + "</td><td>" + row.status + "</td><td><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td><td><i class=\"fa fa-trash-o\" aria-hidden=\"true\"></i></td></tr>";
+		console.log(tableHTML);
+        
+    });
+    updateTable(tableId, tableHTML);
+};
+
 var showDeviceModelTable = function (data, tableId) {
 	"use strict";
     var tableHTML = "";

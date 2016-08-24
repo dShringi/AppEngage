@@ -6,6 +6,7 @@
 
         <!-- Optional theme -->
         <link rel="stylesheet" href="assets/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="assets/css/font-awesome.min.css">
         <link rel="stylesheet" href="assets/css/style.css">
         <script src="assets/js/jquery.js"></script>
         <!-- Latest compiled and minified JavaScript -->
@@ -24,8 +25,10 @@
         <script src="assets/js/jquery.tablesorter.pager.js"></script>
         <link rel="stylesheet" href="assets/css/sweetalert.css">
         <script src="assets/js/sweetalert.min.js"></script>
+        <script src="assets/js/servicecalls.js"></script>
         <script src="assets/js/custom-script.js"></script>
         <link rel="stylesheet" href="assets/css/messaging.css">
+        
 
     </head>
     <body style="background-color:#fff; height:100vh;">
@@ -80,11 +83,13 @@
         </aside>
 
         <script>
-            var loadChart = function (sd, ed, appKey) {
-                d3.json("assets/json/messaging.json" + "?sd=" + sd + "&ed=" + ed + "&akey=" + appKey, function (error, data) {
+            var loadChart = function (sd, ed, appKey, type) {
+                console.log("assets/json/messaging.json");
+                d3.json("http://52.206.121.100/appengage/getCampaignData", function (error, data) {
                     //d3.json("assets/json/ok-data-total-crashes.json"+"?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
-
-                    data = JSON.parse(data)
+                    console.log(data);
+                    //data = JSON.parse(data);
+                    console.log(data);
                     if (data.length == 0) {
                         //alert("No data found for the selected parameters.");
                     } else {
@@ -93,6 +98,12 @@
                 });
 
             }
+
+            //$(document).ready(function () {
+            //    var data1 = [];
+            //    data1 = service.messaging();
+            //    console.log(data1);
+            //});
             
         </script>
 </body>
