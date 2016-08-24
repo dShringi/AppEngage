@@ -137,12 +137,14 @@
 			});
 			
 			function loadChart(startDate, endDate, appKey){
-			svg.selectAll("*").remove();
+			
 				// load and display the cities
 				d3.json("http://52.206.121.100/appengage/getLocationCounters?sd="+startDate+"&ed="+endDate+"&akey="+appKey, function (error, data) {
+					
 					data = JSON.parse(data);
 					console.log(data);
 					showCitiesTable(data, 'tbl-cities');
+					svg.selectAll("*").remove();
 					svg.selectAll(".mark")
 						.data(data)
 						.enter()
