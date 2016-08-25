@@ -17,20 +17,20 @@ var outArray = [];
 var db = mongojs(config.connectionstring+akey);
 
 async.waterfall(
-    [	
+    [
 	function(callback){ //callback start
 
 		var application = config.appdetails;
-		_.each(application,function(data){		
-			if(data.app === akey){		
-				appTZ = data.TZ;		
-				return;		
-			}		
-		});		
+		_.each(application,function(data){
+			if(data.app === akey){
+				appTZ = data.TZ;
+				return;
+			}
+		});
 
 		startDateWithoutHour=common.getStartDate(startDate,appTZ);  //get start moment date without hour.
 		endDateWithoutHour=common.getStartDate(endDate,appTZ);	  //get end moment date without hour.
-		
+
 		diffDays=endDateWithoutHour-startDateWithoutHour;  //to find no of days between two dates
 
 		if(diffDays==0){ //for weekly fetch
@@ -42,11 +42,11 @@ async.waterfall(
 			for(var i=moment(startDateMoment,dateFormat);i<=moment(endDateMoment,dateFormat);i=i.add(1,inc)){
 				outArray[i.format(dateFormat)]={
 					tuu:0,
-					tts:0	
-				};	
-			};	
+					tts:0
+				};
+			};
 			callback(null);
-		} else { 
+		} else {
 			type="D";
 			inc=config.DAY;
 			dateFormat=config.YYYYMMDD;
@@ -55,9 +55,9 @@ async.waterfall(
 			for(var i=moment(startDateMoment,dateFormat);i<=moment(endDateMoment,dateFormat);i=i.add(1,inc)){
 				outArray[i.format(dateFormat)]={
 					tuu:0,
-					tts:0	
-				};	
-			};				
+					tts:0
+				};
+			};
 			callback(null);
 		}
 	}, //callback end
@@ -80,8 +80,8 @@ async.waterfall(
 					}
 
 					for(var j=moment(startDateMoment,dateFormat);j<=moment(endDateMoment,dateFormat);j=j.add(1,inc)){
-						resultstr = resultstr + (' {'+' "date": "'+j.format(dateFormat)+'","tuu": "' +outArray[j.format(dateFormat)].tuu + '","tts": "' +outArray[j.format(dateFormat)].tts+'"},');						
-					}					
+						resultstr = resultstr + (' {'+' "date": "'+j.format(dateFormat)+'","tuu": "' +outArray[j.format(dateFormat)].tuu + '","tts": "' +outArray[j.format(dateFormat)].tts+'"},');
+					}
 			 			response = '[ ' + resultstr.substr(0,resultstr.length-1) + ']';
 				}else{
 					db.close();
@@ -94,7 +94,7 @@ async.waterfall(
 			}
 			callback(null);
 		});
-	
+
 	},//callback end
 	function(callback) { //callback start
 		db.close();
@@ -114,21 +114,21 @@ var outArray = [];
 var db = mongojs(config.connectionstring+akey);
 
 async.waterfall(
-    [	
+    [
 	function(callback){ //callback start
 
 		var application = config.appdetails;
-		_.each(application,function(data){		
-			if(data.app === akey){		
-				appTZ = data.TZ;		
-				return;		
-			}		
-		});		
+		_.each(application,function(data){
+			if(data.app === akey){
+				appTZ = data.TZ;
+				return;
+			}
+		});
 
 		// code started
 		startDateWithoutHour=common.getStartDate(startDate,appTZ);         //get start moment date without hour
 		endDateWithoutHour=common.getStartDate(endDate,appTZ);			 //get end moment date without hour
-		 
+
 		diffDays=endDateWithoutHour-startDateWithoutHour;  //to find no of days between two dates
 
 		if(diffDays==0){ //for weekly fetch
@@ -140,11 +140,11 @@ async.waterfall(
 			for(var i=moment(startDateMoment,dateFormat);i<=moment(endDateMoment,dateFormat);i=i.add(1,inc)){
 				outArray[i.format(dateFormat)]={
 					tse:0,
-					tts:0	
-				};	
+					tts:0
+				};
 			};
 			callback(null);
-		}else { 
+		}else {
 			type="D";
 			inc=config.DAY;
 			dateFormat=config.YYYYMMDD;
@@ -153,9 +153,9 @@ async.waterfall(
 			for(var i=moment(startDateMoment,dateFormat);i<=moment(endDateMoment,dateFormat);i=i.add(1,inc)){
 				outArray[i.format(dateFormat)]={
 					tse:0,
-					tts:0	
-				};	
-			};			
+					tts:0
+				};
+			};
 			callback(null);
 		}
 	}, //callback end
@@ -165,7 +165,7 @@ async.waterfall(
 		{ $group: {_id :  "$_id.key", 'tse' : {$sum : "$val.tse"},'tts' : {$sum : "$val.tts"}}},
 		{ $sort: {'_id': 1 } },
 		{ $project: {_id:1,tse:1,tts:1}}
-		],function(err, result) {		
+		],function(err, result) {
 			if(!err){
 				if(result!=null){
 
@@ -177,16 +177,16 @@ async.waterfall(
 					}
 
 					for(var j=moment(startDateMoment,dateFormat);j<=moment(endDateMoment,dateFormat);j=j.add(1,inc)){
-						resultstr = resultstr + (' {'+' "date": "'+j.format(dateFormat)+'","tse": "' +outArray[j.format(dateFormat)].tse + '","tts": "' +outArray[j.format(dateFormat)].tts+'"},');						
-					}					
+						resultstr = resultstr + (' {'+' "date": "'+j.format(dateFormat)+'","tse": "' +outArray[j.format(dateFormat)].tse + '","tts": "' +outArray[j.format(dateFormat)].tts+'"},');
+					}
 			 			response = '[ ' + resultstr.substr(0,resultstr.length-1) + ']';
 				}else{
 					db.close();
 					return res.json('[]');
 				}
-			
+
 			}else{
-				db.close();	
+				db.close();
 				logger.error(common.getErrorMessageFrom(err));
              	return res.json('[]');
 			}
@@ -195,7 +195,7 @@ async.waterfall(
 	},//callback end
 	function(callback) { //callback start
 		db.close();
-		return res.json(response);	
+		return res.json(response);
 	}
 ]);
 }

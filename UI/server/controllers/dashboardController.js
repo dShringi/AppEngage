@@ -32,14 +32,14 @@ module.exports.dashboardRealTime = function(req,res){
 		{ $group:{_id:null,totalUsers:{$sum:"$val"}}}
 		,function(err,result){
 			if(!err){
-				if(result.length != 0){	
+				if(result.length != 0){
 					totalUsers=result[0].totalUsers;
 				}
 
 				for(i=startdate;i<=enddate;i=i+10){
 					outArray[i] = {
-						totalUsers : 0	
-					}	
+						totalUsers : 0
+					}
 				}
 
 				db.collection(config.coll_realtime).find(
@@ -64,9 +64,9 @@ module.exports.dashboardRealTime = function(req,res){
 					}else{
 						db.close();
 						logger.error(common.getErrorMessageFrom(err));
-						return res.json('[]');						
+						return res.json('[]');
 					}
-				});		
+				});
 			}else{
 				db.close();
 				logger.error(common.getErrorMessageFrom(err));
@@ -79,7 +79,7 @@ module.exports.dashboardRealTime = function(req,res){
 module.exports.dashboardCounters = function(req,res){
 
 
-var sDate = req.query["sd"],eDate = req.query["ed"],akey =req.query["akey"],typeOfDevice=req.query["type"];	
+var sDate = req.query["sd"],eDate = req.query["ed"],akey =req.query["akey"],typeOfDevice=req.query["type"];
 var tse=0,te=0,tuu=0,tnu=0,tts=0,tce=0,weeklyCount=0,monthlyCount=0,yearlyCount=0;
 var startDateParam=sDate,endDateParam=eDate,sdateparam,edateparam,sdmonth,edmonth,sdyear,edyear,gteval,lteval,distinctUsers;
 var type="D",diffDays;
@@ -88,33 +88,33 @@ var startDateWithoutHour,endDateWithoutHour;
 var db = mongojs(config.connectionstring+akey);
 var typeListarray=[];
 async.waterfall(
-    [	
-		
+    [
+
 	function(callback) { //callback start
 
 		var application = config.appdetails;
-		_.each(application,function(data){		
-			if(data.app === akey){		
-				appTZ = data.TZ;		
-				return;		
-			}		
+		_.each(application,function(data){
+			if(data.app === akey){
+				appTZ = data.TZ;
+				return;
+			}
 		});
 
 		//checking device type and assigning into typeListarray
-		switch (typeOfDevice) { 
-			case "A" : 
+		switch (typeOfDevice) {
+			case "A" :
 				typeListarray[0]="S";
-				typeListarray[1]="T"; 
-			break; 
-			case "S" : 
-				typeListarray[0]="S"; 
-			break; 
-			case "T" : 
-				typeListarray[0]="T"; 
+				typeListarray[1]="T";
+			break;
+			case "S" :
+				typeListarray[0]="S";
+			break;
+			case "T" :
+				typeListarray[0]="T";
 		}
 
-		startDateWithoutHour=String(common.getStartDate(startDateParam,appTZ));  		//get start moment date 
-		endDateWithoutHour=String(common.getStartDate(endDateParam,appTZ));			//get end moment date 
+		startDateWithoutHour=String(common.getStartDate(startDateParam,appTZ));  		//get start moment date
+		endDateWithoutHour=String(common.getStartDate(endDateParam,appTZ));			//get end moment date
 		startdateMoment=Number(startDateWithoutHour);
 		endDateMoment=Number(endDateWithoutHour);
 		sdateparam=startDateWithoutHour.substr(0, 4)+"-"+startDateWithoutHour.substr(4, 2)+"-"+startDateWithoutHour.substr(6, 2);
@@ -123,64 +123,64 @@ async.waterfall(
 		edmonth=endDateWithoutHour.substr(4, 2);										//get end date month
 		sdyear=startDateWithoutHour.substr(0, 4);										//get start date year
 		edyear=endDateWithoutHour.substr(0, 4);										//get end date year
-		 
+
 		diffDays=common.getDateDiffernce(sdateparam,edateparam);  //to find no of days between two dates
 
 		if(diffDays<=7){ //for weekly fetch
 			var weekFirstDateforStartDate=common.getWeekFirstdateForStartDate(sdateparam);    //find start date of week base on start date
 			var weekFirstDateforEndDate=common.getWeekFirstdateForEndDate(edateparam);		 //find start date of week base on end date
-	
+
 			db.collection(config.coll_dashboard).count({$and: [{ '_id.key': { $gte: parseInt(startdateMoment), $lte: parseInt(endDateMoment) }},{ "_id.ty": "W"}]},function(err, result) {
 				if(!err){
-					weeklyCount=result;		
+					weeklyCount=result;
 					//console.log("weekly count: "+ weeklyCount);
 						if (weeklyCount>=1 && weekFirstDateforStartDate==weekFirstDateforEndDate){type="W";} else {type="D";}
 							//console.log("type value: " + type);
 							callback(null);
 				}
 			});
-		} 
+		}
 		else if(diffDays>7 && sdmonth == edmonth )  { // checking for monthly started
 			db.collection(config.coll_dashboard).count({$and: [{ '_id.key': { $gte: parseInt(startdateMoment), $lte: parseInt(endDateMoment) }},{ "_id.ty": "M"}]},function(err, result) {
 				if(!err){
-					monthlyCount=result;		
+					monthlyCount=result;
 						if (monthlyCount>=1 ){type="M";} else {type="D";}
 							callback(null);
 				}
-			});		
-		} 
-	
+			});
+		}
+
 		else if(diffDays>7 && sdmonth != edmonth && sdyear == edyear) {  // checking for year started
 			db.collection(config.coll_dashboard).count({$and: [{ '_id.key': { $gte: parseInt(startdateMoment), $lte: parseInt(endDateMoment) }},{ "_id.ty": "Y"}]},function(err, result) {
 				if(!err){
-					yearlyCount=result;		
+					yearlyCount=result;
 						if (yearlyCount>=1 ){type="Y";} else {type="D";}
 							callback(null);
 				}
 			});
-		}  
-	
+		}
+
 		else { callback(null)}
 	}, //callback end
-	
+
 	function(callback) { //callback start
 		//find distinct no of users
-	
+
 			var sdmonthPart=parseInt(sdmonth),edmonthpart=parseInt(edmonth);
 			gteval=parseInt(sdmonthPart+startDateWithoutHour.substr(6, 2));
 			lteval=parseInt(edmonthpart+endDateWithoutHour.substr(6, 2));
-			
+
 			var yyyy=Number(sdyear);
 			var keyVal='{ "_'+ yyyy +'" : { "$elemMatch":{"$and":[{ "_id": { "$gte": '+ gteval +' }},{"_id": { "$lte": '+ lteval +' }}]}}}';
-			var resultObject=JSON.parse(keyVal);			
+			var resultObject=JSON.parse(keyVal);
 			db.collection(config.coll_users).count(resultObject,function(err,res){
 			distinctUsers=res;
 			//console.log(distinctUsers);
 			});
-			
+
 	callback(null);
 	}, //callback end
-	
+
 	function(callback) { //callback start
 		//console.log("final type value" + type);
 		db.collection(config.coll_dashboard).aggregate([
@@ -199,7 +199,7 @@ async.waterfall(
 							tnu+=result[i].tnu;
 							tts+=result[i].tts;
 							tce+=result[i].tce;
-						}; 
+						};
 						response = '[{"tse":'+tse+',"te":' +te+',"tuu":' +distinctUsers+',"tnu":' +tnu+',"tts":' +tts+',"tce":' +tce+'}]';
 						//console.log(response);
 						callback(null);
@@ -214,13 +214,13 @@ async.waterfall(
 					//return res.json(err);
 				}
 		});
-	
-	
+
+
 	},//callback end
 	function(callback) { //callback start
 		db.close();
 		return res.json(response);
-	
+
 	}
 ]);
 

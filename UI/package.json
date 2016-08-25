@@ -3,6 +3,9 @@
   "description": "AppEngage",
   "version": "1.0.0",
   "readme": "No README data found!",
+  "engines": {
+  "node": "6.3.0"
+  },
   "dependencies": {
     "async": "^2.0.0",
     "body-parser": "^1.15.0",

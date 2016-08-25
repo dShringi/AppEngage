@@ -39,19 +39,19 @@ function aggregateCalulation(akey,yyyy,searchBy,searchParam,gtevalNumeric,lteval
 		var yearParam='$_'+yyyy;
 		var ttsKeyValue=yearParam+'.tts';
 		var matchCon2='[{"_'+yyyy+'._id":{"$gte":'+gtevalNumeric+'}},{"_'+yyyy+'._id":{"$lte":'+ltevalNumeric+'}}]';
-		var matchJSON2=JSON.parse(matchCon2);		
+		var matchJSON2=JSON.parse(matchCon2);
 		var grpParam1='{"dev":"$'+searchParam+'","did":"$_id"}';
 		var grpParamJSON1 = JSON.parse(grpParam1);
 		var grpParam2='{"_id":"$_id.dev","users": {"$sum": 1},"time": {"$sum":"$tts"}}';
 		var grpParamJSON2 = JSON.parse(grpParam2);
-		var modelVal,typeVal,platformVal,manufacturerVal;	
+		var modelVal,typeVal,platformVal,manufacturerVal;
 
 		db.collection(config.coll_users).aggregate([
 			{ $match: { $and: matchJSON1 }},
 			{ $unwind: yearParam},
 			{ $match:{$and: matchJSON2 }},
 			{ $group: {_id : grpParamJSON1,'tts' : {$sum : ttsKeyValue}}},
-			{ $group: {_id:'$_id.dev',users: {$sum: 1},time: {$sum:'$tts'}}},			
+			{ $group: {_id:'$_id.dev',users: {$sum: 1},time: {$sum:'$tts'}}},
 			{ $project: {_id:1,users:1,time:1}}
 			],function(err, result) {
 			if(!err){
@@ -90,8 +90,8 @@ function aggregateCalulation(akey,yyyy,searchBy,searchParam,gtevalNumeric,lteval
 				db.close();
 				logger.error(common.getErrorMessageFrom(err));
 				callback(err,'[]');
-			}		
-		}	
+			}
+		}
 	);
 } // end of aggregateCalulation function
 
@@ -115,19 +115,19 @@ module.exports.getUserDashboardCounters = function(req,res){
 	sdmonth=startDateWithoutHour.substr(4, 2),edmonth=endDateWithoutHour.substr(4, 2);	//get start and end date month
 	sdyear=startDateWithoutHour.substr(0, 4),edyear=endDateWithoutHour.substr(0, 4);	//get start and end date year
 	yyyy=parseInt(sdyear);
-	
+
 	var gteval=parseInt(parseInt(sdmonth)+startDateWithoutHour.substr(6, 2)),
 		lteval=parseInt(parseInt(edmonth)+endDateWithoutHour.substr(6, 2));
 
 	for(i=0;i<searchByArray.length;i++){
 		if (searchByArray[i].name==searchBy){
-			searchParam=searchByArray[i].value;  
+			searchParam=searchByArray[i].value;
 		}
 	}
 
 	aggregateCalulation(akey,yyyy,searchBy,searchParam,gteval,lteval,function(err, result){
 		if(!err){
-			return res.json(result);			
+			return res.json(result);
 		}
 		else {
 			logger.error(common.getErrorMessageFrom(err));
