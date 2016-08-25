@@ -1,3 +1,5 @@
+//TODO Clustering https://nodejs.org/api/cluster.html
+//node --optimize_for_size --max_old_space_size=460 --gc_interval=100 server.js
 'use strict'
 var Hapi = require('hapi');
 var server = new Hapi.Server();
@@ -23,13 +25,3 @@ server.start((err) => {
     }
     console.log('Server running at:', server.info.uri);
 });
-
-/*
-server.route({
-        method: 'GET',
-        path: '/',
-        handler: function (request, reply) {
-            reply({ message: "Hello from AppEngage!"});
-        }
-});
-*/

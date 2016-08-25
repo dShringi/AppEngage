@@ -54,7 +54,7 @@ var options = {
 var consumer = new HighLevelConsumer(client, payloads, options);
 var offset = new Offset(client);
 
-consumer.on('message', function(message) {    
+consumer.on('message', function(message) {
 
 	data = JSON.parse(message.value);
 	logger.info(data);
@@ -68,7 +68,7 @@ consumer.on('message', function(message) {
 		var geo = geoip.lookup(data.val.ipa);
 		if(geo.city == undefined || geo.city == null) {
 			data.val.city = 'Unknown';
-			data.val.ctry = 'Unknown' 
+			data.val.ctry = 'Unknown'
 			data.val.dlat = '0';
 			data.val.dlog = '0';
 		}
@@ -109,12 +109,12 @@ consumer.on('message', function(message) {
 
 					updateDashboard(dashboardMonthData,data.type,1,newUserIncrement,function onUpdateDashboardComplete(err){
 						if(err) logError(err);
-						return;					
+						return;
 					});
 
 					updateDashboard(dashboardDayData,data.type,1,newUserIncrement,function onUpdateDashboardComplete(err){
 						if(err) logError(err);
-						return;				
+						return;
 					});
 
 					updateDashboard(dashboardWeekData,data.type,1,newUserIncrement,function onUpdateDashboardComplete(err){
@@ -143,14 +143,14 @@ consumer.on('message', function(message) {
 				if(err) logError(err);
 				return;
 			});
-			       		
+
 		break;
 
 		case Collection["crash"]:
 			// TODO : Implement Bulk Insert.
 			//Increment the crash count in the dashboard collection
 			updateDashboard(dashboardYearData,data.type,1,0,function onUpdateDashboardComplete(err){
-				if(err) logError(err);	
+				if(err) logError(err);
 				return;
 			});
 
@@ -171,14 +171,14 @@ consumer.on('message', function(message) {
 
 			updateDashboard(dashboardHourData,data.type,1,0,function onUpdateDashboardComplete(err){
 				if(err) logError(err);
-				return;			
+				return;
 			});
 
 			//update user collection for timspent
 			updateUsers(data,dashboardDayData.key,function onUpdateDashboardComplete(err,data){
 				if(err) log(err);
 				return;
-			});			
+			});
 
 		break;
 
@@ -220,7 +220,7 @@ consumer.on('message', function(message) {
 			updateDashboard(dashboardHourData,data.type,data.val.tsd,0,function onUpdateDashboardComplete(err){
 				if(err) logError(err);
 				return;
-			});			
+			});
 
 			//update user collection for timspent
 			updateUsers(data,dashboardDayData.key,function onupdateUsersComplete(err,data){
@@ -229,11 +229,11 @@ consumer.on('message', function(message) {
 			});
 
 		break;
-		
+
 		case Collection["event"]:
 			// TODO : Implement Bulk Insert.
 			//Increment the total events count in the dashboard collection
-			
+
 			updateDashboard(dashboardYearData,data.type,1,0,function onUpdateDashboardComplete(err){
 				if(err) logError(err);
 				return;
@@ -269,7 +269,7 @@ consumer.on('message', function(message) {
 			updateUsers(data,dashboardDayData.key,function onupdateUsersComplete(err,data){
 				if(err) log(err);
 				return;
-			});			
+			});
 		break;
 	}
 });
@@ -303,7 +303,7 @@ function updateUsers(req,dateKey,callback){
 			Model.User.findById(req.val.did,function(err,doc){
 				//Proceed only if there are no errors
 				if(!err){
-					//Proceed only if the user doesn't exist in the system 
+					//Proceed only if the user doesn't exist in the system
 					if(doc === null || !doc){
 						req.type = Collection["user"];
 						req.val.ts = 1;
@@ -316,7 +316,7 @@ function updateUsers(req,dateKey,callback){
 									return;
 							}
 
-							//Against the user add the counters for data which he has performed a login.	
+							//Against the user add the counters for data which he has performed a login.
 							var push = {};
 							push['_'+yyyy] = JSON.parse('{"_id":'+parseInt(mm.toString().concat(dd))+',"tse":1,"tts":0}');
 							Model.User.findByIdAndUpdate(req.val.did,{$push:push},{upsert:true},function(err,doc){
@@ -324,9 +324,9 @@ function updateUsers(req,dateKey,callback){
 									logger.error(common.getErrorMessageFrom(err));
 									return;
 								}
-						
+
 								callback(null,1);
-							});										
+							});
 						});
 					}else{
 						//This path executes if the user alredy exists
@@ -338,7 +338,7 @@ function updateUsers(req,dateKey,callback){
 							}
 						});
 
-						var _update = JSON.parse('{"$inc":{"_'+yyyy+'.$.tse":1}}');							
+						var _update = JSON.parse('{"$inc":{"_'+yyyy+'.$.tse":1}}');
 						var _search = JSON.parse('{"_id":"'+req.val.did+'","_'+yyyy+'._id":'+parseInt(mm.toString().concat(dd))+'}');
 						//Update the counters for the user against the respective date.
 						Model.User.findOneAndUpdate(_search,_update,function(err,doc){
@@ -366,8 +366,8 @@ function updateUsers(req,dateKey,callback){
 						});
 					}
 				}else{
-					logger.error(err);				
-				}	
+					logger.error(err);
+				}
 			});
 		break;
 		case Collection["end"]:
@@ -379,7 +379,7 @@ function updateUsers(req,dateKey,callback){
 				callback(err,0);
 			});
 
-			var _update = JSON.parse('{"$inc":{"_'+yyyy+'.$.tts":'+req.val.tsd+'}}');							
+			var _update = JSON.parse('{"$inc":{"_'+yyyy+'.$.tts":'+req.val.tsd+'}}');
 			var _search = JSON.parse('{"_id":"'+req.val.did+'","_'+yyyy+'._id":'+parseInt(mm.toString().concat(dd))+'}');
 			//Update the counters for the user against the respective date.
 			Model.User.findOneAndUpdate(_search,_update,function(err,doc){
@@ -415,7 +415,7 @@ function updateUsers(req,dateKey,callback){
 				callback(err,0);
 			});
 
-			var updateDoc = JSON.parse('{"$inc":{"_'+yyyy+'.$.tce":1}}');							
+			var updateDoc = JSON.parse('{"$inc":{"_'+yyyy+'.$.tce":1}}');
 			var searchDoc = JSON.parse('{"_id":"'+req.val.did+'","_'+yyyy+'._id":'+parseInt(mm.toString().concat(dd))+'}');
 			//Update the counters for the user against the respective date.
 			Model.User.findOneAndUpdate(searchDoc,updateDoc,function(err,doc){
@@ -451,7 +451,7 @@ function updateUsers(req,dateKey,callback){
 				callback(err,0);
 			});
 
-			var updateDoc = JSON.parse('{"$inc":{"_'+yyyy+'.$.te":1}}');							
+			var updateDoc = JSON.parse('{"$inc":{"_'+yyyy+'.$.te":1}}');
 			var searchDoc = JSON.parse('{"_id":"'+req.val.did+'","_'+yyyy+'._id":'+parseInt(mm.toString().concat(dd))+'}');
 			//Update the counters for the user against the respective date.
 			Model.User.findOneAndUpdate(searchDoc,updateDoc,function(err,doc){
@@ -478,8 +478,10 @@ function updateUsers(req,dateKey,callback){
 				}
 			});
 
-			var updateEventsDoc = JSON.parse('{"$inc":{"_'+req.val.key+'.$.te":1}}');							
-			var searchEventsDoc = JSON.parse('{"_id":"'+req.val.did+'","_'+req.val.key+'._id":'+parseInt(mm.toString().concat(dd))+'}');
+			var updateEventsDoc = JSON.parse('{"$inc":{"_'+req.val.key+'._'+yyyy+'.$.te":1}}');
+			var searchEventsDoc = JSON.parse('{"_id":"'+req.val.did+'","_'+req.val.key+'._'+yyyy+'._id":'+parseInt(mm.toString().concat(dd))+'}');
+			console.log(updateEventsDoc);
+			console.log(searchEventsDoc);
 			//Update the counters for the user against the respective date for the key.
 			Model.User.findOneAndUpdate(searchEventsDoc,updateEventsDoc,function(err,doc){
 				//If none of the document gets updated.
@@ -487,7 +489,8 @@ function updateUsers(req,dateKey,callback){
 					// If there are no errors
 					if(!err){
 						var push = {};
-						push['_'+req.val.key] = JSON.parse('{"_id":'+parseInt(mm.toString().concat(dd))+',"te":1}');
+						push['_'+req.val.key+'._'+yyyy] = JSON.parse('{"_id":'+parseInt(mm.toString().concat(dd))+',"te":1}');
+						console.log(push);
 						//Against the user add the counters for data which he has performed a login.
 						Model.User.findByIdAndUpdate(req.val.did,{$push:push},function(err,doc){
 							if(err){
@@ -501,8 +504,8 @@ function updateUsers(req,dateKey,callback){
 								//console.log(err);
 								logger.error(common.getErrorMessageFrom(err));
 								return;
-							}							
-						});	
+							}
+						});
 					}else{
 						logger.error(common.getErrorMessageFrom(err));
 						return;
@@ -511,8 +514,8 @@ function updateUsers(req,dateKey,callback){
 					callback(err,0)
 					return;
 				}
-			});			
-		break;		
+			});
+		break;
 	}
 }
 
@@ -523,11 +526,11 @@ function updateActiveSessions(req,callback){
 				if(err){
 					logger.error(err);
 					return;
-				}		
+				}
 				callback(err);
 			});
 		break;
-		
+
 		case Collection["event"]:
 			Model.ActiveSession.findByIdAndUpdate(req.val.sid,{$set:{'lat':req.val.rtc}},function(err,doc){
 				if(err){
@@ -536,7 +539,7 @@ function updateActiveSessions(req,callback){
 				}
 				callback(err);
 			});
-		break;			
+		break;
 	}
 }
 
@@ -580,5 +583,5 @@ function removeActiveSession(sid,callback){
 			return;
 		}
 	callback(err);
-	});	
+	});
 }

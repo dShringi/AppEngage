@@ -178,7 +178,11 @@ module.exports.getEventNames = function(req,res){
 						{ $group: groupOperatorJSON},
 						{ $project: {_id:0,'key':'$_id','Total_Event_Count':'$te'}}
 						],function(err,result){
-						responseArray.push(result[0]);
+							if(result.length==0){
+								responseArray.push(JSON.parse('{"key":"'+eventKey+'","Total_Event_Count":'+0+'}'));
+							}else{
+								responseArray.push(result[0]);
+							}
 						if (--tasksToGo === 0) {
 							onComplete(responseArray);
 						}

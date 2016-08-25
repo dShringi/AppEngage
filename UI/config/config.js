@@ -12,17 +12,19 @@ module.exports.coll_realtime		= 	'coll_realtimes';
 module.exports.coll_users 			= 	'coll_users';
 module.exports.coll_activesessions	= 	'coll_activesessions';
 module.exports.coll_appengageusers	=	'coll_users';
+module.exports.coll_eventnames		=	'coll_eventnames';
+
 
 module.exports.logdir	= '/var/log/appengage/UI/logs';
 
 module.exports.searchByModel=[
-{name:'manufacturer',value:'lm'}, 
+{name:'manufacturer',value:'lm'},
 {name:'type',value:'ldt'},
 {name:'model',value:'lmod'},
-{name:'platform',value:'lpf'}, 
-{name:'osversion',value:'losv'}, 
+{name:'platform',value:'lpf'},
+{name:'osversion',value:'losv'},
 {name:'appversion',value:'lavn'},
-{name:'resolution',value:'lres'}, 
+{name:'resolution',value:'lres'},
 ];
 
 module.exports.defaultAppTimeZone = 'Asia/Kolkata';
