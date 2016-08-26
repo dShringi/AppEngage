@@ -19,6 +19,8 @@
 		<link rel="stylesheet" href="assets/css/bootstrap-select.min.css">
 		<script src="assets/js/bootstrap-select.min.js"></script>
 		<script src="https://d3js.org/d3-time.v1.min.js"></script>
+		<link rel="stylesheet" href="assets/css/sweetalert.css">
+		<script src="assets/js/sweetalert.min.js"></script>
 		<style>path { stroke-width: 2;} .chart-title{text-align: left}.chart-container{height:270px}</style>
 	</head>
 	<body>
@@ -109,13 +111,20 @@
 				};
 				
 				$('#compareEvent').click(function(){
-					$('.mdlAdd2Cart').show();
+					
 					var Arr = new Array;
 					$('input:checkbox:checked').each(function(){
 						Arr.push($(this).val());
 					});
 					//alert(JSON.stringify(Arr));
-					showChart(Arr);
+					if(Arr.length <=1){
+						showError("You must select atleast two events for comparison");
+					}
+					else{
+						$('.mdlAdd2Cart').show();
+						showChart(Arr);
+					}
+					
 					
 				});
 			//});
