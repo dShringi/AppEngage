@@ -87,14 +87,17 @@
 			//$(document).ready(function() {
 				$('.chart-main-div').hide();
 				function loadChart(sd, ed, appKey){
+					
+					
 					// Show Event Table
 					console.log("http://52.206.121.100/appengage/getEventNames?sd="+sd+"&ed="+ed+"&akey="+appKey);
 					d3.json("http://52.206.121.100/appengage/getEventNames?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
 						if (error) { alert(error); }
 						console.log(data);
-						//data = JSON.parse(data);
-						//console.log(data);
-						showEventSummaryTable(data, "tbl-event", sd, ed, appKey);
+							$("#chart-container_1").empty();
+							$("#chart-container_2").empty();
+							showEventSummaryTable(data, "tbl-event", sd, ed, appKey);
+						
 					});
 					// Show Event Table - END
 				}
@@ -112,6 +115,7 @@
 			//});
 			
 			function showChart(event, sd, ed, appKey){
+				
 				$('.chart-main-div').show();
 				$("#chart-container_1").empty();
 				$("#chart-container_2").empty();
