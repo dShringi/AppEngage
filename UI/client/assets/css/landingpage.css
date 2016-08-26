@@ -265,14 +265,14 @@
                 border: 1px solid #c3c3c3;
             }*/
 
-            .modal-dialog{
+            .bd-example-modal-sm .modal-dialog{
                 position:absolute;
                 top: 37px;
                 right: 100px;
                 width: 210px;
             }
 
-            .modal-content div {
+            .bd-example-modal-sm .modal-content div {
                     display:block;
                     padding: 15px;
                     font-size: .75em;
@@ -281,7 +281,7 @@
                     background-color: #ffffff;
                 }
 
-                .modal-content div input {
+                .bd-example-modal-sm .modal-content div input {
                     width: 100%;
                     margin-top: 5px;
                     color: #000000;
@@ -290,7 +290,7 @@
                     border: 1px solid #c3c3c3;
                 }
 
-                .modal-content div button {
+                .bd-example-modal-sm .modal-content div button {
                     background-color: #43C2C7;
                     color: #ffffff;
                     margin-top: 8px;
@@ -298,7 +298,7 @@
                     margin-bottom: 10px;
                 }
 
-                .modal-content div a {
+                .bd-example-modal-sm .modal-content div a {
                     color: #717171;
                     margin-top: 10px;
                     margin-bottom: 0px;
@@ -342,6 +342,45 @@
 
                 .modal-open[style]{
                     padding-right: 0px !important;
+                }
+
+
+                #modalRegister .modal-body{
+                    padding-left: 35px;
+                }
+                #modalRegister .nav-pills > li > a{
+                    padding:0px;
+                }
+                #modalRegister .nav-pills > li.active{
+                    border-bottom: 5px solid #000;
+                }
+
+                #modalRegister .nav-pills > li.active > a{
+                    background-color: transparent;
+                    color: #717171;
+                    padding:0px;
+                }
+
+                #modalRegister .modal-body .tab-pane .form-control, #modalRegister .modal-body .tab-pane .input-group-btn .btn{
+                    margin-top: 15px;
+                    padding: 5px;
+                    height: 30px;
+                }
+
+                #modalRegister .fa-info-circle{
+                    padding-top: 21px;
+                }
+                 #modalRegister .fa-info-circle:before{
+                    font-size: 20px;
+                    color:#cccccc;
+                }
+                #modalRegister .modal-body .tab-pane .col-md-1{
+                    padding-left: 0px;
+                }
+
+                #modalRegister .modal-body .nav-pills li .num-part{
+                    width: 30%;
+                    font-size:3.5em;
                 }
 
             @media (max-width: 767px) {
@@ -420,7 +459,7 @@
                     background: transparent;
                 }
 
-                .modal-content div {
+                .bd-example-modal-sm .modal-content div {
                     display:block;
                     padding: 15px;
                     font-size: .75em;
@@ -429,7 +468,7 @@
                     background-color: #ffffff;
                 }
 
-                .modal-content div input {
+                .bd-example-modal-sm .modal-content div input {
                     width: 100%;
                     margin-top: 15px;
                     color: #000000;
@@ -438,7 +477,7 @@
                     border: 1px solid #c3c3c3;
                 }
 
-                .modal-content div button {
+                .bd-example-modal-sm .modal-content div button {
                     background-color: #43C2C7;
                     color: #ffffff;
                     margin-top: 8px;
@@ -446,13 +485,13 @@
                     margin-bottom: 10px;
                 }
 
-                .modal-content div a {
+                .bd-example-modal-sm .modal-content div a {
                     color: #717171;
                     margin-top: 10px;
                     margin-bottom: 0px;
                 }
 
-                .modal-dialog {
+                .bd-example-modal-sm .modal-dialog {
                     margin-top: 20%;
                     right: 0;
                     width: auto;

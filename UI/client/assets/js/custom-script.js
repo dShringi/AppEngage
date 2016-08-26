@@ -507,8 +507,9 @@ function plotLineChart(data, svg, div,timestamp=false, ele, valueline, x, y, wid
 	// Scale the range of the data
 	
 	var hoursFlag;
-	
-	x.domain(d3.extent(data, function(d) { 
+	console.log(data);
+	x.domain(d3.extent(data, function(d) {
+			console.log((d.date).length);
 		if((d.date).length === 8){
 			return new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2)); 
 		}
@@ -518,7 +519,7 @@ function plotLineChart(data, svg, div,timestamp=false, ele, valueline, x, y, wid
 		}
 		
 	}));
-	y.domain([0, d3.max(data, function(d) { return parseInt(d[ele]); })]);
+	y.domain([0, d3.max(data, function(d) {console.log(d[ele]+"--"); return parseInt(d[ele]); })]);
 	//return new Date((d.date).substr(0,4)+"/"+(d.date).substr(4,2)+"/"+(d.date).substr(6,2));
 	
 

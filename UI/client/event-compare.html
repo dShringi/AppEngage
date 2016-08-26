@@ -81,10 +81,16 @@
 					$(".line").toggle()
 				});
 				
+				var sdate;
+				var edate;
+				
 				function loadChart(sd, ed, appKey){
 					// Show Event Table
-					d3.json("assets/json/ok-data-total-events-Summary.json?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
+					console.log("http://52.206.121.100/appengage/getEventNames?sd="+sd+"&ed="+ed+"&akey="+appKey);
+					d3.json("http://52.206.121.100/appengage/getEventNames?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
 						if (error) { alert(error); }
+						sdate = sd;
+						edate = ed;
 						showEventCompareTable(data, "tbl-event");
 					});
 					// Show Event Table - END
@@ -138,8 +144,8 @@
 
 				var xAxis = d3.svg.axis()
 					.scale(x)
-					.ticks(d3.time.hour, 1)
-					.tickFormat(d3.time.format('%H'))
+					.ticks(5)
+					.tickFormat(d3.time.format('%b %d'))
 					.orient("bottom");
 
 				var yAxis = d3.svg.axis()
@@ -169,62 +175,76 @@
 					.attr("class","chart")
 				  	.append("g")
 					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-				d3.json("assets/json/ok-data-total-events-Comparison.json", function(error, data) {
+					
+				console.log("http://52.206.121.100/appengage/getEventsComparison?sd="+sdate+"&ed="+edate+"&akey="+appKey+"&en="+eventArray)
+				d3.json("http://52.206.121.100/appengage/getEventsComparison?sd="+sdate+"&ed="+edate+"&akey="+appKey+"&en="+eventArray, function(error, dataAll) {
+					var data = [];
 					if (error) throw error;
-
-				  	color.domain(eventArray.filter(function(key) {return key; }));
-
-				  	data.forEach(function(d) {
-				  		d.date = parseEventDate(d.event_date);
-				  	});
-					var eventArr = color.domain().map(function(name) {
-						return {
-							name: name,
-							values: data.map(function(d) {
-								if(d.event_name == name){
-									//console.log(d.event_name + " : " + name);
-									return {date: d.date, count: +d.event_count};
-								}
-							})
-						};
-					});
-					var userArr = color.domain().map(function(name) {
-						return {
-							name: name,
-							values: data.map(function(d) {
-								if(d.event_name == name){
-									//console.log(d.event_name + " : " + name);
-									return {date: d.date, count: +d.user_count};
-								}
-							})
-						};
-					});
+					console.log(dataAll);
+					for(i=0;i<dataAll.length;i++){
+						dataOne = dataAll[i];
+						for (j=0;j<dataOne.length;j++){
+							data.push(dataOne[j]);
+						}
+					}
 					
-					eventArr = removeNulls(eventArr);
-					userArr = removeNulls(userArr);
+					setTimeout(function(){
 					
-					drawChart(eventArr, svg, data);
-					drawChart(userArr, svg1, data);
-					
-					
-					/*$('.event_count').hide();
-					$('.user_count').show();*/
-					
-					// draw the scatterplot
-                    /*svg.selectAll("dot")									
-                        .data(data)											
-                        .enter().append("circle")								
-                        .attr("r", 3)
-                        .attr("fill", "#7ABEE7")
-                        .attr("cx", function(d) { return x(d.values); })		 
-                        .attr("cy", function(d) { return y(d.name); })
-                    // Tooltip stuff after this
-                        .on("mouseover", function(d) {		
-                            div.transition().duration(200).style("opacity", .9);	
-                            div	.html(d.count1).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
-                        });*/
-					});
+						console.log(data);
+	
+						color.domain(eventArray.filter(function(key) {return key; }));
+	
+						data.forEach(function(d) {
+							d.date = parseEventDate(d.event_date);
+						});
+						var eventArr = color.domain().map(function(name) {
+							return {
+								name: name,
+								values: data.map(function(d) {
+									if(d.event_name == name){
+										//console.log(d.event_name + " : " + name);
+										return {date: d.date, count: +d.event_count};
+									}
+								})
+							};
+						});
+						var userArr = color.domain().map(function(name) {
+							return {
+								name: name,
+								values: data.map(function(d) {
+									if(d.event_name == name){
+										//console.log(d.event_name + " : " + name);
+										return {date: d.date, count: +d.user_count};
+									}
+								})
+							};
+						});
+						
+						eventArr = removeNulls(eventArr);
+						userArr = removeNulls(userArr);
+						
+						drawChart(eventArr, svg, data);
+						drawChart(userArr, svg1, data);
+						
+						
+						/*$('.event_count').hide();
+						$('.user_count').show();*/
+						
+						// draw the scatterplot
+						/*svg.selectAll("dot")									
+							.data(data)											
+							.enter().append("circle")								
+							.attr("r", 3)
+							.attr("fill", "#7ABEE7")
+							.attr("cx", function(d) { return x(d.values); })		 
+							.attr("cy", function(d) { return y(d.name); })
+						// Tooltip stuff after this
+							.on("mouseover", function(d) {		
+								div.transition().duration(200).style("opacity", .9);	
+								div	.html(d.count1).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
+							});*/
+					},500);
+				});
 				
 					var drawChart = function(arr,svg,data){
 						x.domain(d3.extent(data, function(d) { return d.date; }));

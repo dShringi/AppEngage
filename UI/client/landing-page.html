@@ -5,6 +5,7 @@
         <title>AppEngage</title>
         <link rel="stylesheet" href="assets/css/bootstrap.css">
         <link rel="stylesheet" href="assets/css/landingpage.css">
+        <link rel="stylesheet" href="assets/css/font-awesome.min.css">
         <script src="assets/js/jquery.js"></script>
         <script src="assets/js/bootstrap.min.js"></script>
         <script src="assets/js/servicecalls.js"></script>
@@ -64,6 +65,7 @@
                     }
 
                 });
+
             });
 
             //function onScroll(event) {
@@ -129,10 +131,7 @@
                         </li>
                         <li class="tilde-filler"><span style="padding-left: 15px; padding-right: 15px;">|</span></li>
                         <li>
-                            <span><a href="#section2" style="background-color: none;">
-                                    REGISTER
-                                    </a>
-                            </span>
+                            <span class="login" href="#" style="background-color: none;" data-toggle="modal" data-target="#modalRegister">REGISTER</span>
                         </li>
                     </ul>
                 </div>
@@ -150,14 +149,15 @@
                         <div class="col-md-5">
                             <div class="description">
                                 <h1>Your Destination for Mobile Analytics</h1>
-                                <p>A one stop shop for all your mobile analytics needs. 
-                                Fast Integration and Rich Analytics at your fingertips. 
-                                Keep you data secured with our in-premise deployments and gain access to all your data.
+                                <p>
+                                    A one stop shop for all your mobile analytics needs.
+                                    Fast Integration and Rich Analytics at your fingertips.
+                                    Keep you data secured with our in-premise deployments and gain access to all your data.
                                 </p>
                             </div>
                             <!--<div class="buttons">
-                                <button class="btn btn-fill btn-neutral">Read More</button>
-                            </div>-->
+                            <button class="btn btn-fill btn-neutral">Read More</button>
+                        </div>-->
                         </div>
                     </div>
                 </div>
@@ -166,11 +166,12 @@
                 <div class="container">
                     <h2 class="header-text text-center">Single platform for your Mobile Analytic needs</h2>
                     <div class="row row-1">
-                        <p>AppEngage comes with a broad range of feature to get insights of your mobile app usage with a quick integration via the light 
-                        SDK thus enabling app owners to define and understand the success of their apps. 
-                        The platform can be used to analyze the data over cloud or request for an in-premise deployment. 
-                        It provides a mechanism to measure the success of your app and thereby taking business decisions 
-                        based on usage data and providing users features they like more and discontinue with low usage features.
+                        <p>
+                            AppEngage comes with a broad range of feature to get insights of your mobile app usage with a quick integration via the light
+                            SDK thus enabling app owners to define and understand the success of their apps.
+                            The platform can be used to analyze the data over cloud or request for an in-premise deployment.
+                            It provides a mechanism to measure the success of your app and thereby taking business decisions
+                            based on usage data and providing users features they like more and discontinue with low usage features.
                         </p>
                     </div>
                     <div class="row row-2">
@@ -181,8 +182,9 @@
                                 </div>
                                 <div class="text">
                                     <h4><strong>Core Analytics</strong></h4>
-                                    <p>Understand the usage patterns acrosss the days, months and get app insights. 
-                                    Understand the current active users and run marketing campaigns to run hyper targeted push notifications.
+                                    <p>
+                                        Understand the usage patterns acrosss the days, months and get app insights.
+                                        Understand the current active users and run marketing campaigns to run hyper targeted push notifications.
                                     </p>
                                 </div>
                             </div>
@@ -195,7 +197,7 @@
                                 <div class="text">
                                     <h4><strong>Device Analytics</strong></h4>
                                     <p>
-                                        Helps the app owners to get the device insights, user retention patterns, 
+                                        Helps the app owners to get the device insights, user retention patterns,
                                         uninstall attribution and other engagement levels with a quick integration and onboarding of their app.
                                     </p>
                                 </div>
@@ -209,7 +211,7 @@
                                 <div class="text">
                                     <h4><strong>Location Analytics</strong></h4>
                                     <p>
-                                        Access the regions distribution of the mobile app and analyze the patterns of the usage. 
+                                        Access the regions distribution of the mobile app and analyze the patterns of the usage.
                                         It helps to identify the low usage regions and target those regions with targeted campaigns for conversions.
                                     </p>
                                 </div>
@@ -251,8 +253,8 @@
                             <div class="description">
                                 <h3 class="header-text"><strong>Measure App Features</strong></h3>
                                 <p>
-                                    With AppEngage's User Engagement Analysis, App Owners can identify the usage patterns of specific events within the 
-                                    mobile app thus enabling app owners to identify features that are being used frequently and the ones that are used less frequently. 
+                                    With AppEngage's User Engagement Analysis, App Owners can identify the usage patterns of specific events within the
+                                    mobile app thus enabling app owners to identify features that are being used frequently and the ones that are used less frequently.
                                     App owners can also compare across events and identify the patterns of cross usage.
                                 </p>
                             </div>
@@ -267,8 +269,8 @@
                             <div class="description">
                                 <h3 class="header-text"><strong>Measure Region Distribution</strong></h3>
                                 <p>
-                                    AppEngage's location analytics gives the insights about the adoption rate of the app across the globe. 
-                                    Measure the use onboarding and their engagement levels within the regions to understand the usage pattern. 
+                                    AppEngage's location analytics gives the insights about the adoption rate of the app across the globe.
+                                    Measure the use onboarding and their engagement levels within the regions to understand the usage pattern.
                                     App Owners can run campaigns in the regions where the adoption has been low and drive campaigns for successful conversion.
                                 </p>
                             </div>
@@ -284,13 +286,15 @@
                 <div class="row">
                     <div class="col-md-3 text-center">
                         <img src="assets/img/landing/H_7.png" style="padding-top:10px;" />
-                        <p>&copy;2016 AppEngage
-                        <br />
-                        All Rights Reserved</p>
+                        <p>
+                            &copy;2016 AppEngage
+                            <br />
+                            All Rights Reserved
+                        </p>
                     </div>
                     <!--<div class="col-md-1">
-                        <h4>LOREM IPSUM DOLOR SIT AMET</h4>
-                    </div>-->
+                    <h4>LOREM IPSUM DOLOR SIT AMET</h4>
+                </div>-->
                     <div class="col-md-2">
                         <h5><a href="#">About</a></h5>
                         <h5><a href="#">Contact</a></h5>
@@ -322,7 +326,7 @@
                 </div>
             </div>
 
-            <!--modal-->
+            <!--modal LOGIN-->
 
             <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-sm">
@@ -337,7 +341,135 @@
                 </div>
             </div>
 
+            <!--modal REGISTRATION-->
+
+            <div class="modal fade" id="modalRegister" role="dialog">
+                <div class="modal-dialog modal-md">
+
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            
+                            <h4 class="modal-title modalRegister"><i class="fa fa-pencil" aria-hidden="true"></i>Please fill in the below details to Register with Us</h4>
+                        </div>
+                        <div class="modal-body">
+                            <ul class="nav nav-pills">
+                                <li class="active">
+                                    <a href="#tab1" data-toggle="pill">
+                                        <div class="row">
+                                            <div class="col-md-6 num-part">
+                                                01
+                                            </div>
+                                            <div class="col-md-6">
+                                                Customer Details
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#tab2" data-toggle="pill">
+                                        <div class="row">
+                                            <div class="col-md-6 num-part">
+                                                02
+                                            </div>
+                                            <div class="col-md-6">
+                                                App Details
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#tab3" data-toggle="pill">
+                                        <div class="row">
+                                            <div class="col-md-6 num-part">
+                                                03
+                                            </div>
+                                            <div class="col-md-6">
+                                                Confirmation
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div class="tab-content">
+                                <div class="tab-pane fade in active" id="tab1">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <input type="text" class="form-control" tabindex="1" placeholder="First Name" />
+                                            <input type="text" class="form-control" tabindex="3" placeholder="E-mail ID" />
+                                            <input type="text" class="form-control" tabindex="5" placeholder="Company Name" />
+                                        </div>
+                                        <div class="col-md-5 col-md-offset-1">
+                                            <input type="text" class="form-control" tabindex="2" placeholder="Last Name" />
+                                            <input type="number" class="form-control" tabindex="4" placeholder="Phone" />
+                                            <input type="password" class="form-control" tabindex="6" placeholder="Password" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <button class="btn">Proceed</button>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="tab2">
+                                    <div class="row">
+                                        <div class="col-md-5">
+                                            <input type="text" class="form-control" tabindex="1" placeholder="App Name" />
+                                            <input type="text" class="form-control" tabindex="2" placeholder="App Description" />
+                                            <div class="input-group">
+                                                <input type="text" tabindex="3" class="form-control" placeholder="App TimeZone">
+                                                <div class="input-group-btn">
+                                                    <button type="button" class="btn btn-default"><i class="fa fa-clock-o"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1 hidden-xs">
+                                            <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                            <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                            <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <div class="input-group">
+                                                <input type="text" tabindex="4" class="form-control" placeholder="App Category">
+                                                <div class="input-group-btn">
+                                                    <button type="button" class="btn btn-default"><i class="caret"></i></button>
+                                                </div>
+                                            </div>
+                                                <div class="input-group">
+                                            <input type="text" tabindex="5" class="form-control" placeholder="App Icon">
+                                                <div class="input-group-btn">
+                                                    <button type="button" class="btn btn-default"><i class="fa fa-upload"></i></button>
+                                                </div>
+                                            </div>
+                                            <div class="input-group">
+                                                <input type="text" tabindex="6" class="form-control" placeholder="App TimeZone">
+                                                <div class="input-group-btn">
+                                                    <button type="button" class="btn btn-default"><i class="fa fa-clock-o"></i></button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-1 hidden-xs">
+                                            <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                            <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                            <i class="fa fa-info-circle" aria-hidden="true"></i>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <button class="btn">Back</button>
+                                        <button class="btn">Proceed</button>
+                                    </div>
+                                </div>
+                                <div class="tab-pane fade" id="tab3">
+                                    3
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                </div>
             </div>
+
+      </div>
 
         <div id="floating-anchor">
             <a href="#section2"><img src="assets\img\landing\Arrow_Down.png" /></a>

@@ -88,8 +88,12 @@
 				$('.chart-main-div').hide();
 				function loadChart(sd, ed, appKey){
 					// Show Event Table
-					d3.json("assets/json/ok-data-total-events-Summary.json?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
+					console.log("http://52.206.121.100/appengage/getEventNames?sd="+sd+"&ed="+ed+"&akey="+appKey);
+					d3.json("http://52.206.121.100/appengage/getEventNames?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
 						if (error) { alert(error); }
+						console.log(data);
+						//data = JSON.parse(data);
+						//console.log(data);
 						showEventSummaryTable(data, "tbl-event", sd, ed, appKey);
 					});
 					// Show Event Table - END
@@ -123,27 +127,43 @@
                 var	x = d3.time.scale().range([0, width]);
                 var	y = d3.scale.linear().range([height, 0]);
 
-				var xAxis = d3.svg.axis()
-					.scale(x)
-					.ticks(d3.time.hour, 1)
-					.tickFormat(d3.time.format('%H'))
-					.orient("bottom");
+				//var xAxis = d3.svg.axis()
+				//	.scale(x)
+				//	.ticks(d3.time.hour, 1)
+				//	.tickFormat(d3.time.format('%H'))
+				//	.orient("bottom");
 
-				var yAxis = d3.svg.axis()
-					.scale(y)
-					.ticks(2)
-					.orient("left");
+				//var yAxis = d3.svg.axis()
+				//	.scale(y)
+				//	.ticks(2)
+				//	.orient("left");
 				
                 // Define the line
                 var	valueline = d3.svg.line()
 					//.interpolate("basis")
-                    .x(function(d) { return x(d.date); })
+                    //.x(function(d) { return x(d.date); })
+					.x(function(d) { 
+						if((d.date).length === 8){
+							return x(new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2))); 
+						}
+						else{
+							return x((d.date).substr(8,2));
+						}
+					})
                     .y(function(d) { return y(d.event_count); });
                 
                 // Define the line
                 var	valueline1 = d3.svg.line()
 					//.interpolate("basis")
-                    .x(function(d) { return x(d.date); })
+                    //.x(function(d) { return x(d.date); })
+					.x(function(d) { 
+						if((d.date).length === 8){
+							return x(new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2))); 
+						}
+						else{
+							return x((d.date).substr(8,2));
+						}
+					})
                     .y(function(d) { return y(d.user_count); });
 
                 // Define 'div' for tooltips
@@ -175,14 +195,16 @@
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
                 // Get the data for total session
-                d3.json("assets/json/ok-data-total-events-Detail.json?sd="+sd+"&ed="+ed+"&akey="+appKey, function(error, data) {
+                d3.json("http://52.206.121.100/appengage/getEventsummary?sd="+sd+"&ed="+ed+"&akey="+appKey+"&en="+event, function(error, data) {
                     //alert(data);
                     data.forEach(function(d) {
-					  	d.date = parseEventDate(d.event_date);
+					console.log(d.event_date);
+					  	d.date = d.event_date;
+						console.log(d.date);
 				  	});
-                    plotLineChart(data,svg, div, false, "event_count", valueline, x, y, width, height, xAxis, yAxis);
+                    plotLineChart(data,svg, div, false, "event_count", valueline, x, y, width, height);
                     
-                    plotLineChart(data,svg1, div, false, "user_count", valueline1, x, y, width, height, xAxis, yAxis);
+                    plotLineChart(data,svg1, div, false, "user_count", valueline1, x, y, width, height);
                     
                 });
 			}
