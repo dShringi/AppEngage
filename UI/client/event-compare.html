@@ -89,6 +89,7 @@
 					console.log("http://52.206.121.100/appengage/getEventNames?sd="+sd+"&ed="+ed+"&akey="+appKey);
 					d3.json("http://52.206.121.100/appengage/getEventNames?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
 						if (error) { alert(error); }
+						$(".chart-container").empty();
 						sdate = sd;
 						edate = ed;
 						showEventCompareTable(data, "tbl-event");
