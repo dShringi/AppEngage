@@ -8,9 +8,7 @@ config.server.port = '8000';
 
 config.mongodb = {};
 //For development purpose
-config.mongodb.url = 'mongodb://localhost:27017/mobile';
-
-//config.mongodb.url = 'mongodb://DWHBI-SRV3';
+config.mongodb.url = 'mongodb://DWHBI-SRV3';
 //config.mongodb.port = process.env.MONGODB_PORT || '27017';
 
 config.mongodb.port = process.env.MONGODB_PORT || '63024';
@@ -59,13 +57,11 @@ config.mongodb.coll_activesessions = 'coll_activesessions';
 config.mongodb.coll_appengageusers = 'coll_users';
 config.mongodb.coll_begins = 'coll_begins';
 
-config.mongodb.triggerTyep_hourly = 'hourly';
-config.mongodb.triggerTyep_daily = 'daily';
-config.mongodb.triggerTyep_weekly = 'weekly';
-config.mongodb.triggerTyep_weekly = 'monthly';
-config.mongodb.triggerTyep_weekly = 'yearly';
+config.mongodb.triggerType_hourly = 'hourly';
+config.mongodb.triggerType_daily = 'daily';
+config.mongodb.triggerType_weekly = 'weekly';
+config.mongodb.triggerType_monthly = 'monthly';
+config.mongodb.triggerType_yearly = 'yearly';
 
 
 module.exports = config;
-
-

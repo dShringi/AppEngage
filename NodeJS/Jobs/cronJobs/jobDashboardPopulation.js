@@ -1,21 +1,24 @@
 // use this script to update dashboard collection
 'use strict'
-var mongodb = require('mongodb');
-var dateFormat = require('dateformat');
+
 var logger = require('././Scripts/conf/log.js');
 var config = require('././Scripts/conf/config.js');
 var common = require('././Scripts/commons/common');
+
+var mongodb = require('mongodb');
+var dateFormat = require('dateformat');
 var moment = require('moment-timezone');
 
 var MongoClient = mongodb.MongoClient;
 var application = config.app.details;	
-var url = process.argv[2];
-var appKey =  process.argv[3];
-var triggerTyep = process.argv[4].toLowerCase();
 var appTZ = config.defaultAppTimeZone;
+var url = config.mongodb.url;
 
+//run time parameters(aapkey and triggerType)
+var appKey =  process.argv[2];
+var triggerType = process.argv[3].toLowerCase();
 
-if (Boolean(url) && Boolean(appKey) && Boolean(triggerTyep)){
+if (Boolean(url) && Boolean(appKey) && Boolean(triggerType)){
 	MongoClient.connect(url, function (err, db) {
 		if (err) {
 			printErrorMessage(err);
@@ -29,14 +32,12 @@ if (Boolean(url) && Boolean(appKey) && Boolean(triggerTyep)){
 			var endDateYear = endDate.getFullYear();
 			
 			var startDate;
-			// for hourly data
-			if(triggerTyep == config.mongodb.triggerTyep_hourly) {
-				startDate = getStartDate(triggerTyep);
+			if(triggerType == config.mongodb.triggerType_hourly) {
+				startDate = getStartDate(triggerType);
 				var beginsCollection = db.collection(config.mongodb.coll_begins);
 				var startDateUnixtime = Math.round(startDate.getTime() / 1000);
-				//this query will form a implicit AND (no need to decleare explicit AND)
-				var query = '[{"$match":{"rtr":{"$gte":'+startDateUnixtime+',"$lt":'+endDateUnixtime+'}}},{"$group":{"_id":{"val":"$val.dt","val.did":"$val.did"}}},{"$group":{"_id":{"result":"$_id.val"},"users":{"$sum":1}}}]';
-				console.log(query);
+				var query = '[{"$match":{"rtr":{"$gte":' + startDateUnixtime + ',"$lt":' + endDateUnixtime
+							+ '}}},{"$group":{"_id":{"val":"$val.dt","val.did":"$val.did"}}},{"$group":{"_id":{"result":"$_id.val"},"users":{"$sum":1}}}]';
 				beginsCollection.aggregate(JSON.parse(query),function(err, items) {
 					if(err){
 						printErrorMessage(err);
@@ -45,26 +46,23 @@ if (Boolean(url) && Boolean(appKey) && Boolean(triggerTyep)){
 					console.log(resultLength,' result found');
 					if(resultLength > 0){
 						// find tablet/smart phone entry
-						var totalcount = getGroupByQueryResult(items);
-						var smartCount = totalcount.smartCount;
-						var tabletCount = totalcount.tabletCount;
+						var beginsCollectionQueryResult = getGroupByQueryResult(items);
+						var smartCount = beginsCollectionQueryResult.smartCount;
+						var tabletCount = beginsCollectionQueryResult.tabletCount;
 						
-						var KeyFormat = moment.utc(endDate).tz(appTZ).format('YYYYMMDDHH');
-						console.log('KeyFormat ', KeyFormat);
-						var dashboardCollection = db.collection(config.mongodb.coll_dashboard);
+						var KeyFormat = moment.utc(startDate).tz(appTZ).format('YYYYMMDDHH');
+						//var dashboardCollection = db.collection(config.mongodb.coll_dashboard);
 					
 						//smart Hourly collection update
 						if(smartCount != null && smartCount > 0) {
-							console.log('smartCount ', smartCount);
-							var dashboardQuerySmartJson = updateQueryBuilder(triggerTyep, 'S', KeyFormat);
+							var dashboardQuerySmartJson = updateQueryBuilder(triggerType, 'S', KeyFormat);
 							var updateQueryJsonSmt = setQueryBuilder(smartCount);
 							updateCollection(db, dashboardQuerySmartJson, updateQueryJsonSmt);
 						}
 				
 						//tablet phone Hourly collection update
 						if(tabletCount != null && tabletCount > 0) {
-						console.log('tabletCount ', tabletCount);
-							var dashboardQueryTabletJson = updateQueryBuilder(triggerTyep, 'T', KeyFormat);
+							var dashboardQueryTabletJson = updateQueryBuilder(triggerType, 'T', KeyFormat);
 							var updateQueryJsonTab = setQueryBuilder(tabletCount);
 							updateCollection(db, dashboardQueryTabletJson, updateQueryJsonTab);
 						}
@@ -75,13 +73,14 @@ if (Boolean(url) && Boolean(appKey) && Boolean(triggerTyep)){
 					db.close();
 				});
 			} else {
-				//utc time zone for start date
-				startDate = getStartDate(triggerTyep);
+				startDate = getStartDate(triggerType);
+				startDate = getTimeFromZone(startDate, appTZ);
 				var startDateDay = startDate.getDate();
 				startDateDay = checkDateDayLength(startDateDay);
 				var startDateMonth = startDate.getMonth()+1;
 				var startDateYear = startDate.getFullYear();
 				
+				endDate = getTimeFromZone(endDate, appTZ);
 				endDateDay = checkDateDayLength(endDate.getDate());
 				
 				var usersCollection = db.collection(config.mongodb.coll_users);
@@ -89,46 +88,43 @@ if (Boolean(url) && Boolean(appKey) && Boolean(triggerTyep)){
 				var startDayMonth = parseInt(''+startDateMonth+''+startDateDay);
 				var unwindvar = '$_'+endDateYear;
 				var matchKey = '_'+endDateYear+'._id';
-				var query= '[{"$match":{"'+matchKey+'" : {"$gte":'+startDayMonth+',"$lte":'+endDayMonth+'}}},{"$unwind": "'+unwindvar+'"},{"$match":{"'+matchKey+'" : {"$gte":'+startDayMonth+',"$lte":'+endDayMonth+'}}},{"$group":{"_id":{"result" : "$ldt"},"users":{"$sum": 1}}}]';
-
-				if((triggerTyep == config.mongodb.triggerTyep_weekly) && (startDateYear == endDateYear)) {
-					query = '[{"$match":{"'+matchKey+'" : {"$gte":'+startDayMonth+',"$lte":'+endDayMonth+'}}},{"$unwind": "'+unwindvar+'"},{"$match":{"'+matchKey+'" : {"$gte":'+startDayMonth+',"$lte":'+endDayMonth+'}}},{"$group":{"_id":{"result" : "$ldt"},"users":{"$sum": 1}}}]';
+				var query;
+				
+				if((triggerType == config.mongodb.triggerType_weekly) && (startDateYear != endDateYear)) {
+					//to be done
 					
 				} else {
-					//to be done
-					query = '[{"$match":{"'+matchKey+'" : {"$gte":'+startDayMonth+',"$lte":'+endDayMonth+'}}},{"$unwind": "'+unwindvar+'"},{"$match":{"'+matchKey+'" : {"$gte":'+startDayMonth+',"$lte":'+endDayMonth+'}}},{"$group":{"_id":{"result" : "$ldt"},"users":{"$sum": 1}}}]';
+					query = '[{"$match":{"' + matchKey + '" : {"$gte":' + startDayMonth + ',"$lte":' + endDayMonth
+							+ '}}},{"$unwind": "' + unwindvar + '"},{"$match":{"' + matchKey + '" : {"$gte":'
+							+ startDayMonth + ',"$lte":' + endDayMonth + '}}},{"$group":{"_id":{"result" : "$ldt"},"users":{"$sum": 1}}}]';
 				}
-				
-				
 				var queryJson = JSON.parse(query);
 				usersCollection.aggregate(queryJson,function(err, items) {
 					if(err){
 						printErrorMessage(err);
 					}
+					
 					var resultLength = items.length;
 					console.log(resultLength,' result found ');
 					if(resultLength > 0){
-					
 						// find tablet/smart phone entry
-						var totalcount = getGroupByQueryResult(items);
-						var smartCount = totalcount.smartCount;
-						var tabletCount = totalcount.tabletCount;
+						var beginsCollectionQueryResult = getGroupByQueryResult(items);
+						var smartCount = beginsCollectionQueryResult.smartCount;
+						var tabletCount = beginsCollectionQueryResult.tabletCount;
 						
-						var utcDate = "2014-10-19T10:31:59.0537721Z";
-						
-						var KeyFormat = moment.utc(utcDate).tz(appTZ).format('YYYYMMDD');
+						var KeyFormat = moment.utc(startDate).tz(appTZ).format('YYYYMMDD');
 						var dashboardCollection = db.collection(config.mongodb.coll_dashboard);
 					
 						//smart Hourly collection update
 						if(smartCount != null && smartCount > 0) {
-							var dashboardQuerySmartJson = updateQueryBuilder(triggerTyep, 'S', KeyFormat);
+							var dashboardQuerySmartJson = updateQueryBuilder(triggerType, 'S', KeyFormat);
 							var updateQueryJsonSmt = setQueryBuilder(smartCount);
 							updateCollection(db, dashboardQuerySmartJson, updateQueryJsonSmt);
 						}
 				
 						//tablet phone Hourly collection update
 						if(tabletCount != null && tabletCount > 0) {
-							var dashboardQueryTabletJson = JSON.parse(updateQueryBuilder(triggerTyep, 'T', KeyFormat));
+							var dashboardQueryTabletJson = updateQueryBuilder(triggerType, 'T', KeyFormat);
 							var updateQueryJsonTab =setQueryBuilder(tabletCount);
 							updateCollection(db, dashboardQueryTabletJson, updateQueryJsonTab);
 						}
@@ -146,102 +142,101 @@ if (Boolean(url) && Boolean(appKey) && Boolean(triggerTyep)){
 	console.log('arguments required order is "mongodb url" " appkey" "type(Hourly/Daily/Weekly/Monthly/yearly)"');
 }
 
-function getStartDate(triggerTyep){
-	var endDate = new Date();
-	if(triggerTyep == 'Hourly' || triggerTyep == 'hourly'){
-		//return new Date(endDate-60*60*1000);
-		endDate.setDate(endDate.getDate() - 1);
-		endDate.setHours(0,0,0,0);
-		return endDate;
-	} else if(triggerTyep == 'Daily' || triggerTyep == 'daily') {
-		return new Date(endDate-(24*60*60*1000));
-	} else if(triggerTyep == 'Weekly' || triggerTyep == 'weekly') {
-		return new Date(endDate.setDate(endDate.getDate() - endDate.getDay()));
-	} else if(triggerTyep == 'Monthly' || triggerTyep == 'monthly') {
-		return new Date(endDate.getFullYear(), endDate.getMonth(), 1);
-	} else if(triggerTyep == 'Yearly' || triggerTyep == 'yearly') {
-		return new Date(endDate.getFullYear(),0, 1);
+function getStartDate(triggerType) {
+	var startDate = new Date();
+	if (triggerType == config.mongodb.triggerType_hourly) {
+		//return new Date(startDate-60*60*1000);
+		startDate.setHours(startDate.getHours()-1);
+		startDate.setMinutes(0);
+		return startDate;
+	} else if (triggerType == config.mongodb.triggerType_daily) {
+		//return new Date(startDate - (24 * 60 * 60 * 1000));
+		startDate.setDate(startDate.getDate() - 1);
+ 		startDate.setHours(0,0,0,0);
+ 		return startDate;
+	} else if (triggerType == config.mongodb.triggerType_weekly) {
+		return new Date(startDate.setDate(startDate.getDate() - startDate.getDay()));
+	} else if (triggerType == config.mongodb.triggerType_monthly) {
+		return new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+	} else if (triggerType == config.mongodb.triggerType_yearly) {
+		return new Date(startDate.getFullYear(), 0, 1);
 	}
 }
 
-function getGroupByQueryResult(items){
-   var smartCount;
+function getGroupByQueryResult(items) {
+	var smartCount;
 	var tabletCount;
-	for (var i in items) {
+	for ( var i in items) {
 		var count = items[i];
-		if(count._id.result == 'S') {
+		if (count._id.result == 'S') {
 			smartCount = count.users;
-		} else if(count._id.result == 'T'){
+		} else if (count._id.result == 'T') {
 			tabletCount = count.users;
 		}
-	}      
-    return {
-        smartCount: smartCount, 
-        tabletCount: tabletCount
-    };  
+	}
+	return {
+		smartCount : smartCount,
+		tabletCount : tabletCount
+	};
 }
 
-function printErrorMessage(err){
+function printErrorMessage(err) {
 	var errMsg = common.getErrorMessageFrom(err);
-    logger.error(errMsg);
+	logger.error(errMsg);
 	console.log('Error : ', err);
 	return;
 }
 
-function checkDateDayLength(date) {
-	if(date < 10) {
-		return '0'+date;
+function checkDateDayLength(dateDay) {
+	if (dateDay < 10) {
+		return '0' + dateDay;
 	}
-	return date;
+	return dateDay;
 }
 
-function updateCollection(db, dashboardQuerySmartJson, updateQueryJsonSmt ) {
-   db.collection('coll_dashboard').update(dashboardQuerySmartJson, updateQueryJsonSmt,{upsert:true},function( err, result ) {
-		if ( err ) {
-			printErrorMessage(err);
-		}
-	});
+function updateCollection(db, dashboardQuerySmartJson, updateQueryJsonSmt) {
+	db.collection(config.mongodb.coll_dashboard).update(dashboardQuerySmartJson, updateQueryJsonSmt, {upsert : true}, 
+			function(err, result) {
+				if (err) {
+					printErrorMessage(err);
+				} else {
+					callback();
+				}
+			});
 }
 
-function updateQueryBuilder(triggerTyep, deviceType, KeyFormat) {
-	var result;
-	if(triggerTyep == 'hourly'){
-		result = '{ "_id" : { "dt" : "'+deviceType+'", "key" :'+parseInt(KeyFormat.toString())+', "ty": "H" }}'
-	}else if(triggerTyep == 'daily') {
-		result =  '{ "_id" : { "dt" : "'+deviceType+'", "key" :'+parseInt(KeyFormat.toString())+', "ty": "D" }}'
-	} else if(triggerTyep == 'weekly'){
-		result =  '{ "_id" : { "dt" : "'+deviceType+'", "key" :'+parseInt(KeyFormat.toString())+', "ty": "W" }}'
-	}else if(triggerTyep == 'monthly') {
-		result =  '{ "_id" : { "dt" : "'+deviceType+'", "key" :'+parseInt(KeyFormat.toString())+', "ty": "M" }}'
-	} else if (triggerTyep == 'yearly'){
-		result =  '{ "_id" : { "dt" : "'+deviceType+'", "key" :'+parseInt(KeyFormat.toString())+', "ty": "Y" }}'
+function updateQueryBuilder(triggerType, deviceType, KeyFormat) {
+	var updateQuery;
+	KeyFormat = parseInt(KeyFormat);
+	if (triggerType == config.mongodb.triggerType_hourly) {
+		updateQuery = '{ "_id" : { "dt" : "' + deviceType + '", "key" :'+ KeyFormat + ', "ty": "H" }}';
+	} else if (triggerType == config.mongodb.triggerType_daily) {
+		updateQuery = '{ "_id" : { "dt" : "' + deviceType + '", "key" :' + KeyFormat + ', "ty": "D" }}';
+	} else if (triggerType == config.mongodb.triggerType_weekly) {
+		updateQuery = '{ "_id" : { "dt" : "' + deviceType + '", "key" :' + KeyFormat + ', "ty": "W" }}';
+	} else if (triggerType == config.mongodb.triggerType_monthly) {
+		updateQuery = '{ "_id" : { "dt" : "' + deviceType + '", "key" :' + KeyFormat + ', "ty": "M" }}';
+	} else if (triggerType == config.mongodb.triggerType_yearly) {
+		updateQuery = '{ "_id" : { "dt" : "' + deviceType + '", "key" :' + KeyFormat + ', "ty": "Y" }}';
 	}
-	return JSON.parse(result);
+	return JSON.parse(updateQuery);
 }
 
 function setQueryBuilder(count) {
-	return JSON.parse('{"$set":{"val.tuu":'+count+'}}');
-}
-
-function getCurrentUtcDate(){
-	var now = new Date(); 
-	return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
-}
-
-function getUtcDateFor(now){
-	//var now = new Date(date); 
-	return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
+	return JSON.parse('{"$set":{"val.tuu":' + count + '}}');
 }
 
 function getTimezone(appKey) {
-	//for(var i in application) {
-	for (var i = 0, len = application.length; i < len; i++) {
-	var key = application[i];
-		if(key.app == appKey) {
-			appTZ = key.TZ;	
-			console.log(key.app+' : '+ appTZ );
+	for ( var i = 0, len = application.length; i < len; i++) {
+		var key = application[i];
+		if (key.app == appKey) {
+			appTZ = key.TZ;
 			break;
 		}
 	}
 }
 
+function getTimeFromZone(date, appTZ) {
+	var tZTime = moment.utc(date).tz(appTZ).format();
+	return new Date(tZTime);
+}
