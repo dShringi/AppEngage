@@ -344,10 +344,21 @@
                     padding-right: 0px !important;
                 }
 
+                 #modalRegister .modal-content{
+                     min-height: 377px;
+                     max-height: 377px;
+                 }
 
                 #modalRegister .modal-body{
                     padding-left: 35px;
                 }
+
+                 #modalRegister .nav-pills > li {
+                    width: 30%;
+                    margin-right: 35px;
+                    padding-bottom: 10px;
+                }
+
                 #modalRegister .nav-pills > li > a{
                     padding:0px;
                 }
@@ -365,6 +376,7 @@
                     margin-top: 15px;
                     padding: 5px;
                     height: 30px;
+                    font-size: 12px;
                 }
 
                 #modalRegister .fa-info-circle{
@@ -378,9 +390,51 @@
                     padding-left: 0px;
                 }
 
-                #modalRegister .modal-body .nav-pills li .num-part{
-                    width: 30%;
-                    font-size:3.5em;
+                #modalRegister .modal-body .nav-pills li .row {
+                    line-height: 28px;
+                }
+
+                #modalRegister .modal-body .nav-pills li .caretadd:after{
+                    content: '>';
+                    position: absolute;
+                    top: 9px;
+                    left: -23px;
+                }
+
+                #modalRegister .modal-body .num-part{
+                    font-size:3.0em;
+                    line-height: 43px;
+                    padding: 0px;
+                }
+				
+				#modalRegister .modal-body .text-part{
+					line-height: 20px;
+                    padding-right: 0px;
+                    padding-left: 7px;
+                    font-size: 13px;
+				}
+
+                #modalRegister .modal-body .fa-chevron-right{
+                    line-height: 45px;
+                }
+
+                #modalRegister.modal-body .nav-pills li:nth-child(2):before {
+                    content: '/';
+                    color: #000000;
+                }
+
+                #modalRegister .btn-proceed1, #modalRegister .btn-proceed2, #modalRegister .btn-back, #modalRegister .btn-confirm{
+                    margin-left: 15px;
+                    margin-top: 20px;
+                    margin-bottom: 30px;
+                }
+
+                #modalRegister #tab3 .tab3-boldtext{
+                    color: #b6b6b6;
+                }
+
+                .active-underline{
+                    border-bottom: 5px solid #717171;
                 }
 
             @media (max-width: 767px) {

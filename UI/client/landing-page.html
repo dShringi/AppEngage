@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <meta http-equiv="X-UA-Compatible" content="IE=11">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">   
         <title>AppEngage</title>
         <link rel="stylesheet" href="assets/css/bootstrap.css">
@@ -9,10 +10,12 @@
         <script src="assets/js/jquery.js"></script>
         <script src="assets/js/bootstrap.min.js"></script>
         <script src="assets/js/servicecalls.js"></script>
+        <script src="assets/js/timezones.full.min.js"></script>
         <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Montserrat">
 
         <script>
             var counter;
+            var arr = [];
 
             function validateUser() {
                 var uname = $("input.usrname").val();
@@ -21,10 +24,94 @@
                 service.validateLogin(uname, pwd);
             }
 
+            function fadeBack(tabcurrent, tabprev) {
+                if (tabcurrent === 'tab2') {
+                    arr = [];
+                }
+                else {
+                    arr = arr.slice(0,6);
+                }
+                console.log(arr);
+                
+                $("#" + tabcurrent).removeClass("in active").fadeOut();
+                $("#" + tabprev).css("display", "block");
+                $("#" + tabprev).addClass("in active").fadeIn();
+
+                if ($(".register-part02").hasClass("active-underline")) {
+                    $(".register-part02").removeClass("active-underline");
+                    $(".register-part01").addClass("active-underline");
+                }
+                else {
+                    $(".register-part03").removeClass("active-underline");
+                    $(".register-part02").addClass("active-underline");
+                }
+            }
+
+            function fadeProceed(tabcurrent, tabnext) {
+                var emptyFlag = 0;
+                if (tabcurrent === 'tab1') {
+                    $("#modalRegister #tab1").find("input").each(function () {
+                        if (this.value == "") {
+                            emptyFlag++;
+                            return false;
+                        }
+                    });
+                }
+                else {
+                    $("#modalRegister #tab2").find("input").each(function () {
+                        if (this.value == "") {
+                            emptyFlag++;
+                            return false;
+                        }
+                    });
+                }
+
+
+                if (emptyFlag > 0) {
+                    alert("Please fill all details");
+                }
+                else {
+                    if (tabcurrent === 'tab1') {
+                        $("#modalRegister #tab1").find("input").each(function () {
+                                arr.push(this.value);
+                        });
+                    }
+                    else {
+                        $("#modalRegister #tab2").find("input").each(function () {
+                            if ($(this).is('input:text')) {
+                                arr.push(this.value);
+                            }
+                        });
+                        arr.push($(".timezone-select option:selected").val());
+                    }
+                    // Array order - First Name, Email Id, User Name, Last Name, Phone, Password, App Name, App Description, Timeout, App Category, App Icon, Timezone
+                    
+                    $("#" + tabcurrent).fadeOut().removeClass("in active");
+                    $("#" + tabnext).fadeIn().addClass("in active");
+
+                    if ($(".register-part01").hasClass("active-underline")) {
+                        $(".register-part01").removeClass("active-underline");
+                        $(".register-part02").addClass("active-underline");
+                    }
+                    else {
+                        $(".register-part02").removeClass("active-underline");
+                        $(".register-part03").addClass("active-underline");
+                    }
+                }
+
+            };
+
 
             $(document).ready(function () {
        // Add smooth scrolling to all links
-                
+                //$(".btn-proceed1").click(function () {
+                //    $("#tab1").fadeOut().removeClass("in active");
+                //    $("#tab2").fadeIn().addClass("in active");
+                //});
+                //$(".btn-proceed2").click(function () {
+                //    $("#tab2").fadeOut().removeClass("in active");
+                //    $("#tab3").fadeIn().addClass("in active");
+                //});
 
                 //$(document).on("scroll", onScroll);
 
@@ -63,6 +150,12 @@
                         $("#floating-anchor a").attr("href", "#section" + counter);
                         $("#floating-anchor a img").attr("src", "assets\\img\\landing\\Arrow_Down.png");
                     }
+
+                });
+
+                $(".btn-confirm").click(function () {
+                   
+                    service.registerUser(arr);
 
                 });
 
@@ -354,69 +447,64 @@
                             <h4 class="modal-title modalRegister"><i class="fa fa-pencil" aria-hidden="true"></i>Please fill in the below details to Register with Us</h4>
                         </div>
                         <div class="modal-body">
-                            <ul class="nav nav-pills">
-                                <li class="active">
-                                    <a href="#tab1" data-toggle="pill">
-                                        <div class="row">
-                                            <div class="col-md-6 num-part">
-                                                01
-                                            </div>
-                                            <div class="col-md-6">
-                                                Customer Details
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#tab2" data-toggle="pill">
-                                        <div class="row">
-                                            <div class="col-md-6 num-part">
-                                                02
-                                            </div>
-                                            <div class="col-md-6">
-                                                App Details
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#tab3" data-toggle="pill">
-                                        <div class="row">
-                                            <div class="col-md-6 num-part">
-                                                03
-                                            </div>
-                                            <div class="col-md-6">
-                                                Confirmation
-                                            </div>
-                                        </div>
-                                    </a>
-                                </li>
-                            </ul>
-                            <div class="tab-content">
+                            <div class="row">
+                                <div class="col-md-3 register-part01 active-underline" style="padding-left: 0px; padding-right: 0px; width: 120px;">
+                                    <div class=" col-md-6 num-part" style="width:45px;">
+                                    01
+                                </div>
+                                    <div class="col-md-6 text-part">
+                                        Customer Details
+                                    </div>
+
+                                </div>
+                                <div class="col-md-1">
+                                    <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                                </div>
+                                <div class="col-md-3 register-part02" style="padding-left: 0px; padding-right: 0px; width: 114px;">
+                                    <div class="col-md-6 num-part">
+                                        02
+                                    </div>
+                                    <div class="col-md-6 text-part">
+                                        App Details
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                    <i class="fa fa-chevron-right" aria-hidden="true"></i>
+                                </div>
+                                <div class="col-md-3 register-part03" style="padding-left: 0px; padding-right: 0px; width: 152px;">
+                                    <div class="col-md-6 num-part" style="width: 55px;">
+                                        03
+                                    </div>
+                                    <div class="col-md-6 text-part" style="line-height: 40px;">
+                                        Confirmation
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-content" style="padding-top: 20px;">
                                 <div class="tab-pane fade in active" id="tab1">
                                     <div class="row">
                                         <div class="col-md-5">
-                                            <input type="text" class="form-control" tabindex="1" placeholder="First Name" />
-                                            <input type="text" class="form-control" tabindex="3" placeholder="E-mail ID" />
-                                            <input type="text" class="form-control" tabindex="5" placeholder="Company Name" />
+                                            <input type="text" id="reg-fname" class="form-control" tabindex="1" placeholder="First Name" />
+                                            <input type="text" id="reg-email" class="form-control" tabindex="3" placeholder="E-mail ID" />
+                                            <input type="text" id="reg-uname" class="form-control" tabindex="5" placeholder="User Name" />
                                         </div>
                                         <div class="col-md-5 col-md-offset-1">
-                                            <input type="text" class="form-control" tabindex="2" placeholder="Last Name" />
-                                            <input type="number" class="form-control" tabindex="4" placeholder="Phone" />
-                                            <input type="password" class="form-control" tabindex="6" placeholder="Password" />
+                                            <input type="text" id="reg-lname" class="form-control" tabindex="2" placeholder="Last Name" />
+                                            <input type="number" id="reg-phone" class="form-control" tabindex="4" placeholder="Phone" />
+                                            <input type="password" id="reg-pwd" class="form-control" tabindex="6" placeholder="Password" />
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <button class="btn">Proceed</button>
+                                        <button class="btn btn-proceed1" onclick="fadeProceed('tab1', 'tab2');">Proceed</button>
                                     </div>
                                 </div>
                                 <div class="tab-pane fade" id="tab2">
                                     <div class="row">
                                         <div class="col-md-5">
-                                            <input type="text" class="form-control" tabindex="1" placeholder="App Name" />
-                                            <input type="text" class="form-control" tabindex="2" placeholder="App Description" />
+                                            <input type="text" id="reg-appname" class="form-control" tabindex="1" placeholder="App Name" />
+                                            <input type="text" id="reg-appdesc" class="form-control" tabindex="2" placeholder="App Description" />
                                             <div class="input-group">
-                                                <input type="text" tabindex="3" class="form-control" placeholder="App TimeZone">
+                                                <input type="text" id="ref-timeout" tabindex="3" class="form-control" placeholder="App Timeout">
                                                 <div class="input-group-btn">
                                                     <button type="button" class="btn btn-default"><i class="fa fa-clock-o"></i></button>
                                                 </div>
@@ -429,22 +517,30 @@
                                         </div>
                                         <div class="col-md-5">
                                             <div class="input-group">
-                                                <input type="text" tabindex="4" class="form-control" placeholder="App Category">
+                                                <input type="text" id="reg-appcat" tabindex="4" class="form-control" placeholder="App Category">
                                                 <div class="input-group-btn">
                                                     <button type="button" class="btn btn-default"><i class="caret"></i></button>
                                                 </div>
                                             </div>
-                                                <div class="input-group">
-                                            <input type="text" tabindex="5" class="form-control" placeholder="App Icon">
+                                            <!--<div class="input-group">
+                                                <input type="file" id="reg-appicon" tabindex="5" class="form-control" placeholder="App Icon">
                                                 <div class="input-group-btn">
                                                     <button type="button" class="btn btn-default"><i class="fa fa-upload"></i></button>
                                                 </div>
+                                            </div>-->
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" id="reg-appicon" readonly>
+                                                <label class="input-group-btn">
+                                                    <span class="btn btn-default">
+                                                        <i class="fa fa-upload"></i><input type="file" style="display: none;" accept="image/*" onchange="$('#reg-appicon').val($(this).val());">
+                                                    </span>
+                                                </label>
                                             </div>
                                             <div class="input-group">
-                                                <input type="text" tabindex="6" class="form-control" placeholder="App TimeZone">
-                                                <div class="input-group-btn">
-                                                    <button type="button" class="btn btn-default"><i class="fa fa-clock-o"></i></button>
-                                                </div>
+                                                <select class="form-control timezone-select" style="border-radius: 4px;"></select>
+                                                <script>
+                                                    $(".timezone-select").timezones();
+                                                </script>
                                             </div>
                                         </div>
                                         <div class="col-md-1 hidden-xs">
@@ -452,14 +548,34 @@
                                             <i class="fa fa-info-circle" aria-hidden="true"></i>
                                             <i class="fa fa-info-circle" aria-hidden="true"></i>
                                         </div>
-                                    </div>
-                                    <div class="row">
-                                        <button class="btn">Back</button>
-                                        <button class="btn">Proceed</button>
-                                    </div>
+                                    </div>   
+                                        
+                                        <div class="row">
+                                            <button class="btn btn-back" onclick="fadeBack('tab2', 'tab1');">Back</button>
+                                            <button class="btn btn-proceed2" onclick="fadeProceed('tab2', 'tab3');">Proceed</button>
+                                        </div>
+                                    
+                                    
                                 </div>
                                 <div class="tab-pane fade" id="tab3">
-                                    3
+                                    <div class="row">
+                                        <div class="col-md-2 hidden-xs">
+                                            <img id="appicon-img" />
+                                        </div>
+                                        <div class="col-md-5">
+                                            <p><span class="tab3-boldtext">App Name:</span>&nbsp;&nbsp;<span class="tab3-regtext"></span></p>
+                                            <p><span class="tab3-boldtext">Description:</span>&nbsp;&nbsp;<span class="tab3-regtext"></span></p>
+                                        </div>
+                                        <div class="col-md-5">
+                                            <p><span class="tab3-boldtext">App Category:</span>&nbsp;&nbsp;<span class="tab3-regtext"></span></p>
+                                            <p><span class="tab3-boldtext">App Time Zone:</span>&nbsp;&nbsp;<span class="tab3-regtext"></span></p>
+                                            <p><span class="tab3-boldtext">App Timeout:</span>&nbsp;&nbsp;<span class="tab3-regtext"></span></p>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <button class="btn btn-back" onclick="fadeBack('tab3', 'tab2');">Back</button>
+                                        <button class="btn btn-confirm">Confirm</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
