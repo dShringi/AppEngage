@@ -502,7 +502,7 @@ var sec2ISO = function(SECONDS){
 /******************* Convert time in format hh:mm:ss - END *****************/
 
 /*************************  For Line Chart ************************/
-function plotLineChart(data, svg, div,timestamp, ele, valueline, x, y, width, height, xAxis, yAxis){
+function plotLineChart(data, svg, div,timestamp=false, ele, valueline, x, y, width, height, xAxis="", yAxis = ""){
 	//console.log(typeof xAxis+" :: "+typeof yAxis);
 	// Scale the range of the data
 	
