@@ -3,11 +3,11 @@ var service = {
     validateLogin: function (uname, pwd) {
         console.log("service called");
 
-        //var loginJSONReq = {
-        //    "username": uname,
-        //    "password": pwd
-        //};
-        //console.log(loginJSONReq);
+        var loginJSONReq = {
+            "username": uname,
+            "password": pwd
+        };
+        console.log(loginJSONReq);
         $.ajax({
             type: 'GET',
             url: "http://52.206.121.100/appengage/getUserValidated",
@@ -19,11 +19,7 @@ var service = {
             success: function (data) {
                 console.log(data);
                 if (data.msg === "Success") {
-                    var name = data.name;
-                    function sessionSet(name) {
-                        sessionStorage.setItem("userName", name);
-                    }
-                    
+                    sessionStorage.setItem("userName", data.name);
                     window.location.href = "index.html";
                 }
                 else {
