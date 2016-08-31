@@ -112,7 +112,7 @@ if (Boolean(url) && Boolean(appKey) && Boolean(triggerType)){
 						var smartCount = beginsCollectionQueryResult.smartCount;
 						var tabletCount = beginsCollectionQueryResult.tabletCount;
 						
-						var KeyFormat = moment.utc(startDate).tz(appTZ).format('YYYYMMDD');
+						var KeyFormat = dateFormat(startDate, "yyyymmdd");
 						var dashboardCollection = db.collection(config.mongodb.coll_dashboard);
 					
 						//smart Hourly collection update
