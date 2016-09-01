@@ -115,7 +115,7 @@ var service = {
 		        swal({
 		            title: 'Congratulations!',
 		            text: '<p style="font-size:14px; padding-top: 30px;">You have successfully registered with us.</p>' +
-                            '<p style="font-size:14px;">Your registration key is -</p>' +
+                            '<p style="font-size:14px;">Your application key is -</p>' +
                             '<h3>'+data.akey+'</h3>',
 		            html: true
 		        });
