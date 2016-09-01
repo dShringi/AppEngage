@@ -101,6 +101,12 @@
 
             };
 
+            function imageUpload(abc) {
+                alert($(abc).val());
+                $('#reg-appicon').val($(abc).val());
+                $("#appicon-img").attr("src", $(abc).val());
+            }
+
 
             $(document).ready(function () {
        // Add smooth scrolling to all links
@@ -532,7 +538,7 @@
                                                 <input type="text" class="form-control" id="reg-appicon" readonly>
                                                 <label class="input-group-btn">
                                                     <span class="btn btn-default">
-                                                        <i class="fa fa-upload"></i><input type="file" style="display: none;" accept="image/*" onchange="$('#reg-appicon').val($(this).val());">
+                                                        <i class="fa fa-upload"></i><input type="file" style="display: none;" accept="image/*" onchange="imageUpload(this);">
                                                     </span>
                                                 </label>
                                             </div>
