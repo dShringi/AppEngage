@@ -51,6 +51,7 @@ if (Boolean(url) && Boolean(appKey) && Boolean(triggerType)){
 						var tabletCount = beginsCollectionQueryResult.tabletCount;
 						
 						var KeyFormat = moment.utc(startDate).tz(appTZ).format('YYYYMMDDHH');
+						console.log('KeyFormat ', KeyFormat);
 						//var dashboardCollection = db.collection(config.mongodb.coll_dashboard);
 					
 						//smart Hourly collection update
@@ -111,6 +112,7 @@ if (Boolean(url) && Boolean(appKey) && Boolean(triggerType)){
 						var tabletCount = beginsCollectionQueryResult.tabletCount;
 						
 						var KeyFormat = dateFormat(startDate, "yyyymmdd");
+						console.log('KeyFormat ', KeyFormat);
 						var dashboardCollection = db.collection(config.mongodb.coll_dashboard);
 					
 						//smart Hourly collection update
