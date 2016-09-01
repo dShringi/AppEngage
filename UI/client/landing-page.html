@@ -9,6 +9,8 @@
         <link rel="stylesheet" href="assets/css/font-awesome.min.css">
         <script src="assets/js/jquery.js"></script>
         <script src="assets/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="assets/css/sweetalert.css">
+        <script src="assets/js/sweetalert.min.js"></script>
         <script src="assets/js/servicecalls.js"></script>
         <script src="assets/js/timezones.full.min.js"></script>
         <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Montserrat">
@@ -16,6 +18,10 @@
         <script>
             var counter;
             var arr = [];
+
+            function unameAvailability(uname) {
+                    service.validateUname(uname);
+            }
 
             function validateUser() {
                 var uname = $("input.usrname").val();
@@ -68,7 +74,10 @@
 
 
                 if (emptyFlag > 0) {
-                    alert("Please fill all details");
+                    swal({ title: "OOPS", text: "Please fill all the details.", imageUrl: "assets/img/Error.png" });
+                }
+                else if (sessionStorage.getItem("unameAvailability") != "Success") {
+                    swal({ title: "OOPS", text: "Username is already taken. Please provide new username.", imageUrl: "assets/img/Error.png" });
                 }
                 else {
                     if (tabcurrent === 'tab1') {
@@ -102,24 +111,28 @@
             };
 
             function imageUpload(abc) {
-                alert($(abc).val());
                 $('#reg-appicon').val($(abc).val());
                 $("#appicon-img").attr("src", $(abc).val());
             }
 
+            
 
             $(document).ready(function () {
-       // Add smooth scrolling to all links
-                //$(".btn-proceed1").click(function () {
-                //    $("#tab1").fadeOut().removeClass("in active");
-                //    $("#tab2").fadeIn().addClass("in active");
-                //});
-                //$(".btn-proceed2").click(function () {
-                //    $("#tab2").fadeOut().removeClass("in active");
-                //    $("#tab3").fadeIn().addClass("in active");
-                //});
 
-                //$(document).on("scroll", onScroll);
+                $('#modalRegister').on('hidden.bs.modal', function (e) {
+                    $("#modalRegister #tab1").addClass("in active").fadeIn();
+                    $("#modalRegister #tab2").removeClass("in active");
+                    $("#modalRegister #tab3").removeClass("in active");
+                    $(".register-part01").addClass("active-underline");
+                    $(".register-part02").removeClass("active-underline");
+                    $(".register-part03").removeClass("active-underline");
+                    $("#uname-check").css("opacity", "0");
+                    sessionStorage.removeItem("unameAvailability");
+                    $("#modalRegister").find("input").each(function () {
+                        $(this).val("");
+                    });
+                });
+
 
                 $("a").on('click', function (event) {
 
@@ -492,7 +505,8 @@
                                         <div class="col-md-5">
                                             <input type="text" id="reg-fname" class="form-control" tabindex="1" placeholder="First Name" />
                                             <input type="text" id="reg-email" class="form-control" tabindex="3" placeholder="E-mail ID" />
-                                            <input type="text" id="reg-uname" class="form-control" tabindex="5" placeholder="User Name" />
+                                            <input type="text" id="reg-uname" class="form-control" tabindex="5" placeholder="User Name" onkeyup="unameAvailability($(this).val())" />
+                                            <span id="uname-check" style="opacity: 0;"><i class="fa"></i><i id="avail-message"></i></span>
                                         </div>
                                         <div class="col-md-5 col-md-offset-1">
                                             <input type="text" id="reg-lname" class="form-control" tabindex="2" placeholder="Last Name" />

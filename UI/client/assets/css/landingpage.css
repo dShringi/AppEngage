@@ -379,6 +379,13 @@
                     font-size: 12px;
                 }
 
+                #modalRegister .tab-content{
+                    padding-top: 20px;
+                    max-height: 233px;
+                    min-height: 233px;
+                    overflow: hidden;
+                }
+
                 #modalRegister .fa-info-circle{
                     padding-top: 21px;
                 }
