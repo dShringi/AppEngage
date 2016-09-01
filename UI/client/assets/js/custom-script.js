@@ -505,6 +505,8 @@ var sec2ISO = function(SECONDS){
 function plotLineChart(data, svg, div,timestamp, ele, valueline, x, y, width, height, xAxis, yAxis){
 	//console.log(typeof xAxis+" :: "+typeof yAxis);
 	// Scale the range of the data
+	xAxis = "";
+	yAxis = "";
 	
 	var hoursFlag;
 	console.log(data);
