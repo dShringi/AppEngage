@@ -4,7 +4,7 @@ module.exports.port             = 3001;
 //module.exports.port             = 6000;
 
 module.exports.connectionstring = 'mongodb://localhost/';
-module.exports.appengageConnString	=	'mongodb://localhost/appengage'
+module.exports.appengageConnString	=	'mongodb://localhost/appengage';
 
 module.exports.coll_crashes			= 	'coll_crashes';
 module.exports.coll_dashboard		= 	'coll_dashboard';
@@ -12,6 +12,7 @@ module.exports.coll_realtime		= 	'coll_realtimes';
 module.exports.coll_users 			= 	'coll_users';
 module.exports.coll_activesessions	= 	'coll_activesessions';
 module.exports.coll_appengageusers	=	'coll_users';
+module.exports.coll_appengageapps = 'coll_apps';
 module.exports.coll_eventnames		=	'coll_eventnames';
 
 
@@ -43,7 +44,7 @@ module.exports.platform=[
 {shortpf:"a",displaypf:"Android"},
 {shortpf:"i",displaypf:"iOS"},
 {shortpf:"w",displaypf:"Windows"}
-]
+];
 
 module.exports.model=[
 {shortpf:"GT-I9300",displaypf:"Samsung Galaxy S III"},
@@ -52,21 +53,21 @@ module.exports.model=[
 {shortpf:"GT-I8552",displaypf:"Samsung Galaxy Grand Quattro"},
 {shortpf:"XT1052",displaypf:"Moto X"},
 {shortpf:"MI 5",displaypf:"MI 5"}
-]
+];
 
 module.exports.type=[
 {shortpf:"S",displaypf:"SmartPhone"},
 {shortpf:"T",displaypf:"Tablet"},
 {shortpf:"s",displaypf:"SmartPhone"},
 {shortpf:"t",displaypf:"Tablet"}
-]
+];
 
 module.exports.manufacturer=[
 {shortpf:"samsung",displaypf:"Samsung"},
 {shortpf:"Xiaomi",displaypf:"Xiaomi"},
 {shortpf:"HTC",displaypf:"HTC"},
 {shortpf:"motorola",displaypf:"Motorola"}
-]
+];
 
 module.exports.YYYYMMDDHH = 'YYYYMMDDHH';
 module.exports.YYYYMMDD = 'YYYYMMDD';
@@ -76,3 +77,5 @@ module.exports.DAY = 'day';
 module.exports.UNDEFINED = undefined;
 module.exports.NULL = null;
 module.exports.EMPTYSTRING ="";
+
+module.exports.applicationDefaultTimeout=7200;

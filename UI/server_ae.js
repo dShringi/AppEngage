@@ -13,11 +13,8 @@ var userDashboardController = require('./server/controllers/userDashboardControl
 var userValidationController = require('./server/controllers/userValidationController');
 var sessionController = require('./server/controllers/sessionController');
 var locationController = require('./server/controllers/locationController');
-try{
 var eventController = require('./server/controllers/eventsController');
-}catch(ex){
-  console.error(ex);
-}
+
 app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser()); // get information from html forms
 app.get('/', function (req, res) {
@@ -32,6 +29,8 @@ app.get('/appengage/getUserInsights',sessionController.getUserInsights);
 app.get('/appengage/getSessionInsights',sessionController.getSessionInsights);
 app.get('/appengage/getDeviceCounters',userDashboardController.getUserDashboardCounters);
 app.get('/appengage/getUserValidated',userValidationController.validateUser);
+app.get('/appengage/getUserNameValidated',userValidationController.validateUserName);
+app.post('/appengage/registerUser',userValidationController.registerUser);
 // The below controller is temporary for UI development.
 app.get('/appengage/getCampaignData',userValidationController.getMessagingData);
 app.get('/appengage/getLocationCounters',locationController.getLocationCounters);
