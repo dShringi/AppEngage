@@ -1,9 +1,9 @@
 // use this script to update dashboard collection
 'use strict'
 
-var logger = require('././Scripts/conf/log.js');
-var config = require('././Scripts/conf/config.js');
-var common = require('././Scripts/commons/common');
+var logger = require('../conf/log.js');
+var config = require('../conf/config.js');
+var common = require('../commons/common');
 
 var mongodb = require('mongodb');
 var dateFormat = require('dateformat');
@@ -12,7 +12,7 @@ var moment = require('moment-timezone');
 var MongoClient = mongodb.MongoClient;
 var application = config.app.details;	
 var appTZ = config.defaultAppTimeZone;
-var url = config.mongodb.url;
+var url = config.mongodb.url+'/'+process.argv[2];
 
 //run time parameters(aapkey and triggerType)
 var appKey =  process.argv[2];
@@ -92,11 +92,9 @@ if (Boolean(url) && Boolean(appKey) && Boolean(triggerType)){
 				
 				if((triggerType == config.mongodb.triggerType_weekly) && (startDateYear != endDateYear)) {
 					//to be done
-					
 				} else {
-					query = '[{"$match":{"' + matchKey + '" : {"$gte":' + startDayMonth + ',"$lte":' + endDayMonth
-							+ '}}},{"$unwind": "' + unwindvar + '"},{"$match":{"' + matchKey + '" : {"$gte":'
-							+ startDayMonth + ',"$lte":' + endDayMonth + '}}},{"$group":{"_id":{"result" : "$ldt"},"users":{"$sum": 1}}}]';
+					  query = '[{"$unwind":"'+unwindvar+'"},{"$match":{"'+matchKey+'":{"$gte":'+startDayMonth+',"$lte":'+endDayMonth
+					  +'}}},{"$group":{"_id":{"_id":"$_id","ldt":"$ldt"}}},{"$group":{"_id":{"result":"$_id.ldt"},"users":{"$sum":1}}}]';
 				}
 				var queryJson = JSON.parse(query);
 				usersCollection.aggregate(queryJson,function(err, items) {
@@ -105,8 +103,8 @@ if (Boolean(url) && Boolean(appKey) && Boolean(triggerType)){
 					}
 					
 					var resultLength = items.length;
-					console.log(resultLength,' result found ');
 					if(resultLength > 0){
+						console.log(resultLength,' result found ');
 						// find tablet/smart phone entry
 						var beginsCollectionQueryResult = getGroupByQueryResult(items);
 						var smartCount = beginsCollectionQueryResult.smartCount;

@@ -26,6 +26,7 @@
 			}
 			else{
 				$("body").css("display", "block");
+				console.log(sessionStorage.getItem("userName"));
 				$("header.bg-white ul.paddl0 span.loggedUser").text(sessionStorage.getItem("userName"));
 			}
 		
