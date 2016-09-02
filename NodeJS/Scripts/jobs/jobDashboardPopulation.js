@@ -50,7 +50,7 @@ if (Boolean(url) && Boolean(appKey) && Boolean(triggerType)){
 						var smartCount = beginsCollectionQueryResult.smartCount;
 						var tabletCount = beginsCollectionQueryResult.tabletCount;
 						
-						var KeyFormat = moment.utc(startDate).tz(appTZ).format('YYYYMMDDHH');
+						var KeyFormat = dateFormat(startDate, "yyyymmddHH");
 						console.log('KeyFormat ', KeyFormat);
 						//var dashboardCollection = db.collection(config.mongodb.coll_dashboard);
 					
