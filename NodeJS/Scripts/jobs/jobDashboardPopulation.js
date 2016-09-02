@@ -33,9 +33,13 @@ if (Boolean(url) && Boolean(appKey) && Boolean(triggerType)){
 			
 			var startDate;
 			if(triggerType == config.mongodb.triggerType_hourly) {
+				
 				startDate = getStartDate(triggerType);
+				
 				var beginsCollection = db.collection(config.mongodb.coll_begins);
+				console.log('before ',startDate);
 				var startDateUnixtime = getUnixTime('P');
+				console.log('after ',startDateUnixtime);
 				var query = '[{"$match":{"rtr":{"$gte":' + startDateUnixtime + ',"$lt":' + endDateUnixtime
 							+ '}}},{"$group":{"_id":{"val":"$val.dt","val.did":"$val.did"}}},{"$group":{"_id":{"result":"$_id.val"},"users":{"$sum":1}}}]';
 				beginsCollection.aggregate(JSON.parse(query),function(err, items) {
@@ -254,7 +258,7 @@ function getUnixTime(timeType) {
 	if(timeType == 'C') {
 		return Math.round(date.getTime() / 1000);
 	} else if(timeType == 'P') {
-		date.setHours(startDate.getHours()-1);
+		date.setHours(date.getHours()-1);
 		date.setMinutes(0);
 		return Math.round(date.getTime() / 1000);
 	}
