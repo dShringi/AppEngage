@@ -26,7 +26,7 @@ if (Boolean(url) && Boolean(appKey) && Boolean(triggerType)){
 			console.log('Connection established to', url);
 			getTimezone(appKey);
 			var endDate=new Date();
-			var endDateUnixtime = Math.round(endDate.getTime() / 1000);
+			var endDateUnixtime = getUnixTime('C');
 			var endDateDay = endDate.getDate();
 			var endDateMonth = endDate.getMonth()+1;
 			var endDateYear = endDate.getFullYear();
@@ -35,7 +35,7 @@ if (Boolean(url) && Boolean(appKey) && Boolean(triggerType)){
 			if(triggerType == config.mongodb.triggerType_hourly) {
 				startDate = getStartDate(triggerType);
 				var beginsCollection = db.collection(config.mongodb.coll_begins);
-				var startDateUnixtime = Math.round(startDate.getTime() / 1000);
+				var startDateUnixtime = getUnixTime('P');
 				var query = '[{"$match":{"rtr":{"$gte":' + startDateUnixtime + ',"$lt":' + endDateUnixtime
 							+ '}}},{"$group":{"_id":{"val":"$val.dt","val.did":"$val.did"}}},{"$group":{"_id":{"result":"$_id.val"},"users":{"$sum":1}}}]';
 				beginsCollection.aggregate(JSON.parse(query),function(err, items) {
@@ -144,6 +144,13 @@ if (Boolean(url) && Boolean(appKey) && Boolean(triggerType)){
 
 function getStartDate(triggerType) {
 	var startDate = new Date();
+	var startDateYear = moment.utc(startDate).tz(appTZ).format('YYYY');
+	var startDateMonth = moment.utc(startDate).tz(appTZ).format('MM');
+	var startDateDay = moment.utc(startDate).tz(appTZ).format('DD');
+	var startDateHour = moment.utc(startDate).tz(appTZ).format('HH');
+	var startDateMinut = moment.utc(startDate).tz(appTZ).format('MM');
+	var startDateSecond = moment.utc(startDate).tz(appTZ).format('SS');
+	startDate = new Date(startDateYear, parseInt(startDateMonth)-1,startDateDay,startDateHour, startDateMinut, startDateSecond);
 	if (triggerType == config.mongodb.triggerType_hourly) {
 		//return new Date(startDate-60*60*1000);
 		startDate.setHours(startDate.getHours()-1);
@@ -239,4 +246,16 @@ function getTimezone(appKey) {
 function getTimeFromZone(date, appTZ) {
 	var tZTime = moment.utc(date).tz(appTZ).format();
 	return new Date(tZTime);
+}
+
+
+function getUnixTime(timeType) {
+	var date = new Date();
+	if(timeType == 'C') {
+		return Math.round(date.getTime() / 1000);
+	} else if(timeType == 'P') {
+		date.setHours(startDate.getHours()-1);
+		date.setMinutes(0);
+		return Math.round(date.getTime() / 1000);
+	}
 }
