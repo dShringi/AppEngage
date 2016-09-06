@@ -423,6 +423,7 @@
 
                 #modalRegister .modal-body .fa-chevron-right{
                     line-height: 45px;
+                    color : #858585 !important;
                 }
 
                 #modalRegister.modal-body .nav-pills li:nth-child(2):before {
@@ -434,14 +435,21 @@
                     margin-left: 15px;
                     margin-top: 20px;
                     margin-bottom: 30px;
+                    background-color: #36657c;
+                    color: #ffffff;
                 }
 
                 #modalRegister #tab3 .tab3-boldtext{
                     color: #b6b6b6;
                 }
 
+                #modalRegister .register-part01, #modalRegister .register-part02, #modalRegister .register-part03{
+                    color: #858585;
+                }
+
                 .active-underline{
-                    border-bottom: 5px solid #717171;
+                    border-bottom: 5px solid #43c2c7 !important;
+                    color: #43c2c7 !important;
                 }
 
             @media (max-width: 767px) {
