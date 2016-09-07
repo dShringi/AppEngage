@@ -57,6 +57,16 @@
         $('ul.sub-menu').not("."+curClass+" ul").hide(animateTime);
         $(this).find('ul').toggle(animateTime,function(){});
     });
+	
+	$(".overlay").click(function(){
+		$( ".left-side" ).toggleClass('wdt80');
+        $( ".left-side" ).toggleClass('wdt210');
+        $('.left-side-inner').toggle('fast');
+        $( ".left-side" ).toggleClass("shadow");
+        $('ul.sub-menu').hide(animateTime);
+        $('.overlay').toggle();
+	
+	});
     
     
     

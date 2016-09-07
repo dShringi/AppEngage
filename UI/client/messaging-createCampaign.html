@@ -20,8 +20,35 @@
         <link rel="stylesheet" href="assets/css/sweetalert.css">
         <script src="assets/js/sweetalert.min.js"></script>
         <script src="assets/js/servicecalls.js"></script>
-        <script src="assets/js/custom-script.js"></script>
-        <link rel="stylesheet" href="assets/css/messaging.css">
+        <!--<script src="assets/js/custom-script.js"></script>-->
+        <link rel="stylesheet" href="assets/css/campaign.css">
+
+        <script>
+            $(document).ready(function () {
+                $("div.section-creative").css("display", "none");
+                $("div.section-audience").css("display", "none");
+                $("div.section-scheduling").css("display", "none");
+                $("div.section-confirm").css("display", "none");
+
+            });
+
+            function campaignToggle() {
+                $(".section-campaign").slideToggle();
+                $(".section-creative").slideToggle();
+            }
+            function creativeToggle() {
+                $(".section-audience").slideToggle();
+                $(".section-creative").slideToggle();
+            }
+            function audienceToggle() {
+                $(".section-audience").slideToggle();
+                $(".section-scheduling").slideToggle();
+            }
+            function schedulingToggle() {
+                $(".section-scheduling").slideToggle();
+                $(".section-confirm").slideToggle();
+            }
+        </script>
 
     </head>
     <body>
@@ -32,12 +59,100 @@
                     <li>Messaging &gt; Create a New Campaign</li>
                 </ul>
             </section>
-            <section class="paddl50 paddr50 mrgnBtm0">
+            <section class="paddl50 paddr50 mrgnBtm0 bg-white">
                 <div class="row">
-                    <div class="col-md-6">
+                    
+                    <div class="col-md-7 campaign-editor">
+                   <!--Campaign-->
+                        <div class="row">
+                            <div class="col-md-1">o</div>
+                            <div class="col-md-9">
+                                <h5>Campaign</h5>
+                                <div class="row section-campaign">
+                                    <input type="text" class="form-control" />
+                                    <button class="btn" onclick="campaignToggle();">Next</button>
+                                </div>
+                            </div>
+                            <div class="col-md-2"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Edit</div>
+                        </div>
+                   <!--Creative-->
+                        <div class="row">
+                            <div class="col-md-1">o</div>
+                            <div class="col-md-9">
+                                <h5>Creative</h5>
+                                <div class="row section-creative">
+                                    <p>Lorem Ipsum dolor sit amet</p>
+                                    <input type="text" class="form-control" />
+                                    <textarea rows="4"></textarea>
+                                    <button class="btn" onclick="creativeToggle();">Next</button>
+                                </div>
+                            </div>
+                            <div class="col-md-2"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Edit</div>
+                        </div>
+                   <!--Audience-->
+                        <div class="row">
+                            <div class="col-md-1">o</div>
+                            <div class="col-md-9">
+                                <h5>Audience</h5>
+                                <div class="row section-audience">
+                                    <p>Who sould receive this push campaign?</p>
+                                    <input type="radio" name="audience-type" value="everyone" checked> Everyone
+                                    <input type="radio" name="audience-type" value="saved"> Saved Audience
+                                    <input type="radio" name="audience-type" value="new"> New Audience
 
+                                    <span>People who</span><input type="text" class="form-control" />
+                                    <span>People who</span><input type="text" class="form-control" />
+                                    <button class="btn">Save Audience</button>
+                                    <button class="btn" onclick="audienceToggle();">Next</button>
+                                </div>
+                             </div>
+                            <div class="col-md-2"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Edit</div>
+                        </div>
+                  <!--Scheduling-->
+                        <div class="row scheduling-row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-9">
+                                <h5>Scheduling</h5>
+                                <div class="row section-scheduling">
+                                    <input type="radio" name="scheduling-type" value="immediately" checked> Immediately
+                                    <input type="radio" name="scheduling-type" value="scheduled"> Scheduled
+                                    <div class="input-group">
+                                        <input type="text" class="form-control"/>
+                                        <div class="input-group-btn">
+                                            <button type="button" class="btn btn-default"><i class="fa fa-calendar"></i></button>
+                                        </div>
+                                    </div>
+                                    <button class="btn" onclick="schedulingToggle();">Next</button>
+                                </div>
+                            </div>
+                            <div class="col-md-2"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Edit</div>
+                        </div>
+                 <!--Confirm-->
+                        <div class="row confirm-row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-10">
+                                <h5>Confirm</h5>
+                                <div class="row section-confirm">
+                                    <p>Campaign Summary</p>
+                                    <hr style="margin: 10px 0px 10px 0px;" />
+                                    <div class="row">
+                                        <div class="col-md-2">Creative:</div>
+                                        <div class="col-md-9">Diwali Offer</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">Audience:</div>
+                                        <div class="col-md-9">All app users will see your campaign. Campaign will be delivered to Android devices</div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-2">Scheduling:</div>
+                                        <div class="col-md-9">Campaign is scheduled to send once on</div>
+                                    </div>
+                                    <button class="btn">Confirm</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="cold-md-6">
+                    <div class="cold-md-5">
 
                     </div>
                 </div>

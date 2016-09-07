@@ -440,7 +440,11 @@
                 }
 
                 #modalRegister #tab3 .tab3-boldtext{
-                    color: #b6b6b6;
+                    color: #43c2c7;
+                }
+
+                #modalRegister .tab3-regtext1, #modalRegister .tab3-regtext2, #modalRegister .tab3-regtext3, #modalRegister .tab3-regtext4, #modalRegister .tab3-regtext5{
+                    color: #858585;
                 }
 
                 #modalRegister .register-part01, #modalRegister .register-part02, #modalRegister .register-part03{
