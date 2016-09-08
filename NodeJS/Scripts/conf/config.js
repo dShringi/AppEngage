@@ -8,10 +8,9 @@ config.server.port = '8000';
 
 config.mongodb = {};
 //For development purpose
-config.mongodb.url = 'mongodb://DWHBI-SRV3';
-//config.mongodb.port = process.env.MONGODB_PORT || '27017';
-
-config.mongodb.port = process.env.MONGODB_PORT || '63024';
+config.mongodb.url = 'mongodb://localhost';
+//config.mongodb.url = 'mongodb://DWHBI-SRV3';
+config.mongodb.port = process.env.MONGODB_PORT || '27017';
 
 config.kafka = {};
 config.kafka.default = 'unregistered';
@@ -31,7 +30,7 @@ config.url.beginep = '/api/i/single/B';
 config.url.endep = '/api/i/single/E'
 config.url.crashep = '/api/i/single/C';
 config.url.eventsep = '/api/i/single/event';
-config.url.offline = '/api/i/bulk/O';
+config.url.offlineep = '/api/i/bulk/O';
 
 config.app = {};
 config.defaultAppTimeZone = 'Asia/Kolkata';
@@ -39,6 +38,7 @@ config.app.details = [
 {app:"test1234",TZ:"America/New_York",TimeOut:600},
 {app:"4170b44d6459bba992acaa857ac5b25d7fac6cc1",TZ:"Asia/Kolkata",TimeOut:600}
 ];
+
 config.app.defaultTZ = 'Asia/Kolkata';
 
 config.messages = {};
