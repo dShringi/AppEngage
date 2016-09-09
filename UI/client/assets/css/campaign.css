@@ -1,5 +1,4 @@
-.btn{
-    margin-left: 15px;
+.campaign-editor .btn{
     margin-top: 20px;
     margin-bottom: 30px;
     background-color: #36657c;
@@ -18,4 +17,48 @@
 .campaign-editor .confirm-row .section-confirm .row .col-md-2{
     font-weight: bold;
     color: #43c2c7;
+}
+
+.campaign-editor .section-scheduling #datepck{
+    width: 30%;
+    display: inline-block;
+}
+.campaign-editor .section-scheduling #clockpck{
+    width: 30%;
+    display: inline-block;
+}
+.campaign-editor .section-scheduling #at{
+    display: inline-block;
+}
+
+.campaign-editor .section-scheduling .fa-calendar{
+    position:absolute;
+    top:106px;
+    left: 141px;
+}
+
+.campaign-editor .section-scheduling .fa-clock-o{
+    position:absolute;
+    top:106px;
+    right: 195px;
+}
+
+.campaign-editor .row .col-md-2 span{
+    display: block;
+    margin-top:10px;
+    cursor:pointer;
+    font-size:12px;
+}
+
+.clockpicker-button{
+    color: #333 !important;
+}
+
+span.radio-text{
+    vertical-align:middle;
+    padding-left: 5px;
+    padding-right: 10px;
+}
+input[type=radio]{
+    vertical-align:sub;
 }
