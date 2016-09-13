@@ -33,27 +33,25 @@
                 $("div.section-audience").css("display", "none");
                 $("div.section-scheduling").css("display", "none");
                 $("div.section-confirm").css("display", "none");
+                $("div.campaign-editor .side-line .div2").css("display", "none");
+                $("div.campaign-editor .campaign-row .side-line .div2").css("display", "block");
                 $(".campaign-edit").hide();
                 $(".creative-edit").hide();
                 $(".audience-edit").hide();
                 $(".scheduling-edit").hide();
 
-                $(".campaign-editor .campaign-row .col-md-1 .yes").css("height", $(".campaign-editor .campaign-row .section-campaign").height());
-                $(".campaign-editor .creative-row .col-md-1 .yes").css("height", $(".campaign-editor .campaign-row .section-creative").height());
-                $(".campaign-editor .audience-row .col-md-1 .yes").css("height", $(".campaign-editor .campaign-row .section-audience").height());
-                $(".campaign-editor .scheduling-row .col-md-1 .yes").css("height", $(".campaign-editor .campaign-row .section-scheduling").height());
-
             });
 
             function nextToggle(sectionClass) {
                 $(sectionClass).slideUp();
-                console.log($(sectionClass).parent().siblings().first().children().next());
-                $(sectionClass).parent().siblings().first().children().next().next().slideUp();
-                $(sectionClass).parent().parent().next().children().next().children().show();
-                $(sectionClass).parent().parent().next().children().next().slideDown();
-                $(sectionClass).parent().parent().children().next().next().children().addClass("edited");
-                $(sectionClass).parent().parent().next().children().next().next().children().removeClass("edited");
-                $(sectionClass).parent().parent().next().children().next().next().children().hide();
+                $(sectionClass).parent().children().children().next().slideUp();
+                //$(sectionClass).parent().parent().next().children().first().children().next().show();
+                console.log($(sectionClass).parent().parent().next().children().first().children().next().next());
+                $(sectionClass).parent().parent().next().children().first().children().first().children().next().slideDown();
+                $(sectionClass).parent().parent().next().children().first().children().next().next().slideDown();
+                $(sectionClass).parent().parent().children().next().children().addClass("edited");
+                $(sectionClass).parent().parent().next().children().next().children().removeClass("edited");
+                $(sectionClass).parent().parent().next().children() .next().children().hide();
                 $(".edited").parent().children().fadeIn();
             }
 
@@ -73,15 +71,21 @@
                     $(".section-scheduling").slideDown();
                     
                 }
+                //console.log($(thisClass).parent().parent().children().first().children().children().next());
+                //$(thisClass).parent().parent().siblings().children().children().first().children().next().slideUp();
+                $(".side-line .div2").slideUp();
+                $(thisClass).parent().parent().children().first().children().children().next().slideDown();
                 $(thisClass).parent().children().fadeOut();
                 $(thisClass).removeClass("edited");
-                $(thisClass).parent().parent().siblings().children().children().next().slideUp();
+                $(thisClass).parent().parent().siblings().children().children().next().next().slideUp();
                 $(thisClass).parent().parent().siblings().children().next().next().children().fadeIn();
+                
+                
             }
         </script>
 
     </head>
-    <body>
+    <body style="height:100vh; background-color: #ffffff;">
         <aside class="left-side sticky-left-side" tabindex="5000"></aside>
         <aside class="main-container">
             <section class="breadcrumb bg-white border-bottom paddl30">
@@ -95,135 +99,150 @@
                     <div class="col-md-7 campaign-editor">
                    <!--Campaign-->
                         <div class="row campaign-row">
-                            <div class="col-md-1">
-                                <div style="margin-left:50%; height: 7px; border-left:1px solid #000000;"></div>
-                                <div class="text-center"><i class="fa fa-circle-o" aria-hidden="true"></i></div>
-                                <div class="yes" style="margin-left:50%; border-left: 1px solid #000000;"></div>
-                            </div>
                             <div class="col-md-9">
+                                <div class="side-line">
+                                    <div><i class="fa fa-circle-o" aria-hidden="true"></i></div>
+                                    <div class="div2" style=" height: 129px;"></div>
+                                </div>
                                 <h5>Campaign</h5>
                                 <div class="row section-campaign">
-                                    <input type="text" class="form-control" />
-                                    <button class="btn" onclick="nextToggle('.section-campaign');">Next</button>
-                                </div>
+                                    <div class="col-md-11">
+                                        <input type="text" class="form-control" />
+                                        <button class="btn" onclick="nextToggle('.section-campaign');">Next</button>
+                                    </div>
+                               </div>
                             </div>
                             <div class="col-md-2"><span class="campaign-edit" onclick="editToggle(this);"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Edit</span></div>
                         </div>
                    <!--Creative-->
-                        <div class="row">
-                            <div class="col-md-1">
-                                <div style="margin-left:50%; height: 7px; border-left:1px solid #000000;"></div>
-                                <div class="text-center"><i class="fa fa-circle-o" aria-hidden="true"></i></div>
-                                <div class="yes" style="margin-left:50%; border-left: 1px solid #000000;"></div>
-                            </div>
+                        <div class="row  creative-row">
                             <div class="col-md-9">
+                                <div class="side-line">
+                                    <div class="div1"><i class="fa fa-circle-o" aria-hidden="true"></i></div>
+                                    <div class="div2" style="height: 280px;"></div>
+                                </div>
                                 <h5>Creative</h5>
                                 <div class="row section-creative">
-                                    <p>Lorem Ipsum dolor sit amet</p>
-                                    <input type="text" class="form-control" />
-                                    <textarea rows="4"></textarea>
-                                    <button class="btn" onclick="nextToggle('.section-creative');">Next</button>
+                                    <div class="col-md-11">
+                                        <p>Lorem Ipsum dolor sit amet</p>
+                                        <input type="text" class="form-control" />
+                                        <textarea class="form-control" rows="4" style="resize:none; width: 100%; margin-top: 20px;"></textarea>
+                                        <button class="btn" onclick="nextToggle('.section-creative');">Next</button>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-2"><span class="creative-edit" onclick="editToggle(this);"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Edit</span></div>
                         </div>
                    <!--Audience-->
-                        <div class="row">
-                            <div class="col-md-1">
-                                <div style="margin-left:50%; height: 7px; border-left:1px solid #000000;"></div>
-                                <div class="text-center"><i class="fa fa-circle-o" aria-hidden="true"></i></div>
-                                <div class="yes" style="margin-left:50%; border-left: 1px solid #000000;"></div>
-                            </div>
+                        <div class="row audience-row">
                             <div class="col-md-9">
+                                <div class="side-line">
+                                    <div class="div1"><i class="fa fa-circle-o" aria-hidden="true"></i></div>
+                                    <div class="div2" style=" height: 270px;"></div>
+                                </div>
                                 <h5>Audience</h5>
                                 <div class="row section-audience">
-                                    <p>Who should receive this push campaign?</p>
-                                    <input type="radio" name="audience-type" value="everyone" checked><span class="radio-text">Everyone</span>
-                                    <input type="radio" name="audience-type" value="saved"><span class="radio-text">Saved Audience</span>
-                                    <input type="radio" name="audience-type" value="new"><span class="radio-text">New Audience</span>
-                                    <div>
-                                        <span>People who</span><input type="text" class="form-control" />
+                                    <div class="col-md-11">
+                                        <p>Who should receive this push campaign?</p>
+                                        <input type="radio" name="audience-type" value="everyone" checked><span class="radio-text">Everyone</span>
+                                        <input type="radio" name="audience-type" value="saved"><span class="radio-text">Saved Audience</span>
+                                        <input type="radio" name="audience-type" value="new"><span class="radio-text">New Audience</span>
+                                        <div>
+                                            <span>People who</span>
+                                            <select id="input-behaviour" class="form-control" placeholder="Person's behaviour">
+                                                <option>1</option>
+                                                <option>2</option>
+                                                <option>3</option>
+                                                <option>4</option>
+                                            </select>
+                                        </div>
+                                        <div class="audience-criteria-1">
+                                            <span>People who</span><input type="text" class="form-control" />
+                                        </div>
+                                        <button class="btn">Save Audience</button>
+                                        <button class="btn" onclick="nextToggle('.section-audience');">Next</button>
                                     </div>
-                                    <div>
-                                        <span>People who</span><input type="text" class="form-control" />
-                                    </div>
-                                    <button class="btn">Save Audience</button>
-                                    <button class="btn" onclick="nextToggle('.section-audience');">Next</button>
                                 </div>
                              </div>
                             <div class="col-md-2"><span class="audience-edit" onclick="editToggle(this);"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Edit</span></div>
                         </div>
                   <!--Scheduling-->
                         <div class="row scheduling-row">
-                            <div class="col-md-1">
-                                <div style="margin-left:50%; height: 7px; border-left:1px solid #000000;"></div>
-                                <div class="text-center"><i class="fa fa-circle-o" aria-hidden="true"></i></div>
-                                <div class="yes" style="margin-left:50%; border-left: 1px solid #000000;"></div>
-                            </div>
                             <div class="col-md-9">
+                                <div class="side-line">
+                                    <div class="div1"><i class="fa fa-circle-o" aria-hidden="true"></i></div>
+                                    <div class="div2" style=" height: 225px;"></div>
+                                </div>
                                 <h5>Scheduling</h5>
                                 <div class="row section-scheduling">
-                                    <input type="radio" name="scheduling-type" value="immediately" checked><span class="radio-text">Immediately</span>
-                                    <input type="radio" name="scheduling-type" value="scheduled"><span class="radio-text">Scheduled</span>
-                                    <div class="date-time-block" style="padding-top: 25px;">
-                                        <input type="text" id="datepck" class="form-control" placeholder="MM/DD/YYYY" />
-                                        <i class="fa fa-calendar" aria-hidden="true"></i>
-                                        <script>
-                                            $(function () {
-                                                $('#datepck').daterangepicker({
-                                                    "singleDatePicker": true,
-                                                    //"startDate": Date.now(),
-                                                    //"endDate": "09/07/2016"
-                                                }, function (start, end, label) {
-                                                    console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+                                    <div class="col-md-11">
+                                        <input type="radio" name="scheduling-type" value="immediately" checked><span class="radio-text">Immediately</span>
+                                        <input type="radio" name="scheduling-type" value="scheduled"><span class="radio-text">Scheduled</span>
+                                        <div class="date-time-block" style="padding-top: 25px;">
+                                            <input type="text" id="datepck" class="form-control" placeholder="MM/DD/YYYY" />
+                                            <i class="fa fa-calendar" aria-hidden="true"></i>
+                                            <script>
+                                                $(function () {
+                                                    $('#datepck').daterangepicker({
+                                                        "singleDatePicker": true,
+                                                        //"startDate": Date.now(),
+                                                        //"endDate": "09/07/2016"
+                                                    }, function (start, end, label) {
+                                                        console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+                                                    });
                                                 });
-                                            });
-                                        </script>
-                                        <span id="at">&nbsp;at&nbsp;</span>
-                                        <input type="text" id="clockpck" class="form-control" placeholder="HH:MM" />
-                                        <i class="fa fa-clock-o" aria-hidden="true"></i>
-                                        <script>
-                                            $('#clockpck').clockpicker({
-                                                placement: 'top',
-                                                donetext: 'Done'
-                                            });
-                                        </script>
-                                    </div>
-                                    <div style="padding-top: 25px;">
-                                        <input type="radio" name="scheduling-delivery" value="simultaneous" checked><span class="radio-text">Delivered Simultaneously</span>
-                                        <input type="radio" name="scheduling-delivery" value="user-timezone"><span class="radio-text">Delivered in User's Timezone</span>
-                                    </div>
-                                    <button class="btn" onclick="nextToggle('.section-scheduling');">Continue & Confirm</button>
-                                </div>
+                                            </script>
+                                            <span id="at">&nbsp;at&nbsp;</span>
+                                            <input type="text" id="clockpck" class="form-control" placeholder="HH:MM" />
+                                            <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                            <script>
+                                                $('#clockpck').clockpicker({
+                                                    placement: 'top',
+                                                    donetext: 'Done'
+                                                });
+                                            </script>
+                                        </div>
+                                        <div style="padding-top: 25px;">
+                                            <input type="radio" name="scheduling-delivery" value="simultaneous" checked><span class="radio-text">Delivered Simultaneously</span>
+                                            <input type="radio" name="scheduling-delivery" value="user-timezone"><span class="radio-text">Delivered in User's Timezone</span>
+                                        </div>
+                                        <button class="btn" onclick="nextToggle('.section-scheduling');">Continue & Confirm</button>
+                                      </div>
+                                 </div>
                             </div>
                             <div class="col-md-2"><span class="scheduling-edit" onclick="editToggle(this);"><i class="fa fa-pencil-square-o" aria-hidden="true"></i>Edit</span></div>
                         </div>
                  <!--Confirm-->
                         <div class="row confirm-row">
-                            <div class="col-md-1"></div>
-                            <div class="col-md-10">
+                            <div class="col-md-9">
+                                <div class="side-line">
+                                    <div class="div1"><i class="fa fa-circle-o" aria-hidden="true"></i></div>
+                                    <div class="div2" style=" height: 290px;"></div>
+                                </div>
                                 <h5>Confirm</h5>
                                 <div class="row section-confirm">
-                                    <p>Campaign Summary</p>
-                                    <hr style="margin: 10px 0px 10px 0px;" />
-                                    <div class="row">
-                                        <div class="col-md-2">Creative:</div>
-                                        <div class="col-md-9">Diwali Offer</div>
+                                    <div class="col-md-11">
+                                        <p>Campaign Summary</p>
+                                        <hr style="margin: 10px 0px 10px 0px;" />
+                                        <div class="row">
+                                            <div class="col-md-3">Creative:</div>
+                                            <div class="col-md-9">Diwali Offer</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">Audience:</div>
+                                            <div class="col-md-9">All app users will see your campaign. Campaign will be delivered to Android devices</div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">Scheduling:</div>
+                                            <div class="col-md-9">Campaign is scheduled to send once on</div>
+                                        </div>
+                                        <button class="btn">Confirm</button>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-2">Audience:</div>
-                                        <div class="col-md-9">All app users will see your campaign. Campaign will be delivered to Android devices</div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-md-2">Scheduling:</div>
-                                        <div class="col-md-9">Campaign is scheduled to send once on</div>
-                                    </div>
-                                    <button class="btn">Confirm</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="cold-md-5">
+                    <div class="col-md-5">
 
                     </div>
                 </div>

@@ -14,17 +14,17 @@
     padding: 12px 0px 12px 0px;
 }
 
-.campaign-editor .confirm-row .section-confirm .row .col-md-2{
+.campaign-editor .confirm-row .section-confirm .row .col-md-3{
     font-weight: bold;
     color: #43c2c7;
 }
 
 .campaign-editor .section-scheduling #datepck{
-    width: 30%;
+    width: 35%;
     display: inline-block;
 }
 .campaign-editor .section-scheduling #clockpck{
-    width: 30%;
+    width: 35%;
     display: inline-block;
 }
 .campaign-editor .section-scheduling #at{
@@ -33,14 +33,14 @@
 
 .campaign-editor .section-scheduling .fa-calendar{
     position:absolute;
-    top:106px;
+    top:56px;
     left: 141px;
 }
 
 .campaign-editor .section-scheduling .fa-clock-o{
     position:absolute;
-    top:106px;
-    right: 195px;
+    top:56px;
+    right: 124px;
 }
 
 .campaign-editor .row .col-md-2 span{
@@ -61,4 +61,26 @@ span.radio-text{
 }
 input[type=radio]{
     vertical-align:sub;
+}
+
+.side-line{
+    display: inline-block;
+    float:left;
+    padding-right:20px;
+}
+
+.fa-circle-o{
+    padding-top:9px;
+}
+
+.side-line .div2{
+     margin-left:5px; 
+     border-left: 1px solid;
+     display:block;
+}
+
+.section-audience #input-behaviour{
+    width: 75%;
+    display: inline-block;
+    margin-left: 10px;
 }
