@@ -29,6 +29,14 @@
 
         <script>
             $(document).ready(function () {
+
+                $('.left-side').load("menu.html");
+                $('.left-side').addClass('wdt80');
+
+                $.get("header.html", function (data) {
+                    $(".main-container").prepend(data);
+                });
+
                 $("div.section-creative").css("display", "none");
                 $("div.section-audience").css("display", "none");
                 $("div.section-scheduling").css("display", "none");
@@ -157,7 +165,13 @@
                                             </select>
                                         </div>
                                         <div class="audience-criteria-1">
-                                            <span>People who</span><input type="text" class="form-control" />
+                                            <span>People who</span>
+                                            <select id="input-behaviour" class="form-control">
+                                                <option>1</option>
+                                                <option>2</option>
+                                                <option>3</option>
+                                                <option>4</option>
+                                            </select>
                                         </div>
                                         <button class="btn">Save Audience</button>
                                         <button class="btn" onclick="nextToggle('.section-audience');">Next</button>
