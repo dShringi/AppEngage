@@ -74,7 +74,7 @@
                 var formatTime = d3.time.format("%e %B");// Format tooltip date / time
 				
                 // Set the ranges
-                var	x = d3.time.scale().range([0, width]);
+                var	x = d3.time.scale.utc().range([0, width]);
                 var	y = d3.scale.linear().range([height, 0]);
 				//y.clamp(true);
 

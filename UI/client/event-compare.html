@@ -166,7 +166,7 @@
 
 				var line = d3.svg.line()
 					//.interpolate("monotone")
-					.x(function(d) { return x(d.date); })
+					.x(function (d) { return x(d.date); })
 					.y(function(d) { return y(d.count); });
 
 				var svg = d3.select(".event-chart-container").append("svg")

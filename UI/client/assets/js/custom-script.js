@@ -539,7 +539,8 @@ function plotLineChart(data, svg, div,timestamp, ele, valueline, x, y, width, he
 		.attr("stroke-width", "2px")
 		.attr("cx", function(d) {
 			if((d.date).length === 8){
-				return x(new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2))); 
+				return x(new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2)));
+
 			}
 			else{
 				return x((d.date).substr(8,2));
@@ -569,7 +570,7 @@ function drawAxes(svg, x, y, width, height, xAxis, yAxis, hoursFlag){
 			xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(24).tickFormat(d3.format("d"));
 		}
 		else{
-			xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5).tickFormat(d3.time.format("%b %d"));
+			xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(6).tickFormat(d3.time.format.utc("%b %d"));
 		}
 	}
 	if(typeof yAxis === "string"){

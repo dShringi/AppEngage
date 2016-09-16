@@ -131,7 +131,7 @@
                 var formatTime = d3.time.format("%e %B");// Format tooltip date / time
 
                 // Set the ranges
-                var	x = d3.time.scale().range([0, width]);
+                var	x = d3.time.scale.utc().range([0, width]);
                 var	y = d3.scale.linear().range([height, 0]);
 
 				//var xAxis = d3.svg.axis()
@@ -165,6 +165,7 @@
                     //.x(function(d) { return x(d.date); })
 					.x(function(d) { 
 						if((d.date).length === 8){
+							console.log(new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2)));
 							return x(new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2))); 
 						}
 						else{
