@@ -14,6 +14,8 @@ var userValidationController = require('./server/controllers/userValidationContr
 var sessionController = require('./server/controllers/sessionController');
 var locationController = require('./server/controllers/locationController');
 var eventController = require('./server/controllers/eventsController');
+try{
+var campaignController = require('./server/controllers/campaignController');
 
 app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser()); // get information from html forms
@@ -31,13 +33,17 @@ app.get('/appengage/getDeviceCounters',userDashboardController.getUserDashboardC
 app.get('/appengage/getUserValidated',userValidationController.validateUser);
 app.get('/appengage/getUserNameValidated',userValidationController.validateUserName);
 app.post('/appengage/registerUser',userValidationController.registerUser);
-// The below controller is temporary for UI development.
-app.get('/appengage/getCampaignData',userValidationController.getMessagingData);
 app.get('/appengage/getLocationCounters',locationController.getLocationCounters);
 app.get('/appengage/getEventNames',eventController.getEventNames);
 app.get('/appengage/getEventSummary',eventController.getEventSummary);
 app.get('/appengage/getEventsComparison',eventController.getEventsComparison);
-
+app.post('/appengage/createCampaign',campaignController.createCampaign);
+app.put('/appengage/updateCampaign',campaignController.updateCampaign);
+app.delete('/appengage/deleteCampaign',campaignController.deleteCampaign);
+app.get('/appengage/fetchAllCampaigns',campaignController.fetchAllCampaigns);
+}catch(ex){
+  console.log(ex);
+}
 var server = app.listen(config.port, function () {
 	var host = server.address().address;
 	var port = server.address().port;

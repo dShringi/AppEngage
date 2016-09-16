@@ -47,7 +47,7 @@ module.exports.registerUser	=	function(req,res){
 			return res.json({"msg":"App Name Not Provided"});
 		}
 	}else{
-		return res.json({"msg":"Incorrect Payload"});
+		return res.json({"msg":"Incorrect App Data"});
 	}
 };
 
@@ -87,7 +87,7 @@ module.exports.validateUserName = function(req,res){
 			{_id:userName},function onValidateUserNameComplete(err,result){
 				db.close();
 				if(!err){
-					if(result.length===1){
+					if(result.length===0){
 						return res.json({"msg":"Success"});
 					}
 					else{
@@ -102,9 +102,4 @@ module.exports.validateUserName = function(req,res){
 		logger.error(common.getErrorMessageFrom(err));
 		return res.json({"msg":"Failed"});
 	}
-};
-
-module.exports.getMessagingData = function(req,res){
-	res.json(JSON.parse('[{"date": "1-May-16","campaign": "Lorem Ipsum","channel": "push","startend": "23-May-2016 - 24-May-2016","sends": "","openrate": "","status": "draft"},{"date": "1-May-16","campaign": "Lorem Ipsum","channel": "push","startend":"23-May-2016 - 24-May-2016","sends": "","openrate": "","status": "draft"}, {"date": "1-May-16","campaign": "Lorem Ipsum","channel": "push","startend": "23-May-2016 - 24-May-2016","sends": "","openrate": "","status": "draft"}]'
-		));
 };
