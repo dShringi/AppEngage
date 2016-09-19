@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "565424456363",
+    "firebase_url": "https://mobileanalytics-1b661.firebaseio.com",
+    "project_id": "mobileanalytics-1b661",
+    "storage_bucket": "mobileanalytics-1b661.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:565424456363:android:95dbb784d7ee906b",
+        "android_client_info": {
+          "package_name": "com.example.testapp2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "565424456363-r6j0cli432qknmc91g43pmd69mghb0cs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAKx-7XEKmMs-jnv-3BNTgBhGAng-vS62w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
