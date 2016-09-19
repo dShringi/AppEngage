@@ -23,7 +23,8 @@ module.exports.registerUser	=	function(req,res){
 					if(!err){
 						console.log(appresult);
 						var akey = appresult._id;
-						var insertUser = JSON.parse('{"_id":"'+data.user.uname+'","pass":"'+data.user.pass+'","app_id":"'+appresult._id+'","app_name":"'+data.app.name+'","fn":"'+data.user.fn+'","ln":"'+data.user.ln+'","email":"'+data.user.email+'","phone":"'+data.user.phone+'"}');
+						db.collection(config.coll_appengageapps).update({"_id":mongojs.ObjectID(akey)},{$set:{akey:akey.toString()}},function(err,result){});
+						var insertUser = JSON.parse('{"_id":"'+data.user.uname+'","pass":"'+data.user.pass+'","app_id":"'+akey.toString()+'","app_name":"'+data.app.name+'","fn":"'+data.user.fn+'","ln":"'+data.user.ln+'","email":"'+data.user.email+'","phone":"'+data.user.phone+'"}');
 						db.collection(config.coll_appengageusers).insert(insertUser,function onRegisterUserComplete(err,userresult){
 							db.close();
 							if(!err){

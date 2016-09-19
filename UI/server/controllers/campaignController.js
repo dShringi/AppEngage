@@ -45,14 +45,25 @@ module.exports.deleteCampaign = function(req,res){
 
 module.exports.fetchAllCampaigns = function(req,res){
   var akey = req.query["akey"];
-  var db = mongojs(config.connectionstring+akey);
-  db.collection(config.coll_campaigns).find({},function(err,resp){
-    if(err){
-      logger.error(common.getErrorMessageFrom(err));
-      return res.json(JSON.parse('{"msg":"Failure"}'));
-    }else{
+  var sd = req.query["sd"];
+  var ed = req.query["ed"];
+
+  common.getAppTimeZone(akey,function(err,appTZ){
+    var startDate = common.getStartDate(sd,appTZ);
+    var endDate = common.getStartDate(ed,appTZ);
+    var db = mongojs(config.connectionstring+akey);
+    var searchObject = JSON.parse('{"$and":[{"startDate":{"$gte":'+startDate+'}},{"endDate":{"$lte":'+endDate+'}}]}');
+
+    db.collection(config.coll_campaigns).find(searchObject,function(err,resp){
       db.close();
-      return res.json(resp);
-    }
+      if(err){
+        logger.error(common.getErrorMessageFrom(err));
+        return res.json(JSON.parse('{"msg":"Failure"}'));
+      }else{
+        return res.json(resp);
+      }
+    });
+
   });
+
 };
