@@ -5,6 +5,7 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.mastek.appengage.dbusermanager.DBUserManager;
 import com.mastek.appengage.model.User;
@@ -42,8 +43,8 @@ public class MA {
 	private static int days;
 	private static int hours;
 	private static int min;
-	private static long calTime;	
-
+	private static long calTime;
+	private static ReturnResponse rResponse;
 	public static void sendApi(final Context context) {
 		new Thread() {
 			
@@ -75,6 +76,12 @@ public class MA {
 					CalculatedTime =Utils.currentTimeStamp;
 					
 					Log.e(TAG, "CalculatedTime  "+CalculatedTime);
+
+					if(context instanceof  ReturnResponse)
+					{
+						rResponse=(ReturnResponse) context;
+					}
+
 					senddatatoserver(user);
 					
 					
@@ -311,6 +318,10 @@ public class MA {
 
 		@Override
 		protected void onPostExecute(String s) {
+			if(rResponse != null)
+			{
+				rResponse.sendResponse(s);
+			}
 		}
 
 	}
@@ -349,7 +360,7 @@ public class MA {
 			post_data.put("ori", Utils.orientation);
 			post_data.put("akey", akey);
 			post_data.put("sdv", "1.0");
-            post_data.put("fbiKey",Utils.tokenGen);
+            post_data.put("rkey",Utils.tokenGen);
 			post_data.put("mt", "B");
 			Log.e(TAG, "     send data;..............." + user);
 
@@ -441,6 +452,11 @@ public class MA {
 
 		@Override
 		protected void onPostExecute(String s) {
+		if(rResponse != null)
+		{
+			rResponse.sendResponse(s);
+		}
+
 		}
 
 	}
@@ -578,6 +594,10 @@ public class MA {
 
 		@Override
 		protected void onPostExecute(String s) {
+			if(rResponse != null)
+			{
+				rResponse.sendResponse(s);
+			}
 		}
 
 	}
@@ -713,7 +733,12 @@ public class MA {
 
 		@Override
 		protected void onPostExecute(String s) {
+			if(rResponse != null)
+			{
+				rResponse.sendResponse(s);
+			}
 		}
+
 
 	}
 
@@ -780,6 +805,7 @@ public class MA {
 				InputStream inputStream = urlConnection.getInputStream();
 				Log.e(TAG, "URLCONNECTION.....Status code......"
 						+ urlConnection.getResponseCode());
+
 				Log.e(TAG, "INPUTSTREAM..........." + inputStream);
 				// input stream
 				StringBuffer buffer = new StringBuffer();
@@ -803,6 +829,7 @@ public class MA {
 				// send to post execute
 				return JsonResponse;
 
+
 			} catch (IOException e) {
 				Log.e(TAG, "IOException....." + e.getMessage());
 				e.printStackTrace();
@@ -823,6 +850,10 @@ public class MA {
 
 		@Override
 		protected void onPostExecute(String s) {
+			if(rResponse != null)
+			{
+				rResponse.sendResponse(s);
+			}
 		}
 
 	}
