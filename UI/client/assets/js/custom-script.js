@@ -137,7 +137,7 @@ var showMessagingTable = function (data, tableId) {
     var tableHTML = "";
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.date + "</td><td>" + row.campaign + "</td><td>" + row.channel + "</td><td>" + row.startend + "</td><td>" + row.sends + "</td><td>" + row.openrate + "</td><td>" + row.status + "</td><td><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td><td><i class=\"fa fa-trash-o\" aria-hidden=\"true\"></i></td></tr>";
+        tableHTML += "<tr><td>" + row.creationDate + "</td><td>" + row.name + "</td><td>" + row.channel + "</td><td>" + row.startDate +" - "+ row.endDate + "</td><td>" + row.sends + "</td><td>" + row.openRate + "</td><td>" + row.status + "</td><td><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td><td><i class=\"fa fa-trash-o\" aria-hidden=\"true\"></i></td></tr>";
 		console.log(tableHTML);
         
     });

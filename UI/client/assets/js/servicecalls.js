@@ -1,3 +1,4 @@
+var BaseURL = "http://52.206.121.100/appengage/";
 var service = {
 	
     validateLogin: function (uname, pwd) {
@@ -10,7 +11,7 @@ var service = {
         console.log(loginJSONReq);
         $.ajax({
             type: 'GET',
-            url: "http://52.206.121.100/appengage/getUserValidated",
+            url: BaseURL+"getUserValidated",
             contentType: "application/json",
             dataType: "json",
             timeout: 180000,  //180 sec
@@ -43,7 +44,7 @@ var service = {
         console.log("val uname");
         $.ajax({
             type: 'GET',
-            url: "http://digiintel.com/appengage/getUserNameValidated",
+            url: BaseURL+"getUserNameValidated",
             contentType: "application/json",
             dataType: "json",
             timeout: 180000,  //180 sec
@@ -104,7 +105,7 @@ var service = {
 		console.log(registerJSONReq);
 		$.ajax({
 		    type: 'POST',
-		    url: "http://digiintel.com/appengage/registerUser",
+		    url: BaseURL+"registerUser",
 		    contentType: "application/json",
 		    datatype: "json",
 		    timeout: 180000,

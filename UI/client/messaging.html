@@ -55,7 +55,7 @@
                 <div class="row">
                     <div class="col-md-12 col-sm-12 col-xs-12 text-center">
                         <div class="table-responsive">
-                            <table class="table text-left" id="tbl-messaging">
+                            <table class="table text-left" id="tbl-messaging" style="text-transform: capitalize;">
                                 <thead>
                                     <tr>
                                         <th>Last Updated</th>
@@ -83,9 +83,12 @@
         </aside>
 
         <script>
-            var loadChart = function (sd, ed, appKey, type) {
-                console.log("assets/json/messaging.json");
-                d3.json("http://52.206.121.100/appengage/getCampaignData", function (error, data) {
+			var API = APIBaseURL+"fetchAllCampaigns";
+			
+            var loadChart = function (startDate, endDate, appKey, type) {
+			console.log(appKey);
+                console.log(API+"?akey="+appKey);
+                d3.json(API+"?akey="+appKey, function (error, data) {
                     //d3.json("assets/json/ok-data-total-crashes.json"+"?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
                     console.log(data);
                     //data = JSON.parse(data);

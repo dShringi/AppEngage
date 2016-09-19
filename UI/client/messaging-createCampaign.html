@@ -22,76 +22,11 @@
         <script src="assets/js/servicecalls.js"></script>
         <script src="assets/js/daterangepicker.js"></script>
         <script src="assets/js/clockpicker.js"></script>
+        <script src="assets/js/createCampaign.js"></script>
         <!--<script src="assets/js/custom-script.js"></script>-->
         <link rel="stylesheet" href="assets/css/campaign.css">
         <link rel="stylesheet" href="assets/css/daterangepicker.css">
         <link rel="stylesheet" href="assets/css/clockpicker.css">
-
-        <script>
-            $(document).ready(function () {
-
-                $('.left-side').load("menu.html");
-                $('.left-side').addClass('wdt80');
-
-                $.get("header.html", function (data) {
-                    $(".main-container").prepend(data);
-                });
-
-                $("div.section-creative").css("display", "none");
-                $("div.section-audience").css("display", "none");
-                $("div.section-scheduling").css("display", "none");
-                $("div.section-confirm").css("display", "none");
-                $("div.campaign-editor .side-line .div2").css("display", "none");
-                $("div.campaign-editor .campaign-row .side-line .div2").css("display", "block");
-                $(".campaign-edit").hide();
-                $(".creative-edit").hide();
-                $(".audience-edit").hide();
-                $(".scheduling-edit").hide();
-
-            });
-
-            function nextToggle(sectionClass) {
-                $(sectionClass).slideUp();
-                $(sectionClass).parent().children().children().next().slideUp();
-                //$(sectionClass).parent().parent().next().children().first().children().next().show();
-                console.log($(sectionClass).parent().parent().next().children().first().children().next().next());
-                $(sectionClass).parent().parent().next().children().first().children().first().children().next().slideDown();
-                $(sectionClass).parent().parent().next().children().first().children().next().next().slideDown();
-                $(sectionClass).parent().parent().children().next().children().addClass("edited");
-                $(sectionClass).parent().parent().next().children().next().children().removeClass("edited");
-                $(sectionClass).parent().parent().next().children() .next().children().hide();
-                $(".edited").parent().children().fadeIn();
-            }
-
-            function editToggle(thisClass) {
-                if ($(thisClass).hasClass("campaign-edit")) {
-                    $(".section-campaign").slideDown();
-                    //console.log($(thisClass).parent().parent().siblings().children().children().next().children());
-                    //console.log($(".section-campaign").parent().parent().siblings().children().next().children());
-                }
-                if ($(thisClass).hasClass("creative-edit")) {
-                    $(".section-creative").slideDown();
-                }
-                if ($(thisClass).hasClass("audience-edit")) {
-                    $(".section-audience").slideDown();
-                }
-                if ($(thisClass).hasClass("scheduling-edit")) {
-                    $(".section-scheduling").slideDown();
-                    
-                }
-                //console.log($(thisClass).parent().parent().children().first().children().children().next());
-                //$(thisClass).parent().parent().siblings().children().children().first().children().next().slideUp();
-                $(".side-line .div2").slideUp();
-                $(thisClass).parent().parent().children().first().children().children().next().slideDown();
-                $(thisClass).parent().children().fadeOut();
-                $(thisClass).removeClass("edited");
-                $(thisClass).parent().parent().siblings().children().children().next().next().slideUp();
-                $(thisClass).parent().parent().siblings().children().next().next().children().fadeIn();
-                
-                
-            }
-        </script>
-
     </head>
     <body style="height:100vh; background-color: #ffffff;">
         <aside class="left-side sticky-left-side" tabindex="5000"></aside>
@@ -115,7 +50,7 @@
                                 <h5>Campaign</h5>
                                 <div class="row section-campaign">
                                     <div class="col-md-11">
-                                        <input type="text" class="form-control" />
+                                        <input type="text" id="campaign-name" class="form-control" placeholder="Name of your campaign (max. 140 chars)" />
                                         <button class="btn" onclick="nextToggle('.section-campaign');">Next</button>
                                     </div>
                                </div>
@@ -127,14 +62,14 @@
                             <div class="col-md-9">
                                 <div class="side-line">
                                     <div class="div1"><i class="fa fa-circle-o" aria-hidden="true"></i></div>
-                                    <div class="div2" style="height: 280px;"></div>
+                                    <div class="div2" style="height: 275px;"></div>
                                 </div>
                                 <h5>Creative</h5>
                                 <div class="row section-creative">
                                     <div class="col-md-11">
                                         <p>Lorem Ipsum dolor sit amet</p>
-                                        <input type="text" class="form-control" />
-                                        <textarea class="form-control" rows="4" style="resize:none; width: 100%; margin-top: 20px;"></textarea>
+                                        <input id="campaign-title" type="text" class="form-control" />
+                                        <textarea id="campaign-msg" class="form-control" rows="4" style="resize:none; width: 100%; margin-top: 20px;"></textarea>
                                         <button class="btn" onclick="nextToggle('.section-creative');">Next</button>
                                     </div>
                                 </div>
@@ -146,16 +81,16 @@
                             <div class="col-md-9">
                                 <div class="side-line">
                                     <div class="div1"><i class="fa fa-circle-o" aria-hidden="true"></i></div>
-                                    <div class="div2" style=" height: 270px;"></div>
+                                    <div class="div2" style="/* height: 270px;*/ height: 150px;"></div>
                                 </div>
                                 <h5>Audience</h5>
                                 <div class="row section-audience">
                                     <div class="col-md-11">
                                         <p>Who should receive this push campaign?</p>
                                         <input type="radio" name="audience-type" value="everyone" checked><span class="radio-text">Everyone</span>
-                                        <input type="radio" name="audience-type" value="saved"><span class="radio-text">Saved Audience</span>
-                                        <input type="radio" name="audience-type" value="new"><span class="radio-text">New Audience</span>
-                                        <div>
+                                        <input type="radio" name="audience-type" disabled value="saved"><span class="radio-text">Saved Audience</span>
+                                        <input type="radio" name="audience-type" disabled value="new"><span class="radio-text">New Audience</span>
+                                        <!--<div>
                                             <span>People who</span>
                                             <select id="input-behaviour" class="form-control" placeholder="Person's behaviour">
                                                 <option>1</option>
@@ -172,7 +107,7 @@
                                                 <option>3</option>
                                                 <option>4</option>
                                             </select>
-                                        </div>
+                                        </div>-->
                                         <button class="btn">Save Audience</button>
                                         <button class="btn" onclick="nextToggle('.section-audience');">Next</button>
                                     </div>
@@ -192,13 +127,18 @@
                                     <div class="col-md-11">
                                         <input type="radio" name="scheduling-type" value="immediately" checked><span class="radio-text">Immediately</span>
                                         <input type="radio" name="scheduling-type" value="scheduled"><span class="radio-text">Scheduled</span>
-                                        <div class="date-time-block" style="padding-top: 25px;">
+                                        <div class="immediate-block" style="padding-top:20px;">
+                                            <input type="radio" name="immediate-type" value="now" checked /><span class="radio-text">Now</span>
+                                            <input type="radio" name="immediate-type" value="later" /><span class="radio-text">Later</span>
+                                        </div>
+                                        <div class="date-time-block" style="padding-top: 25px; display:none;">
                                             <input type="text" id="datepck" class="form-control" placeholder="MM/DD/YYYY" />
                                             <i class="fa fa-calendar" aria-hidden="true"></i>
                                             <script>
                                                 $(function () {
                                                     $('#datepck').daterangepicker({
                                                         "singleDatePicker": true,
+                                                        "minDate": new Date(),
                                                         //"startDate": Date.now(),
                                                         //"endDate": "09/07/2016"
                                                     }, function (start, end, label) {
@@ -216,10 +156,10 @@
                                                 });
                                             </script>
                                         </div>
-                                        <div style="padding-top: 25px;">
+                                        <!--<div style="padding-top: 25px;">
                                             <input type="radio" name="scheduling-delivery" value="simultaneous" checked><span class="radio-text">Delivered Simultaneously</span>
                                             <input type="radio" name="scheduling-delivery" value="user-timezone"><span class="radio-text">Delivered in User's Timezone</span>
-                                        </div>
+                                        </div>-->
                                         <button class="btn" onclick="nextToggle('.section-scheduling');">Continue & Confirm</button>
                                       </div>
                                  </div>
@@ -250,7 +190,7 @@
                                             <div class="col-md-3">Scheduling:</div>
                                             <div class="col-md-9">Campaign is scheduled to send once on</div>
                                         </div>
-                                        <button class="btn">Confirm</button>
+                                        <button id="btn-confirm" class="btn">Confirm</button>
                                     </div>
                                 </div>
                             </div>
