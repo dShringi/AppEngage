@@ -9,11 +9,13 @@ module.exports.createCampaign = function(req,res){
   console.log(req.query["akey"]);
   //store it in mongodb.
   
-  if(req.schdule_type =='immediate') {
-	var currentTime = new Date();
-	currentTime.setMinutes(currentTime.getMinutes()+1);
-	req.schdule_type= dateFormat(date, "yyyymmddHHMM");
-  }
+	var body = req.body;
+	var schdule_type = body.schdule_type;
+	if(schdule_type.toUpperCase() == 'IMMEDIATE'){
+		var currentTime = new Date();
+		currentTime.setMinutes(currentTime.getMinutes()+1);
+		body.trigger_time= parseInt(dateFormat(currentTime, "yyyymmddHHMM"));
+	}
   
   db.collection(config.coll_campaigns).insert(req.body,function(err,resp){
     if(err){
