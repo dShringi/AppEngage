@@ -9,7 +9,9 @@ config.server.port = '8000';
 config.mongodb = {};
 //For development purpose
 config.mongodb.url = 'mongodb://localhost';
+config.mongodb.appengage = 'mongodb://localhost/appengage';
 //config.mongodb.url = 'mongodb://DWHBI-SRV3';
+//config.mongodb.appengage = 'mongodb://DWHBI-SRV3/appengage';
 config.mongodb.port = process.env.MONGODB_PORT || '27017';
 
 config.kafka = {};
@@ -33,9 +35,9 @@ config.url.eventsep = '/api/i/single/event';
 config.url.offlineep = '/api/i/bulk/O';
 
 config.app = {};
-config.defaultAppTimeZone = 'Asia/Kolkata';
+config.defaultAppTimeZone = 'Asia/Kolkat';
 config.app.details = [
-{app:"test1234",TZ:"America/New_York",TimeOut:600},
+{app:"test1234",TZ:"Asia/Kolkata",TimeOut:600},
 {app:"4170b44d6459bba992acaa857ac5b25d7fac6cc1",TZ:"Asia/Kolkata",TimeOut:600}
 ];
 
@@ -55,7 +57,10 @@ config.mongodb.coll_realtime = 'coll_realtimes';
 config.mongodb.coll_users = 'coll_users';
 config.mongodb.coll_activesessions = 'coll_activesessions';
 config.mongodb.coll_appengageusers = 'coll_users';
+config.mongodb.coll_appengageapps = 'coll_apps';
 config.mongodb.coll_begins = 'coll_begins';
+config.mongodb.coll_campaigns = 'coll_campaigns';
+
 
 config.mongodb.triggerType_hourly = 'hourly';
 config.mongodb.triggerType_daily = 'daily';
