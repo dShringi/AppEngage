@@ -28,24 +28,30 @@ $(document).ready(function () {
     });
 
     $("#btn-confirm").click(function () {
+        var carr = [];
         var cname = $("#campaign-name").val();
         var ctitle = $("#campaign-title").val();
         var cmsg = $("#campaign-msg").val();
         var caudience = $("input[name='audience-type']:checked").val();
         var cscheduletype = $("input[name='scheduling-type']:checked").val();
         //alert(cname + ctitle + cmsg + caudience + cscheduletype);
+        carr.push(cname, ctitle, cmsg, caudience, cscheduletype);
 
-        var carr = [];
         if (cscheduletype === "immediately") {
             var cimmediatetype = $("input[name='immediate-type']:checked").val();
+            var immediatedate;
             if (cimmediatetype === "now") {
-                var nowdate = moment(new Date()).format("YYYYMMDDHHmm");
-
-                console.log(nowdate);
+                immediatedate = moment(new Date()).format("YYYYMMDDHHmm");
             }
-            carr.push(cname, ctitle, cmsg, caudience);
-            console.log(carr);
+            else {
+                var selecteddate = moment($("#datepck").val()).format("YYYYMMDD");
+                var selectedtime = ($("#clockpck").val()).substr(0, 2) + ($("#clockpck").val()).substr(3, 2);
+                immediatedate = selecteddate + selectedtime;
+            }
+            carr.push(immediatedate);
         }
+
+        service.makeCampaign(carr);
 
     });
 
