@@ -1,4 +1,5 @@
 var mongojs = require('mongojs');
+var dateFormat = require('dateformat');
 var config  = require('../../config/config');
 var logger  = require('../../config/log.js');
 var common = require('../../commons/common.js');
@@ -7,6 +8,23 @@ module.exports.createCampaign = function(req,res){
   console.log(req.body);
   console.log(req.query["akey"]);
   //store it in mongodb.
+  
+  if(req.schdule_type =='immediate') {
+	var currentTime = new Date();
+	currentTime.setMinutes(currentTime.getMinutes()+1);
+	req.schdule_type= dateFormat(date, "yyyymmddHHMM");
+  }
+  
+  db.collection(config.coll_campaigns).insert(req.body,function(err,resp){
+    if(err){
+      logger.error(common.getErrorMessageFrom(err));
+      return res.json(JSON.parse('{"msg":"Failure"}'));
+    }else{
+      db.close();
+      return res.json(JSON.parse('{"msg":"Success"}'));
+    }
+  });
+  
   return res.json(JSON.parse('{"msg":"success"}'));
 };
 
