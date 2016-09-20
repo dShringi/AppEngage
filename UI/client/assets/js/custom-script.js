@@ -135,6 +135,7 @@ var showError = function(err){
 var showMessagingTable = function (data, tableId) {
 	"use strict";
     var tableHTML = "";
+	var rowCounter = 0;
     $.each(data, function (index, row) {
 		var msgCreateDt = moment(row.creationDate, 'YYYYMMDD').format('YYYY-MM-DD');
 		var msgStartDt = moment(row.startDate, 'YYYYMMDD').format('YYYY-MM-DD');
@@ -148,8 +149,9 @@ var showMessagingTable = function (data, tableId) {
 			var rowstatus2 = "status-inactive";
 		}
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + msgCreateDt + "</td><td>" + row.name + "</td><td>" + row.channel + "</td><td>" + msgStartDt +" to "+ msgEndDt + "</td><td>" + row.sends + "</td><td>" + row.openRate + "</td><td><i class='fa fa-square "+rowstatus1+"' onclick=changeStatus('"+rowstatus1+"','"+row._id+"'); aria-hidden='true'></i><i class='fa fa-square "+rowstatus2+"' onclick=changeStatus('"+rowstatus2+"','"+row._id+"'); aria-hidden='true'></i></td><td><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td><td><i onclick=deleteRow('"+row._id+"'); class=\"fa fa-trash-o\" aria-hidden=\"true\" style='cursor: pointer;'></i></td></tr>";
+        tableHTML += "<tr id='row"+rowCounter+"'><td>" + msgCreateDt + "</td><td>" + row.name + "</td><td>" + row.channel + "</td><td>" + msgStartDt +" to "+ msgEndDt + "</td><td>" + row.sends + "</td><td>" + row.openRate + "</td><td><i class='fa fa-square "+rowstatus1+"' onclick=changeStatus('"+rowstatus1+"','"+row._id+"','row"+rowCounter+"'); aria-hidden='true'></i><i class='fa fa-square "+rowstatus2+"' onclick=changeStatus('"+rowstatus2+"','"+row._id+"','row"+rowCounter+"'); aria-hidden='true'></i></td><td><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td><td><i onclick=deleteRow('"+row._id+"'); class=\"fa fa-trash-o\" aria-hidden=\"true\" style='cursor: pointer;'></i></td></tr>";
 		console.log(tableHTML);
+		rowCounter++;
         
     });
     updateTable(tableId, tableHTML);
