@@ -136,8 +136,11 @@ var showMessagingTable = function (data, tableId) {
 	"use strict";
     var tableHTML = "";
     $.each(data, function (index, row) {
+		var msgCreateDt = moment(row.creationDate, 'YYYYMMDD').format('YYYY-MM-DD');
+		var msgStartDt = moment(row.startDate, 'YYYYMMDD').format('YYYY-MM-DD');
+		var msgEndDt = moment(row.endDate, 'YYYYMMDD').format('YYYY-MM-DD');
         //alert(JSON.stringify(row));
-        tableHTML += "<tr><td>" + row.creationDate + "</td><td>" + row.name + "</td><td>" + row.channel + "</td><td>" + row.startDate +" - "+ row.endDate + "</td><td>" + row.sends + "</td><td>" + row.openRate + "</td><td>" + row.status + "</td><td><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td><td><i class=\"fa fa-trash-o\" aria-hidden=\"true\"></i></td></tr>";
+        tableHTML += "<tr><td>" + msgCreateDt + "</td><td>" + row.name + "</td><td>" + row.channel + "</td><td>" + msgStartDt +" to "+ msgEndDt + "</td><td>" + row.sends + "</td><td>" + row.openRate + "</td><td>" + row.status + "</td><td><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td><td><i onclick=deleteRow('"+row._id+"'); class=\"fa fa-trash-o\" aria-hidden=\"true\" style='cursor: pointer;'></i></td></tr>";
 		console.log(tableHTML);
         
     });

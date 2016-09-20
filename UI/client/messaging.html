@@ -61,12 +61,12 @@
                                         <th>Last Updated</th>
                                         <th>Campaign Name</th>
                                         <th>Channel</th>
-                                        <th>Start to End</th>
+                                        <th class="sorter-false" style="padding-left:18px;">Start to End</th>
                                         <th>Sends</th>
                                         <th>Open Rate</th>
                                         <th>Status</th>
-                                        <th></th>
-                                        <th></th>
+                                        <th class="sorter-false"></th>
+                                        <th class="sorter-false"></th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -87,8 +87,8 @@
 			
             var loadChart = function (startDate, endDate, appKey, type) {
 			console.log(appKey);
-                console.log(API+"?akey="+appKey);
-                d3.json(API+"?akey="+appKey, function (error, data) {
+                console.log(API+"?sd="+startDate+"&ed="+endDate+"&akey="+appKey);
+                d3.json(API+"?sd="+startDate+"&ed="+endDate+"&akey="+appKey, function (error, data) {
                     //d3.json("assets/json/ok-data-total-crashes.json"+"?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {
                     console.log(data);
                     //data = JSON.parse(data);
@@ -101,12 +101,36 @@
                 });
 
             }
+			
+			
 
-            //$(document).ready(function () {
-            //    var data1 = [];
-            //    data1 = service.messaging();
-            //    console.log(data1);
-            //});
+            function deleteRow(campaignId){
+				swal({   
+					title: "Are you sure?",   
+					text: "You will not be able to recover this imaginary file!",   
+					type: "warning",   
+					showCancelButton: true,   
+					confirmButtonColor: "#DD6B55",   
+					confirmButtonText: "Yes, delete it!",   
+					closeOnConfirm: false }, 
+					function(){   
+						//swal("Deleted!", "Your imaginary file has been deleted.", "success"); 
+						service.deleteCampaign(campaignId);
+					});
+				//swal({
+				//	title: 'Are you sure?',
+				//	text: "You won't be able to revert this!",
+				//	type: 'warning',
+				//	showCancelButton: true,
+				//	confirmButtonColor: '#333',
+				//	cancelButtonColor: '#d33',
+				//	confirmButtonText: 'Yes, delete it!'
+				//	}).then(function(campaignId) {
+				//		alert("hi");
+				//		//service.deleteCampaign(campaignId);
+				//	
+				//})
+			}
             
         </script>
 </body>

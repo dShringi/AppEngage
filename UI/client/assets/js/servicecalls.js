@@ -1,4 +1,3 @@
-var BaseURL = "http://52.206.121.100/appengage/";
 var service = {
 	
     validateLogin: function (uname, pwd) {
@@ -11,7 +10,7 @@ var service = {
         console.log(loginJSONReq);
         $.ajax({
             type: 'GET',
-            url: BaseURL+"getUserValidated",
+            url: APIBaseURL + "getUserValidated",
             contentType: "application/json",
             dataType: "json",
             timeout: 180000,  //180 sec
@@ -44,7 +43,7 @@ var service = {
         console.log("val uname");
         $.ajax({
             type: 'GET',
-            url: BaseURL+"getUserNameValidated",
+            url: APIBaseURL + "getUserNameValidated",
             contentType: "application/json",
             dataType: "json",
             timeout: 180000,  //180 sec
@@ -105,7 +104,7 @@ var service = {
 		console.log(registerJSONReq);
 		$.ajax({
 		    type: 'POST',
-		    url: BaseURL+"registerUser",
+		    url: APIBaseURL + "registerUser",
 		    contentType: "application/json",
 		    datatype: "json",
 		    timeout: 180000,
@@ -132,6 +131,72 @@ var service = {
 
 		});
 	
+	},
+
+	makeCampaign: function (arr) {
+	    console.log(arr);
+	    // ["Name", "Title", "Message", "everyone", "immediately", trigger_time]
+        //    0        1         2           3            4              5
+	    if (arr[4] === "immediately") {
+	        var makeCampaignJSONReq = {
+	            "schdule_type": "Immediate",
+	            "recursive": false,
+	            "trigger_time": arr[5],
+	            "name": arr[0],
+	            "pn_title": arr[1],
+	            "status": "active",
+	            "date": new Date(),
+	            "pn_msg": arr[2],
+	            "query": {}
+	        }
+	    }
+	    console.log(makeCampaignJSONReq);
+
+	    $.ajax({
+	        type: 'POST',
+	        url: APIBaseURL + "createCampaign?akey="+appKey,
+	        contentType: "application/json",
+	        datatype: "json",
+	        timeout: 180000,
+	        data: JSON.stringify(makeCampaignJSONReq),
+	        success: function (data) {
+	            if (data.msg === "success") {
+	                window.location.href = "messaging.html";
+	            }
+
+	        },
+	        error: function (x, t, m) {
+	            alert("Error connecting to server");
+	            if (t === "timeout") {
+	                alert("timeout");
+	            } else {
+	                //alert(t);
+	            }
+	        }
+	    })
+	},
+	
+	deleteCampaign:function(campaignid){
+		$.ajax({
+			type: 'DELETE',
+			url: APIBaseURL + "deleteCampaign?akey="+appKey+"&campaignid="+campaignid,
+			success: function (data) {
+			    if (data.msg === "Success") {
+			        swal("Deleted!", "Record has been deleted.", "success");
+			        window.location.href = window.location.href;
+			    }
+				
+			},
+	        error: function (x, t, m) {
+	            alert("Error connecting to server");
+	            if (t === "timeout") {
+	                alert("timeout");
+	            } else {
+	                //alert(t);
+	            }
+	        }
+		})
 	}
+	
 	
 };
