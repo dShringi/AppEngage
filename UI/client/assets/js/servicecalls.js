@@ -196,7 +196,67 @@ var service = {
 	            }
 	        }
 		})
+	},
+
+	changeCampaignStatus: function (currentStatus, campaignid, rowcounter) {
+	    console.log(currentStatus);
+	    if ($("tr#" + rowcounter + " ." + currentStatus).next().hasClass("status-inactive")) {
+			console.log($("tr#" + rowcounter + " ." + currentStatus).next());
+	        var status = "active";
+			alert(status);
+	    }
+	    if ($("tr#" + rowcounter + " ." + currentStatus).prev().hasClass("status-active")) {
+			console.log($("tr#" + rowcounter + " ." + currentStatus).prev());
+	        var status = "inactive";
+			alert(status);
+	    }
+
+	    var changeStatusJSONReq = {
+	        "status": status
+	    }
+	    console.log(changeStatusJSONReq);
+
+	    $.ajax({
+	        type: 'PUT',
+	        url: APIBaseURL + "updateCampaign?akey=" + appKey + "&campaignid=" + campaignid,
+	        contentType: "application/json",
+	        datatype: "json",
+	        timeout: 180000,
+	        data: JSON.stringify(changeStatusJSONReq),
+	        success: function (data) {
+	            console.log(data);
+	            if (data.msg === "Success") {
+	                if (status === "active") {
+	                    console.log("active");
+	                    $("tr#" + rowcounter + " ." + currentStatus).next().removeClass("status-inactive");
+	                    $("tr#" + rowcounter + " ." + currentStatus).addClass("status-active");
+	                    $("tr#" + rowcounter + " ." + currentStatus).next().addClass("status-none");
+	                    $("tr#" + rowcounter + " .status-active").removeClass("status-none");
+	                    $("tr#" + rowcounter + " .status-none").attr("onclick", "changeStatus('status-none','" + campaignid + "','" + rowcounter + "')");
+						$("tr#" + rowcounter + " .status-active").attr("onclick", "changeStatus('status-active','" + campaignid + "','" + rowcounter + "')");
+	                }
+	                else if (status === "inactive") {
+	                    console.log("inactive");
+	                    $("tr#" + rowcounter + " ." + currentStatus).prev().removeClass("status-active");
+	                    $("tr#" + rowcounter + " ." + currentStatus).addClass("status-inactive");
+	                    $("tr#" + rowcounter + " ." + currentStatus).prev().addClass("status-none");
+	                    $("tr#" + rowcounter + " .status-inactive").removeClass("status-none");
+	                    $("tr#" + rowcounter + " .status-none").attr("onclick", "changeStatus('status-none','" + campaignid + "','" + rowcounter + "')");
+						$("tr#" + rowcounter + " .status-active").attr("onclick", "changeStatus('status-active','" + campaignid + "','" + rowcounter + "')");
+	                }
+					
+				}
+	        },
+	        error: function (x, t, m) {
+	            alert("Error connecting to server");
+	            if (t === "timeout") {
+	                alert("timeout");
+	            } else {
+	                //alert(t);
+	            }
+	        }
+	    })
+
 	}
-	
 	
 };

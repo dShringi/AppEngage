@@ -11,7 +11,7 @@ var akey = process.argv[2];
 var appTZ = config.app.defaultTZ;
 var geoip = require('geoip-lite');
 
-if(akey==undefined||akey==null){
+if(akey===undefined||akey===null){
     throw new Error("Please provide appropriate application key. Invalid applicaiton key: "+ akey);
 }
 
@@ -66,9 +66,10 @@ consumer.on('message', function(message) {
 
 	if(data.type === Collection["begin"]){
 		var geo = geoip.lookup(data.val.ipa);
-		if(geo.city == undefined || geo.city == null) {
+		console.log(geo);
+		if(geo.city === undefined || geo.city === null) {
 			data.val.city = 'Unknown';
-			data.val.ctry = 'Unknown'
+			data.val.ctry = 'Unknown';
 			data.val.dlat = '0';
 			data.val.dlog = '0';
 		}
@@ -79,7 +80,7 @@ consumer.on('message', function(message) {
 			data.val.dlog = geo.ll[1];
 		}
 
-	};
+	}
 
 	// Save Begin, Crash End & Event data
 	event = EventFactory.getEvent(data);
@@ -331,13 +332,21 @@ function updateUsers(req,dateKey,callback){
 					}else{
 						//This path executes if the user alredy exists
 						//Updating the latest values of the existing user.
-						Model.User.findByIdAndUpdate(req.val.did,{$set:{'lavn':req.val.avn,'losv':req.val.osv,'llog':req.val.rtc,'lres':req.val.res,'lcty':req.val.city,'lctry':req.val.ctry,'llat':req.val.dlat,'llong':req.val.dlog},$inc:{'ts':1}},function(err,doc){
-							if(err){
-								logger.error(common.getErrorMessageFrom(err));
-								return;
-							}
-						});
-
+						if(req.val.rkey){
+							Model.User.findByIdAndUpdate(req.val.did,{$set:{'lavn':req.val.avn,'losv':req.val.osv,'llog':req.val.rtc,'lres':req.val.res,'lcty':req.val.city,'lctry':req.val.ctry,'llat':req.val.dlat,'llong':req.val.dlog,'rkey':req.val.rkey},$inc:{'ts':1}},function(err,doc){
+								if(err){
+									logger.error(common.getErrorMessageFrom(err));
+									return;
+								}
+							});
+						}else{
+							Model.User.findByIdAndUpdate(req.val.did,{$set:{'lavn':req.val.avn,'losv':req.val.osv,'llog':req.val.rtc,'lres':req.val.res,'lcty':req.val.city,'lctry':req.val.ctry,'llat':req.val.dlat,'llong':req.val.dlog},$inc:{'ts':1}},function(err,doc){
+								if(err){
+									logger.error(common.getErrorMessageFrom(err));
+									return;
+								}
+							});
+						}
 						var _update = JSON.parse('{"$inc":{"_'+yyyy+'.$.tse":1}}');
 						var _search = JSON.parse('{"_id":"'+req.val.did+'","_'+yyyy+'._id":'+parseInt(mm.toString().concat(dd))+'}');
 						//Update the counters for the user against the respective date.
@@ -360,7 +369,7 @@ function updateUsers(req,dateKey,callback){
 									return;
 								}
 							}else{
-								callback(err,0)
+								callback(err,0);
 								return;
 							}
 						});
@@ -401,7 +410,7 @@ function updateUsers(req,dateKey,callback){
 						return;
 					}
 				}else{
-					callback(err,0)
+					callback(err,0);
 					return;
 				}
 			});
@@ -437,7 +446,7 @@ function updateUsers(req,dateKey,callback){
 						return;
 					}
 				}else{
-					callback(err,0)
+					callback(err,0);
 					return;
 				}
 			});
@@ -473,7 +482,7 @@ function updateUsers(req,dateKey,callback){
 						return;
 					}
 				}else{
-					callback(err,0)
+					callback(err,0);
 					return;
 				}
 			});
@@ -511,7 +520,7 @@ function updateUsers(req,dateKey,callback){
 						return;
 					}
 				}else{
-					callback(err,0)
+					callback(err,0);
 					return;
 				}
 			});

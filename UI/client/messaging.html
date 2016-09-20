@@ -71,13 +71,29 @@
                                 </thead>
                                 <tbody></tbody>
                             </table>
+							<!-- pager -->
+								<div id="pager" class="pager">
+								  <form>
+									<img src="assets/img/first.png" class="first"/>
+	 								<img src="assets/img/prev.png" class="prev"/>
+									<span class="pagedisplay"></span> <!-- this can be any element, including an input -->
+									<img src="assets/img/next.png" class="next"/>
+									<img src="assets/img/last.png" class="last"/>
+									<select class="pagesize form-control selectpicker"  data-width="100px">
+									  <option value="10">10</option>
+									  <option value="25">25</option>
+									  <option value="50">50</option>
+									  <option value="all">All Rows</option>
+									</select>
+								  </form>
+								</div>
                         </div>
                     </div>
                 </div>
             
             </section>
             <section class="paddl50">
-                <button class="btn btn-newcampaign">Create a New Campaign</button>
+                <button class="btn btn-newcampaign" onclick="createCampaign();">Create a New Campaign</button>
                 
             </section>
         </aside>
@@ -102,6 +118,15 @@
 
             }
 			
+			function changeStatus(status, campaignId, rowcounter){
+				if(status === "status-active" || status === "status-inactive"){
+					return;
+				}
+				else {
+					service.changeCampaignStatus("status-none", campaignId, rowcounter);
+				}
+				
+			};
 			
 
             function deleteRow(campaignId){
@@ -117,19 +142,10 @@
 						//swal("Deleted!", "Your imaginary file has been deleted.", "success"); 
 						service.deleteCampaign(campaignId);
 					});
-				//swal({
-				//	title: 'Are you sure?',
-				//	text: "You won't be able to revert this!",
-				//	type: 'warning',
-				//	showCancelButton: true,
-				//	confirmButtonColor: '#333',
-				//	cancelButtonColor: '#d33',
-				//	confirmButtonText: 'Yes, delete it!'
-				//	}).then(function(campaignId) {
-				//		alert("hi");
-				//		//service.deleteCampaign(campaignId);
-				//	
-				//})
+			}
+			
+			function createCampaign(){
+				window.location.href = "messaging-createCampaign.html";
 			}
             
         </script>
