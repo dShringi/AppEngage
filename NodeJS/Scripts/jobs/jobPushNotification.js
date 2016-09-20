@@ -9,8 +9,9 @@ var cron = require('node-schedule');
 var mongodb = require('mongodb');
 var dateFormat = require('dateformat');
 var FCM = require('fcm-push');
+var moment = require('moment-timezone');
+var ObjectID = require('mongodb').ObjectID;
 
-var ObjectId = mongodb.ObjectID;
 var MongoClient = mongodb.MongoClient;
 
 var url = config.mongodb.url+'/'+process.argv[2];
@@ -24,10 +25,10 @@ var j = cron.scheduleJob('*/1 * * * *', function(){
 		if (err) {
 			printErrorMessage(err);
 		} else {
-			var datekey =  dateFormat(new Date(), "yyyymmddHHMM");
-			var hourMinuteKey =  dateFormat(new Date(), "HHMM");
+			var datekey =  dateFormat(getUtcCurrentTime(), "yyyymmddHHMM");
 			var campaignCollection = db.collection('coll_campaign');
-			var findQuery = '{"$or":[{"status":"active","trigger_time":'+datekey+'},{"status":"active","recursive":true,"schdule_type": "schduled","trigger_time":'+hourMinuteKey+'},{"status":"active","recursive":true,"schdule_type": "cyclic","trigger_time":'+datekey+'} ]}';
+			//var findQuery = '{"$or":[{"status":"active","trigger_time":'+datekey+'},{"status":"active","recursive":true,"schdule_type": "schduled","trigger_time":'+datekey+'},{"status":"active","recursive":true,"schdule_type": "cyclic","trigger_time":'+datekey+'} ]}';
+			var findQuery = '{"status":"active","trigger_time":'+datekey+'}';
 			campaignCollection.find(JSON.parse(findQuery)).toArray(function (err, result) {
 				if (err) {
 					printErrorMessage(err);
@@ -41,12 +42,10 @@ var j = cron.scheduleJob('*/1 * * * *', function(){
 							
 							var cycle = campaignResult.cycle;
 							var schduleType = campaignResult.schdule_type;
-							//var cpn_Id = campaignResult.id;
+							var cpn_Id = ObjectID(campaignResult._id);
 							var nextTriggerTime = getNextTriggerTime(cycle, schduleType);
-							//var findQuery = '{"_id":'+new ObjectId(cpn_Id)+'}';
-							var findQuery = '{"trigger_time":'+parseInt(datekey)+'}';
+							var findQuery = {_id:cpn_Id};
 							var updateQuery = '{"$set":{"trigger_time":'+parseInt(nextTriggerTime)+',"last_execution":'+parseInt(datekey)+'}}';
-							var findQueryJson = JSON.parse(findQuery);
 							var updateQueryJson = JSON.parse(updateQuery);
 							
 							campaignCollection.update(findQueryJson, updateQueryJson,
@@ -78,29 +77,6 @@ var j = cron.scheduleJob('*/1 * * * *', function(){
 		}
 	});
 });
-
-/*function buildQuery(jsonData) {
-	var str='';
-	var count =0;
-	for(var j in jsonData){
-		var key = j;
-		var value = jsonData[j];
-		if(isString(value)){
-			value = '"'+value+'"';
-		}
-		if(count ==0){
-			str += '"'+key+'":'+value;
-		} else {
-			str += ',"'+key+'":'+value;
-		}
-		count++;
-	}
-	return str;
-}
-
-function isString(str) {
-	return typeof(str) === 'string' || str instanceof String;
-}*/
 
 function pushToFcm(message){
 	fcm.send(message, function(err, response){
@@ -153,4 +129,9 @@ function printErrorMessage(err) {
 	var errMsg = common.getErrorMessageFrom(err);
 	logger.error(errMsg);
 	return;
+}
+
+function getUtcCurrentTime(){
+	var now = new Date(); 
+	return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
 }
