@@ -17,14 +17,12 @@ module.exports.createCampaign = function(req,res){
 		body.trigger_time= parseInt(dateFormat(currentTime, "yyyymmddHHMM"));
 	}
   
-  db.collection(config.coll_campaigns).insert(req.body,function(err,resp){
+  db.collection(config.coll_campaigns).insert(req.body,function(err,res){
     if(err){
       logger.error(common.getErrorMessageFrom(err));
       return res.json(JSON.parse('{"msg":"Failure"}'));
-    }else{
-      db.close();
-      return res.json(JSON.parse('{"msg":"Success"}'));
     }
+	db.close();
   });
   
   return res.json(JSON.parse('{"msg":"success"}'));
