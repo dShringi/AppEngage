@@ -180,9 +180,12 @@ var service = {
 		$.ajax({
 			type: 'DELETE',
 			url: APIBaseURL + "deleteCampaign?akey="+appKey+"&campaignid="+campaignid,
-			success:function(data){
-				swal("Deleted!", "Your imaginary file has been deleted.", "success"); 
-				window.location.href = window.location.href;
+			success: function (data) {
+			    if (data.msg === "Success") {
+			        swal("Deleted!", "Record has been deleted.", "success");
+			        window.location.href = window.location.href;
+			    }
+				
 			},
 	        error: function (x, t, m) {
 	            alert("Error connecting to server");
