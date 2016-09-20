@@ -102,6 +102,15 @@
 
             }
 			
+			function changeStatus(status, campaignId){
+				if(status === "status-active" || status === "status-inactive"){
+					return;
+				}
+				else {
+					service.changeCampaignStatus("status-none", campaignId);
+				}
+				
+			};
 			
 
             function deleteRow(campaignId){

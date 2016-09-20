@@ -196,7 +196,38 @@ var service = {
 	            }
 	        }
 		})
+	},
+
+	changeCampaignStatus: function (currentStatus, campaignid) {
+	    console.log(currentStatus);
+	    if ($("." + currentStatus).next().hasClass("status-inactive")) {
+	        var status = "active";
+	    }
+
+	    var changeStatusJSONReq = {
+	        "status": status
+	    }
+
+	    $.ajax({
+	        type: 'PUT',
+	        url: APIBaseURL + "updateCampaign?akey=" + appKey + "&campaignid=" + campaignid,
+	        contentType: "application/json",
+	        datatype: "json",
+	        timeout: 180000,
+	        data: JSON.stringify(changeStatusJSONReq),
+	        success: function (data) {
+	            console.log(data);
+	        },
+	        error: function (x, t, m) {
+	            alert("Error connecting to server");
+	            if (t === "timeout") {
+	                alert("timeout");
+	            } else {
+	                //alert(t);
+	            }
+	        }
+	    })
+
 	}
-	
 	
 };
