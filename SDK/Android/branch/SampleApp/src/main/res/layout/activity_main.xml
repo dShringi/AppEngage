@@ -85,8 +85,8 @@
     </LinearLayout>
 
     <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:id="@+id/scrollView"
         android:layout_below="@+id/linearLayout2"
         android:layout_centerHorizontal="true">
@@ -94,7 +94,7 @@
         android:id="@+id/txtResponse"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:gravity="bottom"
         android:text="Response"
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true"

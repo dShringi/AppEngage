@@ -20,19 +20,19 @@ public class DataHandler {
 	Context ctx;
 	public static SQLiteDatabase db;
 	private DataBaseHelper dataHelper;
-	private static DataHandler datahandler;
+	//private static DataHandler datahandler;
 
-	public static DataHandler getInstance() {
-		return datahandler;
-	}
+//	public static DataHandler getInstance() {
+//		return datahandler;
+//	}
 
-	public static DataHandler initialize(Context context) {
-//		MultiDex.install(context);
-		if (datahandler == null) {
-			datahandler = new DataHandler(context);
-		}
-		return datahandler;
-	}
+//	public static DataHandler initialize(Context context) {
+////		MultiDex.install(context);
+//		if (datahandler == null) {
+//			datahandler = new DataHandler(context);
+//		}
+//		return datahandler;
+//	}
 	
 	public void checkRecords()
 	{
@@ -124,6 +124,9 @@ public class DataHandler {
 
 	// ---opens the database---
 	public SQLiteDatabase open() throws SQLException {
+
+		Log.e("open()1111",""+(dataHelper == null));
+
 		db = dataHelper.getWritableDatabase();
 		return db;
 	}

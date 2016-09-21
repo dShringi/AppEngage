@@ -13,10 +13,14 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,11 +35,11 @@ import org.json.JSONObject;
 
 import java.util.Date;
 
-public class MainActivity extends Activity implements ReturnResponse{
+public class MainActivity extends Activity implements ReturnResponse {
 
 
     private static final String TAG = "Mainactivity";
-    private Button crash,btnEvent;
+    private Button crash, btnEvent;
     private Object returnValue;
     public static TextView txtResponse;
     String SENT = "SMS_SENT";
@@ -50,26 +54,48 @@ public class MainActivity extends Activity implements ReturnResponse{
     private MyReceiver mReceiver = null;
     private BroadcastReceiver sendBroadcastReceiver;
     private BroadcastReceiver deliveryBroadcastReceiver;
+    public static ScrollView sv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_main);
-
+    requestPermission();
         //Activity act=(Activity)this;
         Log.e("Mobile Analytics", "done work");
 
-        locate();
-
-        MA.sendApi(this);
 
         btnEvent = (Button) findViewById(R.id.btnEvent);
         crash = (Button) findViewById(R.id.btnCrash);
         txtResponse = (TextView) findViewById(R.id.txtResponse);
+        sv = (ScrollView) findViewById(R.id.scrollView);
+        sv.post(new Runnable() {
+            @Override
+            public void run() {
+                sv.fullScroll(ScrollView.FOCUS_DOWN);
+            }
+        });
+        txtResponse.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-        edtEvent = (EditText)findViewById(R.id.edtEvent);
+            }
 
-        temp =  txtResponse.getText() + " \n\n " +"Calling Send Api" ;
-        txtResponse.setText(temp);
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                sv.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        sv.fullScroll(ScrollView.FOCUS_DOWN);
+                    }
+                });
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+        edtEvent = (EditText) findViewById(R.id.edtEvent);
 
 
         super.onCreate(savedInstanceState);
@@ -109,22 +135,27 @@ public class MainActivity extends Activity implements ReturnResponse{
     }
 
     @Override
-    public void sendResponse(String response)
-    {
-        if(response != null)
-        {
-            Log.e("JSonResponse","atSendResponseInMainActivity");
-            temp = txtResponse.getText()+ " \n\n " + "Success message recieved" ;
-            txtResponse.setText(temp);
-        }
-        else
-        {
-            temp = txtResponse.getText()+ " \n\n " + "Failure message recieved" ;
-            txtResponse.setText(temp);
-        }
+    public void sendResponse(final String response) {
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (response != null) {
+                    Log.e("JSonResponse", "atSendResponseInMainActivity");
+                    txtResponse.append(response+" \n\n ");
+
+
+                } else {
+                    txtResponse.append(response+" \n\n ");
+
+                }
+            }
+        });
+
     }
 
     public String temp;
+
     public void onClick(View v) {
         // TODO Auto-generated method stub
 
@@ -133,8 +164,7 @@ public class MainActivity extends Activity implements ReturnResponse{
 
             case R.id.btnCrash:
                 MA.crashApi(this);
-                temp = txtResponse.getText()+ " \n\n " + "Calling Crash Api method" ;
-                txtResponse.setText(temp);
+
                 break;
 
             case R.id.btnEvent:
@@ -150,9 +180,9 @@ public class MainActivity extends Activity implements ReturnResponse{
 
                 key = edtEvent.getText().toString().trim();
 
-                MA.eventApi(key,prop);
-                temp = txtResponse.getText() + " \n\n " + "Calling Event Api method with "+key+" "+prop  ;
-                txtResponse.setText(temp);
+                MA.eventApi(key, prop);
+
+
                 break;
 
             default:
@@ -161,26 +191,6 @@ public class MainActivity extends Activity implements ReturnResponse{
 
     }
 
-    private void locate() {
-
-        if (Build.VERSION.SDK_INT >= 23) { // Build.VERSION_CODES.M
-            if (checkPermission()) {
-                Log.e(TAG, "checkPermission=-=====");
-            }
-            else {
-                requestPermission();
-            }
-        } else {
-            Log.e(TAG, "log for less dan 23 version");
-            Utils.requestSingleUpdate(MainActivity.this, new Utils.LocationCallback() {
-
-                @Override
-                public void onNewLocationAvailable(Utils.GPSCoordinates location) {
-                    // TODO Auto-generated method stub
-                }
-            });
-        }
-    }
 
     @Override
     protected void onStart() {
@@ -190,7 +200,11 @@ public class MainActivity extends Activity implements ReturnResponse{
         calTime = MA.CalculatedTime;
         Log.e(TAG, "calTime :---" + calTime);
         Log.e(TAG, "onStart");
-        Utils.init(this);
+        MA.init(this);
+
+        if (Build.VERSION.SDK_INT < 23) {
+            MA.beginApi(this);
+        }
     }
 
     @Override
@@ -204,6 +218,7 @@ public class MainActivity extends Activity implements ReturnResponse{
     protected void onPause() {
         // TODO Auto-generated method stub
         super.onPause();
+//        MA.endApi(this);
         Log.e(TAG, "onPause");
     }
 
@@ -213,37 +228,34 @@ public class MainActivity extends Activity implements ReturnResponse{
         Log.e(TAG, "onDestroy");
 
         super.onDestroy();
-        MA.endApi(this);
-        temp = txtResponse.getText()+ " \n\n" +"Calling End Api method";
-        txtResponse.setText(temp);
-        Toast.makeText(this,"Calling End Api method",Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
     protected void onStop() {
         // TODO Auto-generated method stub
         super.onStop();
+        MA.endApi(this);
+
+        Toast.makeText(this, "Calling End Api method", Toast.LENGTH_SHORT).show();
         Log.e(TAG, "onStop");
         Log.e(TAG, "startTime  " + Utils.startTime);
     }
 
-    private boolean checkPermission() {
-        int result = ActivityCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_FINE_LOCATION);
-        int result2 = ActivityCompat.checkSelfPermission(this,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION);
-        if (result == PackageManager.PERMISSION_GRANTED
-                && result2 == PackageManager.PERMISSION_GRANTED) {
-            return false;
-        } else {
-            return true;
-        }
-    }
+   /* @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        Log.e(TAG, "onBackPressed");
+        MA.endApi(this);
+    }*/
+
 
     private void requestPermission() {
-        ActivityCompat.requestPermissions(this, new String[] {
+        Log.e("Request is Here", "Request permission");
+        ActivityCompat.requestPermissions(this, new String[]{
                         android.Manifest.permission.ACCESS_FINE_LOCATION,
-                        android.Manifest.permission.ACCESS_COARSE_LOCATION },
+                        android.Manifest.permission.ACCESS_COARSE_LOCATION},
                 PERMISSION_REQUEST_CODE);
     }
 
@@ -252,18 +264,7 @@ public class MainActivity extends Activity implements ReturnResponse{
                                            @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    Utils.requestSingleUpdate(MainActivity.this, new Utils.LocationCallback() {
-
-                        @Override
-                        public void onNewLocationAvailable(Utils.GPSCoordinates location) {
-                            // TODO Auto-generated method stub
-                        }
-                    });
-                } else {
-                }
+                MA.beginApi(this);
                 break;
         }
     }

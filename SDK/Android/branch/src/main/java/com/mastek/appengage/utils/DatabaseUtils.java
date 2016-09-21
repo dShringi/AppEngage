@@ -52,16 +52,16 @@ public class DatabaseUtils extends android.database.DatabaseUtils {
 		}
 	}
 
-	public static final void initializeDatabase(Context context,
-			boolean isSessionRestored) {
-		// Initialize database adapter
-		DataHandler db = DataHandler.initialize(context);
-		if (!isSessionRestored) {
-			db.open();
-			pullDatabaseFile(context);
-			db.reCreateTables();
-			db.close();
-		}
-	}
+//	public static final void initializeDatabase(Context context,
+//			boolean isSessionRestored) {
+//		// Initialize database adapter
+//		DataHandler db = DataHandler.initialize(context);
+//		if (!isSessionRestored) {
+//			db.open();
+//			pullDatabaseFile(context);
+//			db.reCreateTables();
+//			db.close();
+//		}
+//	}
 
 }

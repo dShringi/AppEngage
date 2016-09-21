@@ -1,23 +1,20 @@
 package com.mastek.appengage.dbusermanager;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import android.R.array;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.util.Log;
 
-import com.mastek.appengage.MA;
 import com.mastek.appengage.dao.Idao;
 import com.mastek.appengage.db.DataHandler;
-import com.mastek.appengage.model.User;
 import com.mastek.appengage.table.UserTable;
 import com.mastek.appengage.utils.Utils;
 
-public class DBUserManager implements Idao<User> {
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+public class DBUserManager implements Idao {
 	private static final String TAG = DBUserManager.class.getSimpleName();
 	private static DBUserManager INSTANCE = null;
 	private Context _context;
@@ -45,10 +42,10 @@ public class DBUserManager implements Idao<User> {
 	}
 
 	@Override
-	public boolean save(User user) {
+	public boolean save(/*User user*/) {
 		long id = 0;
 		dbObject.open();
-		final ContentValues contentValues = getContentValues(user);
+		final ContentValues contentValues = getContentValues(/*user*/);
 		id = dbObject.db.insertOrThrow(UserTable.TABLE_NAME, null,
 				contentValues);
 		Log.d(TAG, "id... : " + id);
@@ -60,7 +57,7 @@ public class DBUserManager implements Idao<User> {
 			return true;
 	}
 
-	@Override
+	/*@Override
 	public boolean update(User userVO) {
 		return false;
 	}
@@ -68,15 +65,15 @@ public class DBUserManager implements Idao<User> {
 	@Override
 	public boolean delete(User userVO) {
 		return false;
-	}
+	}*/
 
-	@Override
-	public User find(User user) {
+	/*@Override
+	public User find(*//*User user*//*) {
 		dbObject.open();
 		try {
-			String query = UserTable.STATEMENT_SELECT /*+ " where "
+			String query = UserTable.STATEMENT_SELECT *//*+ " where "
 					+ UserTable.KEY_SYNC_STATUS + " = '" + user.getSyncStatus()
-					+ "'"*/;
+					+ "'"*//*;
 			Log.d(TAG, "find() Query : " + query);
 
 			Cursor cursor = dbObject.db.rawQuery(query, null);
@@ -85,7 +82,7 @@ public class DBUserManager implements Idao<User> {
 
 			if (count > 0) {
 			JSONArray array = cursorToModel(cursor);
-				Log.d(TAG, "Record  : " + user);
+//				Log.d(TAG, "Record  : " + user);
 			}
 			cursor.close();
 
@@ -96,7 +93,7 @@ public class DBUserManager implements Idao<User> {
 
 		dbObject.close();
 		return user;
-	}
+	}*/
 	
 	
 	public JSONArray findArray() {
@@ -174,25 +171,25 @@ public class DBUserManager implements Idao<User> {
 		return array;
 	}
 
-	private ContentValues getContentValues(User user) {
+	private ContentValues getContentValues(/*User user*/) {
 		ContentValues content = new ContentValues();
-		content.put(UserTable.KEY_MODEL, user.getModel());
-		content.put(UserTable.KEY_RELEASE, user.getRelease());
-		content.put(UserTable.KEY_VERSION_NAME, user.getVersionName());
-		content.put(UserTable.KEY_LATITUDE, user.getLatitude());
-		content.put(UserTable.KEY_LONGITUDE, user.getLongitude());
-		content.put(UserTable.KEY_DEVICEID, user.getDeviceId());
-		content.put(UserTable.KEY_SESSIONID, user.getSessionId());
-		content.put(UserTable.KEY_CARRIER, user.getCarrierName());
-		content.put(UserTable.KEY_DEVICETYPE, user.getDeviceType());
-		content.put(UserTable.KEY_POSSIBLEEMAIL, user.getUserId());
-		content.put(UserTable.KEY_NETWORKTYPE, user.getNetworkType());
-		content.put(UserTable.KEY_CPU, user.getCpu());
-		content.put(UserTable.KEY_APIKEY, user.getApiKey());
-		content.put(UserTable.KEY_ORIENTATION, user.getOrientation());
-		content.put(UserTable.KEY_SDKVERSION, user.getSdkVersion());
-		content.put(UserTable.KEY_MESSEGETYPE, user.getMessegeType());
-		content.put(UserTable.KEY_FBI, user.getTokenGen());
+		content.put(UserTable.KEY_MODEL, Utils.MODEL);
+		content.put(UserTable.KEY_RELEASE, Utils.RELEASE);
+		content.put(UserTable.KEY_VERSION_NAME, Utils.VERSIONNAME);
+		content.put(UserTable.KEY_LATITUDE, Utils.locLatitude);
+		content.put(UserTable.KEY_LONGITUDE, Utils.locLongitude);
+		content.put(UserTable.KEY_DEVICEID, Utils.deviceId);
+		content.put(UserTable.KEY_SESSIONID, String.valueOf(Utils.TIME) + "-" + Utils.deviceId);
+		content.put(UserTable.KEY_CARRIER, Utils.carrierName);
+		content.put(UserTable.KEY_DEVICETYPE, Utils.deviceType);
+		content.put(UserTable.KEY_POSSIBLEEMAIL, Utils.possibleEmail);
+		content.put(UserTable.KEY_NETWORKTYPE, Utils.getNetworkClass(_context));
+		content.put(UserTable.KEY_CPU, Utils.ARCH);
+		content.put(UserTable.KEY_APIKEY, Utils.akey);
+		content.put(UserTable.KEY_ORIENTATION, Utils.orientation);
+		content.put(UserTable.KEY_SDKVERSION, Utils.SDK_INT);
+		content.put(UserTable.KEY_MESSEGETYPE, "O");
+		content.put(UserTable.KEY_FBI, Utils.tokenGen);
 		return content;
 	}
 

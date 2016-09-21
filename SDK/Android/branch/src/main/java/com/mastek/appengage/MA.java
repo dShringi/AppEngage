@@ -2,13 +2,14 @@ package com.mastek.appengage;
 
 import android.content.Context;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.mastek.appengage.dbusermanager.DBUserManager;
-import com.mastek.appengage.model.User;
 import com.mastek.appengage.utils.ConnectionManager;
 import com.mastek.appengage.utils.Utils;
 
@@ -29,13 +30,12 @@ import java.net.URL;
 public class MA {
 	private static final String TAG = MA.class.getSimpleName();
 	private static String versionName;
-	private static User user;
+//	private static User user;
 	public static String response;
 	public static String device2;
 	public static Context appContext;
 	private static DBUserManager dbUserManager;
 	private static String URL = "http://52.87.24.173/api/";
-	private static String akey = "4170b44d6459bba992acaa857ac5b25d7fac6cc1";
 	public static long CalculatedTime;
 	public static long timeDuration;
 	private static long time1;
@@ -45,23 +45,38 @@ public class MA {
 	private static int min;
 	private static long calTime;
 	private static ReturnResponse rResponse;
+
+	public static void init(Context context)
+	{
+		if (context != null)
+			appContext = context;
+		dbUserManager = new DBUserManager(appContext);
+		Utils.init(context);
+	}
+
+
 	public static void sendApi(final Context context) {
+
+		Log.e(TAG,"-------SENDAPI");
+
+
+
 		new Thread() {
 			
 			private MyReceiver mReceiver;
 		
 
 			public void run() {
-				if (context != null)
-					appContext = context;
 
-				dbUserManager = new DBUserManager(appContext);
+				if(context instanceof  ReturnResponse)
+				{
+					rResponse=(ReturnResponse) context;
+				}
 
-				Utils.init(appContext);
+				uiLog(" \n " +"Calling Send Api");
+//				user = getUserDetails();
 
-				user = getUserDetails();
-
-				user.setMessegeType("B");
+//				user.setMessegeType("B");
 
 				this.mReceiver = new MyReceiver();
 				appContext.registerReceiver(this.mReceiver, new IntentFilter(
@@ -77,19 +92,15 @@ public class MA {
 					
 					Log.e(TAG, "CalculatedTime  "+CalculatedTime);
 
-					if(context instanceof  ReturnResponse)
-					{
-						rResponse=(ReturnResponse) context;
-					}
 
-					senddatatoserver(user);
+					senddatatoserver();
 					
 					
 				} else {
-					boolean save = dbUserManager.save(user);
+					boolean save = dbUserManager.save();
 
 					Log.e(TAG, "DBUSERMANAGER :- " + dbUserManager);
-
+					uiLog("\n Send API Saved IN DB");
 					Log.e(TAG, "SAVE....... :- " + save);
 
 				}
@@ -108,19 +119,24 @@ public class MA {
 			@Override
 			public void run() {
 				super.run();
-				user = getUserDetails();
+//				user = getUserDetails();
+				try {
+					uiLog(" \n " + "Calling Event Api");
+					if (ConnectionManager.isNetworkConnected(appContext)) {
 
-				if (ConnectionManager.isNetworkConnected(appContext)) {
+						eventdatatoserver(/*user,*/key, prop);
+						Log.e(TAG, "event data to server... :- ");
+					} else {
+						boolean save = dbUserManager.save();
 
-					eventdatatoserver(user,key,prop);
-					Log.e(TAG, "event data to server... :- ");
-				} else {
-					boolean save = dbUserManager.save(user);
-
-					Log.e(TAG, "DBUSERMANAGER :- " + dbUserManager);
-
+						Log.e(TAG, "DBUSERMANAGER :- " + dbUserManager);
+						uiLog("\n End API Saved IN DB");
+					}
 				}
-
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
 			}
 
 		}.start();
@@ -134,27 +150,37 @@ public class MA {
 			public void run() {
 				// TODO Auto-generated method stub
 				super.run();
+				try {
+					uiLog(" \n " + "Calling End Api");
+					if (context != null)
+						appContext = context;
 
-				if (context != null)
-					appContext = context;
-				
-				time2 = System.currentTimeMillis();
-				
-				
-				calTime = (time2 - time1)/1000;
-				
-				Log.i("======= calTime"," :: "+calTime);
-				
-				if (ConnectionManager.isNetworkConnected(appContext)) {
+//				user = getUserDetails();
 
-					enddatatoserver(user);
-					Log.e(TAG, "end data to server... :- ");
-				} else {
-					boolean save = dbUserManager.save(user);
+					time2 = System.currentTimeMillis();
 
-					Log.e(TAG, "DBUSERMANAGER :- " + dbUserManager);
 
-					Log.e(TAG, "SAVE....... :- " + save);
+					calTime = (time2 - time1) / 1000;
+
+					Log.i("======= calTime", " :: " + calTime);
+
+
+					if (ConnectionManager.isNetworkConnected(appContext)) {
+
+						enddatatoserver();
+						Log.e(TAG, "end data to server... :- ");
+					} else {
+						Log.e(TAG, "save--------------------- " + (dbUserManager == null));
+						boolean save = dbUserManager.save();
+
+						Log.e(TAG, "DBUSERMANAGER :- " + dbUserManager);
+						uiLog("\n End API Saved IN DB");
+						Log.e(TAG, "SAVE....... :- " + save);
+					}
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
 				}
 
 			}
@@ -168,23 +194,29 @@ public class MA {
 			public void run() {
 				// TODO Auto-generated method stub
 				super.run();
+				try {
 
-				if (context != null)
-					appContext = context;
 
-				user = getUserDetails();
+					if (context != null)
+						appContext = context;
 
-				if (ConnectionManager.isNetworkConnected(appContext)) {
+//				user = getUserDetails();
+					uiLog(" \n " + "Calling Crash Api");
+					if (ConnectionManager.isNetworkConnected(appContext)) {
 
-					sendCrashDataToServer("Java.lang.NullPointerException",
-							user);
-					Log.e(TAG, "end data to server... :- ");
-				} else {
-					boolean save = dbUserManager.save(user);
+						sendCrashDataToServer("Java.lang.NullPointerException"/*,user*/);
+						Log.e(TAG, "end data to server... :- ");
+					} else {
+						boolean save = dbUserManager.save();
 
-					Log.e(TAG, "DBUSERMANAGER :- " + dbUserManager);
-
-					Log.e(TAG, "SAVE....... :- " + save);
+						Log.e(TAG, "DBUSERMANAGER :- " + dbUserManager);
+						uiLog("\n Crash API Saved IN DB");
+						Log.e(TAG, "SAVE....... :- " + save);
+					}
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
 				}
 			};
 		}.start();
@@ -192,16 +224,16 @@ public class MA {
 
 	// ///////////////////crash api\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-	public static void sendCrashDataToServer(String message, User user) {
+	public static void sendCrashDataToServer(String message) {
 
 		JSONObject post_data = new JSONObject();
 
 		try {
-			post_data.put("mnu", user.getManufacturer());
-			post_data.put("mod", user.getModel());
-			post_data.put("osv", user.getRelease());
-			post_data.put("pf", user.getOsName());
-			post_data.put("avn", user.getVersionName());
+			post_data.put("mnu", Utils.MANUFACTURER);
+			post_data.put("mod", Utils.MODEL);
+			post_data.put("osv", Utils.RELEASE);
+			post_data.put("pf", Utils.OSNAME);
+			post_data.put("avn", Utils.VERSIONNAME);
 			if (Utils.gps_enabled) {
 				post_data.put("lat", Utils.locLatitude);
 				post_data.put("lng", Utils.locLongitude);
@@ -211,23 +243,23 @@ public class MA {
 				post_data.put("lng", "0.0");
 			}
 			post_data.put("rtc", CalculatedTime);
-			post_data.put("sid", time1 + "" + user.getDeviceId());
-			post_data.put("did", user.getDeviceId());
-			post_data.put("res", user.getResolution());
-			post_data.put("c", user.getCarrierName());
-			post_data.put("dt", user.getDeviceType());
+			post_data.put("sid", time1 + "" + Utils.deviceId);
+			post_data.put("did", Utils.deviceId);
+			post_data.put("res", Utils.resolution);
+			post_data.put("c",Utils.carrierName);
+			post_data.put("dt", Utils.deviceType);
 			post_data.put("ac", Utils.possibleEmail);
-			post_data.put("nw", user.getNetworkType());
+			post_data.put("nw", Utils.getNetworkClass(appContext));
 			post_data.put("cpu", Utils.ARCH);
-			post_data.put("ori", user.getOrientation());
-			post_data.put("akey", akey);
-			post_data.put("frs", user.getFreeRamSize());
-			post_data.put("trs", user.getTotalRamSize());
-			post_data.put("fds", user.getFreeDiskSize());
-			post_data.put("tds", user.getTotalDiskSize());
-			post_data.put("bl", user.getBatteryLevel());
-			post_data.put("ids", user.getIsDeviceRooted());
-			post_data.put("ido", user.getIsDeviceOnline());
+			post_data.put("ori", Utils.orientation);
+			post_data.put("akey", Utils.akey);
+			post_data.put("frs",Utils.percentAvail);
+			post_data.put("trs",Utils.totalMemory);
+			post_data.put("fds",Utils.megAvailable);
+			post_data.put("tds", Utils.Available);
+			post_data.put("bl",String.valueOf(Utils.batteryLevel));
+			post_data.put("ids", Utils.root);
+			post_data.put("ido", "N/A");
 			post_data
 					.put("est",
 							"E/AndroidRuntime(27386): java.lang.NullPointerException: return value is null at method AAA");
@@ -265,7 +297,7 @@ public class MA {
 						"application/json");
 				
 				urlConnection.setRequestProperty("akey",
-						akey);
+						Utils.akey);
 				Writer writer = new BufferedWriter(new OutputStreamWriter(
 						urlConnection.getOutputStream(), "UTF-8"));
 				writer.write(JsonDATA);
@@ -320,7 +352,7 @@ public class MA {
 		protected void onPostExecute(String s) {
 			if(rResponse != null)
 			{
-				rResponse.sendResponse(s);
+				uiLog(s);
 			}
 		}
 
@@ -330,7 +362,7 @@ public class MA {
 
 	// ///////////////////send api\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-	public static void senddatatoserver(User user) {
+	public static void senddatatoserver() {
 		// function in the activity that corresponds to the layout button
 		// LatLng = txtLatitudeLongitude.getText().toString();
 		versionName = Utils.VERSIONNAME;
@@ -339,30 +371,36 @@ public class MA {
 		JSONArray array = new JSONArray();
 
 		try {
-			post_data.put("sync_status", user.getSyncStatus());
-			post_data.put("test", user.getTest());
-			post_data.put("mod", user.getModel());
-			post_data.put("avn", user.getVersionName());
-			post_data.put("mnu", user.getManufacturer());
-			post_data.put("osv", user.getRelease());
-			post_data.put("pf", user.getOsName());
-			post_data.put("lat", Utils.locLatitude);
-			post_data.put("lng", Utils.locLongitude);
+			post_data.put("sync_status","");
+			post_data.put("test", "");
+			post_data.put("mod", Utils.MODEL);
+			post_data.put("avn", Utils.VERSIONNAME);
+			post_data.put("mnu", Utils.MANUFACTURER);
+			post_data.put("osv", Utils.RELEASE);
+			post_data.put("pf", Utils.OSNAME);
+			if (Utils.gps_enabled) {
+				post_data.put("lat", Utils.locLatitude);
+				post_data.put("lng", Utils.locLongitude);
+
+			} else {
+				post_data.put("lat", "0.0");
+				post_data.put("lng", "0.0");
+			}
 			post_data.put("rtc", CalculatedTime);
-			post_data.put("sid", time1 + "" + user.getDeviceId());
-			post_data.put("did", user.getDeviceId());
-			post_data.put("res", user.getResolution());
-			post_data.put("c", user.getCarrierName());
+			post_data.put("sid", time1 + "" + Utils.deviceId);
+			post_data.put("did", Utils.deviceId);
+			post_data.put("res", Utils.resolution);
+			post_data.put("c", Utils.carrierName);
 			post_data.put("dt", Utils.deviceType);
 			post_data.put("ac", Utils.possibleEmail);
-			post_data.put("nw",user.getNetworkType());
+			post_data.put("nw", Utils.getNetworkClass(appContext));
 			post_data.put("cpu", Utils.ARCH);
 			post_data.put("ori", Utils.orientation);
-			post_data.put("akey", akey);
+			post_data.put("akey", Utils.akey);
 			post_data.put("sdv", "1.0");
             post_data.put("rkey",Utils.tokenGen);
 			post_data.put("mt", "B");
-			Log.e(TAG, "     send data;..............." + user);
+			Log.e(TAG, "     send data;..............." /*+ user*/);
 
 			array.put(post_data);
 
@@ -393,7 +431,7 @@ public class MA {
 				urlConnection.setRequestProperty("Content-Type",
 						"application/json");
 
-				urlConnection.setRequestProperty("akey",akey);
+				urlConnection.setRequestProperty("akey",Utils.akey);
 				Writer writer = new BufferedWriter(new OutputStreamWriter(
 						urlConnection.getOutputStream(), "UTF-8"));
 				writer.write(JsonDATA);
@@ -454,7 +492,7 @@ public class MA {
 		protected void onPostExecute(String s) {
 		if(rResponse != null)
 		{
-			rResponse.sendResponse(s);
+			uiLog("Send API data "+s);
 		}
 
 		}
@@ -469,17 +507,17 @@ public class MA {
 	public static void senddatawhenonline(JSONArray array1) {
 		// function in the activity that corresponds to the layout button
 
-		user = getUserDetails();
+//		user = getUserDetails();
 		versionName = Utils.VERSIONNAME;
 		JSONObject post_data = new JSONObject();
 
 		try {
-			post_data.put("test", user.getTest());
-			post_data.put("mod", user.getModel());
-			post_data.put("avn", user.getVersionName());
-			post_data.put("mnu", user.getManufacturer());
-			post_data.put("osv", user.getRelease());
-			post_data.put("pf", user.getOsName());
+			post_data.put("test", "");
+			post_data.put("mod", Utils.MODEL);
+			post_data.put("avn", Utils.VERSIONNAME);
+			post_data.put("mnu", Utils.MANUFACTURER);
+			post_data.put("osv", Utils.RELEASE);
+			post_data.put("pf", Utils.OSNAME);
 			if (Utils.gps_enabled) {
 				post_data.put("lat", Utils.locLatitude);
 				post_data.put("lng", Utils.locLongitude);
@@ -488,20 +526,20 @@ public class MA {
 				post_data.put("lat", "0.0");
 				post_data.put("lng", "0.0");
 			}
-			post_data.put("rtc", user.getTimeStamp());
-			post_data.put("sid", time1 + "" + user.getDeviceId());
-			post_data.put("did", user.getDeviceId());
+			post_data.put("rtc", Utils.timeStamp);
+			post_data.put("sid", time1 + "" + Utils.deviceId);
+			post_data.put("did", Utils.deviceId);
 			post_data.put("res", Utils.screenWidth + "*" + Utils.screenHeight);
-			post_data.put("c", user.getCarrierName());
+			post_data.put("c", Utils.carrierName);
 			post_data.put("dt", Utils.deviceType);
 			post_data.put("ac", Utils.possibleEmail);
-			post_data.put("nw", user.getNetworkType());
+			post_data.put("nw", Utils.getNetworkClass(appContext));
 			post_data.put("cpu", Utils.ARCH);
 			post_data.put("ori", Utils.orientation);
-			post_data.put("akey", akey);
+			post_data.put("akey", Utils.akey);
 			post_data.put("sdv", "1.0");
 			post_data.put("mt", "O");
-			Log.e(TAG, "     send data;..............." + user);
+			Log.e(TAG, "     send data;...............");
 
 			array1.put(post_data);
 
@@ -510,7 +548,7 @@ public class MA {
 			Log.e(TAG, "JSONException in catch......" + e.getMessage());
 		}
 		if (post_data.length() > 0) {
-			Log.e(TAG, "POST_DATA..... send data to server......" + post_data);
+			Log.e(TAG, "POST_DATA..... send data to server when online......" + post_data);
 			new SendJsonArrayToServerWhenOnline().execute(String.valueOf(array1));
 		}
 	}
@@ -534,7 +572,7 @@ public class MA {
 						"application/json");
 
 				urlConnection.setRequestProperty("akey",
-						akey);
+						Utils.akey);
 				// set headers and method
 				Writer writer = new BufferedWriter(new OutputStreamWriter(
 						urlConnection.getOutputStream(), "UTF-8"));
@@ -596,7 +634,7 @@ public class MA {
 		protected void onPostExecute(String s) {
 			if(rResponse != null)
 			{
-				rResponse.sendResponse(s);
+				uiLog("Crash API Data "+s);
 			}
 		}
 
@@ -606,7 +644,7 @@ public class MA {
 
 	// /////////////////////////////Event Api\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-	public static void eventdatatoserver(User user,String key,JSONObject prop) {
+	public static void eventdatatoserver(String key,JSONObject prop) {
 		// function in the activity that corresponds to the layout button
 		// LatLng = txtLatitudeLongitude.getText().toString();
 		versionName = Utils.VERSIONNAME;
@@ -614,11 +652,11 @@ public class MA {
 		
 
 		try {
-			post_data.put("mnu", user.getManufacturer());
-			post_data.put("mod", user.getModel());
-			post_data.put("osv", user.getRelease());
-			post_data.put("pf", user.getOsName());
-			post_data.put("avn", user.getVersionName());
+			post_data.put("mnu", Utils.MANUFACTURER);
+			post_data.put("mod", Utils.MODEL);
+			post_data.put("osv", Utils.RELEASE);
+			post_data.put("pf", Utils.OSNAME);
+			post_data.put("avn", Utils.VERSIONNAME);
 			if (Utils.gps_enabled) {
 				post_data.put("lat", Utils.locLatitude);
 				post_data.put("lng", Utils.locLongitude);
@@ -628,16 +666,16 @@ public class MA {
 				post_data.put("lng", "0.0");
 			}
 			post_data.put("rtc", CalculatedTime);
-			post_data.put("sid", time1 + "" + user.getDeviceId());
-			post_data.put("did", user.getDeviceId());
-			post_data.put("res", user.getResolution());
-			post_data.put("c", user.getCarrierName());
+			post_data.put("sid", time1 + "" + Utils.deviceId);
+			post_data.put("did", Utils.deviceId);
+			post_data.put("res", Utils.resolution);
+			post_data.put("c", Utils.carrierName);
 			post_data.put("dt", Utils.deviceType);
 			post_data.put("ac", Utils.possibleEmail);
-			post_data.put("nw", user.getNetworkType());
+			post_data.put("nw", Utils.getNetworkClass(appContext));
 			post_data.put("cpu", Utils.ARCH);
-			post_data.put("ori", user.getOrientation());
-			post_data.put("akey", akey);
+			post_data.put("ori",Utils.orientation);
+			post_data.put("akey", Utils.akey);
 			post_data.put("sdv", "1.0");
 			post_data.put("mt", "event");
 			post_data.put("key", key);
@@ -645,7 +683,7 @@ public class MA {
 			
 			
 			post_data.put("pro", prop);
-			Log.e(TAG, "     send data;..............." + user);
+			Log.e(TAG, "     send data;...............");
 			
 
 		} catch (JSONException e) {
@@ -679,7 +717,7 @@ public class MA {
 				urlConnection.setRequestProperty("Content-Type",
 						"application/json");
 				urlConnection.setRequestProperty("akey",
-						akey);
+						Utils.akey);
 				// set headers and method
 				Writer writer = new BufferedWriter(new OutputStreamWriter(
 						urlConnection.getOutputStream(), "UTF-8"));
@@ -735,7 +773,7 @@ public class MA {
 		protected void onPostExecute(String s) {
 			if(rResponse != null)
 			{
-				rResponse.sendResponse(s);
+				uiLog("Event API Data "+s);
 			}
 		}
 
@@ -746,7 +784,7 @@ public class MA {
 
 	// ////////////////////////////End Api\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-	public static void enddatatoserver(User user) {
+	public static void enddatatoserver() {
 		// function in the activity that corresponds to the layout button
 		// LatLng = txtLatitudeLongitude.getText().toString();
 		versionName = Utils.VERSIONNAME;
@@ -755,14 +793,14 @@ public class MA {
 		try {
 			post_data.put("tsd", calTime);// //total session duration
 			post_data.put("did", Utils.deviceId);
-			post_data.put("akey", akey);// api
+			post_data.put("akey", Utils.akey);// api
 																				// key
 			post_data.put("rtc", CalculatedTime);
 			post_data.put("sid", time1 + "" + Utils.deviceId);
 			post_data.put("sdv", "1.0");// sdk version
 			post_data.put("dt", Utils.deviceType);
 			post_data.put("mt", "E");
-			Log.e(TAG, "     send data;..............." + user);
+			Log.e(TAG, "     end api data;..............." /*+ user*/);
 
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -792,7 +830,7 @@ public class MA {
 						"application/json");
 				
 				urlConnection.setRequestProperty("akey",
-						akey);
+						Utils.akey);
 				// urlConnection.setRequestProperty("Accept",
 				// "application/json");
 				// set headers and method
@@ -852,15 +890,62 @@ public class MA {
 		protected void onPostExecute(String s) {
 			if(rResponse != null)
 			{
-				rResponse.sendResponse(s);
+				uiLog("End API data "+s);
 			}
 		}
 
 	}
 
+	public static void beginApi(Context context) {
+		if (Build.VERSION.SDK_INT >= 23) { // Build.VERSION_CODES.M
+			if (checkPermission()) {
+				Log.e(TAG, "checkPermission=-=====");
+				Utils.requestSingleUpdate(appContext, new Utils.LocationCallback() {
+
+					@Override
+					public void onNewLocationAvailable(Utils.GPSCoordinates location) {
+						// TODO Auto-generated method stub
+					}
+				});
+			}
+			else {
+			sendApi(context);
+			}
+		} else {
+			Log.e(TAG, "log for less dan 23 version");
+			Utils.requestSingleUpdate(appContext, new Utils.LocationCallback() {
+
+				@Override
+				public void onNewLocationAvailable(Utils.GPSCoordinates location) {
+					// TODO Auto-generated method stub
+				}
+			});
+		}
+	}
+
+	private static boolean checkPermission() {
+		int result = ActivityCompat.checkSelfPermission(appContext,
+				android.Manifest.permission.ACCESS_FINE_LOCATION);
+		int result2 = ActivityCompat.checkSelfPermission(appContext,
+				android.Manifest.permission.ACCESS_COARSE_LOCATION);
+		if (result == PackageManager.PERMISSION_GRANTED
+				&& result2 == PackageManager.PERMISSION_GRANTED) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public static void uiLog(String msg)
+	{
+		if(rResponse != null)
+		{
+			rResponse.sendResponse(msg);
+		}
+	}
 	// ///////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-	public static User getUserDetails() {
+	/*public static User getUserDetails() {
 
 		user = new User();
 		user.setRelease(Utils.RELEASE);
@@ -874,30 +959,31 @@ public class MA {
 		user.setSessionId(String.valueOf(Utils.TIME) + "-" + Utils.deviceId);
 		user.setDeviceId(Utils.deviceId);
 		user.setDeviceType(Utils.deviceType);
-		user.setResolution(Utils.ResolutionOfDevice(appContext));
+		user.setResolution(Utils.resolution);
 		user.setOrientation(Utils.orientation);
 		user.setCarrierName(Utils.carrierName);
 		user.setTokenGen(Utils.tokenGen);
 
 		if (Connectivity.isConnected(appContext)) {
-			
+
 			if (Connectivity.isConnectedMobile(appContext)) {
-				
-				
+
+
 				Log.e("Connectivity",""+ Utils.networkType);
-				
+
+				Log.e("Connectivity----++====+---",""+ Utils.getNetworkClass(appContext));
 				user.setNetworkType(Utils.getNetworkClass(appContext));
-				
+
 			}
 			else if (Connectivity.isConnectedWifi(appContext)) {
-				
+
 				user.setNetworkType("WiFi");
 			}
 		}
 		else {
 			Log.e(TAG, "Internet not connected");
 		}
-		
+
 		if (Utils.gps_enabled) {
 			user.setLatitude(Utils.locLatitude);
 			user.setLongitude(Utils.locLongitude);
@@ -919,6 +1005,7 @@ public class MA {
 		user.setKey("AddToCart");
 		
 		return user;
-	};
+	};*/
+
 
 }

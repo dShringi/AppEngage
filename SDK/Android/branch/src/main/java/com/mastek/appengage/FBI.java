@@ -5,7 +5,6 @@ import android.util.Log;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
-import com.mastek.appengage.model.User;
 /**
  * Created by Badal13631 on 9/6/2016.
  */

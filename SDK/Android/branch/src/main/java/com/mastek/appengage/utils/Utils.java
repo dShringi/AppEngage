@@ -1,16 +1,5 @@
 package com.mastek.appengage.utils;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.security.MessageDigest;
-import java.text.DateFormat;
-import java.text.DecimalFormat;
-import java.util.Date;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -41,8 +30,6 @@ import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Patterns;
-import android.view.Display;
-import android.view.WindowManager;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -53,8 +40,17 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.mastek.appengage.MA;
 import com.mastek.appengage.dbusermanager.DBUserManager;
 import com.mastek.appengage.locservice.LocationService1;
-import com.mastek.appengage.model.User;
-import com.mastek.appengage.FBI;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.security.MessageDigest;
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Admin on 3/8/2016.
@@ -87,25 +83,28 @@ public class Utils implements LocationListener,
 	public static String root;
 	private static BroadcastReceiver receiver;
 	public static String locLatitude;
+	public static String resolution;
 	public static String locLongitude;
 	public static String device1;
 	public static String deviceType;
 	public static String Smartphone;
 	private static String tablet;
 	private static String extraHealth;
-	private static User user;
+//	private static User user;
 	public static String orientation;
 	public static String possibleEmail;
 	public static int networkType;
 	public static int duration;
 	public static long startTime;
 	public static boolean gps_enabled;
+	public static String akey = "4170b44d6459bba992acaa857ac5b25d7fac6cc1";
 
 	public static String tokenGen = FirebaseInstanceId.getInstance().getToken();
 	/*
 	 * static String eNdTime = "16:20:00"; private static Date endDate;
 	 */
 	public static long Available;
+	public static long percentAvail;
 
 	public static void init(Context context) {
 
@@ -188,7 +187,7 @@ public class Utils implements LocationListener,
 
 	public static void initiateAllDataBase(Context context) {
 
-		user = new User();
+//		user = new User();
 		DBUserManager.getInstance().initDB(context);
 		Log.e(TAG, "DATABASE INITIALIZED");
 
@@ -348,12 +347,25 @@ public class Utils implements LocationListener,
 	}
 
 	public static void getDeviceId(Context context) {
+		if (ActivityCompat.checkSelfPermission(context, Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+			// TODO: Consider calling
+			//    ActivityCompat#requestPermissions
+			// here to request the missing permissions, and then overriding
+			//   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+			//                                          int[] grantResults)
+			// to handle the case where the user grants the permission. See the documentation
+			// for ActivityCompat#requestPermissions for more details.
+			deviceId = "NP";
+		}
+		else
+		{
+			TelephonyManager tm = (TelephonyManager) context
+					.getSystemService(Activity.TELEPHONY_SERVICE);
 
-		TelephonyManager tm = (TelephonyManager) context
-				.getSystemService(Activity.TELEPHONY_SERVICE);
+			// device1 = tm.getDeviceId();
+			deviceId = tm.getDeviceId();
+		}
 
-		// device1 = tm.getDeviceId();
-		deviceId = tm.getDeviceId();
 	}
 
 	public static String changeTimeFormat(int hours, int mins) {
@@ -435,9 +447,9 @@ public class Utils implements LocationListener,
 
 	public static void RamSize(Context context) {
 
-		ActivityManager actManager = (ActivityManager) context
-				.getSystemService(ACTIVITY_SERVICE);
-		ActivityManager.MemoryInfo memInfo = new ActivityManager.MemoryInfo();
+		/*ActivityManager actManager = (ActivityManager) context
+				.getSystemService(context.ACTIVITY_SERVICE);
+		ActivityManager.MemoryInfo memInfo = new ActivityManager.MemoryInfo();*/
 		// actManager.getMemoryInfo(memInfo);
 		// totalMemory = memInfo.totalMem;
 
@@ -451,7 +463,7 @@ public class Utils implements LocationListener,
 		totalMemory = mi.totalMem / 1048576L;
 		Log.e(TAG, "totalMemory :-" + totalMemory);
 
-		long percentAvail = mi.availMem / mi.totalMem;
+		 percentAvail = mi.availMem / mi.totalMem;
 
 		Log.e(TAG, "totalMemory :-" + totalMemory);
 	}
@@ -575,12 +587,12 @@ public class Utils implements LocationListener,
 
 		DisplayMetrics displayMetrics = new DisplayMetrics();
 
-		Log.e("Context ", "" + (context == null));
+		Log.e("Context---------- ", "" + (context == null));
 		((Activity) context).getWindowManager().getDefaultDisplay()
 				.getMetrics(displayMetrics);
 		int screenWidth = displayMetrics.widthPixels;
 		int screenHeight = displayMetrics.heightPixels;
-
+		resolution=screenHeight + "*" + screenWidth;
 		return screenHeight + "*" + screenWidth;
 	}
 
@@ -600,18 +612,30 @@ public class Utils implements LocationListener,
 	public static String getEmail(Context context) {
 		possibleEmail = "";
 		Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+
-		Account[] accounts = AccountManager.get(context).getAccounts();
-		for (Account account : accounts) {
-			if (emailPattern.matcher(account.name).matches()) {
-				if (account.name != null
-						&& !account.name.trim().equalsIgnoreCase("")) {
-					possibleEmail = account.name;
-					Log.e(TAG, "Email  " + possibleEmail);
-					break;
+		if (ActivityCompat.checkSelfPermission(context, Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+			// TODO: Consider calling
+			//    ActivityCompat#requestPermissions
+			// here to request the missing permissions, and then overriding
+			//   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+			//                                          int[] grantResults)
+			// to handle the case where the user grants the permission. See the documentation
+			// for ActivityCompat#requestPermissions for more details.
+			return "NP";
+		}
+		else {
+			Account[] accounts = AccountManager.get(context).getAccounts();
+			for (Account account : accounts) {
+				if (emailPattern.matcher(account.name).matches()) {
+					if (account.name != null
+							&& !account.name.trim().equalsIgnoreCase("")) {
+						possibleEmail = account.name;
+						Log.e(TAG, "Email  " + possibleEmail);
+						break;
+					}
 				}
 			}
+			return possibleEmail;
 		}
-		return possibleEmail;
 	}
 
 	public static String getNetworkClass(Context context) {
@@ -883,7 +907,10 @@ public class Utils implements LocationListener,
 				//                                          int[] grantResults)
 				// to handle the case where the user grants the permission. See the documentation
 				// for ActivityCompat#requestPermissions for more details.
-				return;
+				Log.e(TAG, "isNetworkEnabled  " );
+				locLatitude = "NP";
+				locLongitude = "NP";
+				MA.sendApi(context);
 			}
 			locationManager.requestSingleUpdate(criteria,
 					new LocationListener() {
@@ -923,6 +950,10 @@ public class Utils implements LocationListener,
 						}
 					}, null);
 		} else {
+
+			Log.e(TAG,
+					"location not found-------------");
+			MA.sendApi(context);
 			boolean isGPSEnabled = locationManager
 					.isProviderEnabled(LocationManager.GPS_PROVIDER);
 			if (isGPSEnabled) {
