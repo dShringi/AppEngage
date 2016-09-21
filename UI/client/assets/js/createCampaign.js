@@ -7,6 +7,10 @@ $(document).ready(function () {
         $(".main-container").prepend(data);
     });
 
+    for (i = 1; i < 31;i++){
+        $("select#day-number-type").append("<option value='"+i+"'>" + i + "</option>");
+    }
+
     $("div.section-creative").css("display", "none");
     $("div.section-audience").css("display", "none");
     $("div.section-scheduling").css("display", "none");
@@ -17,6 +21,23 @@ $(document).ready(function () {
     $(".creative-edit").hide();
     $(".audience-edit").hide();
     $(".scheduling-edit").hide();
+    $(".scheduled-block").hide();
+
+    $('input[type=radio][name=scheduling-type]').change(function () {
+        if (this.value == 'immediately') {
+            $(".scheduled-block").slideUp();
+            $(".immediate-block").slideDown();
+            //$(".date-time-block").slideDown();
+            if ($('input[type=radio][name=immediate-type]:checked').val() == "later") {
+                $(".date-time-block").slideDown();
+            }
+        }
+        else if (this.value == 'scheduled') {
+            $(".immediate-block").slideUp();
+            $(".date-time-block").slideUp();
+            $(".scheduled-block").slideDown();
+        }
+    });
 
     $('input[type=radio][name=immediate-type]').change(function () {
         if (this.value == 'now') {
@@ -26,6 +47,51 @@ $(document).ready(function () {
             $(".date-time-block").slideDown();
         }
     });
+
+    if ($("select#send-type option:selected").val() == "daily") {
+        $("span#on-day-text").hide();
+        $("select#day-type").hide();
+        $("select#day-number-type").hide();
+    }
+
+    $("select#send-type").change(function () {
+        switch ($(this).val()) {
+            case "daily":
+                $("span#on-day-text").hide();
+                $("select#day-type").hide();
+                $("select#day-number-type").hide();
+                $(".schedule-time-block").css("display", "inline-block");
+                $(".schedule-time-block").css("padding-top", "0px");
+                break;
+            case "alternate":
+                $("span#on-day-text").hide();
+                $("select#day-type").hide();
+                $("select#day-number-type").hide();
+                $(".schedule-time-block").css("display", "inline-block");
+                $(".schedule-time-block").css("padding-top", "0px");
+                break;
+            case "weekly":
+                $("span#on-day-text").show();
+                $("select#day-type").show();
+                $("select#day-number-type").hide();
+                $(".schedule-time-block").css("display", "block");
+                $(".schedule-time-block").css("padding-top", "20px");
+                break;
+            case "monthly":
+                $("span#on-day-text").show();
+                $("select#day-type").hide();
+                $("select#day-number-type").show();
+                $(".schedule-time-block").css("display", "block");
+                $(".schedule-time-block").css("display", "block");
+                $(".schedule-time-block").css("padding-top", "20px");
+                break;
+            default:
+                break;
+        }
+
+    });
+
+    
 
     $("#btn-confirm").click(function () {
         var carr = [];
@@ -42,13 +108,40 @@ $(document).ready(function () {
             var immediatedate;
             if (cimmediatetype === "now") {
                 immediatedate = moment(new Date()).format("YYYYMMDDHHmm");
+                carr.push("now");
             }
             else {
                 var selecteddate = moment($("#datepck").val()).format("YYYYMMDD");
                 var selectedtime = ($("#clockpck").val()).substr(0, 2) + ($("#clockpck").val()).substr(3, 2);
                 immediatedate = selecteddate + selectedtime;
+                carr.push("later");
             }
             carr.push(immediatedate);
+        }
+        
+        if (cscheduletype === "scheduled") {
+            var csendtype = $("select#send-type").val();
+            carr.push(csendtype);
+
+            var cscheduletime = moment(new Date()).format("YYYYMMDD") + ($("#clockpck2").val()).substr(0, 2) + ($("#clockpck2").val()).substr(3, 2);
+            carr.push(cscheduletime);
+
+            var selecteddate = moment($("#datepck2").val()).format("YYYYMMDD");
+            var selectedtime = ($("#clockpck3").val()).substr(0, 2) + ($("#clockpck3").val()).substr(3, 2);
+            var scheduleenddate = selecteddate + selectedtime;
+            carr.push(scheduleenddate);
+
+            if (csendtype === "weekly") {
+                var cweekday = "WEEKLY_" + $("select#day-type").val();
+                carr.push(cweekday);
+
+            }
+            else if (csendtype === "monthly") {
+                var cweekdaynumber = "MONTHLY_" + $("select#day-number-type").val();
+                carr.push(cweekdaynumber);
+
+            }
+            //console.log(carr);
         }
 
         service.makeCampaign(carr);

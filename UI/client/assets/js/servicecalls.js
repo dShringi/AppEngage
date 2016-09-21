@@ -135,21 +135,77 @@ var service = {
 
 	makeCampaign: function (arr) {
 	    console.log(arr);
-	    // ["Name", "Title", "Message", "everyone", "immediately", trigger_time]
-        //    0        1         2           3            4              5
+        // IMMEDIATE
+	    // ["Name", "Title", "Message", "everyone", "immediately", "now/later", trigger_time]
+        //    0        1         2           3            4              5            6
 	    if (arr[4] === "immediately") {
-	        var makeCampaignJSONReq = {
-	            "schedule_type": "immediate",
-	            "recursive": false,
-	            "trigger_time": arr[5],
-	            "name": arr[0],
-	            "pn_title": arr[1],
-	            "status": "active",
-	            "date": new Date(),
-	            "pn_msg": arr[2],
-                "endDate": null,
-	            "query": {}
+	        if (arr[5] === "now") {
+	            var makeCampaignJSONReq = {
+	                "schedule_type": "immediate",
+	                "recursive": false,
+	                "trigger_time": arr[6],
+	                "name": arr[0],
+	                "pn_title": arr[1],
+	                "status": "active",
+	                "date": new Date(),
+	                "pn_msg": arr[2],
+	                "endDate": null,
+	                "query": {}
+	            }
+
 	        }
+	        else if (arr[5] === "later") {
+	            var makeCampaignJSONReq = {
+	                "schedule_type": "scheduled",
+	                "recursive": false,
+	                "trigger_time": arr[6],
+	                "name": arr[0],
+	                "pn_title": arr[1],
+	                "status": "active",
+	                "date": new Date(),
+	                "pn_msg": arr[2],
+	                "endDate": null,
+	                "query": {}
+	            }
+
+	        }
+	        
+	    }
+	    // SCHEDULED
+	    // ["name", "title", "message", "everyone", "scheduled", "cycle", "triggertime", "endtime", "MONTHLY_5"]
+	    //    0         1       2           3           4           5           6           7           8
+	    else if (arr[4] === "scheduled") {
+	        if (arr[5] === "monthly" || arr[5] === "weekly") {
+	            var makeCampaignJSONReq = {
+	                "schedule_type": "scheduled",
+	                "recursive": true,
+	                "trigger_time": arr[6],
+	                "cycle": arr[8],
+	                "name": arr[0],
+	                "pn_title": arr[1],
+	                "status": "active",
+	                "date": new Date(),
+	                "pn_msg": arr[2],
+	                "endDate": arr[7],
+	                "query": {}
+	            }
+	        }
+	        else if (arr[5] === "daily" || arr[5] === "alternate") {
+	            var makeCampaignJSONReq = {
+	                "schedule_type": "scheduled",
+	                "recursive": true,
+	                "trigger_time": arr[6],
+	                "cycle": arr[5].toUpperCase(),
+	                "name": arr[0],
+	                "pn_title": arr[1],
+	                "status": "active",
+	                "date": new Date(),
+	                "pn_msg": arr[2],
+	                "endDate": arr[7],
+	                "query": {}
+	            }
+	        }
+	        
 	    }
 	    console.log(makeCampaignJSONReq);
 

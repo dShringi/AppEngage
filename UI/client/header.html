@@ -21,20 +21,20 @@
 	
 		$("body").css("display", "none");
 		
-		if(sessionStorage.getItem("userName") === null){
+		if(localStorage.getItem("userName") === null){
 				window.location.href = "landing-page.html";
 			}
 			else{
 				$("body").css("display", "block");
-				console.log(sessionStorage.getItem("userName"));
-				$("header.bg-white ul.paddl0 span.loggedUser").text(sessionStorage.getItem("userName"));
+				console.log(localStorage.getItem("userName"));
+				$("header.bg-white ul.paddl0 span.loggedUser").text(localStorage.getItem("userName"));
 			}
 		
 	});
 
 	
 	function logout(){
-		sessionStorage.removeItem("userName");
+		localStorage.removeItem("userName");
 		window.location.href = "landing-page.html";
 		
 	}

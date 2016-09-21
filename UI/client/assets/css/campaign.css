@@ -31,16 +31,33 @@
     display: inline-block;
 }
 
-.campaign-editor .section-scheduling .fa-calendar{
+.campaign-editor .section-scheduling .calendar1{
     position:absolute;
     top:97px;
     left: 141px;
 }
 
-.campaign-editor .section-scheduling .fa-clock-o{
+.campaign-editor .section-scheduling .clock1{
     position:absolute;
     top:97px;
     right: 124px;
+}
+
+.campaign-editor .section-scheduling .calendar2{
+    position:absolute;
+    top:105px;
+    left: 178px;
+}
+
+.campaign-editor .section-scheduling .clock2{
+    position:absolute;
+    top:51px;
+    right: 107px;
+}
+.campaign-editor .section-scheduling .clock3{
+    position:absolute;
+    top:105px;
+    right: 141px;
 }
 
 .campaign-editor .row .col-md-2 span{
@@ -83,4 +100,18 @@ input[type=radio]{
     width: 75%;
     display: inline-block;
     margin-left: 10px;
+}
+
+select#send-type, select#day-type{
+	width: 130px;
+    display: inline-block;
+}
+
+select#day-number-type{
+	width: 70px;
+    display: inline-block;
+}
+
+.schedule-time-block{
+	display:inline-block; 
 }

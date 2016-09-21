@@ -89,7 +89,7 @@
                 if (emptyFlag > 0) {
                     swal({ title: "OOPS", text: "Please fill all the details.", imageUrl: "assets/img/Error.png" });
                 }
-                else if (sessionStorage.getItem("unameAvailability") != "Success") {
+                else if (localStorage.getItem("unameAvailability") != "Success") {
                     swal({ title: "OOPS", text: "Username is already taken. Please provide new username.", imageUrl: "assets/img/Error.png" });
                 }
                 else if (!validateEmail()) {
@@ -148,7 +148,7 @@
                     $(".register-part02").removeClass("active-underline");
                     $(".register-part03").removeClass("active-underline");
                     $("#uname-check").css("opacity", "0");
-                    sessionStorage.removeItem("unameAvailability");
+                    localStorage.removeItem("unameAvailability");
                     $("#modalRegister").find("input").each(function () {
                         $(this).val("");
                     });

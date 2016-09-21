@@ -133,7 +133,7 @@
                                         </div>
                                         <div class="date-time-block" style="padding-top: 25px; display:none;">
                                             <input type="text" id="datepck" class="form-control" placeholder="MM/DD/YYYY" />
-                                            <i class="fa fa-calendar" aria-hidden="true"></i>
+                                            <i class="fa fa-calendar calendar1" aria-hidden="true"></i>
                                             <script>
                                                 $(function () {
                                                     $('#datepck').daterangepicker({
@@ -148,13 +148,72 @@
                                             </script>
                                             <span id="at">&nbsp;at&nbsp;</span>
                                             <input type="text" id="clockpck" class="form-control" placeholder="HH:MM" />
-                                            <i class="fa fa-clock-o" aria-hidden="true"></i>
+                                            <i class="fa fa-clock-o clock1" aria-hidden="true"></i>
                                             <script>
                                                 $('#clockpck').clockpicker({
                                                     placement: 'top',
                                                     donetext: 'Done'
                                                 });
                                             </script>
+                                        </div>
+                                        <div class="scheduled-block" style="padding-top:20px;">
+                                            <span>Send</span>
+                                            <select id="send-type" class="form-control">
+                                                <option value="daily">DAILY</option>
+                                                <option value="alternate">ALTERNATE</option>
+                                                <option value="weekly">WEEKLY</option>
+                                                <option value="monthly">MONTHLY</option>
+                                            </select>
+                                            <span id="on-day-text">&nbsp;on day&nbsp;</span>
+                                            <select id="day-type" class="form-control">
+                                                <option value="monday">MONDAY</option>
+                                                <option value="tuesday">TUESDAY</option>
+                                                <option value="wednesday">WEDNESDAY</option>
+                                                <option value="thursday">THURSDAY</option>
+                                                <option value="friday">FRIDAY</option>
+                                                <option value="saturday">SATURDAY</option>
+                                                <option value="sunday">SUNDAY</option>
+                                            </select>
+                                            <select id="day-number-type" class="form-control">
+                                            </select>
+                                            <div class="schedule-time-block">
+                                                <span style="display:inline-block;">At Time&nbsp;</span>
+                                                <input type="text" id="clockpck2" class="form-control" placeholder="HH:MM" style="display:inline-block; width: 115px;"/>
+                                                <i class="fa fa-clock-o clock2" aria-hidden="true"></i>
+                                                <script>
+                                                    $('#clockpck2').clockpicker({
+                                                        placement: 'top',
+                                                        donetext: 'Done'
+                                                    });
+                                                </script>
+
+                                            </div>
+                                            <div class="schedule-end-time" style="display:block; padding-top:20px;">
+                                                <span style="display:inline-block;">End Time&nbsp;</span>
+                                                <input type="text" id="datepck2" class="form-control" placeholder="MM/DD/YYYY" style="display:inline-block; width: 120px;" />
+                                                <i class="fa fa-calendar calendar2" aria-hidden="true"></i>
+                                                <script>
+                                                    $(function () {
+                                                        $('#datepck2').daterangepicker({
+                                                            "singleDatePicker": true,
+                                                            "minDate": new Date(),
+                                                            //"startDate": Date.now(),
+                                                            //"endDate": "09/07/2016"
+                                                        }, function (start, end, label) {
+                                                            console.log("New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')");
+                                                        });
+                                                    });
+                                                </script>
+                                                <input type="text" id="clockpck3" class="form-control" placeholder="HH:MM" style="display:inline-block; width: 115px;" />
+                                                <i class="fa fa-clock-o clock3" aria-hidden="true"></i>
+                                                <script>
+                                                    $('#clockpck3').clockpicker({
+                                                        placement: 'top',
+                                                        donetext: 'Done'
+                                                    });
+                                                </script>
+                                            </div>
+                                            
                                         </div>
                                         <!--<div style="padding-top: 25px;">
                                             <input type="radio" name="scheduling-delivery" value="simultaneous" checked><span class="radio-text">Delivered Simultaneously</span>
