@@ -139,7 +139,7 @@ var service = {
         //    0        1         2           3            4              5
 	    if (arr[4] === "immediately") {
 	        var makeCampaignJSONReq = {
-	            "schdule_type": "Immediate",
+	            "schedule_type": "immediate",
 	            "recursive": false,
 	            "trigger_time": arr[5],
 	            "name": arr[0],
@@ -147,6 +147,7 @@ var service = {
 	            "status": "active",
 	            "date": new Date(),
 	            "pn_msg": arr[2],
+                "endDate": null,
 	            "query": {}
 	        }
 	    }
@@ -203,12 +204,10 @@ var service = {
 	    if ($("tr#" + rowcounter + " ." + currentStatus).next().hasClass("status-inactive")) {
 			console.log($("tr#" + rowcounter + " ." + currentStatus).next());
 	        var status = "active";
-			alert(status);
 	    }
 	    if ($("tr#" + rowcounter + " ." + currentStatus).prev().hasClass("status-active")) {
 			console.log($("tr#" + rowcounter + " ." + currentStatus).prev());
 	        var status = "inactive";
-			alert(status);
 	    }
 
 	    var changeStatusJSONReq = {
@@ -221,7 +220,6 @@ var service = {
 	        url: APIBaseURL + "updateCampaign?akey=" + appKey + "&campaignid=" + campaignid,
 	        contentType: "application/json",
 	        datatype: "json",
-	        timeout: 180000,
 	        data: JSON.stringify(changeStatusJSONReq),
 	        success: function (data) {
 	            console.log(data);
