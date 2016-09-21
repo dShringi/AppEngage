@@ -27,31 +27,52 @@ common.getAppTimeZone(aKey,function(err,appTZ){
 });
 
 function generateDailyCohorts(appTZ,aKey,callback){
-  var searchUsers;
-  var startDateUsers;
-  var endDateUsers;
   var endDate = new Date();
   var startDate = new Date();
   startDate.setDate(endDate.getDate()-50);
   startDate = Date.UTC(startDate.getUTCFullYear(),startDate.getUTCMonth(), startDate.getUTCDate(),0,0,0)/1000;
   endDate = Date.UTC(endDate.getUTCFullYear(),endDate.getUTCMonth(), endDate.getUTCDate(),0,0,0)/1000;
-  console.log(startDate);
   var db = mongojs(config.mongodb.url+'/'+aKey);
+  db.collection(config.mongodb.coll_cohorts).remove({"_id.ty":"D"},function(err,resp){
+    if(!err){
+      console.log("Emptied Daily Cohort");
+    }else{
+      console.log("Some Error emptying Daily Cohort");
+    }
+  });
   for(i=startDate;i<=endDate;i=i+86400){
-    var d = common.getStartDate(i,appTZ);
-    startDateUsers = i;
-    endDateUsers = i+86399;
-    //console.log(startDateUsers + '__' + endDateUsers);
-    //console.log('{"$and":[{"flog":{"$gte":'+startDateUsers+'}},{"flog":{"$lte":'+endDateUsers+'}}]}');
-    searchUsers = JSON.parse('{"$and":[{"flog":{"$gte":'+startDateUsers+'}},{"flog":{"$lte":'+endDateUsers+'}}]}');
-    db.collection(config.mongodb.coll_users).find(searchUsers,function(err,usersdoc){
-      console.log("Daily");
-      if(!err){
-        console.log(usersdoc);
-        console.log(usersdoc.length);
-      }
-    });
-    console.log(d);
+    (function(i_dt){
+      var d = common.getStartDate(i_dt,appTZ);
+      var insertJSON = JSON.parse('{"_id":{"dt":'+d+',"ty":"D"}}');
+      db.collection(config.mongodb.coll_cohorts).insert(insertJSON,function(err,doc){
+        if(!err){
+          console.log("JSON Record Created for ID");
+        }
+      });
+      var startDateUsers = i_dt;
+      var endDateUsers = i_dt+86399;
+      var searchUsers = JSON.parse('{"$and":[{"flog":{"$gte":'+startDateUsers+'}},{"flog":{"$lte":'+endDateUsers+'}}]}');
+      (function(insertedJSON){
+        db.collection(config.mongodb.coll_users).find(searchUsers,function(err,usersdoc){
+          if(!err){
+            if(usersdoc.length!==0){
+              for(u=0;u<usersdoc.length;u++){
+                console.log(usersdoc[u]._id);
+              }
+              //console.log(usersdoc);
+            }else{
+              for(var currDateEpoch = i_dt;currDateEpoch<=endDate;currDateEpoch = currDateEpoch + 86400){
+                var upddt = common.getStartDate(currDateEpoch,appTZ);
+                var updJSON = JSON.parse('{"$push":{"val":{"'+upddt+'":{"u":0,"p":"0"}}}}');
+                db.collection(config.mongodb.coll_cohorts).update(insertedJSON,updJSON,{upsert:true},function(err,doc){
+                  //console.log(doc);
+                });
+              }
+            }
+          }
+        });
+      })(insertJSON);
+    })(i);
   }
   callback(null,db);
 }
