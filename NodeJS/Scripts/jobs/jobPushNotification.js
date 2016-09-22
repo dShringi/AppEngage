@@ -26,7 +26,7 @@ var j = cron.scheduleJob('*/1 * * * *', function(){
 			printErrorMessage(err);
 		} else {
 			var datekey =  dateFormat(getUtcCurrentTime(), "yyyymmddHHMM");
-			var campaignCollection = db.collection(config.coll_campaigns);
+			var campaignCollection = db.collection(config.mongodb.coll_campaigns);
 			//var findQuery = '{"$or":[{"status":"active","trigger_time":'+datekey+'},{"status":"active","recursive":true,"schedule_type": "scheduled","trigger_time":'+datekey+'},{"status":"active","recursive":true,"schedule_type": "cyclic","trigger_time":'+datekey+'} ]}';
 			var findQuery = '{"$or":[{"endDate":null,"status":"active","trigger_time":'+datekey+'},{"endDate":{"$gte": '+datekey+' },"status":"active","trigger_time":'+datekey+'}]}';
 			campaignCollection.find(JSON.parse(findQuery)).toArray(function (err, result) {
@@ -34,7 +34,7 @@ var j = cron.scheduleJob('*/1 * * * *', function(){
 					printErrorMessage(err);
 				} else if (result.length) {
 				
-					var usersCollection = db.collection(config.coll_users);
+					var usersCollection = db.collection(config.mongodb.coll_users);
 					for (i = 0; i < result.length; i++) {
 						var campaignResult = result[i];
 						
@@ -92,7 +92,7 @@ function pushToFcm(message){
 
 function getNextTriggerTime(cycle, scheduleType){
 	if(cycle != null && scheduleType != null){
-		var date = new Date();
+		var date = getUtcCurrentTime();
 		if(scheduleType == 'cyclic'){
 			var hourMinute = cycle.split(':');
 			date.setHours(date.getHours()+parseInt(hourMinute[0]), date.getMinutes()+parseInt(hourMinute[1]));
