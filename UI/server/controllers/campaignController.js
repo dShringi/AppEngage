@@ -70,7 +70,8 @@ module.exports.fetchAllCampaigns = function(req,res){
     var startDate = common.getStartDate(sd,appTZ);
     var endDate = common.getStartDate(ed,appTZ);
     var db = mongojs(config.connectionstring+akey);
-    var searchObject = JSON.parse('{"$and":[{"startDate":{"$gte":'+startDate+'}},{"endDate":{"$lte":'+endDate+'}}]}');
+    //var searchObject = JSON.parse('{"$and":[{"startDate":{"$gte":'+startDate+'}},{"endDate":{"$lte":'+endDate+'}}]}');
+	var searchObject = JSON.parse('{"$and":[{"date":{"$gte":'+startDate+'}},{"date":{"$lte":'+endDate+'}}]}');
 
     db.collection(config.coll_campaigns).find(searchObject,function(err,resp){
       db.close();
