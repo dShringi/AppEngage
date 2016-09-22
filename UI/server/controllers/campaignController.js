@@ -8,7 +8,7 @@ module.exports.createCampaign = function(req,res){
   console.log(req.body);
   console.log(req.query["akey"]);
   //store it in mongodb.
-  
+	var akey = req.query["akey"];
 	var body = req.body;
 	var schedule_type = body.schedule_type.toString();
 	var cycle = body.cycle;
