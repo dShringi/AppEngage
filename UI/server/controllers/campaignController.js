@@ -16,14 +16,14 @@ module.exports.createCampaign = function(req,res){
 	var trigger_time = body.trigger_time;
 	var currentTime = getTriggerTime(schedule_type.toUpperCase(), cycle, recursive, trigger_time);
 	body.trigger_time= parseInt(dateFormat(currentTime, "yyyymmddHHMM"));
-  
-  db.collection(config.coll_campaigns).insert(req.body,function(err,res){
-    if(err){
-      logger.error(common.getErrorMessageFrom(err));
-      return res.json(JSON.parse('{"msg":"Failure"}'));
-    }
-	db.close();
-  });
+	var db = mongojs(config.connectionstring+akey);
+	db.collection(config.coll_campaigns).insert(req.body,function(err,res){
+		if(err){
+			logger.error(common.getErrorMessageFrom(err));
+			return res.json(JSON.parse('{"msg":"Failure"}'));
+		}
+		db.close();
+	  });
   
   return res.json(JSON.parse('{"msg":"success"}'));
 };
