@@ -35,7 +35,7 @@ var j = cron.scheduleJob('*/1 * * * *', function(){
 				} else if (result.length) {
 				
 					var usersCollection = db.collection(config.mongodb.coll_users);
-					for (i = 0; i < result.length; i++) {
+					for (var i = 0; i < result.length; i++) {
 						var campaignResult = result[i];
 						
 						if((campaignResult.schedule_type =='cyclic') || (campaignResult.schedule_type == 'scheduled' && campaignResult.recursive == true)){
