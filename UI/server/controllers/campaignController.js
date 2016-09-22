@@ -67,8 +67,11 @@ module.exports.fetchAllCampaigns = function(req,res){
   var ed = req.query["ed"];
 
   common.getAppTimeZone(akey,function(err,appTZ){
-    var startDate = common.getStartDate(sd,appTZ);
-    var endDate = common.getStartDate(ed,appTZ);
+    //var startDate = common.getStartDate(sd,appTZ);
+    //var endDate = common.getStartDate(ed,appTZ);
+	
+	var startDate = sd;
+    var endDate = ed;
     var db = mongojs(config.connectionstring+akey);
     //var searchObject = JSON.parse('{"$and":[{"startDate":{"$gte":'+startDate+'}},{"endDate":{"$lte":'+endDate+'}}]}');
 	var searchObject = JSON.parse('{"$and":[{"date":{"$gte":'+startDate+'}},{"date":{"$lte":'+endDate+'}}]}');
