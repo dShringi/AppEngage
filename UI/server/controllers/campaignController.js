@@ -10,7 +10,7 @@ module.exports.createCampaign = function(req,res){
   //store it in mongodb.
   
 	var body = req.body;
-	var schedule_type = body.schedule_type;
+	var schedule_type = body.schedule_type.toString();
 	var cycle = body.cycle;
 	var recursive = body.recursive;
 	var trigger_time = body.trigger_time;
@@ -87,12 +87,12 @@ module.exports.fetchAllCampaigns = function(req,res){
 };
 
 function getTriggerTime(schedule_type, cycle, recursive, trigger_time){
-	var returnDate = new Date();
+	var returnDate = getUtcCurrentTime();
 	if(schedule_type == 'IMMEDIATE'){
 		returnDate.setMinutes(returnDate.getMinutes()+1);
 	} else if((schedule_type == 'SCHEDULED' && recursive == true)) {
 		var cycleArray = cycle.split('_');
-		var cycleType = cycleArray[0].toUpperCase();
+		var cycleType = cycleArray[0].toString().toUpperCase();
 		var givenHours = parseInt(trigger_time.toString().substring(8,10));
 		var givenMinutes = parseInt(trigger_time.toString().substring(10,12));
 		switch(cycleType) {
@@ -115,7 +115,7 @@ function getTriggerTime(schedule_type, cycle, recursive, trigger_time){
 					}
 				}break;
 				case 'WEEKLY': {
-					var weekDay = cycleArray[1].toUpperCase();
+					var weekDay = cycleArray[1].toString().toUpperCase();
 					returnDate = getNextDayOfWeek(getNumberFromDay(weekDay));
 					var weekFlag = checkGreaterMonth(givenHours, givenMinutes,returnDate.getDate());
 					if(weekFlag){
@@ -144,7 +144,7 @@ function getTriggerTime(schedule_type, cycle, recursive, trigger_time){
 
 function getNumberFromDay(day) {
 	if(day != null) {
-		var upperCase = day.toUpperCase();
+		var upperCase = day.toString().toUpperCase();
 		switch(upperCase) {
 			case 'SUNDAY': {return 0;} break;
 			case 'MONDAY': {return 1;} break;
@@ -158,14 +158,14 @@ function getNumberFromDay(day) {
 }
 
 function getNextDayOfWeek(dayOfWeek) {
-	var date = new Date();
+	var date = getUtcCurrentTime();
     var resultDate = new Date(date.getTime());
     resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay()) % 7);
     return resultDate;
 }
 
 function checkGreaterTime(givenHours, givenMinutes) {
-	var date = new Date();
+	var date = getUtcCurrentTime();
 	var currentHours = date.getHours();
 	var currentMinutes = date.getMinutes()+1;
 	if(currentHours < givenHours) {
@@ -181,7 +181,7 @@ function checkGreaterTime(givenHours, givenMinutes) {
 }
 
 function checkGreaterMonth(givenHours, givenMinutes, givenDate) {
-	var date = new Date();
+	var date = getUtcCurrentTime();
 	var currentDate = date.getDate();
 	var currentHours = date.getHours();
 	var currentMinutes = date.getMinutes()+1;
@@ -202,4 +202,9 @@ function checkGreaterMonth(givenHours, givenMinutes, givenDate) {
 		}
 	}
 	return false;
+}
+
+function getUtcCurrentTime(){
+	var now = new Date(); 
+	return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
 }
