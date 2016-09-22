@@ -19,7 +19,7 @@ var service = {
             success: function (data) {
                 console.log(data);
                 if (data.msg === "Success") {
-                    sessionStorage.setItem("userName", data.name);
+                    localStorage.setItem("userName", data.name);
                     window.location.href = "index.html";
                 }
                 else {
