@@ -89,7 +89,7 @@ module.exports.fetchAllCampaigns = function(req,res){
 function getTriggerTime(schedule_type, cycle, recursive, trigger_time){
 	var returnDate = getUtcCurrentTime();
 	if(schedule_type == 'IMMEDIATE'){
-		returnDate.setMinutes(returnDate.getMinutes()+1);
+		returnDate.setMinutes(returnDate.getMinutes()+2);
 	} else if((schedule_type == 'SCHEDULED' && recursive == true)) {
 		var cycleArray = cycle.split('_');
 		var cycleType = cycleArray[0].toString().toUpperCase();
