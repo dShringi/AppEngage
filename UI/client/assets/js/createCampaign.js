@@ -29,22 +29,34 @@ $(document).ready(function () {
             $(".immediate-block").slideDown();
             //$(".date-time-block").slideDown();
             if ($('input[type=radio][name=immediate-type]:checked').val() == "later") {
+                $(".scheduling-row .side-line .div2").css("height", "229px");
                 $(".date-time-block").slideDown();
+            }
+            else if ($('input[type=radio][name=immediate-type]:checked').val() == "now") {
+                $(".scheduling-row .side-line .div2").css("height", "170px");
             }
         }
         else if (this.value == 'scheduled') {
             $(".immediate-block").slideUp();
             $(".date-time-block").slideUp();
             $(".scheduled-block").slideDown();
+            if ($("select#send-type").val() === "daily" || $("select#send-type").val() === "alternate") {
+                $(".scheduling-row .side-line .div2").css("height", "237px");
+            }
+            else if ($("select#send-type").val() === "weekly" || $("select#send-type").val() === "monthly") {
+                $(".scheduling-row .side-line .div2").css("height", "291px");
+            }
         }
     });
 
     $('input[type=radio][name=immediate-type]').change(function () {
         if (this.value == 'now') {
             $(".date-time-block").slideUp();
+            $(".scheduling-row .side-line .div2").css("height", "170px");
         }
         else if (this.value == 'later') {
             $(".date-time-block").slideDown();
+            $(".scheduling-row .side-line .div2").css("height", "229px");
         }
     });
 
@@ -127,8 +139,7 @@ $(document).ready(function () {
             carr.push(cscheduletime);
 
             var selecteddate = moment($("#datepck2").val()).format("YYYYMMDD");
-            var selectedtime = ($("#clockpck3").val()).substr(0, 2) + ($("#clockpck3").val()).substr(3, 2);
-            var scheduleenddate = selecteddate + selectedtime;
+            var scheduleenddate = selecteddate + "0000";
             carr.push(scheduleenddate);
 
             if (csendtype === "weekly") {
@@ -148,19 +159,139 @@ $(document).ready(function () {
 
     });
 
+    $(".next-scheduling").click(function () {
+        $(".section-confirm .text-creative").html($(".section-creative #campaign-title").val());
+
+        switch ($("input[name=audience-type]:checked").val()) {
+            case "everyone":
+                $(".section-confirm .text-audience").html("Everyone will see your message.");
+                break;
+            case "saved":
+                break;
+            case "new":
+                break;
+            default:
+                break;
+
+        }
+        switch($("input[name=scheduling-type]:checked").val()){
+            case "immediately":
+                if ($("input[name=immediate-type]:checked").val() === "now") {
+                    $(".section-confirm .text-scheduling").html("Campaign is scheduled to send only once after you click confirm.");
+                }
+                else {
+                    $(".section-confirm .text-scheduling").html("Campaign is scheduled to send once on " + $("#datepck").val() + " at " + $("#clockpck").val() + " hrs.");
+                }
+                break;
+            case "scheduled":
+                var msg;
+                switch ($("select#send-type").val()) {
+                    case "daily":
+                        msg = "Campaign is scheduled to send daily until " + $("#datepck2").val();
+                        break;
+                    case "alternate":
+                        msg = "Campaign is scheduled to send on alternate days until " + $("#datepck2").val();
+                        break;
+                    case "weekly":
+                        msg = "Campaign is scheduled to send on " + $("#day-type").val().toUpperCase() + " of every week at " + $("#clockpck2").val() + " hrs until " + $("#datepck2").val();
+                        break;
+                    case "monthly":
+                        msg = "Campaign is scheduled to send on day " + $("#day-number-type").val() + " of every month at " + $("#clockpck2").val() + " hrs until " + $("#datepck2").val();
+                        break;
+                    default:
+                        break;
+                }
+                $(".section-confirm .text-scheduling").html(msg);
+                break;
+            default:
+                break;
+        }
+        
+    });
+
 });
 
-function nextToggle(sectionClass) {
-    $(sectionClass).slideUp();
-    $(sectionClass).parent().children().children().next().slideUp();
-    //$(sectionClass).parent().parent().next().children().first().children().next().show();
-    console.log($(sectionClass).parent().parent().next().children().first().children().next().next());
-    $(sectionClass).parent().parent().next().children().first().children().first().children().next().slideDown();
-    $(sectionClass).parent().parent().next().children().first().children().next().next().slideDown();
-    $(sectionClass).parent().parent().children().next().children().addClass("edited");
-    $(sectionClass).parent().parent().next().children().next().children().removeClass("edited");
-    $(sectionClass).parent().parent().next().children() .next().children().hide();
-    $(".edited").parent().children().fadeIn();
+function nextToggle(sectionClass, buttn) {
+    var nxt = false;
+    
+
+    if ($(buttn).hasClass("next-campaign")) {
+        if ($("#campaign-name").val() === "") {
+            swal({title:"All fields mandatory", type: "warning", text: "Please fill all details to proceed." });
+        }
+        else {
+            nxt = true;
+        }
+    }
+    if ($(buttn).hasClass("next-creative")) {
+        if ($("#campaign-title").val() === "" || $("#campaign-msg").val() === "") {
+            swal({ title: "All fields mandatory", type: "warning", text: "Please fill all details to proceed." });
+        }
+        else{
+            nxt = true;
+        }
+    }
+    if ($(buttn).hasClass("next-audience")) {
+        
+            nxt = true;
+    }
+    if ($(buttn).hasClass("next-scheduling")) {
+        
+        if ($("input[name=scheduling-type]:checked").val() === "immediately" && $("input[name=immediate-type]:checked").val() === "now") {
+            nxt = true;
+        }
+        else if ($("input[name=scheduling-type]:checked").val() === "immediately" && $("input[name=immediate-type]:checked").val() === "later") {
+            if ($("#datepck").val() === "" || $("#clockpck").val() === "") {
+                swal({ title: "All fields mandatory", type: "warning", text: "Please fill all details to proceed." });
+            }
+            else {
+                nxt = true;
+            }
+        }
+        else if ($("input[name=scheduling-type]:checked").val() === "scheduled" && $("#datepck2").val() != "") {
+            if ($("select#send-type").val() === "daily" || $("select#send-type").val() === "alternate") {
+                if ($("#clockpck2").val() === "") {
+                    swal({ title: "All fields mandatory", type: "warning", text: "Please fill all details to proceed." });
+                }
+                else {
+                    nxt = true;
+                }
+            }
+            else if($("select#send-type").val() === "weekly"){
+                if ($("#clockpck2").val() === "" || $("select#day-type").val === "") {
+                    swal({ title: "All fields mandatory", type: "warning", text: "Please fill all details to proceed." });
+                }
+                else {
+                    nxt = true;
+                }
+            }
+            else if ($("select#send-type").val() === "monthly") {
+                if ($("#clockpck2").val() === "" || $("select#day-number-type").val === "") {
+                    swal({ title: "All fields mandatory", type: "warning", text: "Please fill all details to proceed." });
+                }
+                else {
+                    nxt = true;
+                }
+            }
+        }
+        else {
+            swal({ title: "All fields mandatory", type: "warning", text: "Please fill all details to proceed." });
+        }
+    }
+
+    if (nxt === true) {
+        $(sectionClass).slideUp();
+        $(sectionClass).parent().children().children().next().slideUp();
+        //$(sectionClass).parent().parent().next().children().first().children().next().show();
+        console.log($(sectionClass).parent().parent().next().children().first().children().next().next());
+        $(sectionClass).parent().parent().next().children().first().children().first().children().next().slideDown();
+        $(sectionClass).parent().parent().next().children().first().children().next().next().slideDown();
+        $(sectionClass).parent().parent().children().next().children().addClass("edited");
+        $(sectionClass).parent().parent().next().children().next().children().removeClass("edited");
+        $(sectionClass).parent().parent().next().children().next().children().hide();
+        $(".edited").parent().children().fadeIn();
+    }
+
 }
 
 function editToggle(thisClass) {

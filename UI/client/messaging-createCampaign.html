@@ -45,13 +45,13 @@
                             <div class="col-md-9">
                                 <div class="side-line">
                                     <div><i class="fa fa-circle-o" aria-hidden="true"></i></div>
-                                    <div class="div2" style=" height: 129px;"></div>
+                                    <div class="div2" style=" height: 142px;"></div>
                                 </div>
                                 <h5>Campaign</h5>
                                 <div class="row section-campaign">
                                     <div class="col-md-11">
                                         <input type="text" id="campaign-name" class="form-control" placeholder="Name of your campaign (max. 140 chars)" />
-                                        <button class="btn" onclick="nextToggle('.section-campaign');">Next</button>
+                                        <button class="btn next-campaign" onclick="nextToggle('.section-campaign', this);">Next</button>
                                     </div>
                                </div>
                             </div>
@@ -62,15 +62,15 @@
                             <div class="col-md-9">
                                 <div class="side-line">
                                     <div class="div1"><i class="fa fa-circle-o" aria-hidden="true"></i></div>
-                                    <div class="div2" style="height: 275px;"></div>
+                                    <div class="div2" style="height: 256px;"></div>
                                 </div>
                                 <h5>Creative</h5>
                                 <div class="row section-creative">
                                     <div class="col-md-11">
-                                        <p>Lorem Ipsum dolor sit amet</p>
-                                        <input id="campaign-title" type="text" class="form-control" />
-                                        <textarea id="campaign-msg" class="form-control" rows="4" style="resize:none; width: 100%; margin-top: 20px;"></textarea>
-                                        <button class="btn" onclick="nextToggle('.section-creative');">Next</button>
+                                        <!--<p>Lorem Ipsum dolor sit amet</p>-->
+                                        <input id="campaign-title" type="text" class="form-control" placeholder="Message Title" />
+                                        <textarea id="campaign-msg" class="form-control" rows="4" placeholder="Write your campaign message here" style="resize:none; width: 100%; margin-top: 20px;"></textarea>
+                                        <button class="btn next-creative" onclick="nextToggle('.section-creative', this);">Next</button>
                                     </div>
                                 </div>
                             </div>
@@ -81,7 +81,7 @@
                             <div class="col-md-9">
                                 <div class="side-line">
                                     <div class="div1"><i class="fa fa-circle-o" aria-hidden="true"></i></div>
-                                    <div class="div2" style="/* height: 270px;*/ height: 150px;"></div>
+                                    <div class="div2" style="height: 159px;"></div>
                                 </div>
                                 <h5>Audience</h5>
                                 <div class="row section-audience">
@@ -109,7 +109,7 @@
                                             </select>
                                         </div>-->
                                         <button class="btn">Save Audience</button>
-                                        <button class="btn" onclick="nextToggle('.section-audience');">Next</button>
+                                        <button class="btn next-audience" onclick="nextToggle('.section-audience', this);">Next</button>
                                     </div>
                                 </div>
                              </div>
@@ -120,7 +120,7 @@
                             <div class="col-md-9">
                                 <div class="side-line">
                                     <div class="div1"><i class="fa fa-circle-o" aria-hidden="true"></i></div>
-                                    <div class="div2" style=" height: 225px;"></div>
+                                    <div class="div2" style=" height: 170px;"></div>
                                 </div>
                                 <h5>Scheduling</h5>
                                 <div class="row section-scheduling">
@@ -133,7 +133,7 @@
                                         </div>
                                         <div class="date-time-block" style="padding-top: 25px; display:none;">
                                             <input type="text" id="datepck" class="form-control" placeholder="MM/DD/YYYY" />
-                                            <i class="fa fa-calendar calendar1" aria-hidden="true"></i>
+                                            
                                             <script>
                                                 $(function () {
                                                     $('#datepck').daterangepicker({
@@ -148,7 +148,7 @@
                                             </script>
                                             <span id="at">&nbsp;at&nbsp;</span>
                                             <input type="text" id="clockpck" class="form-control" placeholder="HH:MM" />
-                                            <i class="fa fa-clock-o clock1" aria-hidden="true"></i>
+                                            
                                             <script>
                                                 $('#clockpck').clockpicker({
                                                     placement: 'top',
@@ -178,8 +178,8 @@
                                             </select>
                                             <div class="schedule-time-block">
                                                 <span style="display:inline-block;">At Time&nbsp;</span>
-                                                <input type="text" id="clockpck2" class="form-control" placeholder="HH:MM" style="display:inline-block; width: 115px;"/>
-                                                <i class="fa fa-clock-o clock2" aria-hidden="true"></i>
+                                                <input type="text" id="clockpck2" class="form-control" placeholder="HH:MM" style="display:inline-block; width: 80px;"/>
+                                                
                                                 <script>
                                                     $('#clockpck2').clockpicker({
                                                         placement: 'top',
@@ -191,7 +191,7 @@
                                             <div class="schedule-end-time" style="display:block; padding-top:20px;">
                                                 <span style="display:inline-block;">End Time&nbsp;</span>
                                                 <input type="text" id="datepck2" class="form-control" placeholder="MM/DD/YYYY" style="display:inline-block; width: 120px;" />
-                                                <i class="fa fa-calendar calendar2" aria-hidden="true"></i>
+                                                
                                                 <script>
                                                     $(function () {
                                                         $('#datepck2').daterangepicker({
@@ -204,14 +204,6 @@
                                                         });
                                                     });
                                                 </script>
-                                                <input type="text" id="clockpck3" class="form-control" placeholder="HH:MM" style="display:inline-block; width: 115px;" />
-                                                <i class="fa fa-clock-o clock3" aria-hidden="true"></i>
-                                                <script>
-                                                    $('#clockpck3').clockpicker({
-                                                        placement: 'top',
-                                                        donetext: 'Done'
-                                                    });
-                                                </script>
                                             </div>
                                             
                                         </div>
@@ -219,7 +211,7 @@
                                             <input type="radio" name="scheduling-delivery" value="simultaneous" checked><span class="radio-text">Delivered Simultaneously</span>
                                             <input type="radio" name="scheduling-delivery" value="user-timezone"><span class="radio-text">Delivered in User's Timezone</span>
                                         </div>-->
-                                        <button class="btn" onclick="nextToggle('.section-scheduling');">Continue & Confirm</button>
+                                        <button class="btn next-scheduling" onclick="nextToggle('.section-scheduling', this);">Continue & Confirm</button>
                                       </div>
                                  </div>
                             </div>
@@ -239,15 +231,15 @@
                                         <hr style="margin: 10px 0px 10px 0px;" />
                                         <div class="row">
                                             <div class="col-md-3">Creative:</div>
-                                            <div class="col-md-9">Diwali Offer</div>
+                                            <div class="col-md-9 text-creative">Diwali Offer</div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-3">Audience:</div>
-                                            <div class="col-md-9">All app users will see your campaign. Campaign will be delivered to Android devices</div>
+                                            <div class="col-md-9 text-audience">All app users will see your campaign. Campaign will be delivered to Android devices</div>
                                         </div>
                                         <div class="row">
                                             <div class="col-md-3">Scheduling:</div>
-                                            <div class="col-md-9">Campaign is scheduled to send once on</div>
+                                            <div class="col-md-9 text-scheduling">Campaign is scheduled to send once on</div>
                                         </div>
                                         <button id="btn-confirm" class="btn">Confirm</button>
                                     </div>

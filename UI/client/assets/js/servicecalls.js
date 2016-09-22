@@ -135,6 +135,7 @@ var service = {
 
 	makeCampaign: function (arr) {
 	    console.log(arr);
+	    var creationdate = parseInt(moment(new Date()).format("YYYYMMDDHHmm"));
         // IMMEDIATE
 	    // ["Name", "Title", "Message", "everyone", "immediately", "now/later", trigger_time]
         //    0        1         2           3            4              5            6
@@ -147,7 +148,7 @@ var service = {
 	                "name": arr[0],
 	                "pn_title": arr[1],
 	                "status": "active",
-	                "date": new Date(),
+	                "date": creationdate,
 	                "pn_msg": arr[2],
 	                "endDate": null,
 	                "query": {}
@@ -162,7 +163,7 @@ var service = {
 	                "name": arr[0],
 	                "pn_title": arr[1],
 	                "status": "active",
-	                "date": new Date(),
+	                "date": creationdate,
 	                "pn_msg": arr[2],
 	                "endDate": null,
 	                "query": {}
@@ -184,7 +185,7 @@ var service = {
 	                "name": arr[0],
 	                "pn_title": arr[1],
 	                "status": "active",
-	                "date": new Date(),
+	                "date": creationdate,
 	                "pn_msg": arr[2],
 	                "endDate": arr[7],
 	                "query": {}
@@ -199,7 +200,7 @@ var service = {
 	                "name": arr[0],
 	                "pn_title": arr[1],
 	                "status": "active",
-	                "date": new Date(),
+	                "date": creationdate,
 	                "pn_msg": arr[2],
 	                "endDate": arr[7],
 	                "query": {}
@@ -287,7 +288,8 @@ var service = {
 	                    $("tr#" + rowcounter + " ." + currentStatus).next().addClass("status-none");
 	                    $("tr#" + rowcounter + " .status-active").removeClass("status-none");
 	                    $("tr#" + rowcounter + " .status-none").attr("onclick", "changeStatus('status-none','" + campaignid + "','" + rowcounter + "')");
-						$("tr#" + rowcounter + " .status-active").attr("onclick", "changeStatus('status-active','" + campaignid + "','" + rowcounter + "')");
+	                    $("tr#" + rowcounter + " .status-active").attr("onclick", "changeStatus('status-active','" + campaignid + "','" + rowcounter + "')");
+	                    swal("Status changed to Active.")
 	                }
 	                else if (status === "inactive") {
 	                    console.log("inactive");
@@ -296,7 +298,8 @@ var service = {
 	                    $("tr#" + rowcounter + " ." + currentStatus).prev().addClass("status-none");
 	                    $("tr#" + rowcounter + " .status-inactive").removeClass("status-none");
 	                    $("tr#" + rowcounter + " .status-none").attr("onclick", "changeStatus('status-none','" + campaignid + "','" + rowcounter + "')");
-						$("tr#" + rowcounter + " .status-active").attr("onclick", "changeStatus('status-active','" + campaignid + "','" + rowcounter + "')");
+	                    $("tr#" + rowcounter + " .status-active").attr("onclick", "changeStatus('status-active','" + campaignid + "','" + rowcounter + "')");
+	                    swal("Status changed to Inactive.")
 	                }
 					
 				}
