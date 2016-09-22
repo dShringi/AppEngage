@@ -14,8 +14,8 @@ var userValidationController = require('./server/controllers/userValidationContr
 var sessionController = require('./server/controllers/sessionController');
 var locationController = require('./server/controllers/locationController');
 var eventController = require('./server/controllers/eventsController');
-try{
 var campaignController = require('./server/controllers/campaignController');
+var cohortController = require('./server/controllers/cohortController');
 
 app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser()); // get information from html forms
@@ -41,9 +41,8 @@ app.post('/appengage/createCampaign',campaignController.createCampaign);
 app.put('/appengage/updateCampaign',campaignController.updateCampaign);
 app.delete('/appengage/deleteCampaign',campaignController.deleteCampaign);
 app.get('/appengage/fetchAllCampaigns',campaignController.fetchAllCampaigns);
-}catch(ex){
-  console.log(ex);
-}
+app.get('/appengage/fetchCohorts',cohortController.fetchCohorts);
+
 var server = app.listen(config.port, function () {
 	var host = server.address().address;
 	var port = server.address().port;

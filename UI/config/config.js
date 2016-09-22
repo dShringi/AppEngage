@@ -15,6 +15,7 @@ module.exports.coll_appengageusers	=	'coll_users';
 module.exports.coll_appengageapps = 'coll_apps';
 module.exports.coll_eventnames		=	'coll_eventnames';
 module.exports.coll_campaigns = 'coll_campaigns';
+module.exports.coll_cohorts = 'coll_cohorts';
 
 module.exports.logdir	= '/var/log/appengage/UI/logs';
 
