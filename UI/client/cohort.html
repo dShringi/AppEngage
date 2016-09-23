@@ -23,7 +23,18 @@
 		<script src="assets/js/bootstrap-select.min.js"></script>
 		<link rel="stylesheet" type="text/css" href="assets/css/cornelius.css" />
 		<script type="text/javascript" src="assets/js/cornelius.js"></script>
-		<style>path { stroke-width: 2;}</style>
+		<style>
+		path { stroke-width: 2;}
+		.btn-pressed{
+			box-shadow: inset 0 3px 5px rgb(28, 28, 28);
+			color: #A4A4A4 !important;
+		}
+		.btn-cohort-type{
+			background-color: #36657C;
+			color: #fff;
+			font-weight: bold;
+		}
+		</style>
 	</head>
 	<body>
 		<aside class="left-side sticky-left-side" tabindex="5000"></aside>
@@ -41,9 +52,9 @@
                     <div class="col-md-6 txt-drk-gray"></div>
                     <div class="col-md-6 txt-drk-gray margnTp-5 text-right">
 						<div>
-							<div id="dateRange" class="pull-right">
-								<i class="glyphicon glyphicon-calendar txt-green fa fa-calendar"></i><span></span><b class="caret"></b>
-							</div>
+							<button class="btn btn-cohort-type btn-pressed btn-cohort-daily" onclick="tableType(this);">Daily</button>
+							<button class="btn btn-cohort-type btn-cohort-weekly" onclick="tableType(this);">Weekly</button>
+							<button class="btn btn-cohort-type btn-cohort-monthly" onclick="tableType(this);">Monthly</button>
 						</div>
                     </div>
                 </div>
@@ -64,13 +75,69 @@
             </section>
 		</aside>
 		<div class="overlay"></div>
-		<script>
-			//$(document).ready(function(){
+		<script>			
+			function tableType(typeName){
+				var ttype;
+				if($(typeName).hasClass("btn-cohort-daily")){
+					ttype = "d";
+					$(".btn-cohort-daily").addClass("btn-pressed");
+					$(".btn-cohort-weekly").removeClass("btn-pressed");
+					$(".btn-cohort-monthly").removeClass("btn-pressed");
+				}
+				else if($(typeName).hasClass("btn-cohort-weekly")){
+					ttype = "w";
+					$(".btn-cohort-weekly").addClass("btn-pressed");
+					$(".btn-cohort-daily").removeClass("btn-pressed");
+					$(".btn-cohort-monthly").removeClass("btn-pressed");
+				}
+				else if($(typeName).hasClass("btn-cohort-monthly")){
+					ttype = "m"
+					$(".btn-cohort-monthly").addClass("btn-pressed");
+					$(".btn-cohort-daily").removeClass("btn-pressed");
+					$(".btn-cohort-weekly").removeClass("btn-pressed");
+				}
+				
+				// table generation
+				
+				console.log("from function");
+				console.log("http://52.206.121.100/appengage/fetchCohorts?&akey="+appKey+"&type="+ttype);
+					$.getJSON("http://52.206.121.100/appengage/fetchCohorts?&akey="+appKey+"&type="+ttype, function(data){
+				//$.getJSON("assets/json/cohort1.json?sd="+sd+"&ed="+ed+"&akey="+appKey, function(data){
+					//alert(data.length);
+					$('#tbl-cohort thead').empty();
+					$('#tbl-cohort tbody').empty();
+					$('#tbl-cohort thead').append("<tr><th></th></tr>");
+					for(i=0;i<data.length;i++){
+						$('#tbl-cohort thead tr').append("<th>" + i + "</th>");
+					}
+					
+					$.each(data, function(i,v){
+						//console.log("Outer"+JSON.stringify(v.date));
+						date1 = getFormattedDate(parseEventDate(v.date));
+						
+						$('#tbl-cohort tbody').append("<tr><th>"+date1+"</th></tr>");
+						$.each(v.values, function(i1,v1){
+							//console.log(i1+ " : "+JSON.stringify(v1));
+							val = Math.ceil(v1 / 10) * 10;
+							if(val >= 30){
+								textColor = "#fff";
+							} else {
+								textColor = "#000";
+							}
+							$('#tbl-cohort tbody tr').last().append("<td title='"+v.users[i1]+" Users' style=\"background-color:"+colorChart[0][val]+"; color:"+textColor+"\" data-toggle=\"tooltip\">"+v1+"</td>");
+						});
+					});
+				})
+			}
+			
+			
 				$('[data-toggle="tooltip"]').tooltip()
 				var colorChart = [{100:"#117B9E",90:"#238BAD",80:"#2B93B5",70:"#3D9FBF",60:"#4FA7C4",50:"#5EB1CC",40:"#6DB8D1",30:"#86C4D9",20:"#C7E4ED",10:"#fff"}];
 				
-			function loadChart(sd, ed, appKey){
-				$.getJSON("assets/json/cohort1.json?sd="+sd+"&ed="+ed+"&akey="+appKey, function(data){
+			function loadChart(sd,ed,appKey){
+			console.log("http://52.206.121.100/appengage/fetchCohorts?&akey="+appKey+"&type=d");
+				$.getJSON("http://52.206.121.100/appengage/fetchCohorts?&akey="+appKey+"&type=d", function(data){
+				//$.getJSON("assets/json/cohort1.json?sd="+sd+"&ed="+ed+"&akey="+appKey, function(data){
 					//alert(data.length);
 					$('#tbl-cohort thead').append("<tr><th></th></tr>");
 					for(i=0;i<data.length;i++){

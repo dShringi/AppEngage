@@ -318,6 +318,21 @@ td.tablesorter-pager {
 #dateRange i{padding-top: 7px; padding-right: 4px}
 .caret{margin-left: 3px;}
 
+#tbl-cohort{
+	max-width: 92vw;
+	width: 100vw;
+}
+
+#tbl-cohort > tbody > tr > td, #tbl-cohort > thead > tr > th{
+	padding: 3px;
+	min-width: 2em;
+	text-align: center;
+}
+
+#tbl-cohort > tbody > tr > th{
+	padding: 3px;
+}
+
  @media (max-width: 767px) {
  
 	.inner-grey-box{font-size: 45px;}

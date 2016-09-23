@@ -148,7 +148,7 @@ var service = {
 	                "name": arr[0],
 	                "pn_title": arr[1],
 	                "status": "active",
-	                "date": creationdate,
+	                "creationDate": creationdate,
 	                "pn_msg": arr[2],
 	                "endDate": null,
 	                "query": {}
@@ -163,7 +163,7 @@ var service = {
 	                "name": arr[0],
 	                "pn_title": arr[1],
 	                "status": "active",
-	                "date": creationdate,
+	                "creationDate": creationdate,
 	                "pn_msg": arr[2],
 	                "endDate": null,
 	                "query": {}
@@ -183,9 +183,10 @@ var service = {
 	                "trigger_time": parseInt(arr[6]),
 	                "cycle": arr[8],
 	                "name": arr[0],
+	                "last_execution": null,
 	                "pn_title": arr[1],
 	                "status": "active",
-	                "date": creationdate,
+	                "creationDate": creationdate,
 	                "pn_msg": arr[2],
 	                "endDate": parseInt(arr[7]),
 	                "query": {}
@@ -198,9 +199,10 @@ var service = {
 	                "trigger_time": parseInt(arr[6]),
 	                "cycle": arr[5].toUpperCase(),
 	                "name": arr[0],
+	                "last_execution":null,
 	                "pn_title": arr[1],
 	                "status": "active",
-	                "date": creationdate,
+	                "creationDate": creationdate,
 	                "pn_msg": arr[2],
 	                "endDate": parseInt(arr[7]),
 	                "query": {}
