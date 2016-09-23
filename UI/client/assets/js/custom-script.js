@@ -139,7 +139,13 @@ var showMessagingTable = function (data, tableId) {
     $.each(data, function (index, row) {
 		var msgCreateDt = moment(row.creationDate, 'YYYYMMDD').format('YYYY-MM-DD');
 		var msgStartDt = moment(row.startDate, 'YYYYMMDD').format('YYYY-MM-DD');
-		var msgEndDt = moment(row.endDate, 'YYYYMMDD').format('YYYY-MM-DD');
+		if(row.endDate === null){
+			var msgEndDt = "-";
+		}
+		else{
+			var msgEndDt = moment(row.endDate, 'YYYYMMDD').format('YYYY-MM-DD');
+		}
+		
 		if(row.status === "active"){
 			var rowstatus1 = "status-active";
 			var rowstatus2 = "status-none";
@@ -149,7 +155,7 @@ var showMessagingTable = function (data, tableId) {
 			var rowstatus2 = "status-inactive";
 		}
         //alert(JSON.stringify(row));
-        tableHTML += "<tr id='row"+rowCounter+"'><td>" + msgCreateDt + "</td><td>" + row.name + "</td><td>" + row.channel + "</td><td>" + msgStartDt +" to "+ msgEndDt + "</td><td>" + row.sends + "</td><td>" + row.openRate + "</td><td><i class='fa fa-square "+rowstatus1+"' onclick=changeStatus('"+rowstatus1+"','"+row._id+"','row"+rowCounter+"'); aria-hidden='true'></i><i class='fa fa-square "+rowstatus2+"' onclick=changeStatus('"+rowstatus2+"','"+row._id+"','row"+rowCounter+"'); aria-hidden='true'></i></td><td><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td><td><i onclick=deleteRow('"+row._id+"'); class=\"fa fa-trash-o\" aria-hidden=\"true\" style='cursor: pointer;'></i></td></tr>";
+        tableHTML += "<tr id='row"+rowCounter+"'><td>" + msgCreateDt + "</td><td>" + row.name + "</td><td>" + row.channel + "</td><td>" + msgStartDt +"</td><td>"+ msgEndDt + "</td><td>" + row.sends + "</td><td>" + row.openRate + "</td><td><i class='fa fa-square "+rowstatus1+"' onclick=changeStatus('"+rowstatus1+"','"+row._id+"','row"+rowCounter+"'); aria-hidden='true'></i><i class='fa fa-square "+rowstatus2+"' onclick=changeStatus('"+rowstatus2+"','"+row._id+"','row"+rowCounter+"'); aria-hidden='true'></i></td><td><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td><td><i onclick=deleteRow('"+row._id+"'); class=\"fa fa-trash-o\" aria-hidden=\"true\" style='cursor: pointer;'></i></td></tr>";
 		console.log(tableHTML);
 		rowCounter++;
         

@@ -63,10 +63,11 @@
                                         <th>Last Updated</th>
                                         <th>Campaign Name</th>
                                         <th>Channel</th>
-                                        <th class="sorter-false" style="padding-left:18px;">Start to End</th>
+                                        <th>Start Date</th>
+										<th>End Date</th>
                                         <th>Sends</th>
                                         <th>Open Rate</th>
-                                        <th>Status</th>
+                                        <th class="sorter-false">Status</th>
                                         <th class="sorter-false"></th>
                                         <th class="sorter-false"></th>
                                     </tr>
@@ -104,7 +105,11 @@
 			var API = APIBaseURL+"fetchAllCampaigns";
 			
             var loadChart = function (startDate, endDate, appKey, type) {
-			console.log(appKey);
+			//console.log(new Date(startDate*1000));
+			//sd = moment(new Date(startDate*1000)).format("YYYYMMDDHHmm");
+			//ed = moment(new Date(endDate*1000)).format("YYYYMMDDHHmm");
+			//alert(sd+" "+startDate);
+			//console.log(appKey);
                 console.log(API+"?sd="+startDate+"&ed="+endDate+"&akey="+appKey);
                 d3.json(API+"?sd="+startDate+"&ed="+endDate+"&akey="+appKey, function (error, data) {
                     //d3.json("assets/json/ok-data-total-crashes.json"+"?sd="+sd+"&ed="+ed+"&akey="+appKey, function (error, data) {

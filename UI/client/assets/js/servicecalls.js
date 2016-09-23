@@ -144,7 +144,7 @@ var service = {
 	            var makeCampaignJSONReq = {
 	                "schedule_type": "immediate",
 	                "recursive": false,
-	                "trigger_time": arr[6],
+	                "trigger_time": parseInt(arr[6]),
 	                "name": arr[0],
 	                "pn_title": arr[1],
 	                "status": "active",
@@ -159,7 +159,7 @@ var service = {
 	            var makeCampaignJSONReq = {
 	                "schedule_type": "scheduled",
 	                "recursive": false,
-	                "trigger_time": arr[6],
+	                "trigger_time": parseInt(arr[6]),
 	                "name": arr[0],
 	                "pn_title": arr[1],
 	                "status": "active",
@@ -180,14 +180,14 @@ var service = {
 	            var makeCampaignJSONReq = {
 	                "schedule_type": "scheduled",
 	                "recursive": true,
-	                "trigger_time": arr[6],
+	                "trigger_time": parseInt(arr[6]),
 	                "cycle": arr[8],
 	                "name": arr[0],
 	                "pn_title": arr[1],
 	                "status": "active",
 	                "date": creationdate,
 	                "pn_msg": arr[2],
-	                "endDate": arr[7],
+	                "endDate": parseInt(arr[7]),
 	                "query": {}
 	            }
 	        }
@@ -195,14 +195,14 @@ var service = {
 	            var makeCampaignJSONReq = {
 	                "schedule_type": "scheduled",
 	                "recursive": true,
-	                "trigger_time": arr[6],
+	                "trigger_time": parseInt(arr[6]),
 	                "cycle": arr[5].toUpperCase(),
 	                "name": arr[0],
 	                "pn_title": arr[1],
 	                "status": "active",
 	                "date": creationdate,
 	                "pn_msg": arr[2],
-	                "endDate": arr[7],
+	                "endDate": parseInt(arr[7]),
 	                "query": {}
 	            }
 	        }
@@ -219,7 +219,19 @@ var service = {
 	        data: JSON.stringify(makeCampaignJSONReq),
 	        success: function (data) {
 	            if (data.msg === "success") {
-	                window.location.href = "messaging.html";
+	                //swal("Success!", "Campaign successfully created", "success");
+	                //sessionStorage.setItem("campaignFlag", "true");
+	                //alert("aaa");
+	                swal({
+	                    title: "Success",
+	                    text: "Campaign successfully created.",
+	                    type: "success",
+	                    showCancelButton: false
+	                },
+                    function () {
+                        window.location.href = "messaging.html";
+                    });
+	                //window.location.href = "messaging.html";
 	            }
 
 	        },

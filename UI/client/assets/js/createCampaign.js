@@ -139,8 +139,8 @@ $(document).ready(function () {
             carr.push(cscheduletime);
 
             var selecteddate = moment($("#datepck2").val()).format("YYYYMMDD");
-            var scheduleenddate = selecteddate + "0000";
-            carr.push(scheduleenddate);
+            //var scheduleenddate = selecteddate + "0000";
+            carr.push(selecteddate);
 
             if (csendtype === "weekly") {
                 var cweekday = "WEEKLY_" + $("select#day-type").val();
@@ -207,6 +207,14 @@ $(document).ready(function () {
                 break;
         }
         
+    });
+
+    $("input#campaign-title").keyup(function () {
+        $("div.phone-title").html($("input#campaign-title").val());
+    });
+
+    $("textarea#campaign-msg").keyup(function () {
+        $("div.phone-msg").html($("textarea#campaign-msg").val());
     });
 
 });

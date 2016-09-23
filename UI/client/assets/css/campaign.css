@@ -114,3 +114,58 @@ select#day-number-type{
 .schedule-time-block{
 	display:inline-block; 
 }
+
+.phone-pic{
+    background-image: url("../img/Phone.png");
+    background-repeat:no-repeat;
+    height: 80vh;
+    background-position-x:center;
+    width: 238px;
+    float: right;
+}
+
+.phone-text-container{
+    padding-top: 53px;
+    padding-left: 15px;
+    padding-right: 19px;
+    color: #ffffff;
+}
+
+.phone-text-container .phone-img{
+    width: 14%;
+    margin-left: 4px;;
+    display: inline-block;
+    vertical-align: top;
+}
+.phone-text-container .phone-img img{
+    width:80%;
+}
+
+.phone-text-container .phone-section2{
+    background-color: #2a2a2a;
+    border-top: 1px solid #7e7e7e;
+    border-bottom: 1px solid #a4a4a4;
+    padding-top:5px;
+
+}
+
+.phone-text-container .phone-push{
+    display: inline-block;
+    width: 81%;
+}
+
+.phone-text-container .phone-push .phone-msg{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: 10px;
+    height: 5vh;
+    overflow-y:hidden;
+    overflow-x:hidden;
+    
+}
+
+.phone-text-container .phone-push .phone-title{
+    font-size: 12px;
+    font-weight: bold;
+    word-wrap:break-word;
+}
