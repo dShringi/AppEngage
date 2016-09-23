@@ -243,6 +243,7 @@ function getLocalTime(appTZ, dateStr){
 	var day = parseInt(dateStr.toString().substring(6,8));
 	var strDate = ''+year+'-'+month+'-'+day+' '+hours+':'+minutes;
 	var timezone = moment.tz(strDate, appTZ);
+	timezone = timezone.clone().tz("UTC");
 	return new Date(timezone);
 }
 
