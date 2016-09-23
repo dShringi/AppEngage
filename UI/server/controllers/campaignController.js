@@ -15,7 +15,17 @@ module.exports.createCampaign = function(req,res){
 	var recursive = body.recursive;
 	var trigger_time = body.trigger_time;
 	var currentTime = getTriggerTime(schedule_type.toUpperCase(), cycle, recursive, trigger_time);
-	body.trigger_time= parseInt(dateFormat(currentTime, "yyyymmddHHMM"));
+	
+	body.trigger_time = parseInt(dateFormat(currentTime, "yyyymmddHHMM"));
+	body.creationDate = parseInt(dateFormat(getUtcCurrentTime(), "yyyymmdd"));
+	body.startDate = parseInt(dateFormat(currentTime, "yyyymmdd"));
+	if(body.endDate == null) {
+		body.endDate = parseInt(dateFormat(currentTime, "yyyymmdd"));
+	} else {
+		body.endDate = parseInt(dateFormat(getUtcTime(body.endDate), "yyyymmdd"));
+	}
+	
+	
 	var db = mongojs(config.connectionstring+akey);
 	db.collection(config.coll_campaigns).insert(req.body,function(err,res){
 		if(err){
@@ -67,14 +77,11 @@ module.exports.fetchAllCampaigns = function(req,res){
   var ed = req.query["ed"];
 
   common.getAppTimeZone(akey,function(err,appTZ){
-    //var startDate = common.getStartDate(sd,appTZ);
-    //var endDate = common.getStartDate(ed,appTZ);
-	
-	var startDate = sd;
-    var endDate = ed;
+    var startDate = common.getStartDate(sd,appTZ);
+    var endDate = common.getStartDate(ed,appTZ);
     var db = mongojs(config.connectionstring+akey);
-    //var searchObject = JSON.parse('{"$and":[{"startDate":{"$gte":'+startDate+'}},{"endDate":{"$lte":'+endDate+'}}]}');
-	var searchObject = JSON.parse('{"$and":[{"date":{"$gte":'+startDate+'}},{"date":{"$lte":'+endDate+'}}]}');
+    var searchObject = JSON.parse('{"$and":[{"startDate":{"$gte":'+startDate+'}},{"endDate":{"$lte":'+endDate+'}}]}');
+	//var searchObject = JSON.parse('{"$and":[{"date":{"$gte":'+startDate+'}},{"date":{"$lte":'+endDate+'}}]}');
 
     db.collection(config.coll_campaigns).find(searchObject,function(err,resp){
       db.close();
@@ -210,5 +217,13 @@ function checkGreaterMonth(givenHours, givenMinutes, givenDate) {
 
 function getUtcCurrentTime(){
 	var now = new Date(); 
+	return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
+}
+
+function getUtcTime(time){
+	var year = parseInt(time.toString().substring(0,4));
+	var month = parseInt(time.toString().substring(4,6));
+	var day = parseInt(time.toString().substring(6,8));
+	var now = new Date(year, month, day); 
 	return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
 }
