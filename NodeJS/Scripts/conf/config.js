@@ -69,11 +69,13 @@ config.mongodb.triggerType_weekly = 'weekly';
 config.mongodb.triggerType_monthly = 'monthly';
 config.mongodb.triggerType_yearly = 'yearly';
 
+config.dateformat = {};
 config.dateformat.YYYYMMDDHH = 'YYYYMMDDHH';
 config.dateformat.YYYYMMDD = 'YYYYMMDD';
 config.dateformat.HOUR = 'hour';
 config.dateformat.DAY = 'day';
 
+config.object = {};
 config.object.UNDEFINED = undefined;
 config.object.NULL = null;
 config.object.EMPTYSTRING ="";
