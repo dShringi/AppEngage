@@ -67,7 +67,7 @@ consumer.on('message', function(message) {
 	if(data.type === Collection["begin"]){
 		var geo = geoip.lookup(data.val.ipa);
 		console.log(geo);
-		if(geo.city === undefined || geo.city === null) {
+		if(geo === config.object.NULL || geo === config.object.UNDEFINED || geo.city === config.object.UNDEFINED || geo.city === config.object.NULL || geo.city === config.object.EMPTYSTRING) {
 			data.val.city = 'Unknown';
 			data.val.ctry = 'Unknown';
 			data.val.dlat = '0';

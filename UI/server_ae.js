@@ -7,6 +7,7 @@ var bodyParser  	= require('body-parser');
 var config			= require('./config/config');
 var logger 			= require('./config/log.js');
 //API Routes Embeding
+try{
 var crashController = require('./server/controllers/crashController');
 var dashboardController = require('./server/controllers/dashboardController');
 var userDashboardController = require('./server/controllers/userDashboardController');
@@ -42,7 +43,9 @@ app.put('/appengage/updateCampaign',campaignController.updateCampaign);
 app.delete('/appengage/deleteCampaign',campaignController.deleteCampaign);
 app.get('/appengage/fetchAllCampaigns',campaignController.fetchAllCampaigns);
 app.get('/appengage/fetchCohorts',cohortController.fetchCohorts);
-
+}catch(ex){
+  console.log(ex);
+}
 var server = app.listen(config.port, function () {
 	var host = server.address().address;
 	var port = server.address().port;
