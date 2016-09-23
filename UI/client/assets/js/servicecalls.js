@@ -255,7 +255,7 @@ var service = {
 			success: function (data) {
 			    if (data.msg === "Success") {
 			        swal({ title:"Deleted!",
-			            text:"Record has been deleted.",
+			            text:"Campaign has been deleted.",
 			            type: "success",
 			            showCancelButton: false
 			        },
@@ -278,7 +278,8 @@ var service = {
 		})
 	},
 
-	changeCampaignStatus: function (currentStatus, campaignid, rowcounter) {
+	changeCampaignStatus: function (currentStatus, campaignid, rowcounter, rowname) {
+	    var campaignName = rowname.replace(/-/g, ' ');
 	    console.log(currentStatus);
 	    if ($("tr#" + rowcounter + " ." + currentStatus).next().hasClass("status-inactive")) {
 			console.log($("tr#" + rowcounter + " ." + currentStatus).next());
@@ -309,9 +310,14 @@ var service = {
 	                    $("tr#" + rowcounter + " ." + currentStatus).addClass("status-active");
 	                    $("tr#" + rowcounter + " ." + currentStatus).next().addClass("status-none");
 	                    $("tr#" + rowcounter + " .status-active").removeClass("status-none");
-	                    $("tr#" + rowcounter + " .status-none").attr("onclick", "changeStatus('status-none','" + campaignid + "','" + rowcounter + "')");
-	                    $("tr#" + rowcounter + " .status-active").attr("onclick", "changeStatus('status-active','" + campaignid + "','" + rowcounter + "')");
-	                    swal("Status changed to Active.")
+	                    $("tr#" + rowcounter + " .status-none").attr("onclick", "changeStatus('status-none','" + campaignid + "','" + rowcounter + "','" + rowname + "')");
+	                    $("tr#" + rowcounter + " .status-active").attr("onclick", "changeStatus('status-active','" + campaignid + "','" + rowcounter + "','" + rowname + "')");
+	                    swal({
+	                        title: "Active Status",
+	                        text: "Status of " + campaignName + " changed to Active",
+	                        type: "success",
+	                        showCancelButton: false
+	                    });
 	                }
 	                else if (status === "inactive") {
 	                    console.log("inactive");
@@ -319,9 +325,14 @@ var service = {
 	                    $("tr#" + rowcounter + " ." + currentStatus).addClass("status-inactive");
 	                    $("tr#" + rowcounter + " ." + currentStatus).prev().addClass("status-none");
 	                    $("tr#" + rowcounter + " .status-inactive").removeClass("status-none");
-	                    $("tr#" + rowcounter + " .status-none").attr("onclick", "changeStatus('status-none','" + campaignid + "','" + rowcounter + "')");
-	                    $("tr#" + rowcounter + " .status-active").attr("onclick", "changeStatus('status-active','" + campaignid + "','" + rowcounter + "')");
-	                    swal("Status changed to Inactive.")
+	                    $("tr#" + rowcounter + " .status-none").attr("onclick", "changeStatus('status-none','" + campaignid + "','" + rowcounter + "','" + rowname + "')");
+	                    $("tr#" + rowcounter + " .status-active").attr("onclick", "changeStatus('status-active','" + campaignid + "','" + rowcounter + "','" + rowname + "')");
+	                    swal({
+	                        title: "Inactive Status",
+	                        text: "Status of "+ campaignName +" changed to Inactive",
+	                        type: "success",
+	                        showCancelButton: false
+	                    });
 	                }
 					
 				}

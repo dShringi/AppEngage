@@ -125,12 +125,12 @@
 
             }
 			
-			function changeStatus(status, campaignId, rowcounter){
+			function changeStatus(status, campaignId, rowcounter, rowname){
 				if(status === "status-active" || status === "status-inactive"){
 					return;
 				}
 				else {
-					service.changeCampaignStatus("status-none", campaignId, rowcounter);
+					service.changeCampaignStatus("status-none", campaignId, rowcounter, rowname);
 				}
 				
 			};
@@ -139,14 +139,13 @@
             function deleteRow(campaignId){
 				swal({   
 					title: "Are you sure?",   
-					text: "You will not be able to recover this imaginary file!",   
+					text: "This campaign record will be deleted.",   
 					type: "warning",   
 					showCancelButton: true,   
 					confirmButtonColor: "#DD6B55",   
 					confirmButtonText: "Yes, delete it!",   
 					closeOnConfirm: false }, 
 					function(){   
-						//swal("Deleted!", "Your imaginary file has been deleted.", "success"); 
 						service.deleteCampaign(campaignId);
 					});
 			}
