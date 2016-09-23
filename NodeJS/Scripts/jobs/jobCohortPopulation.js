@@ -31,7 +31,10 @@ if(aKey === undefined || aKey === null || aKey === ""){
             }else{
               console.log("Weekly Cohort Generated");
               generateMonthlyCohorts(appTZ,aKey,function(err,resp){
-                process.exit();
+                //Temporary to delay the exit.
+                setTimeout(function () {
+                        process.exit();
+                        }, 20000);
                 if(err){
                   logger.error(common.getErrorMessageFrom(err));
                 }else{

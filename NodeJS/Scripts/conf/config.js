@@ -35,7 +35,7 @@ config.url.eventsep = '/api/i/single/event';
 config.url.offlineep = '/api/i/bulk/O';
 
 config.app = {};
-config.defaultAppTimeZone = 'Asia/Kolkat';
+config.defaultAppTimeZone = 'Asia/Kolkata';
 config.app.details = [
 {app:"test1234",TZ:"Asia/Kolkata",TimeOut:600},
 {app:"4170b44d6459bba992acaa857ac5b25d7fac6cc1",TZ:"Asia/Kolkata",TimeOut:600}
@@ -69,5 +69,13 @@ config.mongodb.triggerType_weekly = 'weekly';
 config.mongodb.triggerType_monthly = 'monthly';
 config.mongodb.triggerType_yearly = 'yearly';
 
+config.dateformat.YYYYMMDDHH = 'YYYYMMDDHH';
+config.dateformat.YYYYMMDD = 'YYYYMMDD';
+config.dateformat.HOUR = 'hour';
+config.dateformat.DAY = 'day';
+
+config.object.UNDEFINED = undefined;
+config.object.NULL = null;
+config.object.EMPTYSTRING ="";
 
 module.exports = config;

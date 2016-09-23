@@ -6,6 +6,7 @@ var common = require('../../commons/common.js');
 module.exports.fetchCohorts = function(req,res){
   var akey = req.query["akey"];
   var type = req.query["type"];
+  type = 'D';
   var db = mongojs(config.connectionstring+akey);
   var searchCohort = JSON.parse('{"_id.ty":"'+type+'"}');
   db.collection(config.coll_cohorts).find(searchCohort).sort({"_id.dt":1},function(err,resp){
