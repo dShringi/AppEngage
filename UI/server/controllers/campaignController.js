@@ -26,7 +26,7 @@ module.exports.createCampaign = function(req,res){
 		if(body.endDate == null) {
 			body.endDate = parseInt(dateFormat(currentTime, "yyyymmdd"));
 		} else {
-			body.endDate = parseInt(dateFormat(getLocalTimeWithoutHour(body.endDate), "yyyymmdd"));
+			body.endDate = parseInt(dateFormat(getLocalTimeWithoutHour(appTZ, body.endDate), "yyyymmdd"));
 		}
 		
 		
@@ -37,8 +37,9 @@ module.exports.createCampaign = function(req,res){
 				return res.json(JSON.parse('{"msg":"Failure"}'));
 			}
 			db.close();
+			return res.json(JSON.parse('{"msg":"success"}'));
 		  });
-		  return res.json(JSON.parse('{"msg":"success"}'));
+		  
 	});
   //return res.json(JSON.parse('{"msg":"success"}'));
 };
@@ -236,12 +237,12 @@ function getUtcTime(time){
 }
 
 function getLocalTime(appTZ, dateStr){
-	var hours = parseInt(dateStr.toString().substring(8,10));
-	var minutes = parseInt(dateStr.toString().substring(10,12));
+	var hours = dateStr.toString().substring(8,10);
+	var minutes = dateStr.toString().substring(10,12);
 	
-	var year = parseInt(dateStr.toString().substring(0,4));
-	var month = parseInt(dateStr.toString().substring(4,6));
-	var day = parseInt(dateStr.toString().substring(6,8));
+	var year = dateStr.toString().substring(0,4);
+	var month = dateStr.toString().substring(4,6);
+	var day = dateStr.toString().substring(6,8);
 	var strDate = ''+year+'-'+month+'-'+day+' '+hours+':'+minutes;
 	var timezone = moment.tz(strDate, appTZ);
 	timezone = timezone.clone().tz("UTC");
@@ -250,9 +251,9 @@ function getLocalTime(appTZ, dateStr){
 
 function getLocalTimeWithoutHour(appTZ, dateStr){
 	
-	var year = parseInt(dateStr.toString().substring(0,4));
-	var month = parseInt(dateStr.toString().substring(4,6)) -1;
-	var day = parseInt(dateStr.toString().substring(6,8));
+	var year = dateStr.toString().substring(0,4);
+	var month = dateStr.toString().substring(4,6);
+	var day = dateStr.toString().substring(6,8);
 	var strDate = ''+year+'-'+month+'-'+day+' '+00+':'+00;
 	var timezone = moment.tz(strDate, appTZ);
 	timezone = timezone.clone().tz("UTC");
