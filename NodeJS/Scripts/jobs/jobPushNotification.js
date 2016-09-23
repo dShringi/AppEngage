@@ -26,9 +26,10 @@ var j = cron.scheduleJob('*/1 * * * *', function(){
 			printErrorMessage(err);
 		} else {
 			var datekey =  dateFormat(getUtcCurrentTime(), "yyyymmddHHMM");
+			var endDate =  dateFormat(getUtcCurrentTime(), "yyyymmdd");
 			var campaignCollection = db.collection(config.mongodb.coll_campaigns);
 			//var findQuery = '{"$or":[{"status":"active","trigger_time":'+datekey+'},{"status":"active","recursive":true,"schedule_type": "scheduled","trigger_time":'+datekey+'},{"status":"active","recursive":true,"schedule_type": "cyclic","trigger_time":'+datekey+'} ]}';
-			var findQuery = '{"$or":[{"endDate":null,"status":"active","trigger_time":'+datekey+'},{"endDate":{"$gte": '+datekey+' },"status":"active","trigger_time":'+datekey+'}]}';
+			var findQuery = '{"$or":[{"endDate":null,"status":"active","trigger_time":'+datekey+'},{"endDate":{"$gte": '+endDate+' },"status":"active","trigger_time":'+datekey+'}]}';
 			campaignCollection.find(JSON.parse(findQuery)).toArray(function (err, result) {
 				if (err) {
 					printErrorMessage(err);
