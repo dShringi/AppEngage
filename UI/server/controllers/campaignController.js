@@ -40,7 +40,7 @@ module.exports.createCampaign = function(req,res){
 		  });
 		  return res.json(JSON.parse('{"msg":"success"}'));
 	});
-  
+  //return res.json(JSON.parse('{"msg":"success"}'));
 };
 
 module.exports.updateCampaign = function(req,res){
@@ -255,5 +255,6 @@ function getLocalTimeWithoutHour(appTZ, dateStr){
 	var day = parseInt(dateStr.toString().substring(6,8));
 	var strDate = ''+year+'-'+month+'-'+day+' '+00+':'+00;
 	var timezone = moment.tz(strDate, appTZ);
+	timezone = timezone.clone().tz("UTC");
 	return new Date(timezone);
 }
