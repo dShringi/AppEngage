@@ -245,8 +245,8 @@ function getLocalTime(appTZ, dateStr){
 	var day = dateStr.toString().substring(6,8);
 	var strDate = ''+year+'-'+month+'-'+day+' '+hours+':'+minutes;
 	var timezone = moment.tz(strDate, appTZ);
-	timezone = timezone.clone().tz("UTC");
-	return new Date(timezone);
+	var utcTimezone = timezone.clone().tz("UTC");
+	return new Date(utcTimezone);
 }
 
 function getLocalTimeWithoutHour(appTZ, dateStr){
@@ -254,8 +254,9 @@ function getLocalTimeWithoutHour(appTZ, dateStr){
 	var year = dateStr.toString().substring(0,4);
 	var month = dateStr.toString().substring(4,6);
 	var day = dateStr.toString().substring(6,8);
-	var strDate = ''+year+'-'+month+'-'+day+' '+00+':'+00;
+	var hourminut = 00;
+	var strDate = ''+year+'-'+month+'-'+day+' '+hourminut.toString()+':'+hourminut.toString();
 	var timezone = moment.tz(strDate, appTZ);
-	timezone = timezone.clone().tz("UTC");
-	return new Date(timezone);
+	var utcTimezone = timezone.clone().tz("UTC");
+	return new Date(utcTimezone);
 }
