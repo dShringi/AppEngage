@@ -38,8 +38,9 @@ module.exports.createCampaign = function(req,res){
 			}
 			db.close();
 		  });
+		  return res.json(JSON.parse('{"msg":"success"}'));
 	});
-  return res.json(JSON.parse('{"msg":"success"}'));
+  
 };
 
 module.exports.updateCampaign = function(req,res){
