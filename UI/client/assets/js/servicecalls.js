@@ -254,8 +254,16 @@ var service = {
 			url: APIBaseURL + "deleteCampaign?akey="+appKey+"&campaignid="+campaignid,
 			success: function (data) {
 			    if (data.msg === "Success") {
-			        swal("Deleted!", "Record has been deleted.", "success");
-			        window.location.href = window.location.href;
+			        swal({ title:"Deleted!",
+			            text:"Record has been deleted.",
+			            type: "success",
+			            showCancelButton: false
+			        },
+                    function () {
+                        window.location.href = window.location.href;
+                    });
+                    
+			        //window.location.href = window.location.href;
 			    }
 				
 			},
