@@ -1,4 +1,5 @@
 var mongojs = require('mongojs');
+var moment = require('moment-timezone');
 var dateFormat = require('dateformat');
 var config  = require('../../config/config');
 var logger  = require('../../config/log.js');
@@ -14,27 +15,30 @@ module.exports.createCampaign = function(req,res){
 	var cycle = body.cycle;
 	var recursive = body.recursive;
 	var trigger_time = body.trigger_time;
-	var currentTime = getTriggerTime(schedule_type.toUpperCase(), cycle, recursive, trigger_time);
 	
-	body.trigger_time = parseInt(dateFormat(currentTime, "yyyymmddHHMM"));
-	body.creationDate = parseInt(dateFormat(getUtcCurrentTime(), "yyyymmdd"));
-	body.startDate = parseInt(dateFormat(currentTime, "yyyymmdd"));
-	if(body.endDate == null) {
-		body.endDate = parseInt(dateFormat(currentTime, "yyyymmdd"));
-	} else {
-		body.endDate = parseInt(dateFormat(getUtcTime(body.endDate), "yyyymmdd"));
-	}
+	common.getAppTimeZone(akey,function(err,appTZ){
 	
-	
-	var db = mongojs(config.connectionstring+akey);
-	db.collection(config.coll_campaigns).insert(req.body,function(err,res){
-		if(err){
-			logger.error(common.getErrorMessageFrom(err));
-			return res.json(JSON.parse('{"msg":"Failure"}'));
+		var currentTime = getTriggerTime(schedule_type.toUpperCase(), cycle, recursive, trigger_time, appTZ);
+		
+		body.trigger_time = parseInt(dateFormat(currentTime, "yyyymmddHHMM"));
+		body.creationDate = parseInt(dateFormat(getUtcCurrentTime(), "yyyymmdd"));
+		body.startDate = parseInt(dateFormat(currentTime, "yyyymmdd"));
+		if(body.endDate == null) {
+			body.endDate = parseInt(dateFormat(currentTime, "yyyymmdd"));
+		} else {
+			body.endDate = parseInt(dateFormat(getLocalTimeWithoutHour(body.endDate), "yyyymmdd"));
 		}
-		db.close();
-	  });
-  
+		
+		
+		var db = mongojs(config.connectionstring+akey);
+		db.collection(config.coll_campaigns).insert(req.body,function(err,res){
+			if(err){
+				logger.error(common.getErrorMessageFrom(err));
+				return res.json(JSON.parse('{"msg":"Failure"}'));
+			}
+			db.close();
+		  });
+	});
   return res.json(JSON.parse('{"msg":"success"}'));
 };
 
@@ -97,11 +101,14 @@ module.exports.fetchAllCampaigns = function(req,res){
 
 };
 
-function getTriggerTime(schedule_type, cycle, recursive, trigger_time){
-	var returnDate = getUtcCurrentTime();
+function getTriggerTime(schedule_type, cycle, recursive, trigger_time,appTZ){
+	var returnDate;
+	//var returnDate = getLocalTime(trigger_time, appTZ);
 	if(schedule_type == 'IMMEDIATE'){
+		returnDate = getUtcCurrentTime();
 		returnDate.setMinutes(returnDate.getMinutes()+2);
 	} else if((schedule_type == 'SCHEDULED' && recursive == true)) {
+		returnDate = getUtcCurrentTime();
 		var cycleArray = cycle.split('_');
 		var cycleType = cycleArray[0].toString().toUpperCase();
 		var givenHours = parseInt(trigger_time.toString().substring(8,10));
@@ -150,15 +157,9 @@ function getTriggerTime(schedule_type, cycle, recursive, trigger_time){
 				}break;
 		}
 	} else if((schedule_type == 'SCHEDULED' && recursive == false)) {
-		var hours = parseInt(trigger_time.toString().substring(8,10));
-		var minutes = parseInt(trigger_time.toString().substring(10,12));
-		var year = parseInt(trigger_time.toString().substring(0,4));
-		var month = parseInt(trigger_time.toString().substring(4,6)) -1;
-		var day = parseInt(trigger_time.toString().substring(6,8));
-		var date = new Date(year, month, day, hours, minutes);
-		returnDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),  date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
+		returnDate = getLocalTime(appTZ, trigger_time);
 	}
-	return returnDate; 
+	return getUtcTime(returnDate); 
 }
 
 function getNumberFromDay(day) {
@@ -229,10 +230,28 @@ function getUtcCurrentTime(){
 	return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
 }
 
-function getUtcTime(time){
-	var year = parseInt(time.toString().substring(0,4));
-	var month = parseInt(time.toString().substring(4,6)) -1;
-	var day = parseInt(time.toString().substring(6,8));
-	var now = new Date(year, month, day); 
-	return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
+function getUtcTime(time){ 
+	return new Date(time.getUTCFullYear(), time.getUTCMonth(), time.getUTCDate(),  time.getUTCHours(), time.getUTCMinutes(), time.getUTCSeconds());
+}
+
+function getLocalTime(appTZ, dateStr){
+	var hours = parseInt(dateStr.toString().substring(8,10));
+	var minutes = parseInt(dateStr.toString().substring(10,12));
+	
+	var year = parseInt(dateStr.toString().substring(0,4));
+	var month = parseInt(dateStr.toString().substring(4,6)) -1;
+	var day = parseInt(dateStr.toString().substring(6,8));
+	var strDate = ''+year+'-'+month+'-'+day+' '+hours+':'+minutes;
+	var timezone = moment.tz(strDate, appTZ);
+	return new Date(timezone);
+}
+
+function getLocalTimeWithoutHour(appTZ, dateStr){
+	
+	var year = parseInt(dateStr.toString().substring(0,4));
+	var month = parseInt(dateStr.toString().substring(4,6)) -1;
+	var day = parseInt(dateStr.toString().substring(6,8));
+	var strDate = ''+year+'-'+month+'-'+day+' '+00+':'+00;
+	var timezone = moment.tz(strDate, appTZ);
+	return new Date(timezone);
 }
