@@ -239,7 +239,7 @@ function getLocalTime(appTZ, dateStr){
 	var minutes = parseInt(dateStr.toString().substring(10,12));
 	
 	var year = parseInt(dateStr.toString().substring(0,4));
-	var month = parseInt(dateStr.toString().substring(4,6)) -1;
+	var month = parseInt(dateStr.toString().substring(4,6));
 	var day = parseInt(dateStr.toString().substring(6,8));
 	var strDate = ''+year+'-'+month+'-'+day+' '+hours+':'+minutes;
 	var timezone = moment.tz(strDate, appTZ);
