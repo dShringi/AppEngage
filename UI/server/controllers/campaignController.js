@@ -153,7 +153,7 @@ function getTriggerTime(schedule_type, cycle, recursive, trigger_time){
 		var hours = parseInt(trigger_time.toString().substring(8,10));
 		var minutes = parseInt(trigger_time.toString().substring(10,12));
 		var year = parseInt(trigger_time.toString().substring(0,4));
-		var month = parseInt(trigger_time.toString().substring(4,6));
+		var month = parseInt(trigger_time.toString().substring(4,6)) -1;
 		var day = parseInt(trigger_time.toString().substring(6,8));
 		var date = new Date(year, month, day, hours, minutes);
 		returnDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),  date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
@@ -230,7 +230,7 @@ function getUtcCurrentTime(){
 
 function getUtcTime(time){
 	var year = parseInt(time.toString().substring(0,4));
-	var month = parseInt(time.toString().substring(4,6));
+	var month = parseInt(time.toString().substring(4,6)) -1;
 	var day = parseInt(time.toString().substring(6,8));
 	var now = new Date(year, month, day); 
 	return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
