@@ -179,6 +179,7 @@ function getNumberFromDay(day) {
 function getNextDayOfWeek(dayOfWeek) {
 	var date = getUtcCurrentTime();
     var resultDate = new Date(date.getTime());
+	resultDate = new Date(resultDate.getUTCFullYear(), resultDate.getUTCMonth(), resultDate.getUTCDate(),  resultDate.getUTCHours(), resultDate.getUTCMinutes(), resultDate.getUTCSeconds());
     resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay()) % 7);
     return resultDate;
 }
