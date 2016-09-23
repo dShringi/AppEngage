@@ -149,6 +149,14 @@ function getTriggerTime(schedule_type, cycle, recursive, trigger_time){
 					}
 				}break;
 		}
+	} else if((schedule_type == 'SCHEDULED' && recursive == false)) {
+		var hours = parseInt(trigger_time.toString().substring(8,10));
+		var minutes = parseInt(trigger_time.toString().substring(10,12));
+		var year = parseInt(time.toString().substring(0,4));
+		var month = parseInt(time.toString().substring(4,6));
+		var day = parseInt(time.toString().substring(6,8));
+		var date = new Date(year, month, day, hours, minutes);
+		returnDate = new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(),  date.getUTCHours(), date.getUTCMinutes(), date.getUTCSeconds());
 	}
 	return returnDate; 
 }
