@@ -192,7 +192,8 @@ function getNextDayOfWeek(dayOfWeek) {
 }
 
 function checkGreaterTime(givenHours, givenMinutes,appTZ) {
-	var date = moment().tz(appTZ).format();
+	var timeZone = moment().tz(appTZ).format();
+	var date = new Date(timeZone);
 	//var date = getUtcCurrentTime();
 	var currentHours = date.getHours();
 	var currentMinutes = date.getMinutes()+1;
@@ -209,7 +210,8 @@ function checkGreaterTime(givenHours, givenMinutes,appTZ) {
 }
 
 function checkGreaterMonth(givenHours, givenMinutes, givenDate, appTZ) {
-	var date = moment().tz(appTZ).format();
+	var timeZone = moment().tz(appTZ).format();
+	var date = new Date(timeZone);
 	//var date = getUtcCurrentTime();
 	var currentDate = date.getDate();
 	var currentHours = date.getHours();
