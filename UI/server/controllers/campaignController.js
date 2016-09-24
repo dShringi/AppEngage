@@ -15,10 +15,11 @@ module.exports.createCampaign = function(req,res){
 	var cycle = body.cycle;
 	var recursive = body.recursive;
 	var trigger_time = body.trigger_time;
+	var creationDate = body.creationDate;
 	
 	common.getAppTimeZone(akey,function(err,appTZ){
 	
-		var currentTime = getTriggerTime(schedule_type.toUpperCase(), cycle, recursive, trigger_time, appTZ);
+		var currentTime = getTriggerTime(schedule_type.toUpperCase(), cycle, recursive, trigger_time, appTZ, creationDate);
 		
 		body.trigger_time = parseInt(dateFormat(currentTime, "yyyymmddHHMM"));
 		body.creationDate = parseInt(dateFormat(getUtcCurrentTime(), "yyyymmdd"));
@@ -36,8 +37,9 @@ module.exports.createCampaign = function(req,res){
 				logger.error(common.getErrorMessageFrom(err));
 				return res.json(JSON.parse('{"msg":"Failure"}'));
 			}
-			db.close();
+			
 			return res.json(JSON.parse('{"msg":"success"}'));
+			db.close();
 		  });
 		  
 	});
@@ -103,14 +105,16 @@ module.exports.fetchAllCampaigns = function(req,res){
 
 };
 
-function getTriggerTime(schedule_type, cycle, recursive, trigger_time,appTZ){
+function getTriggerTime(schedule_type, cycle, recursive, trigger_time,appTZ, creationDate){
 	var returnDate;
 	//var returnDate = getLocalTime(trigger_time, appTZ);
 	if(schedule_type == 'IMMEDIATE'){
 		returnDate = getUtcCurrentTime();
 		returnDate.setMinutes(returnDate.getMinutes()+2);
 	} else if((schedule_type == 'SCHEDULED' && recursive == true)) {
-		returnDate = getUtcCurrentTime();
+		var tzTime = moment().tz(appTZ).format();
+		returnDate = new Date(tzTime);
+		//returnDate = getUtcCurrentTime();
 		var cycleArray = cycle.split('_');
 		var cycleType = cycleArray[0].toString().toUpperCase();
 		var givenHours = parseInt(trigger_time.toString().substring(8,10));
@@ -245,8 +249,9 @@ function getLocalTime(appTZ, dateStr){
 	var day = dateStr.toString().substring(6,8);
 	var strDate = ''+year+'-'+month+'-'+day+' '+hours+':'+minutes;
 	var timezone = moment.tz(strDate, appTZ);
+	
 	var utcTimezone = timezone.clone().tz("UTC");
-	return new Date(utcTimezone);
+	return new Date(utcTimezone.format());
 }
 
 function getLocalTimeWithoutHour(appTZ, dateStr){
@@ -255,8 +260,8 @@ function getLocalTimeWithoutHour(appTZ, dateStr){
 	var month = dateStr.toString().substring(4,6);
 	var day = dateStr.toString().substring(6,8);
 	var hourminut = 00;
-	var strDate = ''+year+'-'+month+'-'+day+' '+hourminut.toString()+':'+hourminut.toString();
+	var strDate = ''+year+'-'+month+'-'+day+' '+'00:00';
 	var timezone = moment.tz(strDate, appTZ);
 	var utcTimezone = timezone.clone().tz("UTC");
-	return new Date(utcTimezone);
+	return new Date(utcTimezone.format());
 }
