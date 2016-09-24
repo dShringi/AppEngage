@@ -89,7 +89,6 @@ module.exports.fetchAllCampaigns = function(req,res){
     var endDate = common.getStartDate(ed,appTZ);
     var db = mongojs(config.connectionstring+akey);
     var searchObject = JSON.parse('{"$and":[{"startDate":{"$gte":'+startDate+'}},{"endDate":{"$lte":'+endDate+'}}]}');
-	//var searchObject = JSON.parse('{"$and":[{"date":{"$gte":'+startDate+'}},{"date":{"$lte":'+endDate+'}}]}');
 
     db.collection(config.coll_campaigns).find(searchObject,function(err,resp){
       db.close();
@@ -107,60 +106,44 @@ module.exports.fetchAllCampaigns = function(req,res){
 
 function getTriggerTime(schedule_type, cycle, recursive, trigger_time,appTZ, creationDate){
 	var returnDate;
-	//var returnDate = getLocalTime(trigger_time, appTZ);
 	if(schedule_type == 'IMMEDIATE'){
 		returnDate = getUtcCurrentTime();
 		returnDate.setMinutes(returnDate.getMinutes()+2);
 	} else if((schedule_type == 'SCHEDULED' && recursive == true)) {
-		//var tzTime = moment().tz(appTZ).format();
-		//returnDate = new Date(tzTime);
-		//returnDate = getUtcCurrentTime();
 		var cycleArray = cycle.split('_');
 		var cycleType = cycleArray[0].toString().toUpperCase();
 		var givenHours = parseInt(trigger_time.toString().substring(8,10));
 		var givenMinutes = parseInt(trigger_time.toString().substring(10,12));
-		var conDateTime = ''+creationDate+' '+givenHours+':'+givenMinutes;
+		var conDateTime = creationDate.toString()+''+givenHours+''+givenMinutes;
 		returnDate = getLocalTime(appTZ, conDateTime);
 		switch(cycleType) {
 				case 'DAILY': {
 					var dayFlag = checkGreaterTime(returnDate);
-					if(dayFlag) {
-						//returnDate.setHours(givenHours,givenMinutes);
-					} else {
+					console.log(dayFlag);
+					if(!dayFlag) {
 						returnDate.setDate(returnDate.getDate() + 1);
-						//returnDate.setHours(givenHours,givenMinutes);
 					}
 				}break; 
 				case 'ALTERNATE': {
+					console.log('came here');
 					var dayFlag = checkGreaterTime(returnDate);
-					if(dayFlag) {
-						//returnDate.setHours(givenHours,givenMinutes);
-					} else {
+					if(!dayFlag) {
 						returnDate.setDate(returnDate.getDate() + 2);
-						//returnDate.setHours(givenHours,givenMinutes);
 					}
 				}break;
 				case 'WEEKLY': {
 					var weekDay = cycleArray[1].toString().toUpperCase();
 					returnDate = getNextDayOfWeek(getNumberFromDay(weekDay),returnDate);
 					var weekFlag = checkGreaterMonth(returnDate);
-					if(weekFlag){
-						//returnDate.setHours(givenHours,givenMinutes);
-					} else {
+					if(!weekFlag){
 						returnDate.setDate(returnDate.getDate()+7);
-						//returnDate.setHours(givenHours,givenMinutes);
 					}
 				}break;
 				case 'MONTHLY': {
 					var givenDate = parseInt(cycleArray[1]);
 					var monthFlag = checkGreaterMonth(returnDate);
 					if(monthFlag) {
-						//returnDate.setDate(givenDate);
-						//returnDate.setHours(givenHours,givenMinutes);
-					} else {
 						returnDate.setMonth(returnDate.getMonth() + 1);
-						//returnDate.setDate(givenDate);
-						//returnDate.setHours(givenHours,givenMinutes);
 					}
 				}break;
 		}
@@ -186,9 +169,7 @@ function getNumberFromDay(day) {
 }
 
 function getNextDayOfWeek(dayOfWeek,date) {
-	//var date = getUtcCurrentTime();
     var resultDate = new Date(date.getTime());
-	//resultDate = new Date(resultDate.getUTCFullYear(), resultDate.getUTCMonth(), resultDate.getUTCDate(),  resultDate.getUTCHours(), resultDate.getUTCMinutes(), resultDate.getUTCSeconds());
     resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay()) % 7);
     return resultDate;
 }
@@ -199,8 +180,7 @@ function checkGreaterTime(date) {
 	
 	var currentUtcTime = getUtcCurrentTime();
 	var currentHours = currentUtcTime.getHours();
-	var currentMinutes = currentUtcTime.getMinutes();
-	
+	var currentMinutes = currentUtcTime.getMinutes();	
 	if(currentHours < givenHours) {
 		return true;
 	} else if(currentHours > givenHours) {
