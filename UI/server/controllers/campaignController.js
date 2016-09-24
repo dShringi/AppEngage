@@ -121,7 +121,7 @@ function getTriggerTime(schedule_type, cycle, recursive, trigger_time,appTZ, cre
 		var givenMinutes = parseInt(trigger_time.toString().substring(10,12));
 		switch(cycleType) {
 				case 'DAILY': {
-					var dayFlag = checkGreaterTime(givenHours, givenMinutes);
+					var dayFlag = checkGreaterTime(givenHours, givenMinutes,appTZ);
 					if(dayFlag) {
 						returnDate.setHours(givenHours,givenMinutes);
 					} else {
@@ -130,7 +130,7 @@ function getTriggerTime(schedule_type, cycle, recursive, trigger_time,appTZ, cre
 					}
 				}break; 
 				case 'ALTERNATE': {
-					var dayFlag = checkGreaterTime(givenHours, givenMinutes);
+					var dayFlag = checkGreaterTime(givenHours, givenMinutes,appTZ);
 					if(dayFlag) {
 						returnDate.setHours(givenHours,givenMinutes);
 					} else {
@@ -141,7 +141,7 @@ function getTriggerTime(schedule_type, cycle, recursive, trigger_time,appTZ, cre
 				case 'WEEKLY': {
 					var weekDay = cycleArray[1].toString().toUpperCase();
 					returnDate = getNextDayOfWeek(getNumberFromDay(weekDay));
-					var weekFlag = checkGreaterMonth(givenHours, givenMinutes,returnDate.getDate());
+					var weekFlag = checkGreaterMonth(givenHours, givenMinutes,returnDate.getDate(),appTZ);
 					if(weekFlag){
 						returnDate.setHours(givenHours,givenMinutes);
 					} else {
@@ -151,7 +151,7 @@ function getTriggerTime(schedule_type, cycle, recursive, trigger_time,appTZ, cre
 				}break;
 				case 'MONTHLY': {
 					var givenDate = parseInt(cycleArray[1]);
-					var monthFlag = checkGreaterMonth(givenHours,givenMinutes, givenDate);
+					var monthFlag = checkGreaterMonth(givenHours,givenMinutes, givenDate,appTZ);
 					if(monthFlag) {
 						returnDate.setDate(givenDate);
 						returnDate.setHours(givenHours,givenMinutes);
@@ -191,8 +191,9 @@ function getNextDayOfWeek(dayOfWeek) {
     return resultDate;
 }
 
-function checkGreaterTime(givenHours, givenMinutes) {
-	var date = getUtcCurrentTime();
+function checkGreaterTime(givenHours, givenMinutes,appTZ) {
+	var date = moment().tz(appTZ).format();
+	//var date = getUtcCurrentTime();
 	var currentHours = date.getHours();
 	var currentMinutes = date.getMinutes()+1;
 	if(currentHours < givenHours) {
@@ -207,8 +208,9 @@ function checkGreaterTime(givenHours, givenMinutes) {
 	return false;
 }
 
-function checkGreaterMonth(givenHours, givenMinutes, givenDate) {
-	var date = getUtcCurrentTime();
+function checkGreaterMonth(givenHours, givenMinutes, givenDate, appTZ) {
+	var date = moment().tz(appTZ).format();
+	//var date = getUtcCurrentTime();
 	var currentDate = date.getDate();
 	var currentHours = date.getHours();
 	var currentMinutes = date.getMinutes()+1;
