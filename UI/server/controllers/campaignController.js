@@ -112,53 +112,55 @@ function getTriggerTime(schedule_type, cycle, recursive, trigger_time,appTZ, cre
 		returnDate = getUtcCurrentTime();
 		returnDate.setMinutes(returnDate.getMinutes()+2);
 	} else if((schedule_type == 'SCHEDULED' && recursive == true)) {
-		var tzTime = moment().tz(appTZ).format();
-		returnDate = new Date(tzTime);
+		//var tzTime = moment().tz(appTZ).format();
+		//returnDate = new Date(tzTime);
 		//returnDate = getUtcCurrentTime();
 		var cycleArray = cycle.split('_');
 		var cycleType = cycleArray[0].toString().toUpperCase();
 		var givenHours = parseInt(trigger_time.toString().substring(8,10));
 		var givenMinutes = parseInt(trigger_time.toString().substring(10,12));
+		var conDateTime = ''+creationDate+' '+givenHours+':'+givenMinutes;
+		returnDate = getLocalTime(appTZ, conDateTime);
 		switch(cycleType) {
 				case 'DAILY': {
-					var dayFlag = checkGreaterTime(givenHours, givenMinutes,appTZ);
+					var dayFlag = checkGreaterTime(returnDate);
 					if(dayFlag) {
-						returnDate.setHours(givenHours,givenMinutes);
+						//returnDate.setHours(givenHours,givenMinutes);
 					} else {
 						returnDate.setDate(returnDate.getDate() + 1);
-						returnDate.setHours(givenHours,givenMinutes);
+						//returnDate.setHours(givenHours,givenMinutes);
 					}
 				}break; 
 				case 'ALTERNATE': {
-					var dayFlag = checkGreaterTime(givenHours, givenMinutes,appTZ);
+					var dayFlag = checkGreaterTime(returnDate);
 					if(dayFlag) {
-						returnDate.setHours(givenHours,givenMinutes);
+						//returnDate.setHours(givenHours,givenMinutes);
 					} else {
 						returnDate.setDate(returnDate.getDate() + 2);
-						returnDate.setHours(givenHours,givenMinutes);
+						//returnDate.setHours(givenHours,givenMinutes);
 					}
 				}break;
 				case 'WEEKLY': {
 					var weekDay = cycleArray[1].toString().toUpperCase();
-					returnDate = getNextDayOfWeek(getNumberFromDay(weekDay));
-					var weekFlag = checkGreaterMonth(givenHours, givenMinutes,returnDate.getDate(),appTZ);
+					returnDate = getNextDayOfWeek(getNumberFromDay(weekDay),returnDate);
+					var weekFlag = checkGreaterMonth(returnDate);
 					if(weekFlag){
-						returnDate.setHours(givenHours,givenMinutes);
+						//returnDate.setHours(givenHours,givenMinutes);
 					} else {
 						returnDate.setDate(returnDate.getDate()+7);
-						returnDate.setHours(givenHours,givenMinutes);
+						//returnDate.setHours(givenHours,givenMinutes);
 					}
 				}break;
 				case 'MONTHLY': {
 					var givenDate = parseInt(cycleArray[1]);
-					var monthFlag = checkGreaterMonth(givenHours,givenMinutes, givenDate,appTZ);
+					var monthFlag = checkGreaterMonth(returnDate);
 					if(monthFlag) {
-						returnDate.setDate(givenDate);
-						returnDate.setHours(givenHours,givenMinutes);
+						//returnDate.setDate(givenDate);
+						//returnDate.setHours(givenHours,givenMinutes);
 					} else {
 						returnDate.setMonth(returnDate.getMonth() + 1);
-						returnDate.setDate(givenDate);
-						returnDate.setHours(givenHours,givenMinutes);
+						//returnDate.setDate(givenDate);
+						//returnDate.setHours(givenHours,givenMinutes);
 					}
 				}break;
 		}
@@ -183,20 +185,22 @@ function getNumberFromDay(day) {
 	}
 }
 
-function getNextDayOfWeek(dayOfWeek) {
-	var date = getUtcCurrentTime();
+function getNextDayOfWeek(dayOfWeek,date) {
+	//var date = getUtcCurrentTime();
     var resultDate = new Date(date.getTime());
-	resultDate = new Date(resultDate.getUTCFullYear(), resultDate.getUTCMonth(), resultDate.getUTCDate(),  resultDate.getUTCHours(), resultDate.getUTCMinutes(), resultDate.getUTCSeconds());
+	//resultDate = new Date(resultDate.getUTCFullYear(), resultDate.getUTCMonth(), resultDate.getUTCDate(),  resultDate.getUTCHours(), resultDate.getUTCMinutes(), resultDate.getUTCSeconds());
     resultDate.setDate(date.getDate() + (7 + dayOfWeek - date.getDay()) % 7);
     return resultDate;
 }
 
-function checkGreaterTime(givenHours, givenMinutes,appTZ) {
-	var timeZone = moment().tz(appTZ).format();
-	var date = new Date(timeZone);
-	//var date = getUtcCurrentTime();
-	var currentHours = date.getHours();
-	var currentMinutes = date.getMinutes()+1;
+function checkGreaterTime(date) {
+	var givenHours = date.getHours();
+	var givenMinutes = date.getMinutes()+1;
+	
+	var currentUtcTime = getUtcCurrentTime();
+	var currentHours = currentUtcTime.getHours();
+	var currentMinutes = currentUtcTime.getMinutes();
+	
 	if(currentHours < givenHours) {
 		return true;
 	} else if(currentHours > givenHours) {
@@ -209,13 +213,16 @@ function checkGreaterTime(givenHours, givenMinutes,appTZ) {
 	return false;
 }
 
-function checkGreaterMonth(givenHours, givenMinutes, givenDate, appTZ) {
-	var timeZone = moment().tz(appTZ).format();
-	var date = new Date(timeZone);
-	//var date = getUtcCurrentTime();
-	var currentDate = date.getDate();
-	var currentHours = date.getHours();
-	var currentMinutes = date.getMinutes()+1;
+function checkGreaterMonth(date) {
+
+	var givenDate = date.getDate();
+	var givenHours = date.getHours();
+	var givenMinutes = date.getMinutes()+1;
+	
+	var currentUtcTime = getUtcCurrentTime();
+	var currentDate = currentUtcTime.getDate();
+	var currentHours = currentUtcTime.getHours();
+	var currentMinutes = currentUtcTime.getMinutes();
 	
 	if(currentDate < givenDate){
 		return true;
