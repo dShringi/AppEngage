@@ -49,7 +49,7 @@ var service = {
             timeout: 180000,  //180 sec
             data: "username=" + uname,
             success: function (data) {
-                sessionStorage.setItem("unameAvailability", data.msg);
+                localStorage.setItem("unameAvailability", data.msg);
                 if ($("#reg-uname").val() === "") {
                     $("#uname-check").css("opacity", "0");
                 }
