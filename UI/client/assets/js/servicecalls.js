@@ -20,6 +20,7 @@ var service = {
                 console.log(data);
                 if (data.msg === "Success") {
                     localStorage.setItem("userName", data.name);
+                    localStorage.setItem("appKey", data.akey);
                     window.location.href = "index.html";
                 }
                 else {
@@ -49,7 +50,7 @@ var service = {
             timeout: 180000,  //180 sec
             data: "username=" + uname,
             success: function (data) {
-                localStorage.setItem("unameAvailability", data.msg);
+                sessionStorage.setItem("unameAvailability", data.msg);
                 if ($("#reg-uname").val() === "") {
                     $("#uname-check").css("opacity", "0");
                 }
@@ -135,7 +136,7 @@ var service = {
 
 	makeCampaign: function (arr) {
 	    console.log(arr);
-	    var creationdate = parseInt(moment(new Date()).format("YYYYMMDDHHmm"));
+	    var creationdate = parseInt(moment(new Date()).format("YYYYMMDD"));
         // IMMEDIATE
 	    // ["Name", "Title", "Message", "everyone", "immediately", "now/later", trigger_time]
         //    0        1         2           3            4              5            6
