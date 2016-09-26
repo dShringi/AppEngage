@@ -62,7 +62,7 @@ module.exports.validateUser = function(req,res){
 				db.close();
 				if(!err){
 					if(result.length===1){
-						return res.json({"msg":"Success","name":result[0].app_name});
+						return res.json({"msg":"Success","name":result[0].app_name,"akey":result[0].app_id});
 					}
 					else{
 						return res.json({"msg":"Failed"});
