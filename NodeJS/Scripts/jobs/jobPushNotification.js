@@ -1,7 +1,7 @@
 // this script is used to send push notification 
 'use strict'
 
-var logger = require('../conf/log.js');
+//var logger = require('../conf/log.js');
 var config = require('../conf/config.js');
 var common = require('../commons/common');
 
@@ -19,8 +19,7 @@ var url = config.mongodb.url+'/'+process.argv[2];
 var serverKey = 'AIzaSyB1avXGX6dBNO4_l51iBFEbXvESmlPiJFU';
 var fcm = new FCM(serverKey);
  
-var j = cron.scheduleJob('*/1 * * * *', function(){
-
+//var j = cron.scheduleJob('*/1 * * * *', function(){
 	MongoClient.connect(url, function (err, db) {
 		if (err) {
 			printErrorMessage(err);
@@ -33,60 +32,75 @@ var j = cron.scheduleJob('*/1 * * * *', function(){
 			campaignCollection.find(JSON.parse(findQuery)).toArray(function (err, result) {
 				if (err) {
 					printErrorMessage(err);
+					db.close();
 				} else if (result.length) {
 				
 					var usersCollection = db.collection(config.mongodb.coll_users);
 					for (var i = 0; i < result.length; i++) {
 						var campaignResult = result[i];
-						
-						if((campaignResult.schedule_type =='cyclic') || (campaignResult.schedule_type == 'scheduled' && campaignResult.recursive == true)){
-							
-							var cycle = campaignResult.cycle;
-							var scheduleType = campaignResult.schedule_type;
-							var cpn_Id = ObjectID(campaignResult._id);
-							var nextTriggerTime = getNextTriggerTime(cycle, scheduleType);
-							var findQuery = {_id:cpn_Id};
-							var updateQuery = '{"$set":{"trigger_time":'+parseInt(nextTriggerTime)+',"last_execution":'+parseInt(datekey)+'}}';
-							var updateQueryJson = JSON.parse(updateQuery);
-							
-							campaignCollection.update(findQuery, updateQueryJson,
-								function(err, result) {
-									if (err) {
-										printErrorMessage(err);
-									}
-								});
-						}
-						
 						var mongofindQuery = campaignResult.query;
 						usersCollection.find(mongofindQuery).toArray(function(err,docs) {
 							if (err) {
 								printErrorMessage(err);
-							} else {
+								db.close();
+							} else if(docs.length){
+								var countTotal = 0;
 								for (var i = 0; i < docs.length; i++) { 
 								var userResult = docs[i];
 									if(userResult.rkey != null){
-										var message = {to: userResult.rkey, notification:{title:campaignResult.pn_title,body:campaignResult.pn_msg}};
-										pushToFcm(message);
+										countTotal++;
+										try {
+											var message = {to: userResult.rkey, notification:{title:campaignResult.pn_title,body:campaignResult.pn_msg}};
+											pushToFcm(message);
+										} catch(err){
+											countTotal--;
+											printErrorMessage(err);
+										}
 									}
 								}
+								var cpn_Id = ObjectID(campaignResult._id);
+								var findQuery = {_id:cpn_Id};
+								var updateQuery
+								if((campaignResult.schedule_type =='cyclic') || (campaignResult.schedule_type == 'scheduled' && campaignResult.recursive == true)){
+							
+									var cycle = campaignResult.cycle;
+									var scheduleType = campaignResult.schedule_type;
+									
+									var nextTriggerTime = getNextTriggerTime(cycle, scheduleType);
+									
+									updateQuery = '{"$set":{"trigger_time":'+parseInt(nextTriggerTime)+',"last_execution":'+parseInt(datekey)+',"total":'+countTotal+'}}';
+									
+								} else {
+									updateQuery = '{"$set":{"total":'+countTotal+'}}';
+								}
+								var updateQueryJson = JSON.parse(updateQuery);
+								campaignCollection.update(findQuery, updateQueryJson,function(err, result) {
+										if (err) {
+											printErrorMessage(err);
+										}
+										db.close();
+								});
+							} else {
+								db.close();
 							}
 						});
 					}
 				} else {
 					console.log('No document(s) found with defined "find" criteria!');
+					db.close();
 				}
-				db.close();
 			}); 
 		}
 	});
-});
+//});
 
 function pushToFcm(message){
 	fcm.send(message, function(err, response){
 		if (err) {
 			printErrorMessage(err);
 		} else {
-			printErrorMessage(response);
+			printErrorMessage(err);
+			
 		}
 	});
 }
@@ -119,6 +133,7 @@ function getNextTriggerTime(cycle, scheduleType){
 function printErrorMessage(err) {
 	var errMsg = common.getErrorMessageFrom(err);
 	logger.error(errMsg);
+	console.log('err  ',err);
 	return;
 }
 
