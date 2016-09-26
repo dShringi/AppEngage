@@ -35,7 +35,8 @@ public class MA {
 	public static String device2;
 	public static Context appContext;
 	private static DBUserManager dbUserManager;
-	private static String URL = "http://52.87.24.173/api/";
+	private static String URL;
+	public static String API_KEY;
 	public static long CalculatedTime;
 	public static long timeDuration;
 	private static long time1;
@@ -46,8 +47,15 @@ public class MA {
 	private static long calTime;
 	private static ReturnResponse rResponse;
 
-	public static void init(Context context)
+	public static void init(Context context, String url, String akey)
 	{
+
+		if(context instanceof  ReturnResponse)
+		{
+			rResponse=(ReturnResponse) context;
+		}
+		URL = url;
+		API_KEY = akey;
 		if (context != null)
 			appContext = context;
 		dbUserManager = new DBUserManager(appContext);
@@ -68,10 +76,7 @@ public class MA {
 
 			public void run() {
 
-				if(context instanceof  ReturnResponse)
-				{
-					rResponse=(ReturnResponse) context;
-				}
+
 
 				uiLog(" \n " +"Calling Send Api");
 //				user = getUserDetails();
@@ -85,25 +90,7 @@ public class MA {
 				
 				time1 = System.currentTimeMillis();
 
-				if (ConnectionManager.isNetworkConnected(appContext)) {
-					
-				
-					CalculatedTime =Utils.currentTimeStamp;
-					
-					Log.e(TAG, "CalculatedTime  "+CalculatedTime);
-
-
-					senddatatoserver();
-					
-					
-				} else {
-					boolean save = dbUserManager.save();
-
-					Log.e(TAG, "DBUSERMANAGER :- " + dbUserManager);
-					uiLog("\n Send API Saved IN DB");
-					Log.e(TAG, "SAVE....... :- " + save);
-
-				}
+				senddatatoserver();
 
 				Utils.updateUI();
 
@@ -120,23 +107,8 @@ public class MA {
 			public void run() {
 				super.run();
 //				user = getUserDetails();
-				try {
-					uiLog(" \n " + "Calling Event Api");
-					if (ConnectionManager.isNetworkConnected(appContext)) {
+				eventdatatoserver(/*user,*/key, prop);
 
-						eventdatatoserver(/*user,*/key, prop);
-						Log.e(TAG, "event data to server... :- ");
-					} else {
-						boolean save = dbUserManager.save();
-
-						Log.e(TAG, "DBUSERMANAGER :- " + dbUserManager);
-						uiLog("\n End API Saved IN DB");
-					}
-				}
-				catch (Exception e)
-				{
-					e.printStackTrace();
-				}
 			}
 
 		}.start();
@@ -163,20 +135,9 @@ public class MA {
 					calTime = (time2 - time1) / 1000;
 
 					Log.i("======= calTime", " :: " + calTime);
+					enddatatoserver();
 
 
-					if (ConnectionManager.isNetworkConnected(appContext)) {
-
-						enddatatoserver();
-						Log.e(TAG, "end data to server... :- ");
-					} else {
-						Log.e(TAG, "save--------------------- " + (dbUserManager == null));
-						boolean save = dbUserManager.save();
-
-						Log.e(TAG, "DBUSERMANAGER :- " + dbUserManager);
-						uiLog("\n End API Saved IN DB");
-						Log.e(TAG, "SAVE....... :- " + save);
-					}
 				}
 				catch (Exception e)
 				{
@@ -187,7 +148,7 @@ public class MA {
 		}.start();
 	}
 
-	public static void crashApi(final Context context) {
+	public static void crashApi(final String excSummary,final String excStackTrace) {
 
 		new Thread() {
 			@Override
@@ -196,23 +157,11 @@ public class MA {
 				super.run();
 				try {
 
-
-					if (context != null)
-						appContext = context;
-
+					Log.e("crashAPI In MA","Called");
 //				user = getUserDetails();
 					uiLog(" \n " + "Calling Crash Api");
-					if (ConnectionManager.isNetworkConnected(appContext)) {
+					sendCrashDataToServer(excSummary,excStackTrace);
 
-						sendCrashDataToServer("Java.lang.NullPointerException"/*,user*/);
-						Log.e(TAG, "end data to server... :- ");
-					} else {
-						boolean save = dbUserManager.save();
-
-						Log.e(TAG, "DBUSERMANAGER :- " + dbUserManager);
-						uiLog("\n Crash API Saved IN DB");
-						Log.e(TAG, "SAVE....... :- " + save);
-					}
 				}
 				catch (Exception e)
 				{
@@ -224,8 +173,8 @@ public class MA {
 
 	// ///////////////////crash api\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-	public static void sendCrashDataToServer(String message) {
-
+	public static void sendCrashDataToServer(String excSummary, String excStackTrace) {
+		Log.e("crashAPI In MA","Called");
 		JSONObject post_data = new JSONObject();
 
 		try {
@@ -234,6 +183,7 @@ public class MA {
 			post_data.put("osv", Utils.RELEASE);
 			post_data.put("pf", Utils.OSNAME);
 			post_data.put("avn", Utils.VERSIONNAME);
+			Log.e("crashAPI In MA","Called");
 			if (Utils.gps_enabled) {
 				post_data.put("lat", Utils.locLatitude);
 				post_data.put("lng", Utils.locLongitude);
@@ -242,6 +192,7 @@ public class MA {
 				post_data.put("lat", "0.0");
 				post_data.put("lng", "0.0");
 			}
+			Log.e("crashAPI In MA","Called");
 			post_data.put("rtc", CalculatedTime);
 			post_data.put("sid", time1 + "" + Utils.deviceId);
 			post_data.put("did", Utils.deviceId);
@@ -249,10 +200,11 @@ public class MA {
 			post_data.put("c",Utils.carrierName);
 			post_data.put("dt", Utils.deviceType);
 			post_data.put("ac", Utils.possibleEmail);
-			post_data.put("nw", Utils.getNetworkClass(appContext));
+			post_data.put("nw", networkDesc());
 			post_data.put("cpu", Utils.ARCH);
+			Log.e("crashAPI In MA","Called");
 			post_data.put("ori", Utils.orientation);
-			post_data.put("akey", Utils.akey);
+			post_data.put("akey", API_KEY);
 			post_data.put("frs",Utils.percentAvail);
 			post_data.put("trs",Utils.totalMemory);
 			post_data.put("fds",Utils.megAvailable);
@@ -260,12 +212,9 @@ public class MA {
 			post_data.put("bl",String.valueOf(Utils.batteryLevel));
 			post_data.put("ids", Utils.root);
 			post_data.put("ido", "N/A");
-			post_data
-					.put("est",
-							"E/AndroidRuntime(27386): java.lang.NullPointerException: return value is null at method AAA");
+			post_data.put("est",excStackTrace);
 			post_data.put("esm", "");
-
-			post_data.put("Ess", message);
+			post_data.put("Ess", excSummary);
 			post_data.put("sdv", "1.0");
 			post_data.put("mt", "C");
 
@@ -274,11 +223,97 @@ public class MA {
 		}
 		if (post_data.length() > 0) {
 			Log.e(TAG, "POST_DATA..........." + post_data);
-			new SendCrashDataToServer().execute(String.valueOf(post_data));
+
+			if (ConnectionManager.isNetworkConnected(appContext)) {
+				//new SendCrashDataToServer().execute(String.valueOf(post_data));
+				//*********************
+				Log.e(TAG, "POST_DATA..........." + post_data);
+				{
+					String JsonResponse = null;
+					String JsonDATA = post_data.toString();
+					HttpURLConnection urlConnection = null;
+					BufferedReader reader = null;
+					try {
+						Log.e(TAG, "POST_DATA..........." + post_data);
+						URL url = new URL(URL+"i/single/C");
+						urlConnection = (HttpURLConnection) url.openConnection();
+						urlConnection.setDoOutput(true);
+						// is output buffer writter
+						Log.e(TAG, "POST_DATA..........." + post_data);
+						urlConnection.setRequestMethod("POST");
+						urlConnection.setRequestProperty("Content-Type",
+								"application/json");
+
+						urlConnection.setRequestProperty("akey",
+								API_KEY);
+						Writer writer = new BufferedWriter(new OutputStreamWriter(
+								urlConnection.getOutputStream(), "UTF-8"));
+						writer.write(JsonDATA);
+						// json data
+						Log.e(TAG, "WRITER... :- " + writer);
+						writer.close();
+						InputStream inputStream = urlConnection.getInputStream();
+						Log.e(TAG, "URLCONNECTION ON CRASH.....Status code......"
+								+ urlConnection.getResponseCode());
+						Log.e(TAG, "INPUTSTREAM..........." + inputStream);
+						// input stream
+						StringBuffer buffer = new StringBuffer();
+						if (inputStream == null) {
+
+						}
+						reader = new BufferedReader(new InputStreamReader(inputStream));
+						Log.e(TAG, "READER..........." + reader);
+
+						String inputLine;
+						while ((inputLine = reader.readLine()) != null)
+							buffer.append(inputLine + "\n");
+						if (buffer.length() == 0) {
+
+						}
+						JsonResponse = buffer.toString();
+						// response data
+						Log.e(TAG, "JsonResponse..........." + JsonResponse);
+						// send to post execute
+						try {
+							uiLog(JsonResponse);
+						}catch (Exception e)
+						{
+							e.printStackTrace();
+						}
+
+					} catch (IOException e) {
+						Log.e(TAG, "IOException....." + e.getMessage());
+						e.printStackTrace();
+					} finally {
+						if (urlConnection != null) {
+							urlConnection.disconnect();
+							Log.e("Connection","Closed");
+						}
+						else Log.e("Connection","Not Closed");
+						if (reader != null) {
+							try {
+								reader.close();
+							} catch (final IOException e) {
+								Log.e(TAG, "Error closing stream" + e.getMessage());
+							}
+						}
+					}
+
+				}
+
+				//********************
+				Log.e(TAG, "end data to server... :- ");
+			} else {
+				boolean save = dbUserManager.saveCompleteJson(post_data.toString());
+
+				Log.e(TAG, "DBUSERMANAGER :- " + dbUserManager);
+				uiLog("\n Crash API Saved IN DB");
+				Log.e(TAG, "SAVE....... :- " + save);
+			}
 		}
 	}
 
-	public static class SendCrashDataToServer extends
+	/*public static class SendCrashDataToServer extends
 			AsyncTask<String, String, String> {
 
 		@Override
@@ -295,9 +330,9 @@ public class MA {
 				urlConnection.setRequestMethod("POST");
 				urlConnection.setRequestProperty("Content-Type",
 						"application/json");
-				
+
 				urlConnection.setRequestProperty("akey",
-						Utils.akey);
+						API_KEY);
 				Writer writer = new BufferedWriter(new OutputStreamWriter(
 						urlConnection.getOutputStream(), "UTF-8"));
 				writer.write(JsonDATA);
@@ -352,10 +387,25 @@ public class MA {
 		protected void onPostExecute(String s) {
 			if(rResponse != null)
 			{
-				uiLog(s);
+				uiLog("Crash API Data"+s);
 			}
 		}
 
+	}*/
+
+	public static String networkDesc()
+	{
+		if (Connectivity.isConnectedMobile(appContext))
+		{
+
+			return Utils.getNetworkClass(appContext);
+		}
+		else if(Connectivity.isConnectedWifi(appContext)){
+			return "Wifi";
+		}
+		else {
+			return "N/A";
+		}
 	}
 
 	// ///////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -369,6 +419,8 @@ public class MA {
 		JSONObject post_data = new JSONObject();
 
 		JSONArray array = new JSONArray();
+
+
 
 		try {
 			post_data.put("sync_status","");
@@ -393,10 +445,10 @@ public class MA {
 			post_data.put("c", Utils.carrierName);
 			post_data.put("dt", Utils.deviceType);
 			post_data.put("ac", Utils.possibleEmail);
-			post_data.put("nw", Utils.getNetworkClass(appContext));
+			post_data.put("nw", networkDesc());
 			post_data.put("cpu", Utils.ARCH);
 			post_data.put("ori", Utils.orientation);
-			post_data.put("akey", Utils.akey);
+			post_data.put("akey", API_KEY);
 			post_data.put("sdv", "1.0");
             post_data.put("rkey",Utils.tokenGen);
 			post_data.put("mt", "B");
@@ -409,7 +461,23 @@ public class MA {
 		}
 		if (post_data.length() > 0) {
 			Log.e(TAG, "POST_DATA..... send data to server......" + post_data);
-			new SendJsonDataToServer().execute(String.valueOf(post_data));
+
+			if (ConnectionManager.isNetworkConnected(appContext)) {
+
+
+				CalculatedTime =Utils.currentTimeStamp;
+				Log.e(TAG, "CalculatedTime  "+CalculatedTime);
+				new SendJsonDataToServer().execute(String.valueOf(post_data));
+
+
+			} else {
+				boolean save = dbUserManager.saveCompleteJson(post_data.toString());
+
+				Log.e(TAG, "DBUSERMANAGER :- " + dbUserManager);
+				uiLog("\n Send API Saved IN DB");
+				Log.e(TAG, "SAVE....... :- " + save);
+
+			}
 		}
 	}
 
@@ -431,7 +499,7 @@ public class MA {
 				urlConnection.setRequestProperty("Content-Type",
 						"application/json");
 
-				urlConnection.setRequestProperty("akey",Utils.akey);
+				urlConnection.setRequestProperty("akey",API_KEY);
 				Writer writer = new BufferedWriter(new OutputStreamWriter(
 						urlConnection.getOutputStream(), "UTF-8"));
 				writer.write(JsonDATA);
@@ -476,7 +544,9 @@ public class MA {
 			} finally {
 				if (urlConnection != null) {
 					urlConnection.disconnect();
+					Log.e("Connection","Closed");
 				}
+				else Log.e("Connection","Not Closed");
 				if (reader != null) {
 					try {
 						reader.close();
@@ -533,10 +603,10 @@ public class MA {
 			post_data.put("c", Utils.carrierName);
 			post_data.put("dt", Utils.deviceType);
 			post_data.put("ac", Utils.possibleEmail);
-			post_data.put("nw", Utils.getNetworkClass(appContext));
+			post_data.put("nw", networkDesc());
 			post_data.put("cpu", Utils.ARCH);
 			post_data.put("ori", Utils.orientation);
-			post_data.put("akey", Utils.akey);
+			post_data.put("akey", API_KEY);
 			post_data.put("sdv", "1.0");
 			post_data.put("mt", "O");
 			Log.e(TAG, "     send data;...............");
@@ -572,7 +642,7 @@ public class MA {
 						"application/json");
 
 				urlConnection.setRequestProperty("akey",
-						Utils.akey);
+						API_KEY);
 				// set headers and method
 				Writer writer = new BufferedWriter(new OutputStreamWriter(
 						urlConnection.getOutputStream(), "UTF-8"));
@@ -618,7 +688,10 @@ public class MA {
 			} finally {
 				if (urlConnection != null) {
 					urlConnection.disconnect();
+					Log.e("Connection","Closed");
 				}
+
+				else Log.e("Connection","Not Closed");
 				if (reader != null) {
 					try {
 						reader.close();
@@ -634,7 +707,7 @@ public class MA {
 		protected void onPostExecute(String s) {
 			if(rResponse != null)
 			{
-				uiLog("Crash API Data "+s);
+				uiLog("Offline API Data "+s);
 			}
 		}
 
@@ -649,7 +722,7 @@ public class MA {
 		// LatLng = txtLatitudeLongitude.getText().toString();
 		versionName = Utils.VERSIONNAME;
 		JSONObject post_data = new JSONObject();
-		
+
 
 		try {
 			post_data.put("mnu", Utils.MANUFACTURER);
@@ -660,7 +733,7 @@ public class MA {
 			if (Utils.gps_enabled) {
 				post_data.put("lat", Utils.locLatitude);
 				post_data.put("lng", Utils.locLongitude);
-				
+
 			} else {
 				post_data.put("lat", "0.0");
 				post_data.put("lng", "0.0");
@@ -672,28 +745,43 @@ public class MA {
 			post_data.put("c", Utils.carrierName);
 			post_data.put("dt", Utils.deviceType);
 			post_data.put("ac", Utils.possibleEmail);
-			post_data.put("nw", Utils.getNetworkClass(appContext));
+			post_data.put("nw", networkDesc());
 			post_data.put("cpu", Utils.ARCH);
 			post_data.put("ori",Utils.orientation);
-			post_data.put("akey", Utils.akey);
+			post_data.put("akey", API_KEY);
 			post_data.put("sdv", "1.0");
 			post_data.put("mt", "event");
 			post_data.put("key", key);
-			
-			
-			
+
+
+
 			post_data.put("pro", prop);
 			Log.e(TAG, "     send data;...............");
-			
+
 
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		if (post_data.length() > 0) {
 			Log.e(TAG, "POST_DATA..........." + post_data);
-			new EventJsonDataToServer().execute(String.valueOf(post_data));
+			try {
+				uiLog(" \n " + "Calling Event Api");
+				if (ConnectionManager.isNetworkConnected(appContext)) {
+					new EventJsonDataToServer().execute(String.valueOf(post_data));
+					Log.e(TAG, "event data to server... :- ");
+				} else {
+					boolean save = dbUserManager.saveCompleteJson(post_data.toString());
+
+					Log.e(TAG, "DBUSERMANAGER :- " + dbUserManager);
+					uiLog("\n End API Saved IN DB");
+				}
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
-		
+
 		if (prop.length()>0) {
 			Log.e(TAG, "POST.........." + prop);
 		}
@@ -717,7 +805,7 @@ public class MA {
 				urlConnection.setRequestProperty("Content-Type",
 						"application/json");
 				urlConnection.setRequestProperty("akey",
-						Utils.akey);
+						API_KEY);
 				// set headers and method
 				Writer writer = new BufferedWriter(new OutputStreamWriter(
 						urlConnection.getOutputStream(), "UTF-8"));
@@ -757,7 +845,9 @@ public class MA {
 			} finally {
 				if (urlConnection != null) {
 					urlConnection.disconnect();
+					Log.e("Connection","Closed");
 				}
+				else Log.e("Connection","Not Closed");
 				if (reader != null) {
 					try {
 						reader.close();
@@ -789,11 +879,11 @@ public class MA {
 		// LatLng = txtLatitudeLongitude.getText().toString();
 		versionName = Utils.VERSIONNAME;
 		JSONObject post_data = new JSONObject();
- 
+
 		try {
 			post_data.put("tsd", calTime);// //total session duration
 			post_data.put("did", Utils.deviceId);
-			post_data.put("akey", Utils.akey);// api
+			post_data.put("akey", API_KEY);// api
 																				// key
 			post_data.put("rtc", CalculatedTime);
 			post_data.put("sid", time1 + "" + Utils.deviceId);
@@ -807,7 +897,18 @@ public class MA {
 		}
 		if (post_data.length() > 0) {
 			Log.e(TAG, "POST_DATA..........." + post_data);
-			new EndJsonDataToServer().execute(String.valueOf(post_data));
+
+			if (ConnectionManager.isNetworkConnected(appContext)) {
+				new EndJsonDataToServer().execute(String.valueOf(post_data));
+				Log.e(TAG, "end data to server... :- ");
+			} else {
+				Log.e(TAG, "save--------------------- " + (dbUserManager == null));
+				boolean save = dbUserManager.saveCompleteJson(post_data.toString());
+
+				Log.e(TAG, "DBUSERMANAGER :- " + dbUserManager);
+				uiLog("\n End API Saved IN DB");
+				Log.e(TAG, "SAVE....... :- " + save);
+			}
 		}
 	}
 
@@ -828,9 +929,9 @@ public class MA {
 				urlConnection.setRequestMethod("POST");
 				urlConnection.setRequestProperty("Content-Type",
 						"application/json");
-				
+
 				urlConnection.setRequestProperty("akey",
-						Utils.akey);
+						API_KEY);
 				// urlConnection.setRequestProperty("Accept",
 				// "application/json");
 				// set headers and method
@@ -874,7 +975,9 @@ public class MA {
 			} finally {
 				if (urlConnection != null) {
 					urlConnection.disconnect();
+					Log.e("Connection","Closed");
 				}
+				else Log.e("Connection","Not Closed");
 				if (reader != null) {
 					try {
 						reader.close();
@@ -909,6 +1012,7 @@ public class MA {
 				});
 			}
 			else {
+				Log.e("sendApi","---it is here");
 			sendApi(context);
 			}
 		} else {
@@ -935,6 +1039,14 @@ public class MA {
 			return false;
 		}
 	}
+
+
+	public static void check()
+	{
+		dbUserManager.findArray();
+	}
+
+
 
 	public static void uiLog(String msg)
 	{

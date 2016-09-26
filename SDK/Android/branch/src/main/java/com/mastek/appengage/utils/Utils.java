@@ -97,7 +97,7 @@ public class Utils implements LocationListener,
 	public static int duration;
 	public static long startTime;
 	public static boolean gps_enabled;
-	public static String akey = "4170b44d6459bba992acaa857ac5b25d7fac6cc1";
+	//public static String akey = "4170b44d6459bba992acaa857ac5b25d7fac6cc1";
 
 	public static String tokenGen = FirebaseInstanceId.getInstance().getToken();
 	/*
@@ -885,7 +885,7 @@ public class Utils implements LocationListener,
 
 	// calls back to calling thread, note this is for low grain: if you want
 	// higher precision, swap the
-	// contents of the else and if. Also be sure to check gps
+	// contents of the else and if. Also be sure to check gpss
 	// permission/settings are allowed.
 	// call usually takes <10ms
 	public static void requestSingleUpdate(final Context context,
@@ -894,7 +894,7 @@ public class Utils implements LocationListener,
 				.getSystemService(Context.LOCATION_SERVICE);
 		boolean isNetworkEnabled = locationManager
 				.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-		Log.e(TAG, "isNetworkEnabled  " + isNetworkEnabled);
+		Log.e(TAG, "isNetworkEnabled requestSingleUpdate" + isNetworkEnabled);
 		if (isNetworkEnabled) {
 			Criteria criteria = new Criteria();
 			criteria.setAccuracy(Criteria.ACCURACY_COARSE);
@@ -907,12 +907,14 @@ public class Utils implements LocationListener,
 				//                                          int[] grantResults)
 				// to handle the case where the user grants the permission. See the documentation
 				// for ActivityCompat#requestPermissions for more details.
-				Log.e(TAG, "isNetworkEnabled  " );
+				Log.e(TAG, "isNetworkEnabled sendAPI ");
+				Log.e("sendApi", "---it is here");
 				locLatitude = "NP";
 				locLongitude = "NP";
 				MA.sendApi(context);
-			}
-			locationManager.requestSingleUpdate(criteria,
+			}else if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+			{
+				locationManager.requestSingleUpdate(criteria,
 					new LocationListener() {
 						@Override
 						public void onLocationChanged(Location location) {
@@ -932,7 +934,7 @@ public class Utils implements LocationListener,
 							locLongitude = String.valueOf(location
 									.getLongitude());
 
-
+							Log.e("sendApi", "---it is here");
 							MA.sendApi(context);
 						}
 
@@ -949,6 +951,13 @@ public class Utils implements LocationListener,
 						public void onProviderDisabled(String provider) {
 						}
 					}, null);
+		}else
+			{
+				Log.e("sendApi", "---it is here");
+				locLatitude = "NP";
+				locLongitude = "NP";
+				MA.sendApi(context);
+			}
 		} else {
 
 			Log.e(TAG,
