@@ -142,7 +142,7 @@ function getTriggerTime(schedule_type, cycle, recursive, trigger_time,appTZ, cre
 				case 'MONTHLY': {
 					var givenDate = parseInt(cycleArray[1]);
 					var monthFlag = checkGreaterMonth(returnDate);
-					if(monthFlag) {
+					if(!monthFlag) {
 						returnDate.setMonth(returnDate.getMonth() + 1);
 					}
 				}break;
