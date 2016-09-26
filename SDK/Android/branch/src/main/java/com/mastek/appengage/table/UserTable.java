@@ -2,7 +2,10 @@ package com.mastek.appengage.table;
 
 public class UserTable{
 	public static final String TABLE_NAME = "user_tbl";
-//	public static final String KEY_ID = "id";
+	public static final String TABLE_NAME1 = "user_tbl1";
+	public static final String KEY_STRING = "key_string";
+
+	//	public static final String KEY_ID = "id";
 	public static final String KEY_RELEASE = "release";
 	public static final String KEY_VERSION_NAME = "versionName";
 	public static final String KEY_MODEL = "model";
@@ -82,7 +85,16 @@ public class UserTable{
 		/*	+ KEY_TEST
 			+ " VARCHAR "*/
 			+ ")";
+	public static final String TABLE_CREATE_USER1 = "CREATE TABLE "
+			+ TABLE_NAME1
+			+ "("
+			+ KEY_STRING
+			+ " VARCHAR"+
+			 ")";
 
 	public static final String STATEMENT_SELECT = "select * from "
 			+ UserTable.TABLE_NAME;
+
+	public static final String STATEMENT_SELECT1 = "select * from "
+			+ UserTable.TABLE_NAME1;
 }

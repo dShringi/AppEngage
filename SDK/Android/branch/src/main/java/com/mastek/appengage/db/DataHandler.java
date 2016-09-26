@@ -74,6 +74,7 @@ public class DataHandler {
 			try {
 				// createTables(db);
 				db.execSQL(UserTable.TABLE_CREATE_USER);
+				db.execSQL(UserTable.TABLE_CREATE_USER1);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

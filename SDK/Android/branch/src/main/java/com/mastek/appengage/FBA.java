@@ -36,7 +36,7 @@ public class FBA extends FirebaseMessagingService {
 
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
-                .setSmallIcon(R.drawable.ic_launcher)
+                .setSmallIcon(R.drawable.appicon)
                 .setContentTitle("Firebase Push Notification From Library")
                 .setContentText(messageBody)
                 .setAutoCancel(true)
