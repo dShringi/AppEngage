@@ -1,0 +1,74 @@
+<!doctype html>
+<head>
+	<title>Mobile Analytics - Screen Analytics</title>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="assets/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="assets/css/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+    <script src="assets/js/jquery.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="assets/js/bootstrap.min.js"></script>
+    <script src="assets/js/d3.v3.min.js"></script>
+    <script src="assets/js/d3.legend.js"></script>
+    <script src="assets/js/moment.min.js"></script>
+    <link rel="stylesheet" href="assets/css/bootstrap-select.min.css">
+    <script src="assets/js/bootstrap-select.min.js"></script>
+    <link rel="stylesheet" href="assets/css/theme.blue.css">
+    <link rel="stylesheet" href="assets/css/sweetalert.css">
+    <script src="assets/js/sweetalert.min.js"></script>
+    <script src="assets/js/constants.js"></script>
+
+    <script src="assets/js/servicecalls.js"></script>
+    <script src="assets/js/daterangepicker.js"></script>
+    <script src="assets/js/clockpicker.js"></script>
+	<script src="assets/js/jquery.circular-carousel.js"></script> 
+	<script src="assets/js/screen-analytics.js"></script>
+    <link rel="stylesheet" href="assets/css/campaign.css">
+    <link rel="stylesheet" href="assets/css/daterangepicker.css">
+    <link rel="stylesheet" href="assets/css/clockpicker.css">
+	<link rel="stylesheet" href="assets/css/normalize.css">
+	<link rel="stylesheet" href="assets/css/foundation.min.css">
+	<link rel="stylesheet" href="assets/css/screen-analytics.css">
+	<link rel="stylesheet" href="assets/css/jquery.circular-carousel.css">
+</head>
+<body  style="height:100vh; background-color: #ffffff;">
+	<aside class="left-side sticky-left-side" tabindex="5000"></aside>
+	<aside class="main-container">
+		<section class="breadcrumb bg-white border-bottom paddl30">
+                <ul>
+                    <li>Screen Analytics</li>
+                </ul>
+        </section>
+		<section class="border-bottom paddl50 mrgnBtm0">
+                <div class="row chart-header">
+                    <div class="col-md-6 txt-drk-gray margnTp-5">
+						<div>
+							<div id="dateRange" class="pull-left">
+								<i class="glyphicon glyphicon-calendar txt-green fa fa-calendar"></i><span></span><b class="caret"></b>
+							</div>
+						</div>
+                    </div>
+                </div>
+        </section>
+		<section class="section-carousel paddl50 paddr50 mrgnBtm0 bg-white">
+			<div class="row">
+			<ul class="carousel">
+				<li class="item active"></li>
+				<li class="item"></li>
+				<li class="item"></li>
+				<li class="item"></li>
+				<li class="item"></li>
+			</ul>
+			</div>
+			<div class="controls">
+			<a href="#" class="previous">Previous</a> 
+			<a href="#" class="next">Next</a>
+			</div>
+		</section>
+	</aside>
+	<div class="overlay"></div>
+	
+</body>

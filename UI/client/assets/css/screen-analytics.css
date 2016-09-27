@@ -1,0 +1,42 @@
+.section-carousel .row {
+	text-align: center;
+}
+
+.section-carousel .carousel {
+	left: 50%;
+	position: absolute;
+	width: 1000px;
+	margin-left: -500px;
+	overflow: hidden;
+	height: 500px;
+	top: 50px;
+}
+
+.section-carousel .carousel .item {
+	width: 350px;
+	height: 250px;
+	background: url('http://placehold.it/350x250') top left no-repeat;
+	background-size: 100%;
+	vertical-align: middle;
+	line-height: 150px;
+	box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+.section-carousel .controls {
+	position: absolute;
+	top: 265px;
+	width: 150px;
+	z-index: 30;
+}
+
+.section-carousel .controls a {
+	display: block;
+}
+
+.section-carousel .controls .previous {
+	float: left;
+}
+
+.section-carousel .controls .next {
+	float: right;
+}

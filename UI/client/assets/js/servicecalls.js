@@ -152,6 +152,7 @@ var service = {
 	                "creationDate": creationdate,
 	                "pn_msg": arr[2],
 	                "endDate": null,
+	                "total": 0,
 	                "query": {}
 	            }
 
@@ -167,6 +168,7 @@ var service = {
 	                "creationDate": creationdate,
 	                "pn_msg": arr[2],
 	                "endDate": null,
+	                "total": 0,
 	                "query": {}
 	            }
 
@@ -190,6 +192,7 @@ var service = {
 	                "creationDate": creationdate,
 	                "pn_msg": arr[2],
 	                "endDate": parseInt(arr[7]),
+	                "total": 0,
 	                "query": {}
 	            }
 	        }
@@ -206,6 +209,7 @@ var service = {
 	                "creationDate": creationdate,
 	                "pn_msg": arr[2],
 	                "endDate": parseInt(arr[7]),
+                    "total": 0,
 	                "query": {}
 	            }
 	        }
