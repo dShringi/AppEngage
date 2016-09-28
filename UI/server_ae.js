@@ -18,6 +18,8 @@ var eventController = require('./server/controllers/eventsController');
 var campaignController = require('./server/controllers/campaignController');
 var cohortController = require('./server/controllers/cohortController');
 
+var audienceController = require('./server/controllers/audienceController');
+
 app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser()); // get information from html forms
 app.get('/', function (req, res) {
@@ -43,6 +45,12 @@ app.put('/appengage/updateCampaign',campaignController.updateCampaign);
 app.delete('/appengage/deleteCampaign',campaignController.deleteCampaign);
 app.get('/appengage/fetchAllCampaigns',campaignController.fetchAllCampaigns);
 app.get('/appengage/fetchCohorts',cohortController.fetchCohorts);
+
+// fetch api for Audience part
+app.get('/appengage/audience/mnu',audienceController.fetchAllManufacturer);
+app.get('/appengage/audience/mnu/:manufacturer',audienceController.fetchUserManufacturer);
+app.get('/appengage/audience/osv/:manufacturer/version',audienceController.fetchUserManufacturerAndVersion);
+
 }catch(ex){
   console.log(ex);
 }
