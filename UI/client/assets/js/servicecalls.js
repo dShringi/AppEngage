@@ -352,6 +352,26 @@ var service = {
 	        }
 	    })
 
+	},
+
+	populateMnu: function () {
+	    $.ajax({
+	        type: 'GET',
+	        url: "assets/json/audience_mnu.json",
+	        contentType: "application/json",
+	        datatype: "json",
+	        success: function (data) {
+	            console.log(data);
+	        },
+	        error: function (x, t, m) {
+	            alert("Error connecting to server");
+	            if (t === "timeout") {
+	                alert("timeout");
+	            } else {
+	                //alert(t);
+	            }
+	        }
+	    })
 	}
 	
 };

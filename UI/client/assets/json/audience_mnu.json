@@ -1,0 +1,25 @@
+{
+  "_id": "mnu",
+  "iOS": [
+    {
+      "key": "Apple"
+    }
+  ],
+  "Android": [
+    {
+      "key": "Samsung"
+    },
+    {
+      "key": "Lenovo"
+    },
+    {
+      "key": "Motorola"
+    },
+    {
+      "key": "Xiaomi"
+    },
+    {
+      "key": "LG"
+    }
+  ]
+}

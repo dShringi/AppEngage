@@ -10,6 +10,7 @@ $(document).ready(function () {
     for (i = 1; i < 31;i++){
         $("select#day-number-type").append("<option value='"+i+"'>" + i + "</option>");
     }
+    
 
     $("div.section-creative").css("display", "none");
     $("div.section-audience").css("display", "none");
@@ -22,6 +23,14 @@ $(document).ready(function () {
     $(".audience-edit").hide();
     $(".scheduling-edit").hide();
     $(".scheduled-block").hide();
+    $("select#dropdown-mnu").show();
+    $("select#dropdown-model").hide();
+    $("select#dropdown-appv").hide();
+    $("select#dropdown-platform").hide();
+    $("select#dropdown-devtype").hide();
+    $("select#dropdown-osv").hide();
+
+    service.populateMnu();
 
     $('input[type=radio][name=scheduling-type]').change(function () {
         if (this.value == 'immediately') {
@@ -65,6 +74,32 @@ $(document).ready(function () {
         $("select#day-type").hide();
         $("select#day-number-type").hide();
     }
+
+    $("select.dropdown-audience").change(function () {
+        $("select.audience-sub-dropdown").hide();
+        switch ($(this).val()) {
+            case "mnu":
+                $("select#dropdown-mnu").show();
+                break;
+            case "model":
+                $("select#dropdown-model").show();
+                break;
+            case "appv":
+                $("select#dropdown-appv").show();
+                break;
+            case "platform":
+                $("select#dropdown-platform").show();
+                break;
+            case "devtype":
+                $("select#dropdown-devtype").show();
+                break;
+            case "osv":
+                $("select#dropdown-osv").show();
+                break;
+            default:
+                break;
+        }
+    });
 
     $("select#send-type").change(function () {
         switch ($(this).val()) {

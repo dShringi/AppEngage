@@ -92,22 +92,21 @@
                                         <input type="radio" name="audience-type" disabled value="saved"><span class="radio-text">Saved Audience</span>
                                         <input type="radio" name="audience-type" disabled value="new"><span class="radio-text">New Audience</span>
                                         <div>
-                                            <span>People who</span>
-                                            <select id="input-behaviour" class="form-control" placeholder="Person's behaviour">
-                                                <option>1</option>
-                                                <option>2</option>
-                                                <option>3</option>
-                                                <option>4</option>
+                                            <span>People using</span>
+                                            <select class="form-control dropdown-audience">
+                                                <option value="mnu">Manufacturer</option>
+                                                <option value="model">Model</option>
+                                                <option value="appv">Application Version</option>
+                                                <option value="platform">Platform</option>
+                                                <option value="devtype">Device Type</option>
+                                                <option value="osv">OS</option>
                                             </select>
-                                        </div>
-                                        <div class="audience-criteria-1">
-                                            <span>People who</span>
-                                            <select id="input-behaviour" class="form-control">
-                                                <option>1</option>
-                                                <option>2</option>
-                                                <option>3</option>
-                                                <option>4</option>
-                                            </select>
+                                            <select class="audience-sub-dropdown" id="dropdown-mnu"></select>
+                                            <select class="audience-sub-dropdown" id="dropdown-model"></select>
+                                            <select class="audience-sub-dropdown" id="dropdown-appv"></select>
+                                            <select class="audience-sub-dropdown" id="dropdown-platform"></select>
+                                            <select class="audience-sub-dropdown" id="dropdown-devtype"></select>
+                                            <select class="audience-sub-dropdown" id="dropdown-osv"></select>
                                         </div>
                                         <button class="btn">Save Audience</button>
                                         <button class="btn next-audience" onclick="nextToggle('.section-audience', this);">Next</button>
