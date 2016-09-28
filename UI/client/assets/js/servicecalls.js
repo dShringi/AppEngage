@@ -362,7 +362,6 @@ var service = {
 	        datatype: "json",
 	        success: function (data) {
 	            console.log(data);
-	            console.log(JSON.parse(data));
 	            console.log(data.Android);
 	            console.log(JSON.parse(data.Android));
 	        },
