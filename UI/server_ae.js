@@ -48,8 +48,9 @@ app.get('/appengage/fetchCohorts',cohortController.fetchCohorts);
 
 // fetch api for Audience part
 app.get('/appengage/audience/mnu',audienceController.fetchAllManufacturer);
-app.get('/appengage/audience/mnu/:manufacturer',audienceController.fetchUserManufacturer);
-app.get('/appengage/audience/osv/:manufacturer/version',audienceController.fetchUserManufacturerAndVersion);
+app.get('/appengage/audience/mnu/:os',audienceController.fetchOSManufacturer);
+app.get('/appengage/audience/os',audienceController.fetchAllOperatingSystem);
+app.get('/appengage/audience/osv/:os/version',audienceController.fetchVersionFromOS);
 
 }catch(ex){
   console.log(ex);
