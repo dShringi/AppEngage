@@ -354,20 +354,40 @@ var service = {
 
 	},
 
-	populateMnu: function () {
+	populateFilters: function (fType) {
+	    switch (fType) {
+	        case "mnu":
+	            urllink = "audience/mnu";
+	            break;
+	        case "model":
+	            urllink = "audience/model";
+	            break;
+	        case "appv":
+	            urllink = "audience/appv";
+	            break;
+	        case "platform":
+	            urllink = "audience/os";
+	            break;
+	        case "devtype":
+	            urllink = "audience/device";
+	            break;
+	        case "osv":
+	            urllink = "audience/osv";
+	            break;
+	        default:
+	            break;
+	    }
+	    console.log(APIBaseURL + urllink + "?akey=4170b44d6459bba992acaa857ac5b25d7fac6cc1");
 	    $.ajax({
 	        type: 'GET',
-	        url: "assets/json/audience_mnu.json",
+	        url: APIBaseURL + urllink +"?akey=4170b44d6459bba992acaa857ac5b25d7fac6cc1",
 	        contentType: "application/json",
 	        datatype: "json",
 	        success: function (data) {
 	            console.log(data);
-	            console.log(data.Android);
-	            var mnuarr = [];
-	            for (i = 0; i < data.Android.length; i++) {
-	                mnuarr.push(data.Android[i]);
+	            for (i = 0; i < data.length; i++) {
+	                $("select#dropdown-"+fType).append("<option value=" + data[i] + ">" + data[i] + "</option>")
 	            }
-	            console.log(mnuarr);
 	        },
 	        error: function (x, t, m) {
 	            alert("Error connecting to server");

@@ -169,3 +169,35 @@ select#day-number-type{
     font-weight: bold;
     word-wrap:break-word;
 }
+
+.new-audience .dropdown-audience{
+	display: inline-block;
+	width: 135px;
+	padding: 3px 3px;
+	font-size: 12px;
+	
+}
+
+.new-audience .audience-sub-dropdown{
+	margin-left: 5px;
+	display: inline-block;
+	width: 115px;
+	padding: 3px 3px;
+	font-size: 12px;
+}
+
+.new-audience div{
+	padding-top: 10px;
+}
+
+.new-audience .fa-plus-square{
+	margin-left: 5px;
+	font-size: 1.5em;
+	vertical-align: middle;
+}
+
+.new-audience .fa-trash-o{
+	margin-left: 5px;
+	font-size: 1.5em;
+	padding-top: 5px;
+}

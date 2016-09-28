@@ -20,6 +20,7 @@
         <link rel="stylesheet" href="assets/css/theme.blue.css">
         <link rel="stylesheet" href="assets/css/sweetalert.css">
         <script src="assets/js/sweetalert.min.js"></script>
+        <script src="assets/js/select2.full.min.js"></script>
         <script src="assets/js/constants.js"></script>
         <script src="assets/js/servicecalls.js"></script>
         <script src="assets/js/daterangepicker.js"></script>
@@ -28,6 +29,7 @@
         <link rel="stylesheet" href="assets/css/campaign.css">
         <link rel="stylesheet" href="assets/css/daterangepicker.css">
         <link rel="stylesheet" href="assets/css/clockpicker.css">
+        <link rel="stylesheet" href="assets/css/select2.min.css">
     </head>
     <body style="height:100vh; background-color: #ffffff;">
         <aside class="left-side sticky-left-side" tabindex="5000"></aside>
@@ -89,27 +91,11 @@
                                     <div class="col-md-11">
                                         <p>Who should receive this push campaign?</p>
                                         <input type="radio" name="audience-type" value="everyone" checked><span class="radio-text">Everyone</span>
-                                        <input type="radio" name="audience-type" disabled value="saved"><span class="radio-text">Saved Audience</span>
-                                        <input type="radio" name="audience-type" disabled value="new"><span class="radio-text">New Audience</span>
-                                        <div>
-                                            <span>People using</span>
-                                            <select class="form-control dropdown-audience">
-                                                <option value="mnu">Manufacturer</option>
-                                                <option value="model">Model</option>
-                                                <option value="appv">Application Version</option>
-                                                <option value="platform">Platform</option>
-                                                <option value="devtype">Device Type</option>
-                                                <option value="osv">OS</option>
-                                            </select>
-                                            <select class="audience-sub-dropdown" id="dropdown-mnu"></select>
-                                            <select class="audience-sub-dropdown" id="dropdown-model"></select>
-                                            <select class="audience-sub-dropdown" id="dropdown-appv"></select>
-                                            <select class="audience-sub-dropdown" id="dropdown-platform"></select>
-                                            <select class="audience-sub-dropdown" id="dropdown-devtype"></select>
-                                            <select class="audience-sub-dropdown" id="dropdown-osv"></select>
-                                        </div>
-                                        <button class="btn">Save Audience</button>
-                                        <button class="btn next-audience" onclick="nextToggle('.section-audience', this);">Next</button>
+                                        <!--<input type="radio" name="audience-type" disabled value="saved"><span class="radio-text">Saved Audience</span>-->
+                                        <input type="radio" name="audience-type" value="new"><span class="radio-text">New Audience</span>
+                                        <div class="new-audience"></div>
+                                        <!--<button class="btn">Save Audience</button>-->
+                                        <button class="btn next-audience" onclick="nextToggle('.section-audience', this);" style="display:block;">Next</button>
                                     </div>
                                 </div>
                              </div>

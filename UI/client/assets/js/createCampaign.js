@@ -1,3 +1,5 @@
+var ddArr = [];
+
 $(document).ready(function () {
 
     $('.left-side').load("menu.html");
@@ -9,8 +11,7 @@ $(document).ready(function () {
 
     for (i = 1; i < 31;i++){
         $("select#day-number-type").append("<option value='"+i+"'>" + i + "</option>");
-    }
-    
+    }    
 
     $("div.section-creative").css("display", "none");
     $("div.section-audience").css("display", "none");
@@ -23,6 +24,7 @@ $(document).ready(function () {
     $(".audience-edit").hide();
     $(".scheduling-edit").hide();
     $(".scheduled-block").hide();
+    $("div.new-audience").hide();
     $("select#dropdown-mnu").show();
     $("select#dropdown-model").hide();
     $("select#dropdown-appv").hide();
@@ -30,7 +32,31 @@ $(document).ready(function () {
     $("select#dropdown-devtype").hide();
     $("select#dropdown-osv").hide();
 
-    service.populateMnu();
+    $('input[type=radio][name=audience-type]').change(function () {
+        if (this.value === 'new') {
+            $("div.new-audience").show();
+            if (!$.trim($("div.new-audience").html())) {
+                $("div.new-audience").append("<div id='new-audi-row1'></div>")
+                $("div.new-audience #new-audi-row1").append("<span>People using</span>\
+                                            <select class='form-control dropdown-audience' onchange='addSubFilter(this)'>\
+                                                <option value='mnu'>Manufacturer</option>\
+                                                <option value='model'>Model</option>\
+                                                <option value='appv'>Application Version</option>\
+                                                <option value='platform'>Platform</option>\
+                                                <option value='devtype'>Device Type</option>\
+                                                <option value='osv'>OS</option>\
+                                            </select>");
+                $("div.new-audience #new-audi-row1").append("<select class='audience-sub-dropdown form-control' id='dropdown-mnu'></select>");
+                //$("div.new-audience #new-audi-row1 select.audience-sub-dropdown").select2();
+                $("div.new-audience #new-audi-row1").append("<i class='fa fa-plus-square' onclick='addAudienceFilter(this)' aria-hidden='true'></i>")
+                service.populateFilters("mnu");
+            }
+        }
+        else if (this.value === 'everyone') {
+            $("div.new-audience").hide();
+        }
+
+    });
 
     $('input[type=radio][name=scheduling-type]').change(function () {
         if (this.value == 'immediately') {
@@ -75,31 +101,6 @@ $(document).ready(function () {
         $("select#day-number-type").hide();
     }
 
-    $("select.dropdown-audience").change(function () {
-        $("select.audience-sub-dropdown").hide();
-        switch ($(this).val()) {
-            case "mnu":
-                $("select#dropdown-mnu").show();
-                break;
-            case "model":
-                $("select#dropdown-model").show();
-                break;
-            case "appv":
-                $("select#dropdown-appv").show();
-                break;
-            case "platform":
-                $("select#dropdown-platform").show();
-                break;
-            case "devtype":
-                $("select#dropdown-devtype").show();
-                break;
-            case "osv":
-                $("select#dropdown-osv").show();
-                break;
-            default:
-                break;
-        }
-    });
 
     $("select#send-type").change(function () {
         switch ($(this).val()) {
@@ -253,6 +254,99 @@ $(document).ready(function () {
     });
 
 });
+
+
+function addAudienceFilter(currdiv) {
+
+    ddArr = [];
+
+    $(currdiv).parent().siblings().children().next().each(function () {
+        if ($(this).val() != null) {
+            console.log($(this).val());
+            ddArr.push($(this).val());
+        }
+    })
+    //console.log($(currdiv).parent().siblings().children().next().val());
+    console.log($(currdiv).parent().children().next().val());
+    ddArr.push($(currdiv).parent().children().next().val());
+    console.log(ddArr);
+    console.log($(currdiv).parent().parent().children().length);
+    var cntfilter = $(currdiv).parent().parent().children().length + 1;
+
+    $("div.new-audience").append("<div id='new-audi-row"+cntfilter+"'></div>")
+    $("div.new-audience #new-audi-row"+cntfilter).append("<span>People using</span>\
+                                            <select class='form-control dropdown-audience' onchange='addSubFilter(this)'>\
+                                                <option value='mnu'>Manufacturer</option>\
+                                                <option value='model'>Model</option>\
+                                                <option value='appv'>Application Version</option>\
+                                                <option value='platform'>Platform</option>\
+                                                <option value='devtype'>Device Type</option>\
+                                                <option value='osv'>OS</option>\
+                                            </select>");
+    $("div.new-audience #new-audi-row" + cntfilter).append("<i class='fa fa-trash-o pull-right' onclick='removeFilter(this)'  aria-hidden='true'></i>");
+    $(currdiv).parent().children().attr("disabled", "disabled");
+    //$(curr).parent().prev().remove(".fa-trash-o");
+    $(currdiv).prevAll("i.fa.fa-trash-o.pull-right").remove();
+    $(currdiv).remove();
+    $("div.new-audience #new-audi-row" + cntfilter + " select.dropdown-audience > option").each(function () {
+        //console.log($(this).val());
+        if ($.inArray($(this).val(), ddArr) != -1) {
+            //console.log($(this).val());
+            $(this).attr("disabled", "disabled");
+        }
+    })
+}
+
+function addSubFilter(curr) {
+    if ($(curr).parent().children().hasClass("audience-sub-dropdown")) {
+        $(curr).nextAll(".audience-sub-dropdown").remove();
+        $(curr).nextAll(".fa-plus-square").remove();
+    }
+    switch ($(curr).val()) {
+        case "mnu":
+            $(curr).parent().append("<select class='audience-sub-dropdown form-control' id='dropdown-mnu'></select>");                                    
+            break;                                               
+        case "model":                                            
+            $(curr).parent().append("<select class='audience-sub-dropdown form-control' id='dropdown-model'></select>");
+            break;                                               
+        case "appv":                                             
+            $(curr).parent().append("<select class='audience-sub-dropdown form-control' id='dropdown-appv'></select>");
+            break;                                               
+        case "platform":                                         
+            $(curr).parent().append("<select class='audience-sub-dropdown form-control' id='dropdown-platform'></select>");
+            break;                                               
+        case "devtype":                                          
+            $(curr).parent().append("<select class='audience-sub-dropdown form-control' id='dropdown-devtype'></select>");
+            break;                                               
+        case "osv":                                              
+            $(curr).parent().append("<select class='audience-sub-dropdown form-control' id='dropdown-osv'></select>");
+            break;
+        default:
+            break;
+    }
+    service.populateFilters($(curr).val());
+    //$("select.audience-sub-dropdown").select2();
+    $(curr).parent().append("<i class='fa fa-plus-square' onclick='addAudienceFilter(this)' aria-hidden='true'></i>");
+    
+}
+
+// remove filter
+function removeFilter(curr) {
+    ddArr.pop();
+    console.log(ddArr);
+    //re-enable the prev div
+    $(curr).parent().prev().children().removeAttr("disabled");
+
+    //check if its first filter row; if it is then dont append trash can
+    if (!$(curr).parent().prev().is("#new-audi-row1")) {
+        $(curr).parent().prev().append("<i class='fa fa-trash-o pull-right' onclick='removeFilter(this)' aria-hidden='true'></i>");
+    }
+    //append add filter sign
+    $(curr).parent().prev().append("<i class='fa fa-plus-square' onclick='addAudienceFilter(this)' aria-hidden='true'></i>");
+
+    //remove this entire div
+    $(curr).parent().remove();
+}
 
 function nextToggle(sectionClass, buttn) {
     var nxt = false;
