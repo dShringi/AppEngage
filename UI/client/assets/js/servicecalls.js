@@ -362,6 +362,7 @@ var service = {
 	        datatype: "json",
 	        success: function (data) {
 	            console.log(data);
+	            console.log(data.Android.key);
 	        },
 	        error: function (x, t, m) {
 	            alert("Error connecting to server");
