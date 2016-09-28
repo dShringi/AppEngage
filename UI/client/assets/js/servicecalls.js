@@ -363,7 +363,11 @@ var service = {
 	        success: function (data) {
 	            console.log(data);
 	            console.log(data.Android);
-	            console.log(JSON.parse(data.Android));
+	            var mnuarr = [];
+	            for (i = 0; i < data.Android.length; i++) {
+	                mnuarr.push(data.Android[i]);
+	            }
+	            console.log(mnuarr);
 	        },
 	        error: function (x, t, m) {
 	            alert("Error connecting to server");
