@@ -386,12 +386,15 @@ var service = {
 	        datatype: "json",
 	        success: function (data) {
 	            console.log(data);
+	            $("select#dropdown-" + fType).css("opacity", "0");
 	            for (i = 0; i < data.length; i++) {
 	                $("select#dropdown-"+fType).append("<option value=" + data[i] + ">" + data[i] + "</option>")
 	            }
 
 	            $('select#dropdown-' + fType).multipleSelect({
-	                selectAll: false
+	                selectAll: false,
+	                allSelected: false,
+                    countSelected: false
 	            });
 
 	            //if (data.length >= 3) {
