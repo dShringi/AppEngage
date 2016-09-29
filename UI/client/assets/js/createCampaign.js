@@ -47,7 +47,7 @@ $(document).ready(function () {
                                                 <option value='os'>OS</option>\
                                             </select>");
                 $("div.new-audience #new-audi-row1").append("<div class='hidden-field' style='display: none'>mnu</div>");
-                $("div.new-audience #new-audi-row1").append("<select class='audience-sub-dropdown form-control' id='dropdown-mnu' multiple></select>");
+                $("div.new-audience #new-audi-row1").append("<select class='audience-sub-dropdown form-control' id='dropdown-mnu' multiple size='1' style='opacity:0'></select>");
                 //$("div.new-audience #new-audi-row1 select.audience-sub-dropdown").select2();
                 $("div.new-audience #new-audi-row1").append("<i class='fa fa-plus-square' onclick='addAudienceFilter(this)' aria-hidden='true'></i>")
                 service.populateFilters("mnu");
@@ -281,6 +281,8 @@ $(document).ready(function () {
         $("div.phone-msg").html($("textarea#campaign-msg").val());
     });
 
+
+
 });
 
 
@@ -335,6 +337,14 @@ function addAudienceFilter(currdiv) {
 
     // height of side-line
     $("div.audience-row .side-line .div2").css("height", $("div.audience-row .section-audience .col-md-11").height() + 20);
+
+    if ($("div.new-audience #new-audi-row" + cntfilter + " select.dropdown-audience").val() === "mnu") {
+        $("div.new-audience #new-audi-row" + cntfilter).append("<div class='hidden-field' style='display: none'>mnu</div>");
+        $("div.new-audience #new-audi-row" + cntfilter).append("<select class='audience-sub-dropdown form-control' id='dropdown-mnu' multiple size='1' style='opacity:0'></select>");
+        service.populateFilters("mnu");
+        $("div.new-audience #new-audi-row" + cntfilter).append("<i class='fa fa-plus-square' onclick='addAudienceFilter(this)' aria-hidden='true'></i>");
+    }
+    
 }
 
 function addSubFilter(curr) {
@@ -348,27 +358,27 @@ function addSubFilter(curr) {
     switch ($(curr).val()) {
         case "mnu":
             $(curr).parent().append("<div class='hidden-field' style='display: none'>mnu</div>");
-            $(curr).parent().append("<select class='audience-sub-dropdown form-control' id='dropdown-mnu' multiple></select>");                                    
+            $(curr).parent().append("<select class='audience-sub-dropdown form-control' id='dropdown-mnu' multiple size='1' style='opacity:0'></select>");                                    
             break;                                               
         case "model":
             $(curr).parent().append("<div class='hidden-field' style='display: none'>model</div>");
-            $(curr).parent().append("<select class='audience-sub-dropdown form-control' id='dropdown-model' multiple></select>");
+            $(curr).parent().append("<select class='audience-sub-dropdown form-control' id='dropdown-model' multiple size='1' style='opacity:0'></select>");
             break;                                               
         case "appversion":
             $(curr).parent().append("<div class='hidden-field' style='display: none'>appversion</div>");
-            $(curr).parent().append("<select class='audience-sub-dropdown form-control' id='dropdown-appversion' multiple></select>");
+            $(curr).parent().append("<select class='audience-sub-dropdown form-control' id='dropdown-appversion' multiple size='1' style='opacity:0'></select>");
             break;                                               
         case "platform":
-            $(curr).parent().append("<div class='hidden-field' style='display: none'>platform</div>");
-            $(curr).parent().append("<select class='audience-sub-dropdown form-control' id='dropdown-platform' multiple></select>");
+            $(curr).parent().append("<div class='hidden-field' style='display: none'>platform</div>"); 
+            $(curr).parent().append("<select class='audience-sub-dropdown form-control' id='dropdown-platform' multiple size='1' style='opacity:0'></select>");
             break;                                               
         case "dt":
             $(curr).parent().append("<div class='hidden-field' style='display: none'>dt</div>");
-            $(curr).parent().append("<select class='audience-sub-dropdown form-control' id='dropdown-dt' multiple></select>");
+            $(curr).parent().append("<select class='audience-sub-dropdown form-control' id='dropdown-dt' multiple size='1' style='opacity:0'></select>");
             break;                                               
         case "os":
             $(curr).parent().append("<div class='hidden-field' style='display: none'>os</div>");
-            $(curr).parent().append("<select class='audience-sub-dropdown form-control' id='dropdown-os' multiple></select>");
+            $(curr).parent().append("<select class='audience-sub-dropdown form-control' id='dropdown-os' multiple size='1' style='opacity:0'></select>");
             break;
         default:
             break;

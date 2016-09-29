@@ -211,3 +211,11 @@ button[disabled]{
 	background-color: #eee;
 	cursor: not-allowed;
 }
+
+.ms-drop ul li label span{
+	vertical-align: -webkit-baseline-middle;
+}
+
+.ms-drop ul li.ms-select-all label input{
+	vertical-align: sub !important;
+}
