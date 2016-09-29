@@ -32,14 +32,15 @@ module.exports.createCampaign = function(req,res){
 		
 		
 		var db = mongojs(config.connectionstring+akey);
-		db.collection(config.coll_campaigns).insert(req.body,function(err,res){
+		db.collection(config.coll_campaigns).insert(req.body,function(err,resp){
 			if(err){
 				logger.error(common.getErrorMessageFrom(err));
 				return res.json(JSON.parse('{"msg":"Failure"}'));
 			}
-			
-			return res.json(JSON.parse('{"msg":"success"}'));
+			console.log('before db closing');
 			db.close();
+			console.log('after db closing');
+			return res.json(JSON.parse('{"msg":"success"}'));
 		  });
 		  
 	});
