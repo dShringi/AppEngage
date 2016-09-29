@@ -392,9 +392,9 @@ var service = {
 	            }
 
 	            $('select#dropdown-' + fType).multipleSelect({
-	                selectAll: false,
 	                allSelected: false,
-                    countSelected: false
+	                countSelected: false,
+                    maxHeight: 180
 	            });
 
 	            //if (data.length >= 3) {
