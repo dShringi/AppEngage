@@ -9,6 +9,7 @@ module.exports = exports = function (server, producer) {
    	exports.end(server, producer);
 	exports.events(server,producer);
     exports.offline(server,producer);
+    exports.screen(server,producer);
 };
 
 exports.begin = function(server, producer) {
@@ -174,11 +175,36 @@ exports.offline = function(server, producer) {
             var data = {};
             var err;
             try{
-                var jSON = JSON.parse(request.payload);
+                var jSON = JSON.parse(JSON.stringify(request.payload));
                 for(i=0;i<jSON.length;i++){
                     data.val = jSON[i];
                     console.log(data.val);
                 }
+            }catch(ex){
+                err = ex;
+            }
+            if(!err){
+                reply.statusCode = config.msgcodes.success;
+                reply({ message: config.messages.success });
+            }else{
+                reply.statusCode = config.msgcodes.failure;
+                reply({ message: config.messages.failure });
+            }
+        }
+    });
+};
+
+exports.screen = function(server, producer) {
+    //Server route for Real Time Events
+    server.route({
+        method: config.url.post,
+        path: config.url.screenep,
+        handler: function (request, reply) {
+            var data = {};
+            var err;
+            try{
+                data.val = JSON.parse(request.payload);
+                console.log(data.val);
             }catch(ex){
                 err = ex;
             }

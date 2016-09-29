@@ -33,6 +33,7 @@ config.url.endep = '/api/i/single/E'
 config.url.crashep = '/api/i/single/C';
 config.url.eventsep = '/api/i/single/event';
 config.url.offlineep = '/api/i/bulk/O';
+config.url.screenep = '/api/i/single/S';
 
 config.app = {};
 config.defaultAppTimeZone = 'Asia/Kolkata';
