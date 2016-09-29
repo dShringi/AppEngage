@@ -1,3 +1,4 @@
+//var appKey="4170b44d6459bba992acaa857ac5b25d7fac6cc1";
 var service = {
 	
     validateLogin: function (uname, pwd) {
@@ -138,8 +139,8 @@ var service = {
 	    console.log(arr);
 	    var creationdate = parseInt(moment(new Date()).format("YYYYMMDD"));
         // IMMEDIATE
-	    // ["Name", "Title", "Message", "everyone", "immediately", "now/later", trigger_time]
-        //    0        1         2           3            4              5            6
+	    // ["Name", "Title", "Message", "everyone", "immediately", "now/later", trigger_time, audience]
+        //    0        1         2           3            4              5            6          7
 	    if (arr[4] === "immediately") {
 	        if (arr[5] === "now") {
 	            var makeCampaignJSONReq = {
@@ -153,7 +154,7 @@ var service = {
 	                "pn_msg": arr[2],
 	                "endDate": null,
 	                "total": 0,
-	                "query": {}
+	                "query": arr[7]
 	            }
 
 	        }
@@ -169,15 +170,15 @@ var service = {
 	                "pn_msg": arr[2],
 	                "endDate": null,
 	                "total": 0,
-	                "query": {}
+	                "query": arr[7]
 	            }
 
 	        }
 	        
 	    }
 	    // SCHEDULED
-	    // ["name", "title", "message", "everyone", "scheduled", "cycle", "triggertime", "endtime", "MONTHLY_5"]
-	    //    0         1       2           3           4           5           6           7           8
+	    // ["name", "title", "message", "everyone", "scheduled", "cycle", "triggertime", "endtime", "MONTHLY_5", audience]
+	    //    0         1       2           3           4           5           6           7           8           9
 	    else if (arr[4] === "scheduled") {
 	        if (arr[5] === "monthly" || arr[5] === "weekly") {
 	            var makeCampaignJSONReq = {
@@ -193,7 +194,7 @@ var service = {
 	                "pn_msg": arr[2],
 	                "endDate": parseInt(arr[7]),
 	                "total": 0,
-	                "query": {}
+	                "query": arr[9]
 	            }
 	        }
 	        else if (arr[5] === "daily" || arr[5] === "alternate") {
@@ -210,7 +211,7 @@ var service = {
 	                "pn_msg": arr[2],
 	                "endDate": parseInt(arr[7]),
                     "total": 0,
-	                "query": {}
+	                "query": arr[9]
 	            }
 	        }
 	        
@@ -229,6 +230,7 @@ var service = {
 	                //swal("Success!", "Campaign successfully created", "success");
 	                //sessionStorage.setItem("campaignFlag", "true");
 	                //alert("aaa");
+
 	                swal({
 	                    title: "Success",
 	                    text: "Campaign successfully created.",
@@ -238,7 +240,6 @@ var service = {
                     function () {
                         window.location.href = "messaging.html";
                     });
-	                //window.location.href = "messaging.html";
 	            }
 
 	        },
@@ -362,25 +363,25 @@ var service = {
 	        case "model":
 	            urllink = "audience/model";
 	            break;
-	        case "appv":
-	            urllink = "audience/appv";
+	        case "appversion":
+	            urllink = "audience/appversion";
 	            break;
 	        case "platform":
+	            urllink = "audience/platform";
+	            break;
+	        case "dt":
+	            urllink = "audience/dt";
+	            break;
+	        case "os":
 	            urllink = "audience/os";
-	            break;
-	        case "devtype":
-	            urllink = "audience/device";
-	            break;
-	        case "osv":
-	            urllink = "audience/osv";
 	            break;
 	        default:
 	            break;
 	    }
-	    console.log(APIBaseURL + urllink + "?akey=4170b44d6459bba992acaa857ac5b25d7fac6cc1");
+	    console.log(APIBaseURL + urllink + "?akey="+appKey);
 	    $.ajax({
 	        type: 'GET',
-	        url: APIBaseURL + urllink +"?akey=4170b44d6459bba992acaa857ac5b25d7fac6cc1",
+	        url: APIBaseURL + urllink +"?akey"+appKey,
 	        contentType: "application/json",
 	        datatype: "json",
 	        success: function (data) {
@@ -388,6 +389,24 @@ var service = {
 	            for (i = 0; i < data.length; i++) {
 	                $("select#dropdown-"+fType).append("<option value=" + data[i] + ">" + data[i] + "</option>")
 	            }
+
+	            $('select#dropdown-' + fType).multipleSelect({
+	                selectAll: false
+	            });
+
+	            //if (data.length >= 3) {
+	            //    $('select#dropdown-' + fType).attr("size", "3");
+	            //}
+	            //else if (data.length < 1) {
+	            //    $('select#dropdown-' + fType).attr("size", "1");
+	            //}
+	            //else {
+	            //    $('select#dropdown-' + fType).attr("size", data.length);
+	            //}
+	            
+	            //$('select#dropdown-' + fType).parent().children().nextAll('.fa-trash-o').css("line-height", ($('select#dropdown-' + fType).parent().height() - 11)+"px");
+	            //console.log($('select#dropdown-' + fType).parent().height());
+	            //console.log($('select#dropdown-' + fType).parent().children().nextAll('.fa-trash-o'));
 	        },
 	        error: function (x, t, m) {
 	            alert("Error connecting to server");
