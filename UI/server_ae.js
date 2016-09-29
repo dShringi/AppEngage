@@ -61,7 +61,8 @@ app.get('/appengage/audience/dt',audienceController.fetchAllDevicetype);
 app.get('/appengage/audience/model/platform/:platform',audienceController.fetchModelFromPlatform);
 app.get('/appengage/audience/model',audienceController.fetchAllModel);
 
-
+app.get('/appengage/audience/appversion/platform/:platform',audienceController.fetchAppversionFromPlatform);
+app.get('/appengage/audience/appversion',audienceController.fetchAllAppversion);
 
 }catch(ex){
   console.log(ex);

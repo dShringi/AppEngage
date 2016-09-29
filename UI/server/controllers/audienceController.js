@@ -300,6 +300,80 @@ module.exports.fetchModelFromPlatform = function(req,res){
 	}	
 };
 
+
+//fetch all model
+//http://52.206.121.100/appengage/audience/appversion?akey=4170b44d6459bba992acaa857ac5b25d7fac6cc1
+module.exports.fetchAllAppversion = function(req,res){
+	var akey = req.query["akey"];
+	var searchObject ='{"_id":"appversion"}';
+	var returnResponse=[];
+	var db = mongojs(config.connectionstring+akey);
+	db.collection('coll_audience').find(JSON.parse(searchObject),function(err,resp){
+		if(err){
+			return res.json(JSON.parse('{"msg":"error is there"}'));
+		}else{
+			for(var i=0;i<resp.length;i++){
+				var mnuList = resp[i];
+				for (var key in mnuList) {
+					var val = mnuList[key];
+					for(var a=0;a<val.length;a++){
+						var allList = val[a].key;
+						if(allList != null){
+							var listVal = val[a].key;
+							//if(returnResponse.contains(listVal)){
+								returnResponse.push(listVal);
+							//}
+						}
+					}
+				}
+			}
+			return res.json(returnResponse);
+		}
+		db.close();
+	}); 
+};
+
+
+//fetch all model from operating system
+//http://52.206.121.100/appengage/audience/appversion/platform/iOS?akey=4170b44d6459bba992acaa857ac5b25d7fac6cc1
+module.exports.fetchAppversionFromPlatform = function(req,res){
+	var akey = req.query["akey"];
+	var platform = req.params.platform;
+	if(Boolean(platform)){
+		var searchObject ='{"_id":"appversion"}';
+		var projection = '{"'+platform+'":1}';
+		var returnResponse=[];
+		var db = mongojs(config.connectionstring+akey);
+		db.collection('coll_audience').find(JSON.parse(searchObject), JSON.parse(projection) ,function(err,resp){
+			if(err){
+				return res.json(JSON.parse('{"msg":"error is there"}'));
+			}else{
+				for(var i=0;i<resp.length;i++){
+					var mnuList = resp[i];
+					for (var key in mnuList) {
+						if (mnuList.hasOwnProperty(platform)) {
+							var val = mnuList[key];
+							for(var a=0;a<val.length;a++){
+								var allList = val[a].key;
+								if(allList != null){
+									returnResponse.push(val[a].key);
+								}
+							}
+						}
+					}
+				}
+				return res.json(returnResponse);
+			}
+			db.close();
+		}); 
+	}	
+};
+
+
+
+
+
+
 Array.prototype.contains = function(obj) {
     var i = this.length;
     while (i--) {
