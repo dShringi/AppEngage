@@ -381,7 +381,7 @@ var service = {
 	    console.log(APIBaseURL + urllink + "?akey="+appKey);
 	    $.ajax({
 	        type: 'GET',
-	        url: APIBaseURL + urllink +"?akey"+appKey,
+	        url: APIBaseURL + urllink + "?akey="+appKey,
 	        contentType: "application/json",
 	        datatype: "json",
 	        success: function (data) {
