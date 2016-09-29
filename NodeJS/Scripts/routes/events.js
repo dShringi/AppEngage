@@ -203,7 +203,7 @@ exports.screen = function(server, producer) {
             var data = {};
             var err;
             try{
-                data.val = JSON.parse(request.payload);
+                data.val = request.payload;
                 console.log(data.val);
             }catch(ex){
                 err = ex;
