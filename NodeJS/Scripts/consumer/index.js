@@ -58,7 +58,7 @@ common.getAppTimeZone(akey,function(err,appTZ){
 		logger.info(data);
 
 		currDate = Math.floor(Date.now()/1000);
-		if(data.val.rtc > currDate){
+		if(data.val.rtc > currDate || data.val.rtc === 0){
 			data.val.rtc = currDate;
 		}
 
