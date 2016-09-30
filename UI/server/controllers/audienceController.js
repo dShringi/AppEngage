@@ -6,8 +6,6 @@ var config  = require('../../config/config');
 var logger  = require('../../config/log.js');
 var common = require('../../commons/common.js');
 
-var url = 'mongodb://localhost:27017/mobile';
-
 //fetch all platform
 //http://52.206.121.100/appengage/audience/platform?akey=4170b44d6459bba992acaa857ac5b25d7fac6cc1
 module.exports.fetchAllPlatform = function(req,res){
@@ -167,10 +165,10 @@ module.exports.fetchOSFromPlatform = function(req,res){
 
 //fetch all device type
 //http://52.206.121.100/appengage/audience/dt?akey=4170b44d6459bba992acaa857ac5b25d7fac6cc1
+var returnResponse=[];
 module.exports.fetchAllDevicetype = function(req,res){
 	var akey = req.query["akey"];
 	var searchObject ='{"_id":"devType"}';
-	var returnResponse=[];
 	var db = mongojs(config.connectionstring+akey);
 	db.collection('coll_audience').find(JSON.parse(searchObject),function(err,resp){
 		if(err){
@@ -251,9 +249,7 @@ module.exports.fetchAllModel = function(req,res){
 						var allList = val[a].key;
 						if(allList != null){
 							var listVal = val[a].key;
-							//if(returnResponse.contains(listVal)){
 								returnResponse.push(listVal);
-							//}
 						}
 					}
 				}
@@ -320,9 +316,7 @@ module.exports.fetchAllAppversion = function(req,res){
 						var allList = val[a].key;
 						if(allList != null){
 							var listVal = val[a].key;
-							//if(returnResponse.contains(listVal)){
 								returnResponse.push(listVal);
-							//}
 						}
 					}
 				}
@@ -368,11 +362,6 @@ module.exports.fetchAppversionFromPlatform = function(req,res){
 		}); 
 	}	
 };
-
-
-
-
-
 
 Array.prototype.contains = function(obj) {
     var i = this.length;

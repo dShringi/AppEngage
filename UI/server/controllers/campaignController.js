@@ -5,6 +5,7 @@ var config  = require('../../config/config');
 var logger  = require('../../config/log.js');
 var common = require('../../commons/common.js');
 
+//mapping key need to be configured in db
 var map = new Object();
 map['mnu'] = 'lm';
 map['dt'] = 'ldt';
@@ -49,14 +50,11 @@ module.exports.createCampaign = function(req,res){
 				logger.error(common.getErrorMessageFrom(err));
 				return res.json(JSON.parse('{"msg":"Failure"}'));
 			}
-			console.log('before db closing');
 			db.close();
-			console.log('after db closing');
 			return res.json(JSON.parse('{"msg":"success"}'));
 		  });
 		  
 	});
-  //return res.json(JSON.parse('{"msg":"success"}'));
 };
 
 module.exports.updateCampaign = function(req,res){
@@ -270,34 +268,27 @@ function getLocalTimeWithoutHour(appTZ, dateStr){
 	return new Date(utcTimezone.format());
 }
 // find query logic
-
 function queryBuilder(JsonData){
 	var count =0;
 	var qryStr ='';
 	try {
-		for (var key in JsonData) {
-			var innerresultJson = new Object();
-			if (key == 'query') {
-				var query = JsonData[key];
-				for (var queryKey in query) {
-					var innerQuery = query[queryKey];
-					for (var innerKey in innerQuery) {
-						var ruleKey = getMapping(queryKey);
-						if(innerQuery.length >1){
-							qryStr+=formInnerArray(ruleKey, innerQuery);
-							break;
-						} else {
-							if(count==0){
-								qryStr+='"'+ruleKey+'":'+'"'+innerQuery[innerKey]+'"';
-							} else {
-								qryStr+=',"'+ruleKey+'":'+'"'+innerQuery[innerKey]+'"';						
-							}
-							count++;
-						}
+		for (var queryKey in JsonData) {
+			var innerQuery = JsonData[queryKey];
+			for (var innerKey in innerQuery) {
+				var ruleKey = getMapping(queryKey);
+				if(innerQuery.length >1){
+					qryStr+=formInnerArray(ruleKey, innerQuery);
+					break;
+				} else {
+					if(count==0){
+						qryStr+='"'+ruleKey+'":'+'"'+innerQuery[innerKey]+'"';
+					} else {
+						qryStr+=',"'+ruleKey+'":'+'"'+innerQuery[innerKey]+'"';						
 					}
-				}		
+					count++;
+				}
 			}
-		}
+		}	
 		var queryLength = qryStr.length;
 		var charAtQry = qryStr.charAt(queryLength-1);
 		if(charAtQry ==','){
@@ -325,5 +316,5 @@ function formInnerArray(ruleKey, query) {
 		}
 		count++;
 	}
-	return '"'+ruleKey+'":{"$in":['+StringQuery+']},';
+	return '"'+ruleKey+'":{"in":['+StringQuery+']},';
 }
