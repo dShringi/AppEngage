@@ -5,6 +5,16 @@ var config  = require('../../config/config');
 var logger  = require('../../config/log.js');
 var common = require('../../commons/common.js');
 
+var map = new Object();
+map['mnu'] = 'lm';
+map['dt'] = 'ldt';
+map['model'] = 'lmod';
+
+map['appversion'] = 'lavn';
+map['platform'] = 'lpf';
+map['os'] = 'losv';
+map['lcty'] = 'lcty';
+
 module.exports.createCampaign = function(req,res){
   console.log(req.body);
   console.log(req.query["akey"]);
@@ -30,6 +40,8 @@ module.exports.createCampaign = function(req,res){
 			body.endDate = parseInt(dateFormat(getLocalTimeWithoutHour(appTZ, body.endDate), "yyyymmdd"));
 		}
 		
+		body.query = queryBuilder(body.query);
+		console.log('body.query    '+body.query)
 		
 		var db = mongojs(config.connectionstring+akey);
 		db.collection(config.coll_campaigns).insert(req.body,function(err,resp){
@@ -256,4 +268,62 @@ function getLocalTimeWithoutHour(appTZ, dateStr){
 	var timezone = moment.tz(strDate, appTZ);
 	var utcTimezone = timezone.clone().tz("UTC");
 	return new Date(utcTimezone.format());
+}
+// find query logic
+
+function queryBuilder(JsonData){
+	var count =0;
+	var qryStr ='';
+	try {
+		for (var key in JsonData) {
+			var innerresultJson = new Object();
+			if (key == 'query') {
+				var query = JsonData[key];
+				for (var queryKey in query) {
+					var innerQuery = query[queryKey];
+					for (var innerKey in innerQuery) {
+						var ruleKey = getMapping(queryKey);
+						if(innerQuery.length >1){
+							qryStr+=formInnerArray(ruleKey, innerQuery);
+							break;
+						} else {
+							if(count==0){
+								qryStr+='"'+ruleKey+'":'+'"'+innerQuery[innerKey]+'"';
+							} else {
+								qryStr+=',"'+ruleKey+'":'+'"'+innerQuery[innerKey]+'"';						
+							}
+							count++;
+						}
+					}
+				}		
+			}
+		}
+		var queryLength = qryStr.length;
+		var charAtQry = qryStr.charAt(queryLength-1);
+		if(charAtQry ==','){
+			qryStr = qryStr.substring(0, queryLength - 1);
+		} 
+		return JSON.parse('{'+qryStr+'}');
+	}catch(err){
+		logger.error(common.getErrorMessageFrom(err));
+	}
+}
+
+function getMapping(k) {
+    return map[k];
+}
+
+function formInnerArray(ruleKey, query) {
+	var StringQuery = '';
+	var count =0; 
+	for (var queryKey in query) {
+		var hello = query[queryKey];
+		if(count==0){
+			StringQuery+= '"'+hello+'"';
+		} else {
+			StringQuery+= ',"'+hello+'"';
+		}
+		count++;
+	}
+	return '"'+ruleKey+'":{"$in":['+StringQuery+']},';
 }
