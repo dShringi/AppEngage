@@ -184,6 +184,7 @@ select#day-number-type{
 	width: 115px;
 	padding: 3px 3px;
 	font-size: 12px;
+	vertical-align: middle;
 }
 
 .new-audience div{
@@ -200,4 +201,21 @@ select#day-number-type{
 	margin-left: 5px;
 	font-size: 1.5em;
 	padding-top: 5px;
+}
+
+.ms-choice{
+	border: none !important;
+}
+
+button[disabled]{
+	background-color: #eee;
+	cursor: not-allowed;
+}
+
+.ms-drop ul li label span{
+	vertical-align: -webkit-baseline-middle;
+}
+
+.ms-drop ul li.ms-select-all label input{
+	vertical-align: sub !important;
 }
