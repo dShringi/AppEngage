@@ -171,7 +171,7 @@ async.waterfall(
 			lteval=parseInt(edmonthpart+endDateWithoutHour.substr(6, 2));
 
 			var yyyy=Number(sdyear);
-			var keyVal='{ "_'+ yyyy +'" : { "$elemMatch":{"$and":[{ "_id": { "$gte": '+ gteval +' }},{"_id": { "$lte": '+ lteval +' }}]}}}';
+			var keyVal='{"$and":[{ "_'+yyyy+'._id": { "$gte": '+ gteval +' }},{"_'+yyyy+'._id": { "$lte": '+ lteval +' }},{"ldt":{"$in":["'+typeListarray+'"]}}]}';
 			var resultObject=JSON.parse(keyVal);
 			db.collection(config.coll_users).count(resultObject,function(err,res){
 			distinctUsers=res;
