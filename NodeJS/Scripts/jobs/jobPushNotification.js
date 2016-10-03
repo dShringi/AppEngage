@@ -1,7 +1,7 @@
 // this script is used to send push notification 
 'use strict'
 
-//var logger = require('../conf/log.js');
+var logger = require('../conf/log.js');
 var config = require('../conf/config.js');
 var common = require('../commons/common');
 
