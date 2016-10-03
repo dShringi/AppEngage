@@ -1,4 +1,4 @@
-var appKey = "4170b44d6459bba992acaa857ac5b25d7fac6cc1";
+//var appKey = "4170b44d6459bba992acaa857ac5b25d7fac6cc1";
 var service = {
 	
     validateLogin: function (uname, pwd) {
