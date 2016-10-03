@@ -182,7 +182,7 @@ module.exports.fetchAllDevicetype = function(req,res){
 						var allList = val[a].key;
 						if(allList != null){
 							//if(!returnResponse.contains(allList)){
-								returnResponse.push(uniqBy(allList, JSON.stringify));
+								returnResponse.push(allList);
 							//}
 						}
 					}
@@ -372,7 +372,7 @@ Array.prototype.contains = function(obj) {
     }
     return false;
 }
-*/
+
 function uniqBy(a, key) {
     var seen = new Set();
     return a.filter(item => {
@@ -380,3 +380,4 @@ function uniqBy(a, key) {
         return seen.has(k) ? false : seen.add(k);
     });
 }
+*/
