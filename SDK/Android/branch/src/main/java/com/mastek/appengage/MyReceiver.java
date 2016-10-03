@@ -53,8 +53,8 @@ public class MyReceiver extends BroadcastReceiver {
                             JSONArray array = dbUserManager.findArray();
 
 //                            Log.e(TAG, "dbUserManager.find(this.user).......:----" + dbUserManager.find(this.user));
-
-                            MA.senddatawhenonline(array);
+                            new MA.SendJsonArrayToServerWhenOnline().execute(String.valueOf(array));
+                            //MA.senddatawhenonline(array);
 
                             Log.e(TAG, "database deleted:----");
 

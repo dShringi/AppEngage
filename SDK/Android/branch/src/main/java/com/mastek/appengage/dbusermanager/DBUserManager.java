@@ -191,7 +191,7 @@ public class DBUserManager implements Idao {
 		array.put(object);
 		}
 		Log.e("JsonObject","Database----"+array.toString());
-String veryLongString = array.toString();
+		String veryLongString = array.toString();
 		int maxLogSize = 1000;
 		for(int i = 0; i <= veryLongString.length() / maxLogSize; i++) {
 			int start = i * maxLogSize;

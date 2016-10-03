@@ -41,6 +41,8 @@ import com.mastek.appengage.MA;
 import com.mastek.appengage.dbusermanager.DBUserManager;
 import com.mastek.appengage.locservice.LocationService1;
 
+import org.json.JSONArray;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -48,6 +50,7 @@ import java.security.MessageDigest;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -97,6 +100,9 @@ public class Utils implements LocationListener,
 	public static int duration;
 	public static long startTime;
 	public static boolean gps_enabled;
+	public static JSONArray jsonArray;
+	public static HashMap hashMap;
+	public static boolean endApiCalled = false;
 	//public static String akey = "4170b44d6459bba992acaa857ac5b25d7fac6cc1";
 
 	public static String tokenGen = FirebaseInstanceId.getInstance().getToken();
