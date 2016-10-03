@@ -44,7 +44,9 @@ var iosFcm = new FCM(iosServerKey);
 					for (var i = 0; i < result.length; i++) {
 						var campaignResult = result[i];
 						var mongofindQuery = campaignResult.query;
-						usersCollection.find(mongofindQuery).toArray(function(err,docs) {
+						var findQueryString = JSON.stringify(mongofindQuery);
+						var findJsonQuery = JSON.parse(findQueryString.replace('***','$'));
+						usersCollection.find(findJsonQuery).toArray(function(err,docs) {
 							if (err) {
 								printErrorMessage(err);
 								db.close();

@@ -42,13 +42,12 @@ module.exports.createCampaign = function(req,res){
 		}
 		
 		body.query = queryBuilder(body.query);
-		console.log('body.query    '+JSON.stringify(body.query));
+		console.log('body.query    '+JSON.stringify(body));
 		
 		var db = mongojs(config.connectionstring+akey);
-		db.collection(config.coll_campaigns).insert(req.body,function(err,resp){
+		db.collection(config.coll_campaigns).insert(body,function(err,resp){
 			if(err){
 				logger.error(common.getErrorMessageFrom(err));
-				console.log('err  ' , err);
 				return res.json(JSON.parse('{"msg":"Failure"}'));
 			}
 			db.close();
@@ -313,5 +312,5 @@ function formInnerArray(ruleKey, query) {
 		}
 		count++;
 	}
-	return '"'+ruleKey+'":{"$in":['+StringQuery+']},';
+	return '"'+ruleKey+'":{"***in":['+StringQuery+']},';
 }
