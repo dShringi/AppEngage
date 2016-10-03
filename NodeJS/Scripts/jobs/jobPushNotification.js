@@ -58,7 +58,7 @@ var iosFcm = new FCM(iosServerKey);
 										try {
 											if(userResult.lpf == 'iOS'){
 												pushToFcmIos(message);
-											} else(userResult.lpf == 'A') {
+											} else if(userResult.lpf == 'A') {
 												pushToFcmAndroid(message);
 											}
 										} catch(err){
