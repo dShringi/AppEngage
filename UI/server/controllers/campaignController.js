@@ -42,12 +42,13 @@ module.exports.createCampaign = function(req,res){
 		}
 		
 		body.query = queryBuilder(body.query);
-		console.log('body.query    '+body.query)
+		console.log('body.query    '+JSON.stringify(body.query));
 		
 		var db = mongojs(config.connectionstring+akey);
 		db.collection(config.coll_campaigns).insert(req.body,function(err,resp){
 			if(err){
 				logger.error(common.getErrorMessageFrom(err));
+				console.log('err  ' , err);
 				return res.json(JSON.parse('{"msg":"Failure"}'));
 			}
 			db.close();
@@ -82,8 +83,6 @@ module.exports.deleteCampaign = function(req,res){
       logger.error(common.getErrorMessageFrom(err));
       return res.json(JSON.parse('{"msg":"Failure"}'));
     }else{
-      console.log(err);
-      console.log(resp);
       db.close();
       return res.json(JSON.parse('{"msg":"Success"}'));
     }
@@ -130,13 +129,11 @@ function getTriggerTime(schedule_type, cycle, recursive, trigger_time,appTZ, cre
 		switch(cycleType) {
 				case 'DAILY': {
 					var dayFlag = checkGreaterTime(returnDate);
-					console.log(dayFlag);
 					if(!dayFlag) {
 						returnDate.setDate(returnDate.getDate() + 1);
 					}
 				}break; 
 				case 'ALTERNATE': {
-					console.log('came here');
 					var dayFlag = checkGreaterTime(returnDate);
 					if(!dayFlag) {
 						returnDate.setDate(returnDate.getDate() + 2);
@@ -316,5 +313,5 @@ function formInnerArray(ruleKey, query) {
 		}
 		count++;
 	}
-	return '"'+ruleKey+'":{"in":['+StringQuery+']},';
+	return '"'+ruleKey+'":{"$in":['+StringQuery+']},';
 }
