@@ -15,9 +15,14 @@ var ObjectID = require('mongodb').ObjectID;
 var MongoClient = mongodb.MongoClient;
 
 var url = config.mongodb.url+'/'+process.argv[2];
+//Android server key
+var andriodServerKey = 'AIzaSyB1avXGX6dBNO4_l51iBFEbXvESmlPiJFU';
 
-var serverKey = 'AIzaSyB1avXGX6dBNO4_l51iBFEbXvESmlPiJFU';
-var fcm = new FCM(serverKey);
+//iOS server key
+var iosServerKey = 'AIzaSyBugP2RtRsfpqhY_mY-Q6U0aB_GHdpzDoU';
+
+var andriodFcm = new FCM(andriodServerKey);
+var iosFcm = new FCM(iosServerKey);
  
 //var j = cron.scheduleJob('*/1 * * * *', function(){
 	MongoClient.connect(url, function (err, db) {
@@ -49,9 +54,13 @@ var fcm = new FCM(serverKey);
 								var userResult = docs[i];
 									if(userResult.rkey != null){
 										countTotal++;
+										var message = {priority : 'high',to: userResult.rkey, notification:{title:campaignResult.pn_title,body:campaignResult.pn_msg}};
 										try {
-											var message = {to: userResult.rkey, notification:{title:campaignResult.pn_title,body:campaignResult.pn_msg}};
-											pushToFcm(message);
+											if(userResult.lpf == 'iOS'){
+												pushToFcmIos(message);
+											} else(userResult.lpf == 'A') {
+												pushToFcmAndroid(message);
+											}
 										} catch(err){
 											countTotal--;
 											printErrorMessage(err);
@@ -94,8 +103,20 @@ var fcm = new FCM(serverKey);
 	});
 //});
 
-function pushToFcm(message){
-	fcm.send(message, function(err, response){
+function pushToFcmAndroid(message){
+	andriodFcm.send(message, function(err, response){
+		if (err) {
+			printErrorMessage(err);
+		} else {
+			printErrorMessage(err);
+			
+		}
+	});
+}
+
+
+function pushToFcmIos(message){
+	iosFcm.send(message, function(err, response){
 		if (err) {
 			printErrorMessage(err);
 		} else {
