@@ -532,12 +532,16 @@ function editToggle(thisClass) {
 }
 
 function showSelected(abc, event) {
-    //console.log($(abc).children().first().text());
-    $("body").append("<div class='tooltipee'></div>");
-    //$("div.tooltip").css("display", "block");
-    $("div.tooltipee").css("left", event.pageX + 15);
-    $("div.tooltipee").css("top", event.pageY - 35);
-    $("div.tooltipee").html($(abc).children().first().html());
+    if ($(abc).children().first().html() != "") {
+        $("body").append("<div class='tooltipee'></div>");
+        $("div.tooltipee").css("left", event.pageX + 15);
+        $("div.tooltipee").css("top", event.pageY - 35);
+        $("div.tooltipee").html($(abc).children().first().html());
+    }
+    else {
+        return;
+    }
+    
 }
 
 function removeTooltip(abc) {
