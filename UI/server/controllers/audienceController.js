@@ -181,9 +181,9 @@ module.exports.fetchAllDevicetype = function(req,res){
 					for(var a=0;a<val.length;a++){
 						var allList = val[a].key;
 						if(allList != null){
-							if(!returnResponse.contains(allList)){
-								returnResponse.push(allList);
-							}
+							//if(!returnResponse.contains(allList)){
+								returnResponse.push(uniqBy(allList, JSON.stringify));
+							//}
 						}
 					}
 				}
@@ -362,7 +362,7 @@ module.exports.fetchAppversionFromPlatform = function(req,res){
 		}); 
 	}	
 };
-
+/*
 Array.prototype.contains = function(obj) {
     var i = this.length;
     while (i--) {
@@ -371,4 +371,12 @@ Array.prototype.contains = function(obj) {
         }
     }
     return false;
+}
+*/
+function uniqBy(a, key) {
+    var seen = new Set();
+    return a.filter(item => {
+        var k = key(item);
+        return seen.has(k) ? false : seen.add(k);
+    });
 }
