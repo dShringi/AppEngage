@@ -530,3 +530,16 @@ function editToggle(thisClass) {
     $(thisClass).parent().parent().siblings().children().next().children().fadeIn();
     
 }
+
+function showSelected(abc, event) {
+    //console.log($(abc).children().first().text());
+    $("body").append("<div class='tooltipee'></div>");
+    //$("div.tooltip").css("display", "block");
+    $("div.tooltipee").css("left", event.pageX + 15);
+    $("div.tooltipee").css("top", event.pageY - 35);
+    $("div.tooltipee").html($(abc).children().first().html());
+}
+
+function removeTooltip(abc) {
+    $("div.tooltipee").remove();
+}

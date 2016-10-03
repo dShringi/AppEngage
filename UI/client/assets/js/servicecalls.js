@@ -1,4 +1,4 @@
-//var appKey="4170b44d6459bba992acaa857ac5b25d7fac6cc1";
+//var appKey = "4170b44d6459bba992acaa857ac5b25d7fac6cc1";
 var service = {
 	
     validateLogin: function (uname, pwd) {
@@ -388,7 +388,8 @@ var service = {
 	            console.log(data);
 	            $("select#dropdown-" + fType).css("opacity", "0");
 	            for (i = 0; i < data.length; i++) {
-	                $("select#dropdown-"+fType).append("<option value=" + data[i] + ">" + data[i] + "</option>")
+	                $("select#dropdown-" + fType).append("<option value=" + data[i] + ">" + data[i] + "</option>");
+	                
 	            }
 
 	            $('select#dropdown-' + fType).multipleSelect({
@@ -396,6 +397,8 @@ var service = {
 	                countSelected: false,
                     maxHeight: 180
 	            });
+	            $("select#dropdown-" + fType).nextAll("div.ms-parent").children().first().attr("onmouseover", "showSelected(this, event)");
+	            $("select#dropdown-" + fType).nextAll("div.ms-parent").children().first().attr("onmouseout", "removeTooltip(this, event)");
 
 	            //if (data.length >= 3) {
 	            //    $('select#dropdown-' + fType).attr("size", "3");
