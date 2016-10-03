@@ -735,6 +735,9 @@ public class MA {
 				// response data
 				Log.e(TAG, "JsonResponse..........." + JsonResponse);
 
+				//delete entries in database
+				dbUserManager.removeAll();
+
 				// send to post execute
 				return JsonResponse;
 

@@ -5,9 +5,15 @@ import android.app.Application;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.mastek.appengage.utils.Utils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -17,12 +23,17 @@ import java.util.concurrent.TimeUnit;
 public class ActivityTracker implements Application.ActivityLifecycleCallbacks {
 
     HashMap<String,Integer> hashMapActivityTracker = new HashMap<String,Integer>();
-    long[] startTime = new long[2];
-    long[] endTime = new long[2];
+  /*  HashMap<String,Long> hashMapDifferenceTracker = new HashMap<String,Long>();
+*/
+    HashMap<String,Long> hashMapStartTracker = new HashMap<String,Long>();
+    HashMap<String,Long> hashMapEndTracker = new HashMap<String,Long>();
+    static JSONArray jsonArray = new JSONArray();
+    /*long[] startTime = new long[2];
+    long[] endTime = new long[2];*/
     long timeSpent;
-    int temp0 = 0;
+   /* int temp0 = 0;
     int temp1 = 0;
-
+*/
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
         //Log.e("onActivityCreated","Activity Name :"+ activity.getLocalClassName());
@@ -33,13 +44,13 @@ public class ActivityTracker implements Application.ActivityLifecycleCallbacks {
         //Log.e("onActivityStarted","Activity Name :"+ activity.getLocalClassName());
 
 
-        if(temp0 == 1)
+        /*if(temp0 == 1)
             temp0 = 0;
         else if(temp0 == 0)
-            temp0 = 1;
-
-        startTime[temp0] = System.nanoTime();
-        Log.e("onActivityStarted",activity.getLocalClassName()+" Start time :"+startTime[temp0]);
+            temp0 = 1;*/
+        hashMapStartTracker.put(activity.getLocalClassName().toString(),System.nanoTime());
+        /*startTime[temp0] = System.nanoTime();
+        */Log.e("onActivityStarted",activity.getLocalClassName()+" Start time :"+hashMapStartTracker.get(activity.getLocalClassName()));
     }
 
     @Override
@@ -57,6 +68,7 @@ public class ActivityTracker implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityStopped(Activity activity) {
         //Log.e("onActivityStopped","Activity Name :"+ activity.getLocalClassName());
+/*
 
         if(temp1 == 1)
             temp1 = 0;
@@ -64,18 +76,30 @@ public class ActivityTracker implements Application.ActivityLifecycleCallbacks {
             temp1 = 1;
 
         endTime[temp1] = System.nanoTime();
+*/
 
-        Log.e("onActivityStopped",activity.getLocalClassName()+" End time :"+endTime[temp1]);
-        timeSpent = endTime[temp1]-startTime[temp1];
+
+        hashMapEndTracker.put(activity.getLocalClassName().toString(),System.nanoTime());
+        Log.e("onActivityStopped",activity.getLocalClassName()+" End time :"+hashMapEndTracker.get(activity.getLocalClassName()));
+        //timeSpent = endTime[temp1]-startTime[temp1];
+        timeSpent = hashMapEndTracker.get(activity.getLocalClassName()) - hashMapStartTracker.get(activity.getLocalClassName());
         timeSpent = TimeUnit.NANOSECONDS.toSeconds(timeSpent);
+        //hashMapDifferenceTracker.put(activity.getLocalClassName().toString(),timeSpent);
+
         Log.e("TimeSpent","TimeSpent"+" on "+activity.getLocalClassName()+" is "+timeSpent);
         if(hashMapActivityTracker.containsKey(activity.getLocalClassName())) {
+            //timeSpent+=hashMapDifferenceTracker.get(activity.getLocalClassName());
             timeSpent+=hashMapActivityTracker.get(activity.getLocalClassName());
             hashMapActivityTracker.put(activity.getLocalClassName(), (int) timeSpent);
+            Utils.hashMap = hashMapActivityTracker;
         }
-        else hashMapActivityTracker.put(activity.getLocalClassName(),(int) timeSpent);
+        else{
+            hashMapActivityTracker.put(activity.getLocalClassName(),(int) timeSpent);
+            Utils.hashMap = hashMapActivityTracker;
+        }
 
             Log.e("hash",hashMapActivityTracker.toString());
+
     }
 
     @Override
@@ -87,7 +111,33 @@ public class ActivityTracker implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityDestroyed(Activity activity) {
         //Log.e("onActivityDestroyed","Activity Name :"+ activity.getLocalClassName());
-        JSONObject json = new JSONObject(hashMapActivityTracker);
-        Log.e("Destroy Method Called",json.toString());
+        if(!Utils.endApiCalled)
+        {
+            MA.activityTimeTrackingApi(activity);
+            MA.endApi(activity);
+            Utils.endApiCalled = true;
+        }
+    }
+
+    public static void convertHashToJsonArray(HashMap hashMap)
+    {
+        try
+        {
+            Iterator it = hashMap.entrySet().iterator();
+            while(it.hasNext()) {
+                JSONObject json = new JSONObject();
+                Map.Entry pair = (Map.Entry) it.next();
+                json.put("key", pair.getKey());
+                json.put("ts", pair.getValue());
+                jsonArray.put(json);
+                it.remove();
+            }
+        }catch (JSONException e)
+        {
+            e.printStackTrace();
+        }finally {
+            Log.e("Destroy Method Called",jsonArray.toString());
+            Utils.jsonArray = jsonArray;
+        }
     }
 }

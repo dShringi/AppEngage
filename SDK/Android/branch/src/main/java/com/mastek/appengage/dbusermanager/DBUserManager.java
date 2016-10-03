@@ -228,4 +228,17 @@ public class DBUserManager implements Idao {
 		content.put(UserTable.KEY_FBI, Utils.tokenGen);
 		return content;
 	}*/
+
+	public void removeAll(){
+		dbObject.open();
+		try {
+			dbObject.db.delete(UserTable.TABLE_NAME1,null,null);
+
+		} catch (Exception e) {
+
+			Log.e(TAG, "error in delete query..." + e.getMessage());
+		}
+
+		dbObject.close();
+	}
 }
