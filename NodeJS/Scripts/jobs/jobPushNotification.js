@@ -14,9 +14,8 @@ var ObjectID = require('mongodb').ObjectID;
 
 var MongoClient = mongodb.MongoClient;
 
-//var url = config.mongodb.url+'/'+process.argv[2];
+var url = config.mongodb.url+'/'+process.argv[2];
 
-var url = 'mongodb://localhost:27017/mobile';
 //Android server key
 var andriodServerKey = 'AIzaSyB1avXGX6dBNO4_l51iBFEbXvESmlPiJFU';
 
