@@ -169,8 +169,9 @@ module.exports.fetchOSFromPlatform = function(req,res){
 
 //fetch all device type
 //http://52.206.121.100/appengage/audience/dt?akey=4170b44d6459bba992acaa857ac5b25d7fac6cc1
-var returnResponse=[];
+
 module.exports.fetchAllDevicetype = function(req,res){
+	var returnResponse=[];
 	var akey = req.query["akey"];
 	var searchObject ='{"_id":"devType"}';
 	var db = mongojs(config.connectionstring+akey);
