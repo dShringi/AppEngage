@@ -45,7 +45,7 @@ var iosFcm = new FCM(iosServerKey);
 						var campaignResult = result[i];
 						var mongofindQuery = campaignResult.query;
 						var findQueryString = JSON.stringify(mongofindQuery);
-						var findJsonQuery = JSON.parse(findQueryString.replace('***','$'));
+						var findJsonQuery = JSON.parse(multiReplace(findQueryString,'***','$'));
 						usersCollection.find(findJsonQuery).toArray(function(err,docs) {
 							if (err) {
 								printErrorMessage(err);
@@ -163,4 +163,14 @@ function printErrorMessage(err) {
 function getUtcCurrentTime(){
 	var now = new Date(); 
 	return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
+}
+
+
+function multiReplace(str, match, repl) {
+    if (match === repl)
+        return str;
+    do {
+        str = str.replace(match, repl);
+    } while(str.indexOf(match) !== -1);
+    return str;
 }
