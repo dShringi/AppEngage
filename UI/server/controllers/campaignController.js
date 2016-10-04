@@ -272,17 +272,17 @@ function queryBuilder(JsonData){
 			var innerQuery = JsonData[queryKey];
 			for (var innerKey in innerQuery) {
 				var ruleKey = getMapping(queryKey);
-				if(innerQuery.length >1){
+				//if(innerQuery.length >1){
 					qryStr+=formInnerArray(ruleKey, innerQuery);
 					break;
-				} else {
+				/*} else {
 					if(count==0){
 						qryStr+='"'+ruleKey+'":'+'"'+innerQuery[innerKey]+'"';
 					} else {
 						qryStr+=',"'+ruleKey+'":'+'"'+innerQuery[innerKey]+'"';						
 					}
 					count++;
-				}
+				}*/
 			}
 		}	
 		var queryLength = qryStr.length;
