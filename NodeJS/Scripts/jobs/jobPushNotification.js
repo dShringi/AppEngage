@@ -14,7 +14,9 @@ var ObjectID = require('mongodb').ObjectID;
 
 var MongoClient = mongodb.MongoClient;
 
-var url = config.mongodb.url+'/'+process.argv[2];
+//var url = config.mongodb.url+'/'+process.argv[2];
+
+var url = 'mongodb://localhost:27017/mobile';
 //Android server key
 var andriodServerKey = 'AIzaSyB1avXGX6dBNO4_l51iBFEbXvESmlPiJFU';
 
@@ -97,7 +99,7 @@ var iosFcm = new FCM(iosServerKey);
 						});
 					}
 				} else {
-					console.log('No document(s) found with defined "find" criteria!');
+					console.log('No document(s) found with defined "find" criteria! ',datekey);
 					db.close();
 				}
 			}); 
