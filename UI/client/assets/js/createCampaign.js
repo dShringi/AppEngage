@@ -46,7 +46,7 @@ $(document).ready(function () {
                                                 <option value='dt'>Device Type</option>\
                                                 <option value='os'>OS</option>\
                                             </select>");
-                $("div.new-audience #new-audi-row1").append("<div class='hidden-field' style='display: none'>mnu</div>");
+                $("div.new-audience #new-audi-row1").append("<div class='hidden-field' style='display: none' data-value='mnu'>lm</div>");
                 $("div.new-audience #new-audi-row1").append("<select class='audience-sub-dropdown form-control' id='dropdown-mnu' multiple size='1' style='opacity:0'></select>");
                 //$("div.new-audience #new-audi-row1 select.audience-sub-dropdown").select2();
                 $("div.new-audience #new-audi-row1").append("<i class='fa fa-plus-square' onclick='addAudienceFilter(this)' aria-hidden='true'></i>")
@@ -298,7 +298,7 @@ function addAudienceFilter(currdiv) {
                 //console.log($(this).val());
                 //ddArr.push($(this).val());
                 console.log($(this).children().next().next().first().text());
-                ddArr.push($(this).children().next().next().first().text());
+                ddArr.push($(this).children().next().next().first().attr("data-value"));
             }
        //}
         
@@ -322,7 +322,7 @@ function addAudienceFilter(currdiv) {
                                             </select>");
     $("div.new-audience #new-audi-row" + cntfilter).append("<i class='fa fa-trash-o pull-right' onclick='removeFilter(this)'  aria-hidden='true'></i>");
     $(currdiv).parent().children().attr("disabled", "disabled");
-    $(currdiv).parent().children().children().attr("disabled", "disabled");
+    //$(currdiv).parent().children().children().attr("disabled", "disabled");
     $(currdiv).parent().children().nextAll(".hidden-field").removeAttr("disabled");
     //$(curr).parent().prev().remove(".fa-trash-o");
     $(currdiv).prevAll("i.fa.fa-trash-o.pull-right").remove();
@@ -357,27 +357,27 @@ function addSubFilter(curr) {
     }
     switch ($(curr).val()) {
         case "mnu":
-            $(curr).parent().append("<div class='hidden-field' style='display: none'>mnu</div>");
+            $(curr).parent().append("<div class='hidden-field' style='display: none' data-value='mnu'>lm</div>");
             $(curr).parent().append("<select class='audience-sub-dropdown form-control' id='dropdown-mnu' multiple size='1' style='opacity:0'></select>");                                    
             break;                                               
         case "model":
-            $(curr).parent().append("<div class='hidden-field' style='display: none'>model</div>");
+            $(curr).parent().append("<div class='hidden-field' style='display: none' data-value='model'>lmod</div>");
             $(curr).parent().append("<select class='audience-sub-dropdown form-control' id='dropdown-model' multiple size='1' style='opacity:0'></select>");
             break;                                               
         case "appversion":
-            $(curr).parent().append("<div class='hidden-field' style='display: none'>appversion</div>");
+            $(curr).parent().append("<div class='hidden-field' style='display: none' data-value='appversion'>lavn</div>");
             $(curr).parent().append("<select class='audience-sub-dropdown form-control' id='dropdown-appversion' multiple size='1' style='opacity:0'></select>");
             break;                                               
         case "platform":
-            $(curr).parent().append("<div class='hidden-field' style='display: none'>platform</div>"); 
+            $(curr).parent().append("<div class='hidden-field' style='display: none' data-value='platform'>lpf</div>");
             $(curr).parent().append("<select class='audience-sub-dropdown form-control' id='dropdown-platform' multiple size='1' style='opacity:0'></select>");
             break;                                               
         case "dt":
-            $(curr).parent().append("<div class='hidden-field' style='display: none'>dt</div>");
+            $(curr).parent().append("<div class='hidden-field' style='display: none' data-value='dt'>ldt</div>");
             $(curr).parent().append("<select class='audience-sub-dropdown form-control' id='dropdown-dt' multiple size='1' style='opacity:0'></select>");
             break;                                               
         case "os":
-            $(curr).parent().append("<div class='hidden-field' style='display: none'>os</div>");
+            $(curr).parent().append("<div class='hidden-field' style='display: none' data-value='os'>losv</div>");
             $(curr).parent().append("<select class='audience-sub-dropdown form-control' id='dropdown-os' multiple size='1' style='opacity:0'></select>");
             break;
         default:
