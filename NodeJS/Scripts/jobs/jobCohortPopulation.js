@@ -32,13 +32,11 @@ if(aKey === undefined || aKey === null || aKey === ""){
               console.log("Weekly Cohort Generated");
               generateMonthlyCohorts(appTZ,aKey,function(err,resp){
                 //Temporary to delay the exit.
-                setTimeout(function () {
-                        process.exit();
-                        }, 20000);
                 if(err){
                   logger.error(common.getErrorMessageFrom(err));
                 }else{
                  console.log("Monhtly Cohort Generated");
+                 process.exit();
                 }
               });
             }
@@ -122,8 +120,10 @@ function generateDailyCohorts(appTZ,aKey,callback){
                               //console.log('ED_'+endDate);
                               if(parseInt(insertedJSON._id.dt) === edt && parseInt(searchDate) === edt)
                               {
-                                db.close();
-                                callback(null,null);
+                                setTimeout(function () {
+                                  db.close();
+                                  callback(null,null);
+                                }, 20000);
                               }
                             }
                           });
@@ -147,8 +147,10 @@ function generateDailyCohorts(appTZ,aKey,callback){
                       //console.log('ED_'+endDate);
                       if(parseInt(insertedJSON._id.dt) === edt && parseInt(upddt) === edt)
                         {
-                          db.close();
-                          callback(null,null);
+                          setTimeout(function () {
+                            db.close();
+                            callback(null,null);
+                          }, 20000);
                         }
                     });
                   }
@@ -243,8 +245,10 @@ function generateWeeklyCohorts(appTZ,aKey,callback){
                               //console.log('ED_'+endDate);
                               if(parseInt(insertedJSON._id.dt) === edt && parseInt(searchDate) === edt)
                               {
-                                db.close();
-                                callback(null,null);
+                                setTimeout(function () {
+                                  db.close();
+                                  callback(null,null);
+                                }, 20000);
                               }
                             }
                           });
@@ -268,8 +272,10 @@ function generateWeeklyCohorts(appTZ,aKey,callback){
                       //console.log('ED_'+endDate);
                       if(parseInt(insertedJSON._id.dt) === edt && parseInt(updstartdt) === edt)
                         {
-                          db.close();
-                          callback(null,null);
+                          setTimeout(function () {
+                            db.close();
+                            callback(null,null);
+                          }, 20000);
                         }
                     });
                   }
