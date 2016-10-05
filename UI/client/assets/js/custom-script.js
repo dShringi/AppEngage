@@ -156,7 +156,7 @@ var showMessagingTable = function (data, tableId) {
 			var rowstatus2 = "status-inactive";
 		}
         //alert(JSON.stringify(row));
-        tableHTML += "<tr id='row"+rowCounter+"'><td>" + msgCreateDt + "</td><td>" + row.name + "</td><td>" + row.channel + "</td><td>" + msgStartDt +"</td><td>"+ msgEndDt + "</td><td>" + row.sends + "</td><td>" + row.openRate + "</td><td><i class='fa fa-square "+rowstatus1+"' onclick=changeStatus('"+rowstatus1+"','"+row._id+"','row"+rowCounter+"','"+ campaignName +"'); aria-hidden='true'></i><i class='fa fa-square "+rowstatus2+"' onclick=changeStatus('"+rowstatus2+"','"+row._id+"','row"+rowCounter+"','"+ campaignName +"'); aria-hidden='true'></i></td><td><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td><td><i onclick=deleteRow('"+row._id+"'); class=\"fa fa-trash-o\" aria-hidden=\"true\" style='cursor: pointer;'></i></td></tr>";
+        tableHTML += "<tr id='row"+rowCounter+"'><td>" + msgCreateDt + "</td><td>" + row.name + "</td><td>" + row.channel + "</td><td>" + msgStartDt +"</td><td>"+ msgEndDt + "</td><td>" + row.total + "</td><td>" + row.openRate + "</td><td><i class='fa fa-square "+rowstatus1+"' onclick=changeStatus('"+rowstatus1+"','"+row._id+"','row"+rowCounter+"','"+ campaignName +"'); aria-hidden='true'></i><i class='fa fa-square "+rowstatus2+"' onclick=changeStatus('"+rowstatus2+"','"+row._id+"','row"+rowCounter+"','"+ campaignName +"'); aria-hidden='true'></i></td><td><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td><td><i onclick=deleteRow('"+row._id+"'); class=\"fa fa-trash-o\" aria-hidden=\"true\" style='cursor: pointer;'></i></td></tr>";
 		console.log(tableHTML);
 		rowCounter++;
         

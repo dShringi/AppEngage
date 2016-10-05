@@ -219,3 +219,17 @@ button[disabled]{
 .ms-drop ul li.ms-select-all label input{
 	vertical-align: sub !important;
 }
+
+.tooltipee {
+	position:absolute;
+	border:1px solid #e1e1e1;
+	background-color:#e6ffe6;
+	border-radius:5px;
+	padding:10px;
+	color:#000000;
+	font-size:12px Arial;
+}
+
+.ms-choice > span{
+	top: 3px;
+}

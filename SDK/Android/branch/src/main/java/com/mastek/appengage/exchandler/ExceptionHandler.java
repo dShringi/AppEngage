@@ -73,6 +73,8 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
             public void run() {
                 super.run();
                 MA.sendCrashDataToServer(exception.getMessage(),errorReport.toString());
+                MA.activityTimeTrackToServer();
+                MA.enddatatoserver();
             }
         }.start();
 

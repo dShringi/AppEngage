@@ -10,25 +10,29 @@ var common = require('../../commons/common.js');
 //http://52.206.121.100/appengage/audience/platform?akey=4170b44d6459bba992acaa857ac5b25d7fac6cc1
 module.exports.fetchAllPlatform = function(req,res){
 	var akey = req.query["akey"];
-	var searchObject ='{"_id":"mnu"}';
+	var searchObject ='{"_id":"platform"}';
 	var returnResponse=[];
 	var db = mongojs(config.connectionstring+akey);
-	db.collection('coll_audience').find(JSON.parse(searchObject),function(err,resp){
+	db.collection('coll_audience').find(JSON.parse(searchObject) ,function(err,resp){
 		if(err){
 			return res.json(JSON.parse('{"msg":"error is there"}'));
 		}else{
 			for(var i=0;i<resp.length;i++){
 				var mnuList = resp[i];
-				returnResponse = Object.keys(mnuList);
-			}
-			var index = returnResponse.indexOf('_id');
-			if (index > -1) {
-				returnResponse.splice(index, 1);
+				for (var key in mnuList) {
+					var val = mnuList[key];
+					for (var oskey in val) {
+						var resultList = val[oskey].key;
+						if(resultList != null){
+							returnResponse.push(resultList);
+						}
+					}
+				}
 			}
 			return res.json(returnResponse);
 		}
 		db.close();
-	});  
+	}); 
 };
 
 //fetch all  Manufacturer  from Platform
@@ -165,8 +169,9 @@ module.exports.fetchOSFromPlatform = function(req,res){
 
 //fetch all device type
 //http://52.206.121.100/appengage/audience/dt?akey=4170b44d6459bba992acaa857ac5b25d7fac6cc1
-var returnResponse=[];
+
 module.exports.fetchAllDevicetype = function(req,res){
+	var returnResponse=[];
 	var akey = req.query["akey"];
 	var searchObject ='{"_id":"devType"}';
 	var db = mongojs(config.connectionstring+akey);
@@ -181,9 +186,9 @@ module.exports.fetchAllDevicetype = function(req,res){
 					for(var a=0;a<val.length;a++){
 						var allList = val[a].key;
 						if(allList != null){
-							if(!returnResponse.contains(allList)){
+							//if(!returnResponse.contains(allList)){
 								returnResponse.push(allList);
-							}
+							//}
 						}
 					}
 				}
@@ -362,7 +367,7 @@ module.exports.fetchAppversionFromPlatform = function(req,res){
 		}); 
 	}	
 };
-
+/*
 Array.prototype.contains = function(obj) {
     var i = this.length;
     while (i--) {
@@ -372,3 +377,12 @@ Array.prototype.contains = function(obj) {
     }
     return false;
 }
+
+function uniqBy(a, key) {
+    var seen = new Set();
+    return a.filter(item => {
+        var k = key(item);
+        return seen.has(k) ? false : seen.add(k);
+    });
+}
+*/

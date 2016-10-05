@@ -58,6 +58,7 @@ public class MA {
 		API_KEY = akey;
 		if (context != null)
 			appContext = context;
+		CalculatedTime =Utils.currentTimeStamp;
 		dbUserManager = new DBUserManager(appContext);
 		Utils.init(context);
 	}
@@ -113,7 +114,7 @@ public class MA {
 
 		}.start();
 	}
-
+//TODO remove activitytracking convert from here
 	public static void endApi(final Context context) {
 
 		new Thread() {
@@ -136,6 +137,41 @@ public class MA {
 
 					Log.i("======= calTime", " :: " + calTime);
 					enddatatoserver();
+
+
+				}
+				catch (Exception e)
+				{
+					e.printStackTrace();
+				}
+
+			}
+		}.start();
+	}
+
+
+	public static void activityTimeTrackingApi(final Context context) {
+
+		new Thread() {
+
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				super.run();
+				try {
+					uiLog(" \n " + "Calling activityTimeTrackingApi");
+					if (context != null)
+						appContext = context;
+
+//				user = getUserDetails();
+
+					time2 = System.currentTimeMillis();
+
+
+					calTime = (time2 - time1) / 1000;
+
+					Log.i("======= calTime", " :: " + calTime);
+					activityTimeTrackToServer();
 
 
 				}
@@ -423,6 +459,9 @@ public class MA {
 
 
 		try {
+			CalculatedTime =Utils.currentTimeStamp;
+			Log.e(TAG, "CalculatedTime  "+CalculatedTime);
+
 			post_data.put("sync_status","");
 			post_data.put("test", "");
 			post_data.put("mod", Utils.MODEL);
@@ -465,8 +504,6 @@ public class MA {
 			if (ConnectionManager.isNetworkConnected(appContext)) {
 
 
-				CalculatedTime =Utils.currentTimeStamp;
-				Log.e(TAG, "CalculatedTime  "+CalculatedTime);
 				new SendJsonDataToServer().execute(String.valueOf(post_data));
 
 
@@ -574,14 +611,14 @@ public class MA {
 	// ///////////////////send data when
 	// online\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-	public static void senddatawhenonline(JSONArray array1) {
+	/*public static void senddatawhenonline(JSONArray array1) {
 		// function in the activity that corresponds to the layout button
 
 //		user = getUserDetails();
-		versionName = Utils.VERSIONNAME;
-		JSONObject post_data = new JSONObject();
+		*//*versionName = Utils.VERSIONNAME;
+		JSONObject post_data = new JSONObject();*//*
 
-		try {
+		*//*try {
 			post_data.put("test", "");
 			post_data.put("mod", Utils.MODEL);
 			post_data.put("avn", Utils.VERSIONNAME);
@@ -609,21 +646,40 @@ public class MA {
 			post_data.put("akey", API_KEY);
 			post_data.put("sdv", "1.0");
 			post_data.put("mt", "O");
-			Log.e(TAG, "     send data;...............");
+			//Log.e(TAG, "     send data;...............");
 
-			array1.put(post_data);
+			int maxLogSize = 1000;
+			String veryLongString = array1.toString();
+			for(int i = 0; i <= veryLongString.length() / maxLogSize; i++) {
+				int start = i * maxLogSize;
+				int end = (i+1) * maxLogSize;
+				end = end > veryLongString.length() ? veryLongString.length() : end;
+				Log.e("ARRAY1", veryLongString.substring(start, end));
+			}
+			//array1.put(post_data);
+
+			//Log.e("ARRAY1",array1.toString());
 
 		} catch (JSONException e) {
 			e.printStackTrace();
 			Log.e(TAG, "JSONException in catch......" + e.getMessage());
-		}
-		if (post_data.length() > 0) {
-			Log.e(TAG, "POST_DATA..... send data to server when online......" + post_data);
-			new SendJsonArrayToServerWhenOnline().execute(String.valueOf(array1));
-		}
+		}*//*
+
+
+		*//*if (post_data.length() > 0) {
+			int maxLogSize = 1000;
+			String veryLongString = array1.toString();
+			for(int i = 0; i <= veryLongString.length() / maxLogSize; i++) {
+				int start = i * maxLogSize;
+				int end = (i+1) * maxLogSize;
+				end = end > veryLongString.length() ? veryLongString.length() : end;
+				Log.e("ARRAY1 when online", veryLongString.substring(start, end));
+			}
+			//Log.e(TAG, "POST_DATA..... send data to server when online......" + post_data);
+		}*//*
 	}
 
-	public static class SendJsonArrayToServerWhenOnline extends
+	*/public static class SendJsonArrayToServerWhenOnline extends
 			AsyncTask<String, String, String> {
 
 		@Override
@@ -678,6 +734,9 @@ public class MA {
 				JsonResponse = buffer.toString();
 				// response data
 				Log.e(TAG, "JsonResponse..........." + JsonResponse);
+
+				//delete entries in database
+				dbUserManager.removeAll();
 
 				// send to post execute
 				return JsonResponse;
@@ -881,6 +940,8 @@ public class MA {
 		JSONObject post_data = new JSONObject();
 
 		try {
+			//ActivityTracker.convertHashToJsonArray(Utils.hashMap);
+
 			post_data.put("tsd", calTime);// //total session duration
 			post_data.put("did", Utils.deviceId);
 			post_data.put("akey", API_KEY);// api
@@ -889,8 +950,10 @@ public class MA {
 			post_data.put("sid", time1 + "" + Utils.deviceId);
 			post_data.put("sdv", "1.0");// sdk version
 			post_data.put("dt", Utils.deviceType);
+			//post_data.put("act",Utils.jsonArray);
 			post_data.put("mt", "E");
 			Log.e(TAG, "     end api data;..............." /*+ user*/);
+
 
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -901,6 +964,7 @@ public class MA {
 			if (ConnectionManager.isNetworkConnected(appContext)) {
 				new EndJsonDataToServer().execute(String.valueOf(post_data));
 				Log.e(TAG, "end data to server... :- ");
+				Utils.endApiCalled = true;
 			} else {
 				Log.e(TAG, "save--------------------- " + (dbUserManager == null));
 				boolean save = dbUserManager.saveCompleteJson(post_data.toString());
@@ -908,6 +972,48 @@ public class MA {
 				Log.e(TAG, "DBUSERMANAGER :- " + dbUserManager);
 				uiLog("\n End API Saved IN DB");
 				Log.e(TAG, "SAVE....... :- " + save);
+				Utils.endApiCalled = true;
+			}
+		}
+	}
+	public static void activityTimeTrackToServer() {
+		// function in the activity that corresponds to the layout button
+		// LatLng = txtLatitudeLongitude.getText().toString();
+		versionName = Utils.VERSIONNAME;
+		JSONObject post_data = new JSONObject();
+
+		try {
+			ActivityTracker.convertHashToJsonArray(Utils.hashMap);
+
+			post_data.put("akey", API_KEY);// api
+			// key
+			post_data.put("rtc", CalculatedTime);
+			post_data.put("sid", time1 + "" + Utils.deviceId);
+			post_data.put("dt", Utils.deviceType);
+			post_data.put("did", Utils.deviceId);
+			post_data.put("act",Utils.jsonArray);
+			post_data.put("mt", "S");
+			Log.e(TAG, "     activityTimeTracking data;..............." /*+ user*/);
+
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		if (post_data.length() > 0) {
+			Log.e(TAG, "POST_DATA..........." + post_data);
+
+			if (ConnectionManager.isNetworkConnected(appContext)) {
+				new ActivityJsonDataToServer().execute(String.valueOf(post_data));
+				Log.e(TAG, "end data to server... :- ");
+				Utils.endApiCalled = true;
+			} else {
+				Log.e(TAG, "save--------------------- " + (dbUserManager == null));
+				boolean save = dbUserManager.saveCompleteJson(post_data.toString());
+
+				Log.e(TAG, "DBUSERMANAGER :- " + dbUserManager);
+				uiLog("\n End API Saved IN DB");
+				Log.e(TAG, "SAVE....... :- " + save);
+				Utils.endApiCalled = true;
 			}
 		}
 	}
@@ -998,6 +1104,94 @@ public class MA {
 		}
 
 	}
+
+	public static class ActivityJsonDataToServer extends
+			AsyncTask<String, String, String> {
+
+		@Override
+		protected String doInBackground(String... params) {
+			String JsonResponse = null;
+			String JsonDATA = params[0];
+			HttpURLConnection urlConnection = null;
+			BufferedReader reader = null;
+			try {
+				URL url = new URL(URL+"i/single/S");
+				urlConnection = (HttpURLConnection) url.openConnection();
+				urlConnection.setDoOutput(true);
+				// is output buffer writter
+				urlConnection.setRequestMethod("POST");
+				urlConnection.setRequestProperty("Content-Type",
+						"application/json");
+
+				urlConnection.setRequestProperty("akey",
+						API_KEY);
+				// urlConnection.setRequestProperty("Accept",
+				// "application/json");
+				// set headers and method
+				Writer writer = new BufferedWriter(new OutputStreamWriter(
+						urlConnection.getOutputStream(), "UTF-8"));
+				writer.write(JsonDATA);
+				// json data
+				Log.e(TAG, "WRITER... :- " + writer);
+				writer.close();
+				InputStream inputStream = urlConnection.getInputStream();
+				Log.e(TAG, "URLCONNECTION.....Status code......"
+						+ urlConnection.getResponseCode());
+
+				Log.e(TAG, "INPUTSTREAM..........." + inputStream);
+				// input stream
+				StringBuffer buffer = new StringBuffer();
+				if (inputStream == null) {
+					// Nothing to do.
+					return null;
+				}
+				reader = new BufferedReader(new InputStreamReader(inputStream));
+				Log.e(TAG, "READER..........." + reader);
+
+				String inputLine;
+				while ((inputLine = reader.readLine()) != null)
+					buffer.append(inputLine + "\n");
+				if (buffer.length() == 0) {
+					// Stream was empty. No point in parsing.
+					return null;
+				}
+				JsonResponse = buffer.toString();
+				// response data
+				Log.e(TAG, "JsonResponse..........." + JsonResponse);
+				// send to post execute
+				return JsonResponse;
+
+
+			} catch (IOException e) {
+				Log.e(TAG, "IOException....." + e.getMessage());
+				e.printStackTrace();
+			} finally {
+				if (urlConnection != null) {
+					urlConnection.disconnect();
+					Log.e("Connection","Closed");
+				}
+				else Log.e("Connection","Not Closed");
+				if (reader != null) {
+					try {
+						reader.close();
+					} catch (final IOException e) {
+						Log.e(TAG, "Error closing stream", e);
+					}
+				}
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(String s) {
+			if(rResponse != null)
+			{
+				uiLog("ActivityTracking API data "+s);
+			}
+		}
+
+	}
+
 
 	public static void beginApi(Context context) {
 		if (Build.VERSION.SDK_INT >= 23) { // Build.VERSION_CODES.M

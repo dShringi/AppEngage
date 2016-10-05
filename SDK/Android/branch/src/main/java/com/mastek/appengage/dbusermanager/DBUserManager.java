@@ -191,7 +191,7 @@ public class DBUserManager implements Idao {
 		array.put(object);
 		}
 		Log.e("JsonObject","Database----"+array.toString());
-String veryLongString = array.toString();
+		String veryLongString = array.toString();
 		int maxLogSize = 1000;
 		for(int i = 0; i <= veryLongString.length() / maxLogSize; i++) {
 			int start = i * maxLogSize;
@@ -228,4 +228,17 @@ String veryLongString = array.toString();
 		content.put(UserTable.KEY_FBI, Utils.tokenGen);
 		return content;
 	}*/
+
+	public void removeAll(){
+		dbObject.open();
+		try {
+			dbObject.db.delete(UserTable.TABLE_NAME1,null,null);
+
+		} catch (Exception e) {
+
+			Log.e(TAG, "error in delete query..." + e.getMessage());
+		}
+
+		dbObject.close();
+	}
 }

@@ -1,7 +1,7 @@
 // this script is used to send push notification 
 'use strict'
 
-//var logger = require('../conf/log.js');
+var logger = require('../conf/log.js');
 var config = require('../conf/config.js');
 var common = require('../commons/common');
 
@@ -16,8 +16,14 @@ var MongoClient = mongodb.MongoClient;
 
 var url = config.mongodb.url+'/'+process.argv[2];
 
-var serverKey = 'AIzaSyB1avXGX6dBNO4_l51iBFEbXvESmlPiJFU';
-var fcm = new FCM(serverKey);
+//Android server key
+var andriodServerKey = 'AIzaSyB1avXGX6dBNO4_l51iBFEbXvESmlPiJFU';
+
+//iOS server key
+var iosServerKey = 'AIzaSyBugP2RtRsfpqhY_mY-Q6U0aB_GHdpzDoU';
+
+var andriodFcm = new FCM(andriodServerKey);
+var iosFcm = new FCM(iosServerKey);
  
 //var j = cron.scheduleJob('*/1 * * * *', function(){
 	MongoClient.connect(url, function (err, db) {
@@ -39,7 +45,9 @@ var fcm = new FCM(serverKey);
 					for (var i = 0; i < result.length; i++) {
 						var campaignResult = result[i];
 						var mongofindQuery = campaignResult.query;
-						usersCollection.find(mongofindQuery).toArray(function(err,docs) {
+						var findQueryString = JSON.stringify(mongofindQuery);
+						var findJsonQuery = JSON.parse(multiReplace(findQueryString,'***','$'));
+						usersCollection.find(findJsonQuery).toArray(function(err,docs) {
 							if (err) {
 								printErrorMessage(err);
 								db.close();
@@ -49,9 +57,13 @@ var fcm = new FCM(serverKey);
 								var userResult = docs[i];
 									if(userResult.rkey != null){
 										countTotal++;
+										var message = {priority : 'high',to: userResult.rkey, notification:{title:campaignResult.pn_title,body:campaignResult.pn_msg}};
 										try {
-											var message = {to: userResult.rkey, notification:{title:campaignResult.pn_title,body:campaignResult.pn_msg}};
-											pushToFcm(message);
+											if(userResult.lpf == 'iOS'){
+												pushToFcmIos(message);
+											} else if(userResult.lpf == 'A') {
+												pushToFcmAndroid(message);
+											}
 										} catch(err){
 											countTotal--;
 											printErrorMessage(err);
@@ -86,7 +98,7 @@ var fcm = new FCM(serverKey);
 						});
 					}
 				} else {
-					console.log('No document(s) found with defined "find" criteria!');
+					console.log('No document(s) found with defined "find" criteria! ',datekey);
 					db.close();
 				}
 			}); 
@@ -94,8 +106,20 @@ var fcm = new FCM(serverKey);
 	});
 //});
 
-function pushToFcm(message){
-	fcm.send(message, function(err, response){
+function pushToFcmAndroid(message){
+	andriodFcm.send(message, function(err, response){
+		if (err) {
+			printErrorMessage(err);
+		} else {
+			printErrorMessage(err);
+			
+		}
+	});
+}
+
+
+function pushToFcmIos(message){
+	iosFcm.send(message, function(err, response){
 		if (err) {
 			printErrorMessage(err);
 		} else {
@@ -140,4 +164,14 @@ function printErrorMessage(err) {
 function getUtcCurrentTime(){
 	var now = new Date(); 
 	return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
+}
+
+
+function multiReplace(str, match, repl) {
+    if (match === repl)
+        return str;
+    do {
+        str = str.replace(match, repl);
+    } while(str.indexOf(match) !== -1);
+    return str;
 }

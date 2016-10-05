@@ -5,17 +5,6 @@ var config  = require('../../config/config');
 var logger  = require('../../config/log.js');
 var common = require('../../commons/common.js');
 
-//mapping key need to be configured in db
-var map = new Object();
-map['mnu'] = 'lm';
-map['dt'] = 'ldt';
-map['model'] = 'lmod';
-
-map['appversion'] = 'lavn';
-map['platform'] = 'lpf';
-map['os'] = 'losv';
-map['lcty'] = 'lcty';
-
 module.exports.createCampaign = function(req,res){
   console.log(req.body);
   console.log(req.query["akey"]);
@@ -42,10 +31,10 @@ module.exports.createCampaign = function(req,res){
 		}
 		
 		body.query = queryBuilder(body.query);
-		console.log('body.query    '+body.query)
+		console.log('body.query    '+JSON.stringify(body));
 		
 		var db = mongojs(config.connectionstring+akey);
-		db.collection(config.coll_campaigns).insert(req.body,function(err,resp){
+		db.collection(config.coll_campaigns).insert(body,function(err,resp){
 			if(err){
 				logger.error(common.getErrorMessageFrom(err));
 				return res.json(JSON.parse('{"msg":"Failure"}'));
@@ -82,8 +71,6 @@ module.exports.deleteCampaign = function(req,res){
       logger.error(common.getErrorMessageFrom(err));
       return res.json(JSON.parse('{"msg":"Failure"}'));
     }else{
-      console.log(err);
-      console.log(resp);
       db.close();
       return res.json(JSON.parse('{"msg":"Success"}'));
     }
@@ -130,13 +117,11 @@ function getTriggerTime(schedule_type, cycle, recursive, trigger_time,appTZ, cre
 		switch(cycleType) {
 				case 'DAILY': {
 					var dayFlag = checkGreaterTime(returnDate);
-					console.log(dayFlag);
 					if(!dayFlag) {
 						returnDate.setDate(returnDate.getDate() + 1);
 					}
 				}break; 
 				case 'ALTERNATE': {
-					console.log('came here');
 					var dayFlag = checkGreaterTime(returnDate);
 					if(!dayFlag) {
 						returnDate.setDate(returnDate.getDate() + 2);
@@ -275,18 +260,18 @@ function queryBuilder(JsonData){
 		for (var queryKey in JsonData) {
 			var innerQuery = JsonData[queryKey];
 			for (var innerKey in innerQuery) {
-				var ruleKey = getMapping(queryKey);
-				if(innerQuery.length >1){
-					qryStr+=formInnerArray(ruleKey, innerQuery);
+				//var ruleKey = getMapping(queryKey);
+				//if(innerQuery.length >1){
+					qryStr+=formInnerArray(queryKey, innerQuery);
 					break;
-				} else {
+				/*} else {
 					if(count==0){
 						qryStr+='"'+ruleKey+'":'+'"'+innerQuery[innerKey]+'"';
 					} else {
 						qryStr+=',"'+ruleKey+'":'+'"'+innerQuery[innerKey]+'"';						
 					}
 					count++;
-				}
+				}*/
 			}
 		}	
 		var queryLength = qryStr.length;
@@ -316,5 +301,5 @@ function formInnerArray(ruleKey, query) {
 		}
 		count++;
 	}
-	return '"'+ruleKey+'":{"in":['+StringQuery+']},';
+	return '"'+ruleKey+'":{"***in":['+StringQuery+']},';
 }
