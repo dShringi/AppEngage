@@ -5,17 +5,6 @@ var config  = require('../../config/config');
 var logger  = require('../../config/log.js');
 var common = require('../../commons/common.js');
 
-//mapping key need to be configured in db
-var map = new Object();
-map['mnu'] = 'lm';
-map['dt'] = 'ldt';
-map['model'] = 'lmod';
-
-map['appversion'] = 'lavn';
-map['platform'] = 'lpf';
-map['os'] = 'losv';
-map['lcty'] = 'lcty';
-
 module.exports.createCampaign = function(req,res){
   console.log(req.body);
   console.log(req.query["akey"]);
@@ -271,9 +260,9 @@ function queryBuilder(JsonData){
 		for (var queryKey in JsonData) {
 			var innerQuery = JsonData[queryKey];
 			for (var innerKey in innerQuery) {
-				var ruleKey = getMapping(queryKey);
+				//var ruleKey = getMapping(queryKey);
 				//if(innerQuery.length >1){
-					qryStr+=formInnerArray(ruleKey, innerQuery);
+					qryStr+=formInnerArray(queryKey, innerQuery);
 					break;
 				/*} else {
 					if(count==0){
