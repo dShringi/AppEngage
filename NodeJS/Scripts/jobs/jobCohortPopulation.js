@@ -123,7 +123,7 @@ function generateDailyCohorts(appTZ,aKey,callback){
                                 setTimeout(function () {
                                   db.close();
                                   callback(null,null);
-                                }, 20000);
+                                }, 10000);
                               }
                             }
                           });
@@ -150,7 +150,7 @@ function generateDailyCohorts(appTZ,aKey,callback){
                           setTimeout(function () {
                             db.close();
                             callback(null,null);
-                          }, 20000);
+                          }, 10000);
                         }
                     });
                   }
@@ -173,8 +173,8 @@ function generateWeeklyCohorts(appTZ,aKey,callback){
   var endDate = new Date();
   var startDate = new Date();
   //Weekly Cohort will be generated for last 25 weeks i.e. 25 * 7 = 175.
-  startDate.setDate((endDate.getDate()-140)-endDate.getDay());
-  endDate.setDate((endDate.getDate()+7)-endDate.getDay());
+  startDate.setDate((endDate.getDate()-196)-endDate.getDay());
+  endDate.setDate((endDate.getDate())-endDate.getDay());
   startDate = Date.UTC(startDate.getUTCFullYear(),startDate.getUTCMonth(), startDate.getUTCDate(),0,0,0)/1000;
   endDate = Date.UTC(endDate.getUTCFullYear(),endDate.getUTCMonth(), endDate.getUTCDate(),0,0,0)/1000;
   //Creating the mongodb database connection
@@ -248,7 +248,7 @@ function generateWeeklyCohorts(appTZ,aKey,callback){
                                 setTimeout(function () {
                                   db.close();
                                   callback(null,null);
-                                }, 20000);
+                                }, 10000);
                               }
                             }
                           });
@@ -265,6 +265,135 @@ function generateWeeklyCohorts(appTZ,aKey,callback){
                   for(var currDateEpoch = i_dt;currDateEpoch<=endDate;currDateEpoch = currDateEpoch + 604800){
                     //Converting epoch format to YYYYMMDD format.
                     var updstartdt = common.getStartDate(currDateEpoch,appTZ);
+                    //Preparing the updated JSON.
+                    var updJSON = JSON.parse('{"$push":{"val":{"dt":'+updstartdt+',"u":0}}}');
+                    //Inserting into the MongoDB Cohort collection.
+                    db.collection(config.mongodb.coll_cohorts).update(insertedJSON,updJSON,{upsert:true},function(err,doc){
+                      //console.log('ED_'+endDate);
+                      if(parseInt(insertedJSON._id.dt) === edt && parseInt(updstartdt) === edt)
+                        {
+                          setTimeout(function () {
+                            db.close();
+                            callback(null,null);
+                          }, 10000);
+                        }
+                    });
+                  }
+                }
+              }else{
+                logger.error(common.getErrorMessageFrom(err));
+              }
+            });
+          })(insertJSON);
+        })(i);
+      }
+    }else{
+      logger.error(common.getErrorMessageFrom(err));
+    }
+  });
+}
+
+function generateMonthlyCohorts(appTZ,aKey,callback){
+  //Compute the Start and End Date for the Cohort Generation
+  var endDate = new Date();
+  var startDate = new Date();
+  //Weekly Cohort will be generated for last 25 weeks i.e. 25 * 7 = 175.
+  startDate.setDate((endDate.getDate()-365));
+  endDate.setDate(endDate.getDate());
+  startDate = Date.UTC(startDate.getUTCFullYear(),startDate.getUTCMonth(), startDate.getUTCDate(),0,0,0)/1000;
+  endDate = Date.UTC(endDate.getUTCFullYear(),endDate.getUTCMonth(), endDate.getUTCDate(),0,0,0)/1000;
+  //Creating the mongodb database connection
+  var db = mongojs(config.mongodb.url+'/'+aKey);
+  //Emptying the Weekly Cohort
+  db.collection(config.mongodb.coll_cohorts).remove({"_id.ty":"Y"},function(err,resp){
+    //If the cohort is emptied successfully.
+    if(!err){
+      //Looping through the 365 days time frame for the cohort preparation.
+      for(i=startDate;i<=(endDate+2678400);i=i+2678400){
+        //Binding the variable i to the function as i_dt
+        (function(i_dt){
+          //Converting the epoch format to YYYYMMDD
+          var dt = common.getStartMonth(i_dt,appTZ);
+          var edt = common.getStartMonth(endDate,appTZ);
+          console.log("edt" + edt);
+          //Prearing the key for the daily cohort.
+          var insertJSON = JSON.parse('{"_id":{"dt":'+dt+',"ty":"Y"}}');
+          console.log(JSON.stringify(insertJSON));
+          //Binding the prepared JSON for the processing.
+          (function(insertedJSON){
+            //Inserting the key into the cohort collection.
+            db.collection(config.mongodb.coll_cohorts).insert(insertedJSON,function(err,doc){
+              if(err){
+                logger.error(common.getErrorMessageFrom(err));
+              }
+            });
+            // Taking the current date to check for new users
+            var startDateUsers = i_dt;
+            var endDateUsers = i_dt+2678399;
+            //Preparing the JSON for searching the new users.
+            var searchUsers = JSON.parse('{"$and":[{"flog":{"$gte":'+startDateUsers+'}},{"flog":{"$lte":'+endDateUsers+'}}]}');
+            //Run the query to find if any users logged in 1st time.
+            db.collection(config.mongodb.coll_users).find(searchUsers,function(err,usersdoc){
+              //if there are no errors
+              if(!err){
+                //If there are users who joined on that day.
+                if(usersdoc.length!==0){
+                  // Preparing the user id list of all the users for search operation.
+                  var userList='';
+                  for(u=0;u<usersdoc.length;u++){
+                    userList = userList +'"'+ usersdoc[u]._id+'",';
+                  }
+                  userList = userList.substr(0,userList.length-1);
+                  // Looping through the current processing date till the end
+                  for(var currDateEpoch = i_dt;currDateEpoch<=(endDate+2678400);currDateEpoch = currDateEpoch + 2678400){
+                    //Converting the epoch time to YYYYMMDD format.
+                    var updstartdt = common.getStartMonth(currDateEpoch,appTZ);
+                    var updenddt = common.getStartMonth(currDateEpoch+2678399,appTZ);
+                    console.log(updstartdt + '__' +updenddt);
+                    //extracting YYYY and MMDD for the retrieved date.
+                    var yearstartdt = updstartdt.toString().substr(0,4);
+                    var mmddstartdt = updstartdt.toString().substr(4,4);
+                    var yearenddt = updenddt.toString().substr(0,4);
+                    var mmddenddt = updenddt.toString().substr(4,4);
+                    //Prearing the search criteria.
+                    var searchNewUsers = JSON.parse('{"$and":[{"_id":{"$in":['+userList+']}},{"_'+yearstartdt+'._id":{"$gte":'+parseInt(mmddstartdt)+'}},{"_'+yearenddt+'._id":{"$lte":'+parseInt(mmddenddt)+'}}]}');
+                    //Binding the upddt to the function.
+                    (function(searchDate){
+                      //Execute MongoDB query to find users for the traversed date.
+                      db.collection(config.mongodb.coll_users).find(searchNewUsers,function(err,newUsers){
+                        //If there are no errors in the query execution.
+                        if(!err){
+                          // Preparing the update criteria.
+                          var updJSON = JSON.parse('{"$push":{"val":{"dt":'+searchDate+',"u":'+newUsers.length+'}}}');
+                          //Execute MongoDB Query to push the result.
+                          db.collection(config.mongodb.coll_cohorts).update(insertedJSON,updJSON,{upsert:true},function(err,doc){
+                            if(err){
+                              logger.error(common.getErrorMessageFrom(err));
+                            }else{
+                              //console.log('ED_'+endDate);
+                              if(parseInt(insertedJSON._id.dt) === edt && parseInt(searchDate) === edt)
+                              {
+                                setTimeout(function () {
+                                  db.close();
+                                  callback(null,null);
+                                }, 20000);
+                              }
+                            }
+                          });
+                        }
+                        else{
+                          logger.error(common.getErrorMessageFrom(err));
+                        }
+                      });
+                    })(updstartdt);
+                  }
+                // If no users joined on that particular day.
+                }else{
+                  //Looping through the dates
+                  for(var currDateEpoch = i_dt;currDateEpoch<=(endDate+2678400);currDateEpoch = currDateEpoch + 2678400){
+                    //Converting epoch format to YYYYMMDD format.
+                    var updstartdt = common.getStartMonth(currDateEpoch,appTZ);
+                    console.log(updstartdt);
                     //Preparing the updated JSON.
                     var updJSON = JSON.parse('{"$push":{"val":{"dt":'+updstartdt+',"u":0}}}');
                     //Inserting into the MongoDB Cohort collection.
@@ -292,31 +421,3 @@ function generateWeeklyCohorts(appTZ,aKey,callback){
     }
   });
 }
-
-function generateMonthlyCohorts(appTZ,aKey,callback){
-  console.log("Reached Monthly");
-  var db = mongojs(config.mongodb.url+'/'+aKey);
-  callback(null,null);
-}
-
-
-/*
-// store the document in a variable
-var mongojs = require('mongojs');
-
-var db = mongojs('mongodb://localhost/appengage');
-console.log(db);
-//var doc = db.collection('coll_apps').findOne({_id: mongojs.ObjectId("57c7a4e8a70c0a2939103acd")});
-
-var doc = JSON.parse('{"_id":1}');
-// set a new _id on the document
-doc._id = mongojs.ObjectId("4170b44d6459bba992acaa85");
-doc.name = "WhatsApp";
-// insert the document, using the new _id
-db.collection('coll_apps').insert(doc);
-
-// remove the document with the old _id
-//db.collection('coll_apps').remove({_id: mongojs.ObjectId("4cc45467c55f4d2d2a000002")});
-
-db.close();
-*/
