@@ -123,7 +123,7 @@ function generateDailyCohorts(appTZ,aKey,callback){
                                 setTimeout(function () {
                                   db.close();
                                   callback(null,null);
-                                }, 10000);
+                                }, 20000);
                               }
                             }
                           });
@@ -150,7 +150,7 @@ function generateDailyCohorts(appTZ,aKey,callback){
                           setTimeout(function () {
                             db.close();
                             callback(null,null);
-                          }, 10000);
+                          }, 20000);
                         }
                     });
                   }
@@ -248,7 +248,7 @@ function generateWeeklyCohorts(appTZ,aKey,callback){
                                 setTimeout(function () {
                                   db.close();
                                   callback(null,null);
-                                }, 10000);
+                                }, 20000);
                               }
                             }
                           });
@@ -275,7 +275,7 @@ function generateWeeklyCohorts(appTZ,aKey,callback){
                           setTimeout(function () {
                             db.close();
                             callback(null,null);
-                          }, 10000);
+                          }, 20000);
                         }
                     });
                   }
@@ -305,7 +305,7 @@ function generateMonthlyCohorts(appTZ,aKey,callback){
   //Creating the mongodb database connection
   var db = mongojs(config.mongodb.url+'/'+aKey);
   //Emptying the Weekly Cohort
-  db.collection(config.mongodb.coll_cohorts).remove({"_id.ty":"Y"},function(err,resp){
+  db.collection(config.mongodb.coll_cohorts).remove({"_id.ty":"M"},function(err,resp){
     //If the cohort is emptied successfully.
     if(!err){
       //Looping through the 365 days time frame for the cohort preparation.
@@ -314,11 +314,9 @@ function generateMonthlyCohorts(appTZ,aKey,callback){
         (function(i_dt){
           //Converting the epoch format to YYYYMMDD
           var dt = common.getStartMonth(i_dt,appTZ);
-          var edt = common.getStartMonth(endDate,appTZ);
-          console.log("edt" + edt);
+          var edt = common.getStartMonth(endDate,appTZ);;
           //Prearing the key for the daily cohort.
-          var insertJSON = JSON.parse('{"_id":{"dt":'+dt+',"ty":"Y"}}');
-          console.log(JSON.stringify(insertJSON));
+          var insertJSON = JSON.parse('{"_id":{"dt":'+dt+',"ty":"M"}}');
           //Binding the prepared JSON for the processing.
           (function(insertedJSON){
             //Inserting the key into the cohort collection.
@@ -393,7 +391,6 @@ function generateMonthlyCohorts(appTZ,aKey,callback){
                   for(var currDateEpoch = i_dt;currDateEpoch<=(endDate+2678400);currDateEpoch = currDateEpoch + 2678400){
                     //Converting epoch format to YYYYMMDD format.
                     var updstartdt = common.getStartMonth(currDateEpoch,appTZ);
-                    console.log(updstartdt);
                     //Preparing the updated JSON.
                     var updJSON = JSON.parse('{"$push":{"val":{"dt":'+updstartdt+',"u":0}}}');
                     //Inserting into the MongoDB Cohort collection.
