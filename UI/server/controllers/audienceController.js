@@ -1,6 +1,8 @@
 var mongojs = require('mongojs');
 var moment = require('moment-timezone');
 var dateFormat = require('dateformat');
+var PropertiesReader = require('properties-reader');
+var properties = PropertiesReader('android_models.properties');
 
 var config  = require('../../config/config');
 var logger  = require('../../config/log.js');
@@ -245,23 +247,31 @@ module.exports.fetchAllModel = function(req,res){
 	db.collection('coll_audience').find(JSON.parse(searchObject),function(err,resp){
 		if(err){
 			return res.json(JSON.parse('{"msg":"error is there"}'));
+			db.close();
 		}else{
-			for(var i=0;i<resp.length;i++){
-				var mnuList = resp[i];
-				for (var key in mnuList) {
-					var val = mnuList[key];
-					for(var a=0;a<val.length;a++){
-						var allList = val[a].key;
-						if(allList != null){
-							var listVal = val[a].key;
-								returnResponse.push(listVal);
+			properties.parse ("android_models.properties", { path: true }, function (error, fileData){
+				if (error){
+				return res.json(JSON.parse('{"msg":"error is there"}'));
+				}
+				for(var i=0;i<resp.length;i++){
+					var mnuList = resp[i];
+					for (var key in mnuList) {
+						var val = mnuList[key];
+						for(var a=0;a<val.length;a++){
+							var allList = val[a].key;
+							if(allList != null){
+								var listVal = val[a].key;
+									var modelName = properties.get(listVal);
+									var resultObject = '{"dn":"'+listVal+'","an":"'+modelName+'"}';
+									returnResponse.push(resultObject);
+							}
 						}
 					}
 				}
-			}
-			return res.json(returnResponse);
+				return res.json(returnResponse);
+				db.close();
+			});
 		}
-		db.close();
 	}); 
 };
 
@@ -288,7 +298,11 @@ module.exports.fetchModelFromPlatform = function(req,res){
 							for(var a=0;a<val.length;a++){
 								var allList = val[a].key;
 								if(allList != null){
-									returnResponse.push(val[a].key);
+									//returnResponse.push(val[a].key);
+									var listVal = val[a].key;
+									var modelName = properties.get(listVal);
+									var resultObject = '{"dn":"'+listVal+'","an":"'+modelName+'"}';
+									returnResponse.push(resultObject);
 								}
 							}
 						}
