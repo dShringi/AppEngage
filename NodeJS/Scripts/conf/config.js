@@ -62,6 +62,7 @@ config.mongodb.coll_appengageapps = 'coll_apps';
 config.mongodb.coll_begins = 'coll_begins';
 config.mongodb.coll_campaigns = 'coll_campaigns';
 config.mongodb.coll_cohorts = 'coll_cohorts';
+config.mongodb.coll_audience = 'coll_audience';
 
 
 config.mongodb.triggerType_hourly = 'hourly';
