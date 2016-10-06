@@ -260,10 +260,10 @@ module.exports.fetchAllModel = function(req,res){
 						for(var a=0;a<val.length;a++){
 							var allList = val[a].key;
 							if(allList != null){
-								var listVal = val[a].key;
-									var modelName = properties.get(listVal);
-									var resultObject = '{"dn":"'+listVal+'","an":"'+modelName+'"}';
-									returnResponse.push(resultObject);
+									//var modelName = properties.get(listVal);
+									//var resultObject = '{"dn":"'+listVal+'","an":"'+modelName+'"}';
+									//returnResponse.push(resultObject);
+									returnResponse.push(allList);
 							}
 						}
 					}
@@ -298,11 +298,11 @@ module.exports.fetchModelFromPlatform = function(req,res){
 							for(var a=0;a<val.length;a++){
 								var allList = val[a].key;
 								if(allList != null){
-									//returnResponse.push(val[a].key);
-									var listVal = val[a].key;
-									var modelName = properties.get(listVal);
-									var resultObject = '{"dn":"'+listVal+'","an":"'+modelName+'"}';
-									returnResponse.push(resultObject);
+									returnResponse.push(allList);
+									//var listVal = val[a].key;
+									//var modelName = properties.get(listVal);
+									//var resultObject = '{"dn":"'+listVal+'","an":"'+modelName+'"}';
+									//return Response.push(resultObject);
 								}
 							}
 						}
