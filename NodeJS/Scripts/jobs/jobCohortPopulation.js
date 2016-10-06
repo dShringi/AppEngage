@@ -5,6 +5,7 @@ var common = require('../commons/common');
 var dateFormat = require('dateformat');
 var moment = require('moment-timezone');
 var mongojs = require('mongojs');
+var timeoutInterval = 20000;
 //var aKey = 'test1234';
 //var aKey = '4170b44d6459bba992acaa857ac5b25d7fac6cc1';
 var aKey = process.argv[2];
@@ -123,7 +124,7 @@ function generateDailyCohorts(appTZ,aKey,callback){
                                 setTimeout(function () {
                                   db.close();
                                   callback(null,null);
-                                }, 20000);
+                                }, timeoutInterval);
                               }
                             }
                           });
@@ -150,7 +151,7 @@ function generateDailyCohorts(appTZ,aKey,callback){
                           setTimeout(function () {
                             db.close();
                             callback(null,null);
-                          }, 20000);
+                          }, timeoutInterval);
                         }
                     });
                   }
@@ -248,7 +249,7 @@ function generateWeeklyCohorts(appTZ,aKey,callback){
                                 setTimeout(function () {
                                   db.close();
                                   callback(null,null);
-                                }, 20000);
+                                }, timeoutInterval);
                               }
                             }
                           });
@@ -275,7 +276,7 @@ function generateWeeklyCohorts(appTZ,aKey,callback){
                           setTimeout(function () {
                             db.close();
                             callback(null,null);
-                          }, 20000);
+                          }, timeoutInterval);
                         }
                     });
                   }
@@ -299,7 +300,11 @@ function generateMonthlyCohorts(appTZ,aKey,callback){
   var startDate = new Date();
   //Weekly Cohort will be generated for last 25 weeks i.e. 25 * 7 = 175.
   startDate.setDate((endDate.getDate()-365));
+  startDate.setMonth(startDate.getMonth(),1);
   endDate.setDate(endDate.getDate());
+  endDate.setMonth(endDate.getMonth(),1);
+  console.log(startDate);
+  console.log(endDate);
   startDate = Date.UTC(startDate.getUTCFullYear(),startDate.getUTCMonth(), startDate.getUTCDate(),0,0,0)/1000;
   endDate = Date.UTC(endDate.getUTCFullYear(),endDate.getUTCMonth(), endDate.getUTCDate(),0,0,0)/1000;
   //Creating the mongodb database connection
@@ -309,14 +314,15 @@ function generateMonthlyCohorts(appTZ,aKey,callback){
     //If the cohort is emptied successfully.
     if(!err){
       //Looping through the 365 days time frame for the cohort preparation.
-      for(i=startDate;i<=(endDate+2678400);i=i+2678400){
+      for(i=startDate;i<=endDate;){
         //Binding the variable i to the function as i_dt
         (function(i_dt){
           //Converting the epoch format to YYYYMMDD
           var dt = common.getStartMonth(i_dt,appTZ);
-          var edt = common.getStartMonth(endDate,appTZ);;
+          var edt = common.getStartMonth(endDate,appTZ);
           //Prearing the key for the daily cohort.
           var insertJSON = JSON.parse('{"_id":{"dt":'+dt+',"ty":"M"}}');
+          console.log(JSON.stringify(insertJSON));
           //Binding the prepared JSON for the processing.
           (function(insertedJSON){
             //Inserting the key into the cohort collection.
@@ -327,7 +333,8 @@ function generateMonthlyCohorts(appTZ,aKey,callback){
             });
             // Taking the current date to check for new users
             var startDateUsers = i_dt;
-            var endDateUsers = i_dt+2678399;
+            var tmpstartDateUsers = new Date(startDateUsers*1000);
+            var endDateUsers = i_dt+(getEpochSeconds(tmpstartDateUsers.getYear(),tmpstartDateUsers.getMonth()+1)*86399);
             //Preparing the JSON for searching the new users.
             var searchUsers = JSON.parse('{"$and":[{"flog":{"$gte":'+startDateUsers+'}},{"flog":{"$lte":'+endDateUsers+'}}]}');
             //Run the query to find if any users logged in 1st time.
@@ -343,11 +350,11 @@ function generateMonthlyCohorts(appTZ,aKey,callback){
                   }
                   userList = userList.substr(0,userList.length-1);
                   // Looping through the current processing date till the end
-                  for(var currDateEpoch = i_dt;currDateEpoch<=(endDate+2678400);currDateEpoch = currDateEpoch + 2678400){
+                  for(var currDateEpoch = i_dt;currDateEpoch<=endDate;){
                     //Converting the epoch time to YYYYMMDD format.
                     var updstartdt = common.getStartMonth(currDateEpoch,appTZ);
-                    var updenddt = common.getStartMonth(currDateEpoch+2678399,appTZ);
-                    console.log(updstartdt + '__' +updenddt);
+                    var tmp_epoch = new Date(currDateEpoch*1000);
+                    var updenddt = common.getStartMonth(currDateEpoch+(getEpochSeconds(tmp_epoch.getYear(),tmp_epoch.getMonth()+1)*86399),appTZ);
                     //extracting YYYY and MMDD for the retrieved date.
                     var yearstartdt = updstartdt.toString().substr(0,4);
                     var mmddstartdt = updstartdt.toString().substr(4,4);
@@ -374,7 +381,7 @@ function generateMonthlyCohorts(appTZ,aKey,callback){
                                 setTimeout(function () {
                                   db.close();
                                   callback(null,null);
-                                }, 20000);
+                                }, timeoutInterval);
                               }
                             }
                           });
@@ -384,11 +391,13 @@ function generateMonthlyCohorts(appTZ,aKey,callback){
                         }
                       });
                     })(updstartdt);
+                    var currDateEpoch_tmp = new Date(currDateEpoch*1000);
+                    currDateEpoch = currDateEpoch +(getEpochSeconds(currDateEpoch_tmp.getYear(),currDateEpoch_tmp.getMonth()+1)*86400);
                   }
                 // If no users joined on that particular day.
                 }else{
                   //Looping through the dates
-                  for(var currDateEpoch = i_dt;currDateEpoch<=(endDate+2678400);currDateEpoch = currDateEpoch + 2678400){
+                  for(var currDateEpoch = i_dt;currDateEpoch<=endDate;){
                     //Converting epoch format to YYYYMMDD format.
                     var updstartdt = common.getStartMonth(currDateEpoch,appTZ);
                     //Preparing the updated JSON.
@@ -401,9 +410,11 @@ function generateMonthlyCohorts(appTZ,aKey,callback){
                           setTimeout(function () {
                             db.close();
                             callback(null,null);
-                          }, 20000);
+                          }, timeoutInterval);
                         }
                     });
+                    var currDateEpoch_tmp = new Date(currDateEpoch*1000);
+                    currDateEpoch = currDateEpoch +(getEpochSeconds(currDateEpoch_tmp.getYear(),currDateEpoch_tmp.getMonth()+1)*86400);
                   }
                 }
               }else{
@@ -412,9 +423,15 @@ function generateMonthlyCohorts(appTZ,aKey,callback){
             });
           })(insertJSON);
         })(i);
+        var i_tmp = new Date(i*1000);
+        i = i +(getEpochSeconds(i_tmp.getYear(),i_tmp.getMonth()+1)*86400);
       }
     }else{
       logger.error(common.getErrorMessageFrom(err));
     }
   });
 }
+
+function getEpochSeconds(year,month){
+  return new Date(year, month, 0).getDate();
+};
