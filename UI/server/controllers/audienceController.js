@@ -188,9 +188,7 @@ module.exports.fetchAllDevicetype = function(req,res){
 					for(var a=0;a<val.length;a++){
 						var allList = val[a].key;
 						if(allList != null){
-							//if(!returnResponse.contains(allList)){
-								returnResponse.push(allList);
-							//}
+							returnResponse.push(allList);
 						}
 					}
 				}
@@ -249,29 +247,21 @@ module.exports.fetchAllModel = function(req,res){
 			return res.json(JSON.parse('{"msg":"error is there"}'));
 			db.close();
 		}else{
-			properties.parse ("android_models.properties", { path: true }, function (error, fileData){
-				if (error){
-				return res.json(JSON.parse('{"msg":"error is there"}'));
-				}
-				for(var i=0;i<resp.length;i++){
-					var mnuList = resp[i];
-					for (var key in mnuList) {
-						var val = mnuList[key];
-						for(var a=0;a<val.length;a++){
-							var allList = val[a].key;
-							if(allList != null){
-									//var modelName = properties.get(listVal);
-									//var resultObject = '{"dn":"'+listVal+'","an":"'+modelName+'"}';
-									//returnResponse.push(resultObject);
-									returnResponse.push(allList);
-							}
+			for(var i=0;i<resp.length;i++){
+				var mnuList = resp[i];
+				for (var key in mnuList) {
+					var val = mnuList[key];
+					for(var a=0;a<val.length;a++){
+						var allList = val[a].key;
+						if(allList != null){
+							returnResponse.push(allList);
 						}
 					}
 				}
-				return res.json(returnResponse);
-				db.close();
-			});
+			}
+			return res.json(returnResponse);
 		}
+		db.close();
 	}); 
 };
 
@@ -299,10 +289,6 @@ module.exports.fetchModelFromPlatform = function(req,res){
 								var allList = val[a].key;
 								if(allList != null){
 									returnResponse.push(allList);
-									//var listVal = val[a].key;
-									//var modelName = properties.get(listVal);
-									//var resultObject = '{"dn":"'+listVal+'","an":"'+modelName+'"}';
-									//return Response.push(resultObject);
 								}
 							}
 						}
