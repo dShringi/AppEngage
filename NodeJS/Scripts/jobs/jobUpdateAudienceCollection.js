@@ -18,119 +18,29 @@ MongoClient.connect(url, function (err, db) {
 		db.close();
 	} else {
 		var findQuery = '{}';
-		var projection = '{"lmod":1,"lpf":1}';
+		var projection = '{"lm":1,"lpf":1}';
 		var campaignCollection = db.collection(config.mongodb.coll_users);
 		campaignCollection.find(JSON.parse(findQuery),JSON.parse(projection)).toArray(function (err, result) {
 			if (err) {
 				printErrorMessage(err);
 			} else if (result.length) {
 				var updateFindQuery  = '{"_id" : "mnu"}';
-				updateCollection(db,JSON.parse(updateFindQuery) , QueryBuilder(result, 'mnu'), config.mongodb.coll_audience);
-			}
-			db.close();
-		});
-	}
-});
-
-//to update all osversion 
-MongoClient.connect(url, function (err, db) {
-	if (err) {
-		printErrorMessage(err);
-		db.close();
-	} else {
-		var findQuery = '{}';
-		var projection = '{"losv":1,"lpf":1}';
-		var campaignCollection = db.collection(config.mongodb.coll_users);
-		campaignCollection.find(JSON.parse(findQuery),JSON.parse(projection)).toArray(function (err, result) {
-			if (err) {
-				printErrorMessage(err);
-			} else if (result.length) {
-				var updateFindQuery  = '{"_id" : "osv"}';
-				updateCollection(db,JSON.parse(updateFindQuery) , QueryBuilder(result, 'osv'), config.mongodb.coll_audience);
-			}
-			db.close();
-		});
-	}
-});
-
-//to update all models 
-MongoClient.connect(url, function (err, db) {
-	if (err) {
-		printErrorMessage(err);
-		db.close();
-	} else {
-		var findQuery = '{}';
-		var projection = '{"lmod":1,"lpf":1}';
-		var campaignCollection = db.collection(config.mongodb.coll_users);
-		campaignCollection.find(JSON.parse(findQuery),JSON.parse(projection)).toArray(function (err, result) {
-			if (err) {
-				printErrorMessage(err);
-			} else if (result.length) {
-				var updateFindQuery  = '{"_id" : "model"}';
-				updateCollection(db,JSON.parse(updateFindQuery) , QueryBuilder(result, 'model'), config.mongodb.coll_audience);
-			}
-			db.close();
-		});
-	}
-});
-
-//to update all device type 
-MongoClient.connect(url, function (err, db) {
-	if (err) {
-		printErrorMessage(err);
-		db.close();
-	} else {
-		var findQuery = '{}';
-		var projection = '{"ldt":1,"lpf":1}';
-		var campaignCollection = db.collection(config.mongodb.coll_users);
-		campaignCollection.find(JSON.parse(findQuery),JSON.parse(projection)).toArray(function (err, result) {
-			if (err) {
-				printErrorMessage(err);
-			} else if (result.length) {
-				var updateFindQuery  = '{"_id" : "devType"}';
-				updateCollection(db,JSON.parse(updateFindQuery) , QueryBuilder(result, 'devType'), config.mongodb.coll_audience);
-			}
-			db.close();
-		});
-	}
-});
-
-//to update all app version
-MongoClient.connect(url, function (err, db) {
-	if (err) {
-		printErrorMessage(err);
-		db.close();
-	} else {
-		var findQuery = '{}';
-		var projection = '{"lavn":1,"lpf":1}';
-		var campaignCollection = db.collection(config.mongodb.coll_users);
-		campaignCollection.find(JSON.parse(findQuery),JSON.parse(projection)).toArray(function (err, result) {
-			if (err) {
-				printErrorMessage(err);
-			} else if (result.length) {
-				var updateFindQuery  = '{"_id" : "appversion"}';
-				updateCollection(db,JSON.parse(updateFindQuery) , QueryBuilder(result, 'appversion'), config.mongodb.coll_audience);
-			}
-			db.close();
-		});
-	}
-});
-
-//to update all platform
-MongoClient.connect(url, function (err, db) {
-	if (err) {
-		printErrorMessage(err);
-		db.close();
-	} else {
-		var findQuery = '{}';
-		var projection = '{"lpf":1}';
-		var campaignCollection = db.collection(config.mongodb.coll_users);
-		campaignCollection.find(JSON.parse(findQuery),JSON.parse(projection)).toArray(function (err, result) {
-			if (err) {
-				printErrorMessage(err);
-			} else if (result.length) {
-				var updateFindQuery  = '{"_id" : "platform"}';
-				updateCollection(db,JSON.parse(updateFindQuery) , QueryBuilder(result, 'platform'), config.mongodb.coll_audience);
+				updateCollection(db,JSON.parse(updateFindQuery) , QueryBuilder(result, 'mnu'),'coll_audience');
+				
+				updateFindQuery  = '{"_id" : "osv"}';
+				updateCollection(db,JSON.parse(updateFindQuery) , QueryBuilder(result, 'osv'),'coll_audience');
+				
+				updateFindQuery  = '{"_id" : "model"}';
+				updateCollection(db,JSON.parse(updateFindQuery) , QueryBuilder(result, 'model'),'coll_audience');
+				
+				updateFindQuery  = '{"_id" : "devType"}';
+				updateCollection(db,JSON.parse(updateFindQuery) , QueryBuilder(result, 'devType'),'coll_audience');
+				
+				updateFindQuery  = '{"_id" : "appversion"}';
+				updateCollection(db,JSON.parse(updateFindQuery) , QueryBuilder(result, 'appversion'),'coll_audience');
+				
+				updateFindQuery  = '{"_id" : "platform"}';
+				updateCollection(db,JSON.parse(updateFindQuery) , QueryBuilder(result, 'platform'),'coll_audience');
 			}
 			db.close();
 		});
