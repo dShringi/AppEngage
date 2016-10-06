@@ -18,7 +18,7 @@ MongoClient.connect(url, function (err, db) {
 		db.close();
 	} else {
 		var findQuery = '{}';
-		var projection = '{"lm":1,"lpf":1}';
+		var projection = '{"lm":1, "losv":1, "lmod":1, "ldt":1, "lavn":1, "lpf":1}';
 		var campaignCollection = db.collection(config.mongodb.coll_users);
 		campaignCollection.find(JSON.parse(findQuery),JSON.parse(projection)).toArray(function (err, result) {
 			if (err) {
