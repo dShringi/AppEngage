@@ -151,9 +151,9 @@ function getStartDate(triggerType) {
 	var startDateYear = moment.utc(startDate).tz(appTZ).format('YYYY');
 	var startDateMonth = moment.utc(startDate).tz(appTZ).format('MM');
 	var startDateDay = moment.utc(startDate).tz(appTZ).format('DD');
-	var startDateHour = moment.utc(startDate).tz(appTZ).format('HH');
-	var startDateMinut = moment.utc(startDate).tz(appTZ).format('MM');
-	var startDateSecond = moment.utc(startDate).tz(appTZ).format('SS');
+	var startDateHour = moment.utc(startDate).tz(appTZ).format('hh');
+	var startDateMinut = moment.utc(startDate).tz(appTZ).format('mm');
+	var startDateSecond = moment.utc(startDate).tz(appTZ).format('ss');
 	startDate = new Date(startDateYear, parseInt(startDateMonth)-1,startDateDay,startDateHour, startDateMinut, startDateSecond);
 	if (triggerType == config.mongodb.triggerType_hourly) {
 		//return new Date(startDate-60*60*1000);
