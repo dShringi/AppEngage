@@ -16,6 +16,7 @@
     "moment": "^2.14.1",
     "moment-timezone": "*",
     "mongojs": "^2.2.2",
+    "properties-reader": "0.0.15",
     "underscore": "*",
     "winston": "*"
   }
