@@ -59,8 +59,8 @@ import java.util.regex.Pattern;
  * Created by Admin on 3/8/2016.
  */
 public class Utils implements LocationListener,
-		GoogleApiClient.ConnectionCallbacks,
-		GoogleApiClient.OnConnectionFailedListener {
+		ConnectionCallbacks,
+		OnConnectionFailedListener {
 	private static final String TAG = Utils.class.getSimpleName();
 	public static GoogleApiClient mGoogleApiClient;
 	static String mLastUpdateTime;
@@ -409,8 +409,8 @@ public class Utils implements LocationListener,
 
 	private static void ManufacturerName() {
 
-		String deviceName = android.os.Build.MODEL;
-		String deviceMan = android.os.Build.MANUFACTURER;
+		String deviceName = Build.MODEL;
+		String deviceMan = Build.MANUFACTURER;
 
 		Log.e(TAG, "deviceName :- " + deviceMan);
 		Log.e(TAG, "deviceMan :-" + deviceName);
@@ -765,29 +765,29 @@ public class Utils implements LocationListener,
 	// get System info.
 	public static String OSNAME = "A";
 	public static String OSVERSION = System.getProperty("os.version");
-	public static String RELEASE = android.os.Build.VERSION.RELEASE;
+	public static String RELEASE = Build.VERSION.RELEASE;
 	public static String VERSIONNAME = "1.0";
-	public static String DEVICE = android.os.Build.DEVICE;
-	public static String MODEL = android.os.Build.MODEL;
+	public static String DEVICE = Build.DEVICE;
+	public static String MODEL = Build.MODEL;
 	public static String SDK_INT = Build.VERSION.SDK + "";
-	public static String PRODUCT = android.os.Build.PRODUCT;
-	public static String BRAND = android.os.Build.BRAND;
-	public static String DISPLAY = android.os.Build.DISPLAY;
-	public static String CPU_ABI = android.os.Build.CPU_ABI;
-	public static String CPU_ABI2 = android.os.Build.CPU_ABI2;
-	public static String UNKNOWN = android.os.Build.UNKNOWN;
-	public static String CARRIER_NAME = android.os.Build.HOST;
-	public static long TIME = android.os.Build.TIME;
+	public static String PRODUCT = Build.PRODUCT;
+	public static String BRAND = Build.BRAND;
+	public static String DISPLAY = Build.DISPLAY;
+	public static String CPU_ABI = Build.CPU_ABI;
+	public static String CPU_ABI2 = Build.CPU_ABI2;
+	public static String UNKNOWN = Build.UNKNOWN;
+	public static String CARRIER_NAME = Build.HOST;
+	public static long TIME = Build.TIME;
 
 	public static String timeStamp = TimeUnit.MILLISECONDS.toSeconds(System
 			.currentTimeMillis()) + "";
-	public static String DEVICE_ID = android.os.Build.ID;
-	public static String HARDWARE = android.os.Build.HARDWARE;
-	public static String ID = android.os.Build.ID;
-	public static String MANUFACTURER = android.os.Build.MANUFACTURER;
-	public static String SERIAL = android.os.Build.SERIAL;
-	public static String USER = android.os.Build.USER;
-	public static String HOST = android.os.Build.HOST;
+	public static String DEVICE_ID = Build.ID;
+	public static String HARDWARE = Build.HARDWARE;
+	public static String ID = Build.ID;
+	public static String MANUFACTURER = Build.MANUFACTURER;
+	public static String SERIAL = Build.SERIAL;
+	public static String USER = Build.USER;
+	public static String HOST = Build.HOST;
 	public static String ARCH = System.getProperty("os.arch");
 
 	@Override

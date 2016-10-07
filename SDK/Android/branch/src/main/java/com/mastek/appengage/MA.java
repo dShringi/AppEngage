@@ -30,7 +30,7 @@ import java.net.URL;
 public class MA {
 	private static final String TAG = MA.class.getSimpleName();
 	private static String versionName;
-//	private static User user;
+	//	private static User user;
 	public static String response;
 	public static String device2;
 	public static Context appContext;
@@ -46,6 +46,7 @@ public class MA {
 	private static int min;
 	private static long calTime;
 	private static ReturnResponse rResponse;
+	private static boolean isBeginApiCalled = false;
 
 	public static void init(Context context, String url, String akey)
 	{
@@ -71,9 +72,9 @@ public class MA {
 
 
 		new Thread() {
-			
+
 			private MyReceiver mReceiver;
-		
+
 
 			public void run() {
 
@@ -87,8 +88,8 @@ public class MA {
 				this.mReceiver = new MyReceiver();
 				appContext.registerReceiver(this.mReceiver, new IntentFilter(
 						ConnectivityManager.CONNECTIVITY_ACTION));
-				
-				
+
+
 				time1 = System.currentTimeMillis();
 
 				senddatatoserver();
@@ -114,7 +115,7 @@ public class MA {
 
 		}.start();
 	}
-//TODO remove activitytracking convert from here
+	//TODO remove activitytracking convert from here
 	public static void endApi(final Context context) {
 
 		new Thread() {
@@ -338,7 +339,7 @@ public class MA {
 				}
 
 				//********************
-				Log.e(TAG, "end data to server... :- ");
+				Log.e(TAG, "crash data to server... :- ");
 			} else {
 				boolean save = dbUserManager.saveCompleteJson(post_data.toString());
 
@@ -489,7 +490,7 @@ public class MA {
 			post_data.put("ori", Utils.orientation);
 			post_data.put("akey", API_KEY);
 			post_data.put("sdv", "1.0");
-            post_data.put("rkey",Utils.tokenGen);
+			post_data.put("rkey",Utils.tokenGen);
 			post_data.put("mt", "B");
 			Log.e(TAG, "     send data;..............." /*+ user*/);
 
@@ -597,10 +598,10 @@ public class MA {
 
 		@Override
 		protected void onPostExecute(String s) {
-		if(rResponse != null)
-		{
-			uiLog("Send API data "+s);
-		}
+			if(rResponse != null)
+			{
+				uiLog("Send API data "+s);
+			}
 
 		}
 
@@ -945,7 +946,7 @@ public class MA {
 			post_data.put("tsd", calTime);// //total session duration
 			post_data.put("did", Utils.deviceId);
 			post_data.put("akey", API_KEY);// api
-																				// key
+			// key
 			post_data.put("rtc", CalculatedTime);
 			post_data.put("sid", time1 + "" + Utils.deviceId);
 			post_data.put("sdv", "1.0");// sdk version
@@ -959,7 +960,7 @@ public class MA {
 			e.printStackTrace();
 		}
 		if (post_data.length() > 0) {
-			Log.e(TAG, "POST_DATA..........." + post_data);
+			Log.e(TAG, "POST_DATA..END API........." + post_data);
 
 			if (ConnectionManager.isNetworkConnected(appContext)) {
 				new EndJsonDataToServer().execute(String.valueOf(post_data));
@@ -1194,9 +1195,23 @@ public class MA {
 
 
 	public static void beginApi(Context context) {
-		if (Build.VERSION.SDK_INT >= 23) { // Build.VERSION_CODES.M
-			if (checkPermission()) {
-				Log.e(TAG, "checkPermission=-=====");
+		if(!isBeginApiCalled) {
+			if (Build.VERSION.SDK_INT >= 23) { // Build.VERSION_CODES.M
+				if (checkPermission()) {
+					Log.e(TAG, "checkPermission=-=====");
+					Utils.requestSingleUpdate(appContext, new Utils.LocationCallback() {
+
+						@Override
+						public void onNewLocationAvailable(Utils.GPSCoordinates location) {
+							// TODO Auto-generated method stub
+						}
+					});
+				} else {
+					Log.e("sendApi", "---it is here");
+					sendApi(context);
+				}
+			} else {
+				Log.e(TAG, "log for less dan 23 version");
 				Utils.requestSingleUpdate(appContext, new Utils.LocationCallback() {
 
 					@Override
@@ -1205,19 +1220,7 @@ public class MA {
 					}
 				});
 			}
-			else {
-				Log.e("sendApi","---it is here");
-			sendApi(context);
-			}
-		} else {
-			Log.e(TAG, "log for less dan 23 version");
-			Utils.requestSingleUpdate(appContext, new Utils.LocationCallback() {
-
-				@Override
-				public void onNewLocationAvailable(Utils.GPSCoordinates location) {
-					// TODO Auto-generated method stub
-				}
-			});
+			isBeginApiCalled = true;
 		}
 	}
 

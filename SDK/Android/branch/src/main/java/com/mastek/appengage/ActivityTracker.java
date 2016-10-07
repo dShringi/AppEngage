@@ -111,12 +111,12 @@ public class ActivityTracker implements Application.ActivityLifecycleCallbacks {
     @Override
     public void onActivityDestroyed(Activity activity) {
         //Log.e("onActivityDestroyed","Activity Name :"+ activity.getLocalClassName());
-        if(!Utils.endApiCalled)
+       /* if(!Utils.endApiCalled)
         {
             MA.activityTimeTrackingApi(activity);
             MA.endApi(activity);
             Utils.endApiCalled = true;
-        }
+        }*/
     }
 
     public static void convertHashToJsonArray(HashMap hashMap)
