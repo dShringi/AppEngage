@@ -32,19 +32,15 @@ if(aKey === config.object.UNDEFINED || aKey === config.object.NULL || aKey === c
           logger.error(common.getErrorMessageFrom(err));
           process.exit();
         }else{
-          //console.log("Daily Cohort Generated");
           generateWeeklyCohorts(appTZ,aKey,function(err,resp){
             if(err){
               logger.error(common.getErrorMessageFrom(err));
               process.exit();
             }else{
-              //console.log("Weekly Cohort Generated");
               generateMonthlyCohorts(appTZ,aKey,function(err,resp){
-                //Temporary to delay the exit.
                 if(err){
                   logger.error(common.getErrorMessageFrom(err));
                 }else{
-                 //console.log("Monhtly Cohort Generated");
                  process.exit();
                 }
               });
@@ -126,7 +122,6 @@ function generateDailyCohorts(appTZ,aKey,callback){
                             if(err){
                               logger.error(common.getErrorMessageFrom(err));
                             }else{
-                              //console.log('ED_'+endDate);
                               if(parseInt(insertedJSON._id.dt) === edt && parseInt(searchDate) === edt)
                               {
                                 setTimeout(function () {
@@ -153,7 +148,6 @@ function generateDailyCohorts(appTZ,aKey,callback){
                     var updJSON = JSON.parse('{"$push":{"val":{"dt":'+upddt+',"u":0}}}');
                     //Inserting into the MongoDB Cohort collection.
                     db.collection(config.mongodb.coll_cohorts).update(insertedJSON,updJSON,{upsert:true},function(err,doc){
-                      //console.log('ED_'+endDate);
                       if(parseInt(insertedJSON._id.dt) === edt && parseInt(upddt) === edt)
                         {
                           setTimeout(function () {
@@ -251,7 +245,6 @@ function generateWeeklyCohorts(appTZ,aKey,callback){
                             if(err){
                               logger.error(common.getErrorMessageFrom(err));
                             }else{
-                              //console.log('ED_'+endDate);
                               if(parseInt(insertedJSON._id.dt) === edt && parseInt(searchDate) === edt)
                               {
                                 setTimeout(function () {
@@ -278,7 +271,6 @@ function generateWeeklyCohorts(appTZ,aKey,callback){
                     var updJSON = JSON.parse('{"$push":{"val":{"dt":'+updstartdt+',"u":0}}}');
                     //Inserting into the MongoDB Cohort collection.
                     db.collection(config.mongodb.coll_cohorts).update(insertedJSON,updJSON,{upsert:true},function(err,doc){
-                      //console.log('ED_'+endDate);
                       if(parseInt(insertedJSON._id.dt) === edt && parseInt(updstartdt) === edt)
                         {
                           setTimeout(function () {
@@ -311,8 +303,6 @@ function generateMonthlyCohorts(appTZ,aKey,callback){
   startDate.setMonth(startDate.getMonth(),1);
   endDate.setDate(endDate.getDate());
   endDate.setMonth(endDate.getMonth(),1);
-  console.log(startDate);
-  console.log(endDate);
   startDate = Date.UTC(startDate.getUTCFullYear(),startDate.getUTCMonth(), startDate.getUTCDate(),0,0,0)/thousand;
   endDate = Date.UTC(endDate.getUTCFullYear(),endDate.getUTCMonth(), endDate.getUTCDate(),0,0,0)/thousand;
   //Creating the mongodb database connection
@@ -330,7 +320,6 @@ function generateMonthlyCohorts(appTZ,aKey,callback){
           var edt = common.getStartMonth(endDate,appTZ);
           //Prearing the key for the daily cohort.
           var insertJSON = JSON.parse('{"_id":{"dt":'+dt+',"ty":"M"}}');
-          console.log(JSON.stringify(insertJSON));
           //Binding the prepared JSON for the processing.
           (function(insertedJSON){
             //Inserting the key into the cohort collection.
@@ -383,7 +372,6 @@ function generateMonthlyCohorts(appTZ,aKey,callback){
                             if(err){
                               logger.error(common.getErrorMessageFrom(err));
                             }else{
-                              //console.log('ED_'+endDate);
                               if(parseInt(insertedJSON._id.dt) === edt && parseInt(searchDate) === edt)
                               {
                                 setTimeout(function () {
@@ -412,7 +400,6 @@ function generateMonthlyCohorts(appTZ,aKey,callback){
                     var updJSON = JSON.parse('{"$push":{"val":{"dt":'+updstartdt+',"u":0}}}');
                     //Inserting into the MongoDB Cohort collection.
                     db.collection(config.mongodb.coll_cohorts).update(insertedJSON,updJSON,{upsert:true},function(err,doc){
-                      //console.log('ED_'+endDate);
                       if(parseInt(insertedJSON._id.dt) === edt && parseInt(updstartdt) === edt)
                         {
                           setTimeout(function () {
