@@ -15,7 +15,7 @@ module.exports.fetchAllPlatform = function(req,res){
 	var searchObject ='{"_id":"platform"}';
 	var returnResponse=[];
 	var db = mongojs(config.connectionstring+akey);
-	db.collection('coll_audience').find(JSON.parse(searchObject) ,function(err,resp){
+	db.collection(config.coll_audience).find(JSON.parse(searchObject) ,function(err,resp){
 		if(err){
 			return res.json(JSON.parse('{"msg":"error is there"}'));
 		}else{
@@ -48,7 +48,7 @@ module.exports.fetchManufacturerFromPlatform = function(req,res){
 		var projection = '{"'+platform+'":1}';
 		var returnResponse=[];
 		var db = mongojs(config.connectionstring+akey);
-		db.collection('coll_audience').find(JSON.parse(searchObject), JSON.parse(projection) ,function(err,resp){
+		db.collection(config.coll_audience).find(JSON.parse(searchObject), JSON.parse(projection) ,function(err,resp){
 			if(err){
 				return res.json(JSON.parse('{"msg":"error is there"}'));
 			}else{
@@ -81,7 +81,7 @@ module.exports.fetchAllManufacturer = function(req,res){
 	var searchObject ='{"_id":"mnu"}';
 	var returnResponse=[];
 	var db = mongojs(config.connectionstring+akey);
-	db.collection('coll_audience').find(JSON.parse(searchObject) ,function(err,resp){
+	db.collection(config.coll_audience).find(JSON.parse(searchObject) ,function(err,resp){
 		if(err){
 			return res.json(JSON.parse('{"msg":"error is there"}'));
 		}else{
@@ -111,7 +111,7 @@ module.exports.fetchAllOS = function(req,res){
 	var searchObject ='{"_id":"osv"}';
 	var returnResponse=[];
 	var db = mongojs(config.connectionstring+akey);
-	db.collection('coll_audience').find(JSON.parse(searchObject),function(err,resp){
+	db.collection(config.coll_audience).find(JSON.parse(searchObject),function(err,resp){
 		if(err){
 			return res.json(JSON.parse('{"msg":"error is there"}'));
 		}else{
@@ -144,7 +144,7 @@ module.exports.fetchOSFromPlatform = function(req,res){
 		var projection = '{"'+platform+'":1}';
 		var returnResponse=[];
 		var db = mongojs(config.connectionstring+akey);
-		db.collection('coll_audience').find(JSON.parse(searchObject), JSON.parse(projection) ,function(err,resp){
+		db.collection(config.coll_audience).find(JSON.parse(searchObject), JSON.parse(projection) ,function(err,resp){
 			if(err){
 				return res.json(JSON.parse('{"msg":"error is there"}'));
 			}else{
@@ -177,7 +177,7 @@ module.exports.fetchAllDevicetype = function(req,res){
 	var akey = req.query["akey"];
 	var searchObject ='{"_id":"devType"}';
 	var db = mongojs(config.connectionstring+akey);
-	db.collection('coll_audience').find(JSON.parse(searchObject),function(err,resp){
+	db.collection(config.coll_audience).find(JSON.parse(searchObject),function(err,resp){
 		if(err){
 			return res.json(JSON.parse('{"msg":"error is there"}'));
 		}else{
@@ -210,7 +210,7 @@ module.exports.fetchDevicetypeFromPlatform = function(req,res){
 		var projection = '{"'+platform+'":1}';
 		var returnResponse=[];
 		var db = mongojs(config.connectionstring+akey);
-		db.collection('coll_audience').find(JSON.parse(searchObject), JSON.parse(projection) ,function(err,resp){
+		db.collection(config.coll_audience).find(JSON.parse(searchObject), JSON.parse(projection) ,function(err,resp){
 			if(err){
 				return res.json(JSON.parse('{"msg":"error is there"}'));
 			}else{
@@ -242,7 +242,7 @@ module.exports.fetchAllModel = function(req,res){
 	var searchObject ='{"_id":"model"}';
 	var returnResponse=[];
 	var db = mongojs(config.connectionstring+akey);
-	db.collection('coll_audience').find(JSON.parse(searchObject),function(err,resp){
+	db.collection(config.coll_audience).find(JSON.parse(searchObject),function(err,resp){
 		if(err){
 			return res.json(JSON.parse('{"msg":"error is there"}'));
 			db.close();
@@ -254,7 +254,11 @@ module.exports.fetchAllModel = function(req,res){
 					for(var a=0;a<val.length;a++){
 						var allList = val[a].key;
 						if(allList != null){
-							returnResponse.push(allList);
+							var modelMappedName = properties.get(allList);
+							var pushObject = {};
+							pushObject['cn'] = allList;
+							pushObject['an'] = modelMappedName;
+							returnResponse.push(pushObject);
 						}
 					}
 				}
@@ -276,7 +280,7 @@ module.exports.fetchModelFromPlatform = function(req,res){
 		var projection = '{"'+platform+'":1}';
 		var returnResponse=[];
 		var db = mongojs(config.connectionstring+akey);
-		db.collection('coll_audience').find(JSON.parse(searchObject), JSON.parse(projection) ,function(err,resp){
+		db.collection(config.coll_audience).find(JSON.parse(searchObject), JSON.parse(projection) ,function(err,resp){
 			if(err){
 				return res.json(JSON.parse('{"msg":"error is there"}'));
 			}else{
@@ -288,7 +292,12 @@ module.exports.fetchModelFromPlatform = function(req,res){
 							for(var a=0;a<val.length;a++){
 								var allList = val[a].key;
 								if(allList != null){
-									returnResponse.push(allList);
+									//returnResponse.push(allList);
+									var modelMappedName = properties.get(allList);
+									var pushObject = {};
+									pushObject['cn'] = allList;
+									pushObject['an'] = modelMappedName;
+									returnResponse.push(pushObject);
 								}
 							}
 						}
@@ -309,7 +318,7 @@ module.exports.fetchAllAppversion = function(req,res){
 	var searchObject ='{"_id":"appversion"}';
 	var returnResponse=[];
 	var db = mongojs(config.connectionstring+akey);
-	db.collection('coll_audience').find(JSON.parse(searchObject),function(err,resp){
+	db.collection(config.coll_audience).find(JSON.parse(searchObject),function(err,resp){
 		if(err){
 			return res.json(JSON.parse('{"msg":"error is there"}'));
 		}else{
@@ -343,7 +352,7 @@ module.exports.fetchAppversionFromPlatform = function(req,res){
 		var projection = '{"'+platform+'":1}';
 		var returnResponse=[];
 		var db = mongojs(config.connectionstring+akey);
-		db.collection('coll_audience').find(JSON.parse(searchObject), JSON.parse(projection) ,function(err,resp){
+		db.collection(config.coll_audience).find(JSON.parse(searchObject), JSON.parse(projection) ,function(err,resp){
 			if(err){
 				return res.json(JSON.parse('{"msg":"error is there"}'));
 			}else{
