@@ -401,10 +401,11 @@ var service = {
 	            $('select#dropdown-' + fType).multipleSelect({
 	                allSelected: false,
 	                countSelected: false,
-                    maxHeight: 180
+	                maxHeight: 180,
 	            });
 	            $("select#dropdown-" + fType).nextAll("div.ms-parent").children().first().attr("onmouseover", "showSelected(this, event)");
 	            $("select#dropdown-" + fType).nextAll("div.ms-parent").children().first().attr("onmouseout", "removeTooltip(this, event)");
+	            $("select#dropdown-" + fType).nextAll("div.ms-parent").children().nextAll("div.ms-drop").css("width", "auto");
 
 	            //if (data.length >= 3) {
 	            //    $('select#dropdown-' + fType).attr("size", "3");
