@@ -70,10 +70,10 @@ function generateDailyCohorts(appTZ,aKey,callback){
         //Binding the variable i to the function as i_dt
         (function(i_dt){
           //Converting the epoch format to YYYYMMDD
-          var dt = common.getStartDate(i_dt,appTZ);
-          var edt = common.getStartDate(endDate,appTZ);
+          let dt = common.getStartDate(i_dt,appTZ);
+          let edt = common.getStartDate(endDate,appTZ);
           //Prearing the key for the daily cohort.
-          var insertJSON = JSON.parse('{"_id":{"dt":'+dt+',"ty":"D"}}');
+          let insertJSON = JSON.parse('{"_id":{"dt":'+dt+',"ty":"D"}}');
           //Binding the prepared JSON for the processing.
           (function(insertedJSON){
             //Inserting the key into the cohort collection.
@@ -83,10 +83,10 @@ function generateDailyCohorts(appTZ,aKey,callback){
               }
             });
             // Taking the current date to check for new users
-            var startDateUsers = i_dt;
-            var endDateUsers = i_dt+(epochSecondsForDay-1);
+            let startDateUsers = i_dt;
+            let endDateUsers = i_dt+(epochSecondsForDay-1);
             //Preparing the JSON for searching the new users.
-            var searchUsers = JSON.parse('{"$and":[{"flog":{"$gte":'+startDateUsers+'}},{"flog":{"$lte":'+endDateUsers+'}}]}');
+            let searchUsers = JSON.parse('{"$and":[{"flog":{"$gte":'+startDateUsers+'}},{"flog":{"$lte":'+endDateUsers+'}}]}');
             //Run the query to find if any users logged in 1st time.
             db.collection(config.mongodb.coll_users).find(searchUsers,function(err,usersdoc){
               //if there are no errors
@@ -94,7 +94,7 @@ function generateDailyCohorts(appTZ,aKey,callback){
                 //If there are users who joined on that day.
                 if(usersdoc.length!==0){
                   // Preparing the user id list of all the users for search operation.
-                  var userList='';
+                  let userList='';
                   for(let u=0;u<usersdoc.length;u++){
                     userList = userList +'"'+ usersdoc[u]._id+'",';
                   }
@@ -102,12 +102,12 @@ function generateDailyCohorts(appTZ,aKey,callback){
                   // Looping through the current processing date till the end
                   for(let currDateEpoch = i_dt;currDateEpoch<=endDate;currDateEpoch = currDateEpoch + epochSecondsForDay){
                     //Converting the epoch time to YYYYMMDD format.
-                    var upddt = common.getStartDate(currDateEpoch,appTZ);
+                    let upddt = common.getStartDate(currDateEpoch,appTZ);
                     //extracting YYYY and MMDD for the retrieved date.
-                    var year = upddt.toString().substr(0,4);
-                    var mmdd = upddt.toString().substr(4,4);
+                    let year = upddt.toString().substr(0,4);
+                    let mmdd = upddt.toString().substr(4,4);
                     //Prearing the search criteria.
-                    var searchNewUsers = JSON.parse('{"$and":[{"_id":{"$in":['+userList+']}},{"_'+year+'._id":'+parseInt(mmdd)+'}]}');
+                    let searchNewUsers = JSON.parse('{"$and":[{"_id":{"$in":['+userList+']}},{"_'+year+'._id":'+parseInt(mmdd)+'}]}');
                     //Binding the upddt to the function.
                     (function(searchDate){
                       //Execute MongoDB query to find users for the traversed date.
@@ -115,7 +115,7 @@ function generateDailyCohorts(appTZ,aKey,callback){
                         //If there are no errors in the query execution.
                         if(!err){
                           // Preparing the update criteria.
-                          var updJSON = JSON.parse('{"$push":{"val":{"dt":'+searchDate+',"u":'+newUsers.length+'}}}');
+                          let updJSON = JSON.parse('{"$push":{"val":{"dt":'+searchDate+',"u":'+newUsers.length+'}}}');
                           //Execute MongoDB Query to push the result.
                           db.collection(config.mongodb.coll_cohorts).update(insertedJSON,updJSON,{upsert:true},function(err,doc){
                             if(err){
@@ -142,9 +142,9 @@ function generateDailyCohorts(appTZ,aKey,callback){
                   //Looping through the dates
                   for(let currDateEpoch = i_dt;currDateEpoch<=endDate;currDateEpoch = currDateEpoch + epochSecondsForDay){
                     //Converting epoch format to YYYYMMDD format.
-                    var upddt = common.getStartDate(currDateEpoch,appTZ);
+                    let upddt = common.getStartDate(currDateEpoch,appTZ);
                     //Preparing the updated JSON.
-                    var updJSON = JSON.parse('{"$push":{"val":{"dt":'+upddt+',"u":0}}}');
+                    let updJSON = JSON.parse('{"$push":{"val":{"dt":'+upddt+',"u":0}}}');
                     //Inserting into the MongoDB Cohort collection.
                     db.collection(config.mongodb.coll_cohorts).update(insertedJSON,updJSON,{upsert:true},function(err,doc){
                       if(parseInt(insertedJSON._id.dt) === edt && parseInt(upddt) === edt)
@@ -190,10 +190,10 @@ function generateWeeklyCohorts(appTZ,aKey,callback){
         //Binding the variable i to the function as i_dt
         (function(i_dt){
           //Converting the epoch format to YYYYMMDD
-          var dt = common.getStartWeek(i_dt,appTZ);
-          var edt = common.getStartWeek(endDate,appTZ);
+          let dt = common.getStartWeek(i_dt,appTZ);
+          let edt = common.getStartWeek(endDate,appTZ);
           //Prearing the key for the daily cohort.
-          var insertJSON = JSON.parse('{"_id":{"dt":'+dt+',"ty":"W"}}');
+          let insertJSON = JSON.parse('{"_id":{"dt":'+dt+',"ty":"W"}}');
           //Binding the prepared JSON for the processing.
           (function(insertedJSON){
             //Inserting the key into the cohort collection.
@@ -203,10 +203,10 @@ function generateWeeklyCohorts(appTZ,aKey,callback){
               }
             });
             // Taking the current date to check for new users
-            var startDateUsers = i_dt;
-            var endDateUsers = i_dt+(epochSecondsForWeek-1);
+            let startDateUsers = i_dt;
+            let endDateUsers = i_dt+(epochSecondsForWeek-1);
             //Preparing the JSON for searching the new users.
-            var searchUsers = JSON.parse('{"$and":[{"flog":{"$gte":'+startDateUsers+'}},{"flog":{"$lte":'+endDateUsers+'}}]}');
+            let searchUsers = JSON.parse('{"$and":[{"flog":{"$gte":'+startDateUsers+'}},{"flog":{"$lte":'+endDateUsers+'}}]}');
             //Run the query to find if any users logged in 1st time.
             db.collection(config.mongodb.coll_users).find(searchUsers,function(err,usersdoc){
               //if there are no errors
@@ -214,7 +214,7 @@ function generateWeeklyCohorts(appTZ,aKey,callback){
                 //If there are users who joined on that day.
                 if(usersdoc.length!==0){
                   // Preparing the user id list of all the users for search operation.
-                  var userList='';
+                  let userList='';
                   for(let u=0;u<usersdoc.length;u++){
                     userList = userList +'"'+ usersdoc[u]._id+'",';
                   }
@@ -222,15 +222,15 @@ function generateWeeklyCohorts(appTZ,aKey,callback){
                   // Looping through the current processing date till the end
                   for(let currDateEpoch = i_dt;currDateEpoch<=endDate;currDateEpoch = currDateEpoch + epochSecondsForWeek){
                     //Converting the epoch time to YYYYMMDD format.
-                    var updstartdt = common.getStartDate(currDateEpoch,appTZ);
-                    var updenddt = common.getStartDate(currDateEpoch+(epochSecondsForWeek-1),appTZ);
+                    let updstartdt = common.getStartDate(currDateEpoch,appTZ);
+                    let updenddt = common.getStartDate(currDateEpoch+(epochSecondsForWeek-1),appTZ);
                     //extracting YYYY and MMDD for the retrieved date.
-                    var yearstartdt = updstartdt.toString().substr(0,4);
-                    var mmddstartdt = updstartdt.toString().substr(4,4);
-                    var yearenddt = updenddt.toString().substr(0,4);
-                    var mmddenddt = updenddt.toString().substr(4,4);
+                    let yearstartdt = updstartdt.toString().substr(0,4);
+                    let mmddstartdt = updstartdt.toString().substr(4,4);
+                    let yearenddt = updenddt.toString().substr(0,4);
+                    let mmddenddt = updenddt.toString().substr(4,4);
                     //Prearing the search criteria.
-                    var searchNewUsers = JSON.parse('{"$and":[{"_id":{"$in":['+userList+']}},{"_'+yearstartdt+'._id":{"$gte":'+parseInt(mmddstartdt)+'}},{"_'+yearenddt+'._id":{"$lte":'+parseInt(mmddenddt)+'}}]}');
+                    let searchNewUsers = JSON.parse('{"$and":[{"_id":{"$in":['+userList+']}},{"_'+yearstartdt+'._id":{"$gte":'+parseInt(mmddstartdt)+'}},{"_'+yearenddt+'._id":{"$lte":'+parseInt(mmddenddt)+'}}]}');
                     //Binding the upddt to the function.
                     (function(searchDate){
                       //Execute MongoDB query to find users for the traversed date.
@@ -238,7 +238,7 @@ function generateWeeklyCohorts(appTZ,aKey,callback){
                         //If there are no errors in the query execution.
                         if(!err){
                           // Preparing the update criteria.
-                          var updJSON = JSON.parse('{"$push":{"val":{"dt":'+searchDate+',"u":'+newUsers.length+'}}}');
+                          let updJSON = JSON.parse('{"$push":{"val":{"dt":'+searchDate+',"u":'+newUsers.length+'}}}');
                           //Execute MongoDB Query to push the result.
                           db.collection(config.mongodb.coll_cohorts).update(insertedJSON,updJSON,{upsert:true},function(err,doc){
                             if(err){
@@ -265,9 +265,9 @@ function generateWeeklyCohorts(appTZ,aKey,callback){
                   //Looping through the dates
                   for(let currDateEpoch = i_dt;currDateEpoch<=endDate;currDateEpoch = currDateEpoch + epochSecondsForWeek){
                     //Converting epoch format to YYYYMMDD format.
-                    var updstartdt = common.getStartDate(currDateEpoch,appTZ);
+                    let updstartdt = common.getStartDate(currDateEpoch,appTZ);
                     //Preparing the updated JSON.
-                    var updJSON = JSON.parse('{"$push":{"val":{"dt":'+updstartdt+',"u":0}}}');
+                    let updJSON = JSON.parse('{"$push":{"val":{"dt":'+updstartdt+',"u":0}}}');
                     //Inserting into the MongoDB Cohort collection.
                     db.collection(config.mongodb.coll_cohorts).update(insertedJSON,updJSON,{upsert:true},function(err,doc){
                       if(parseInt(insertedJSON._id.dt) === edt && parseInt(updstartdt) === edt)
