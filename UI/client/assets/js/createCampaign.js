@@ -1,4 +1,5 @@
 var ddArr = [];
+var modelCn = [];
 
 $(document).ready(function () {
 
@@ -206,7 +207,12 @@ $(document).ready(function () {
             var newCount = $(".new-audience").children().length;
             for (i = 1; i <= newCount; i++) {
                 var keyAQ = $(".new-audience #new-audi-row" + i + " div.hidden-field").text();
-                var valAQ = $(".new-audience #new-audi-row" + i + " .ms-choice span").text();
+                if (keyAQ === "lmod") {
+                    var valAQ = $(".new-audience #new-audi-row" + i + " #modelCn-hidden").text();
+                }
+                else {
+                    var valAQ = $(".new-audience #new-audi-row" + i + " .ms-choice span").text();
+                }
 
                 finalArr = valAQ.split(", ");
                 console.log(finalArr);
@@ -310,7 +316,25 @@ function addAudienceFilter(currdiv) {
     console.log($(currdiv).parent().parent().children().length);
     var cntfilter = $(currdiv).parent().parent().children().length + 1;
 
-    $("div.new-audience").append("<div id='new-audi-row"+cntfilter+"'></div>")
+
+    if ($(currdiv).parent().children().next().val() === "model") {
+        $("#modelCn-hidden").remove();
+        modelCn = [];
+        console.log($(currdiv).parent().children().nextAll(".ms-parent").children().next().children());
+
+        $(currdiv).parent().children().nextAll(".ms-parent").children().next().children().find("input:checkbox:checked").each(function () {
+            //console.log($(this).val());
+            modelCn.push($(this).val());
+        })
+        if (modelCn[0] == "on") {
+            modelCn.shift();
+        }
+        $(currdiv).parent().append("<span id='modelCn-hidden' style='display: none;'></span>");
+        $("#modelCn-hidden").html(modelCn.join(", "));
+    }
+
+
+    $("div.new-audience").append("<div id='new-audi-row" + cntfilter + "'></div>");
     $("div.new-audience #new-audi-row"+cntfilter).append("<span>Devices having</span>\
                                             <select class='form-control dropdown-audience' onchange='addSubFilter(this)'>\
                                                 <option value='mnu'>Manufacturer</option>\
@@ -324,6 +348,7 @@ function addAudienceFilter(currdiv) {
     $(currdiv).parent().children().attr("disabled", "disabled");
     //$(currdiv).parent().children().children().attr("disabled", "disabled");
     $(currdiv).parent().children().nextAll(".hidden-field").removeAttr("disabled");
+    $(currdiv).parent().children().nextAll("#modelCn-hidden").removeAttr("disabled");
     //$(curr).parent().prev().remove(".fa-trash-o");
     $(currdiv).prevAll("i.fa.fa-trash-o.pull-right").remove();
     $(currdiv).remove();
@@ -344,7 +369,9 @@ function addAudienceFilter(currdiv) {
         service.populateFilters("mnu");
         $("div.new-audience #new-audi-row" + cntfilter).append("<i class='fa fa-plus-square' onclick='addAudienceFilter(this)' aria-hidden='true'></i>");
     }
+
     
+
 }
 
 function addSubFilter(curr) {

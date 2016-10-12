@@ -388,7 +388,13 @@ var service = {
 	            console.log(data);
 	            $("select#dropdown-" + fType).css("opacity", "0");
 	            for (i = 0; i < data.length; i++) {
-	                $("select#dropdown-" + fType).append("<option value=" + data[i] + ">" + data[i] + "</option>");
+	                if(fType === "model"){
+	                    $("select#dropdown-" + fType).append("<option value=" + data[i].cn + ">" + data[i].an + "</option>");
+	                }
+	                else {
+	                    $("select#dropdown-" + fType).append("<option value=" + data[i] + ">" + data[i] + "</option>");
+	                }
+	                
 	                
 	            }
 
