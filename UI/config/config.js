@@ -1,3 +1,4 @@
+"use strict";
 //For Development
 module.exports.port             = 3001;
 //For Production
@@ -45,7 +46,9 @@ module.exports.platform=[
 {shortpf:"W",displaypf:"Windows"},
 {shortpf:"a",displaypf:"Android"},
 {shortpf:"i",displaypf:"iOS"},
-{shortpf:"w",displaypf:"Windows"}
+{shortpf:"w",displaypf:"Windows"},
+{shortpf:"iOS",displaypf:"iOS"},
+{shortpf:"IOS",displaypf:"iOS"}
 ];
 
 module.exports.model=[
