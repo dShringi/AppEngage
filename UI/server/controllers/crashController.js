@@ -5,13 +5,12 @@ let config    	= require('../../config/config');
 let async 		= require('async');
 const platform    = config.platform;
 let arrPlatform = [];
-let startdate ,enddate ,akey ;
 
 for(let i=0;i<platform.length;i++){
 	arrPlatform[platform[i].shortpf] = platform[i].displaypf;
 }
 
-function aggregateCalulation(searchByParam,callback){ // function to fetch result mnu,osv and pf .
+function aggregateCalulation(searchByParam,startdate,enddate,akey,callback){ // function to fetch result mnu,osv and pf .
 	let paramString;
 	let rowData=searchByParam;
 	const db = mongojs(config.connectionstring+akey);
@@ -110,6 +109,7 @@ module.exports.crashCounters = function(req,res){
 				{ $group: {_id : { mnu:{$sum:"$val.mnu"},osv:{$sum:"$val.osv"},pf:{$sum:"$val.pf"}}, Total : {$sum : 1}}},
 				{ $project: {_id: 0,Total: 1} }
 				],function(err, result) {
+					db.close();
 					if(!err){
 						if(result.length!==0){
 							totalString='{"TotalCrashes":'+ result[0].Total + '}';
@@ -124,21 +124,21 @@ module.exports.crashCounters = function(req,res){
 		},//callback end
 		//Aggregate by Manufacturers
 		function(callback) { //callback start
-			aggregateCalulation("mnu",function(res){
+			aggregateCalulation("mnu",startdate,enddate,akey,function(res){
 			mnuString=res;
 			callback(null);
 			});
 		},//callback end
 		//Aggregate By Operating System Versions
 		function(callback) { //callback start
-			aggregateCalulation("osv",function(res){
+			aggregateCalulation("osv",startdate,enddate,akey,function(res){
 			osvString=res;
 			callback(null);
 			});
 			},//callback end
 		//Aggregate By Platform
 		function(callback) { //callback start
-			aggregateCalulation("pf",function(res){
+			aggregateCalulation("pf",startdate,enddate,akey,function(res){
 			pfString=res;
 			callback(null);
 			});
@@ -148,7 +148,6 @@ module.exports.crashCounters = function(req,res){
 			callback(null);
 			},
 		function(callback) { //callback start
-			db.close();
 			return res.json(finalString);
 		}
 	]
