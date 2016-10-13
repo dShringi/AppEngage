@@ -2,11 +2,12 @@ var mongojs = require('mongojs');
 var moment = require('moment-timezone');
 var dateFormat = require('dateformat');
 var PropertiesReader = require('properties-reader');
-var properties = PropertiesReader(config.propfilepath + '/android_models.properties');
+
 
 var config  = require('../../config/config');
 var logger  = require('../../config/log.js');
 var common = require('../../commons/common.js');
+var properties = PropertiesReader(config.propfilepath + '/android_models.properties');
 
 //fetch all platform
 //http://52.206.121.100/appengage/audience/platform?akey=4170b44d6459bba992acaa857ac5b25d7fac6cc1
