@@ -2,7 +2,7 @@ var mongojs = require('mongojs');
 var moment = require('moment-timezone');
 var dateFormat = require('dateformat');
 var PropertiesReader = require('properties-reader');
-var properties = PropertiesReader('../../config/android_models.properties');
+var properties = PropertiesReader(config.propfilepath + '/android_models.properties');
 
 var config  = require('../../config/config');
 var logger  = require('../../config/log.js');

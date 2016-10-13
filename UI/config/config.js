@@ -1,8 +1,8 @@
 "use strict";
 //For Development
-module.exports.port             = 3001;
+//module.exports.port             = 3001;
 //For Production
-//module.exports.port             = 6000;
+module.exports.port             = 6000;
 
 module.exports.connectionstring = 'mongodb://localhost/';
 module.exports.appengageConnString	=	'mongodb://localhost/appengage';
@@ -20,6 +20,7 @@ module.exports.coll_cohorts = 'coll_cohorts';
 module.exports.coll_audience = 'coll_audience';
 
 module.exports.logdir	= '/var/log/appengage/UI/logs';
+module.exports.propfilepath = '/opt/AppEngage/UI/config'
 
 module.exports.searchByModel=[
 {name:'manufacturer',value:'lm'},
