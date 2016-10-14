@@ -210,8 +210,6 @@ function updateCollection(db, dashboardQuerySmartJson, updateQueryJsonSmt) {
 			function(err, result) {
 				if (err) {
 					printErrorMessage(err);
-				} else {
-					callback();
 				}
 			});
 }
