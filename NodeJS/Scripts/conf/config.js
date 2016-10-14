@@ -2,16 +2,19 @@ var config = {};
 
 config.server = {};
 //For development purpose
-config.server.host = 'localhost';
-//config.server.host = 'DWHBI-SRV1';
+//config.server.host = 'localhost';
+config.server.host = 'DWHBI-SRV1';
 config.server.port = '8000';
+
+config.server.domain = 'http://localhost';
+
 
 config.mongodb = {};
 //For development purpose
-config.mongodb.url = 'mongodb://localhost';
-config.mongodb.appengage = 'mongodb://localhost/appengage';
-//config.mongodb.url = 'mongodb://DWHBI-SRV3';
-//config.mongodb.appengage = 'mongodb://DWHBI-SRV3/appengage';
+//config.mongodb.url = 'mongodb://localhost';
+//config.mongodb.appengage = 'mongodb://localhost/appengage';
+config.mongodb.url = 'mongodb://DWHBI-SRV3';
+config.mongodb.appengage = 'mongodb://DWHBI-SRV3/appengage';
 config.mongodb.port = process.env.MONGODB_PORT || '27017';
 
 config.kafka = {};
@@ -23,8 +26,8 @@ config.log.dir = '/var/log/appengage/nodejs/logs';
 
 config.consumer = {};
 //For Development purpose
-config.consumer.url = 'localhost:2181';
-//config.consumer.url = 'DWHBI-SRV2:2181';
+//config.consumer.url = 'localhost:2181';
+config.consumer.url = 'DWHBI-SRV2:2181';
 
 config.url = {};
 config.url.post = 'POST';

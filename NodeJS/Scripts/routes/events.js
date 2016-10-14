@@ -179,9 +179,9 @@ exports.offline = function(server, producer) {
                 var jSON = JSON.parse(JSON.stringify(request.payload));
                 for(i=0;i<jSON.length;i++){
                     data.val = jSON[i];
-					var akey = data.val.akey;
+					let akey = request.headers.akey;
                     console.log(data.val);
-					pushOfflineData(data.val, akey)
+					pushOfflineData(data.val, akey);
                 }
             }catch(ex){
                 err = ex;
@@ -237,21 +237,21 @@ function pushToKafka(data,request,producer,callback){
 
 // this method will push offile data by calling API 
 function pushOfflineData(postData, akey){
-	var url = getUrl(postData);
+	let url = getUrl(postData.mt);
 	if(Boolean(url)){
 		var options = {method: config.url.post, body: postData, json: true, url: url, headers: {"content-type": "application/json","akey": akey}};
 		request(options, function (err, res, body) {
-		if(err){
-			console.log('err msg  '+ err);
-		}
-	})
+			if(err){
+				let errMsg = common.getErrorMessageFrom(err);
+				logger.error(errMsg);
+			}
+		})
 	}
 }
 
-function getUrl(postData){
-	var apiUrl = '';
-	var eventType = postData.mt;
-	var domain = 'http://localhost'
+function getUrl(eventType){
+	let apiUrl = '';
+	const domain = config.server.domain;
 	switch(eventType) {
 		case 'E' :{ 
 			apiUrl = domain + config.url.endep; break;
@@ -265,6 +265,6 @@ function getUrl(postData){
 			apiUrl = domain  + config.url.screenep; break;
 		}
 	}
-	console.log('apiUrl  '+ apiUrl);
+	console.log('apiUrl  ', apiUrl);
 	return apiUrl;
 }
