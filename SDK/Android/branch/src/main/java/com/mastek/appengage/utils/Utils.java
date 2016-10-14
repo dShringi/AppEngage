@@ -25,6 +25,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
@@ -65,37 +66,35 @@ public class Utils implements LocationListener,
 	public static GoogleApiClient mGoogleApiClient;
 	static String mLastUpdateTime;
 	protected static boolean mRequestingLocationUpdates;
-	private static String ACTIVITY_SERVICE = "activity-service";
 	protected final static String KEY_REQUESTING_LOCATION_UPDATES = "requesting-location-updates";
 	protected final static String KEY_LOCATION = "location";
 	protected final static String KEY_LAST_UPDATED_TIME_STRING = "last-updated-time-string";
 
-	public static String deviceId;
+	public static String deviceId ="";
 	public static long currentTimeStamp;
 	public static int screenWidth;
 	public static int screenHeight;
-	public static String carrierName;
+	public static String carrierName = "";
 	public static Location mCurrentLocation;
-	public static String StrLatitude;
-	public static String StrLongitude;
+	public static String StrLatitude = "";
+	public static String StrLongitude = "";
 	public static long totalMemory;
 	public static long availableMegs;
 	public static long megAvailable;
 	public static int batteryLevel;
 	public static int batteryScale;
-	public static String root;
+	public static String root = "";
 	private static BroadcastReceiver receiver;
-	public static String locLatitude;
+	public static String locLatitude = "0.0";
 	public static String resolution;
-	public static String locLongitude;
-	public static String device1;
-	public static String deviceType;
-	public static String Smartphone;
-	private static String tablet;
-	private static String extraHealth;
+	public static String locLongitude = "0.0";
+	public static String deviceType= "";
+	public static String Smartphone = "";
+	private static String tablet = "";
+	private static String extraHealth = "";
 //	private static User user;
-	public static String orientation;
-	public static String possibleEmail;
+	public static String orientation = "";
+	public static String possibleEmail = "";
 	public static int networkType;
 	public static int duration;
 	public static long startTime;
@@ -125,23 +124,7 @@ public class Utils implements LocationListener,
 		getNetworkClass(context);
 		CarrierName(context);
 		TimeStamp();
-		// duration();
 
-		/*
-		 * Calendar c = Calendar.getInstance(); int seconds =
-		 * c.get(Calendar.SECOND);
-		 */
-
-		/*
-		 * String string1 = eNdTime; try { endDate = new
-		 * SimpleDateFormat("HH:mm:ss").parse(string1); } catch (ParseException
-		 * e) { // TODO Auto-generated catch block e.printStackTrace(); }
-		 */
-		/* startTime = (Calendar.getInstance().getTime().getSeconds()); */
-
-		/*
-		 * Time today = new Time(Time.getCurrentTimezone()); today.setToNow();
-		 */
 		startTime = System.currentTimeMillis();
 
 		Log.e(TAG, "Time " + startTime);
@@ -616,7 +599,6 @@ public class Utils implements LocationListener,
 	 */
 
 	public static String getEmail(Context context) {
-		possibleEmail = "";
 		Pattern emailPattern = Patterns.EMAIL_ADDRESS; // API level 8+
 		if (ActivityCompat.checkSelfPermission(context, Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
 			// TODO: Consider calling
@@ -626,6 +608,7 @@ public class Utils implements LocationListener,
 			//                                          int[] grantResults)
 			// to handle the case where the user grants the permission. See the documentation
 			// for ActivityCompat#requestPermissions for more details.
+			possibleEmail = "NP";
 			return "NP";
 		}
 		else {
@@ -901,102 +884,156 @@ public class Utils implements LocationListener,
 		boolean isNetworkEnabled = locationManager
 				.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 		Log.e(TAG, "isNetworkEnabled requestSingleUpdate" + isNetworkEnabled);
-		if (isNetworkEnabled) {
-			Criteria criteria = new Criteria();
-			criteria.setAccuracy(Criteria.ACCURACY_COARSE);
-			Log.e(TAG, "done work   ------------" + isNetworkEnabled);
-			if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-				// TODO: Consider calling
-				//    ActivityCompat#requestPermissions
-				// here to request the missing permissions, and then overriding
-				//   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-				//                                          int[] grantResults)
-				// to handle the case where the user grants the permission. See the documentation
-				// for ActivityCompat#requestPermissions for more details.
-				Log.e(TAG, "isNetworkEnabled sendAPI ");
-				Log.e("sendApi", "---it is here");
-				locLatitude = "NP";
-				locLongitude = "NP";
-				MA.sendApi(context);
-			}else if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-			{
-				locationManager.requestSingleUpdate(criteria,
-					new LocationListener() {
-						@Override
-						public void onLocationChanged(Location location) {
-
-							locLatitude = String.valueOf(location.getLatitude());
-
-							Log.e(TAG,
-									"done work ////////////  "
-											+ location.getLatitude());
-
-							callback.onNewLocationAvailable(new GPSCoordinates(
-									location.getLatitude(), location
-									.getLongitude()));
-							Log.e(TAG,
-									"done work >>>>>>>>>>>>>>"
-											+ location.getLongitude());
-							locLongitude = String.valueOf(location
-									.getLongitude());
-
-							Log.e("sendApi", "---it is here");
-							MA.sendApi(context);
-						}
-
-						@Override
-						public void onStatusChanged(String provider,
-													int status, Bundle extras) {
-						}
-
-						@Override
-						public void onProviderEnabled(String provider) {
-						}
-
-						@Override
-						public void onProviderDisabled(String provider) {
-						}
-					}, null);
-		}else
-			{
-				Log.e("sendApi", "---it is here");
-				locLatitude = "NP";
-				locLongitude = "NP";
-				MA.sendApi(context);
-			}
-		} else {
-
-			Log.e(TAG,
-					"location not found-------------");
-			MA.sendApi(context);
-			boolean isGPSEnabled = locationManager
-					.isProviderEnabled(LocationManager.GPS_PROVIDER);
-			if (isGPSEnabled) {
+		if (Build.VERSION.SDK_INT >= 23) {
+			if (isNetworkEnabled) {
+				Log.e("isNetworkEnabled", "1st if---it is here " + isNetworkEnabled);
 				Criteria criteria = new Criteria();
-				criteria.setAccuracy(Criteria.ACCURACY_FINE);
+				criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+
+				Log.e("isNetworkEnabled", "Permissions fine location:" + ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) + " Coarse Location: " + ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION));
+
+				//Log.e(TAG, "done work   ------------" + isNetworkEnabled);
+				if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+					Log.e("isNetworkEnabled", "2nd if---it is here fine location:" + ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) + " Coarse Location: " + ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION));
+					locLatitude = "NP";
+					locLongitude = "NP";
+					MA.sendApi(context);
+				} else if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+					Log.e("isNetworkEnabled", "3rd else if---it is here fine location:" + ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) + " Coarse Location: " + ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION));
+					locationManager.requestSingleUpdate(criteria,
+							new LocationListener() {
+								@Override
+								public void onLocationChanged(Location location) {
+
+									locLatitude = String.valueOf(location.getLatitude());
+
+									Log.e(TAG,
+											"done work ////////////  "
+													+ location.getLatitude());
+
+									callback.onNewLocationAvailable(new GPSCoordinates(
+											location.getLatitude(), location
+											.getLongitude()));
+									Log.e(TAG,
+											"done work >>>>>>>>>>>>>>"
+													+ location.getLongitude());
+									locLongitude = String.valueOf(location
+											.getLongitude());
+
+									Log.e("sendApi", "---it is here");
+									MA.sendApi(context);
+								}
+
+								@Override
+								public void onStatusChanged(String provider,
+															int status, Bundle extras) {
+								}
+
+								@Override
+								public void onProviderEnabled(String provider) {
+								}
+
+								@Override
+								public void onProviderDisabled(String provider) {
+								}
+							}, null);
+				} else {
+					Log.e("isNetworkEnabled", "2nd else if---it is here fine location:" + ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) + " Coarse Location: " + ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION));
+					locLatitude = "NP";
+					locLongitude = "NP";
+					MA.sendApi(context);
+				}
+			} else {
+				Log.e("isNetworkEnabled", "1st else if---it is here fine location:" + ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) + " Coarse Location: " + ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION));
+				Log.e(TAG,
+						"location not found-------------");
+				MA.sendApi(context);
+				boolean isGPSEnabled = locationManager
+						.isProviderEnabled(LocationManager.GPS_PROVIDER);
+				if (isGPSEnabled) {
+					Criteria criteria = new Criteria();
+					criteria.setAccuracy(Criteria.ACCURACY_FINE);
+					if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+						Log.e("isNetworkEnabled", "2nd if---it is here fine location:" + ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) + " Coarse Location: " + ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION));
+						locLatitude = "NP";
+						locLongitude = "NP";
+						MA.sendApi(context);
+					} else if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+						locationManager.requestSingleUpdate(criteria,
+								new LocationListener() {
+									@Override
+									public void onLocationChanged(Location location) {
+										callback.onNewLocationAvailable(new GPSCoordinates(
+												location.getLatitude(), location
+												.getLongitude()));
+										Log.e(TAG, "done work+++++++++++++  "
+												+ location.getLatitude());
+										locLatitude = String.valueOf(location
+												.getLatitude());
+										locLongitude = String.valueOf(location
+												.getLongitude());
+
+										Log.e(TAG,
+												"done work*******  "
+														+ location.getLongitude());
+
+									}
+
+									@Override
+									public void onStatusChanged(String provider,
+																int status, Bundle extras) {
+									}
+
+									@Override
+									public void onProviderEnabled(String provider) {
+									}
+
+									@Override
+									public void onProviderDisabled(String provider) {
+									}
+								}, null);
+					}
+					else {
+						Log.e("isNetworkEnabled", "2nd else if---it is here fine location:" + ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) + " Coarse Location: " + ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION));
+						locLatitude = "NP";
+						locLongitude = "NP";
+						MA.sendApi(context);
+					}
+				}
+			}
+		}else if(Build.VERSION.SDK_INT <=23 )
+		{
+			if (isNetworkEnabled) {
+				Criteria criteria = new Criteria();
+				criteria.setAccuracy(Criteria.ACCURACY_COARSE);
+				Log.e(TAG, "done work   ------------" + isNetworkEnabled);
 				locationManager.requestSingleUpdate(criteria,
 						new LocationListener() {
 							@Override
 							public void onLocationChanged(Location location) {
+
+								locLatitude = String.valueOf(location.getLatitude());
+
+								Log.e(TAG,
+										"done work ////////////  "
+												+ location.getLatitude());
+
 								callback.onNewLocationAvailable(new GPSCoordinates(
 										location.getLatitude(), location
-												.getLongitude()));
-								Log.e(TAG, "done work+++++++++++++  "
-										+ location.getLatitude());
-								locLatitude = String.valueOf(location
-										.getLatitude());
+										.getLongitude()));
+								Log.e(TAG,
+										"done work >>>>>>>>>>>>>>"
+												+ location.getLongitude());
 								locLongitude = String.valueOf(location
 										.getLongitude());
 
-								Log.e(TAG,
-										"done work*******  "
-												+ location.getLongitude());
 
+								MA.sendApi(context);
 							}
 
 							@Override
 							public void onStatusChanged(String provider,
-									int status, Bundle extras) {
+														int status, Bundle extras) {
 							}
 
 							@Override
@@ -1007,7 +1044,51 @@ public class Utils implements LocationListener,
 							public void onProviderDisabled(String provider) {
 							}
 						}, null);
+			} else {
+				boolean isGPSEnabled = locationManager
+						.isProviderEnabled(LocationManager.GPS_PROVIDER);
+				if (isGPSEnabled) {
+					Criteria criteria = new Criteria();
+					criteria.setAccuracy(Criteria.ACCURACY_FINE);
+					locationManager.requestSingleUpdate(criteria,
+							new LocationListener() {
+								@Override
+								public void onLocationChanged(Location location) {
+									callback.onNewLocationAvailable(new GPSCoordinates(
+											location.getLatitude(), location
+											.getLongitude()));
+									Log.e(TAG, "done work+++++++++++++  "
+											+ location.getLatitude());
+									locLatitude = String.valueOf(location
+											.getLatitude());
+									locLongitude = String.valueOf(location
+											.getLongitude());
+
+									Log.e(TAG,
+											"done work*******  "
+													+ location.getLongitude());
+
+								}
+
+								@Override
+								public void onStatusChanged(String provider,
+															int status, Bundle extras) {
+								}
+
+								@Override
+								public void onProviderEnabled(String provider) {
+								}
+
+								@Override
+								public void onProviderDisabled(String provider) {
+								}
+							}, null);
+				}
 			}
+		}else{
+			locLatitude = "NP";
+			locLongitude = "NP";
+			MA.sendApi(context);
 		}
 	}
 
@@ -1044,5 +1125,8 @@ public class Utils implements LocationListener,
 
 	}
 
-
+	public static long getCurrentTimeStamp() {
+		Utils.currentTimeStamp = System.currentTimeMillis();
+		return currentTimeStamp;
+	}
 }

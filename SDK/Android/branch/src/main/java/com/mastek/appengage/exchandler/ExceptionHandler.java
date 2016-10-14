@@ -3,6 +3,7 @@ package com.mastek.appengage.exchandler;
 
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -21,12 +22,12 @@ import java.io.StringWriter;
 public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
     private static final String TAG = ExceptionHandler.class.getSimpleName();
     private static final int ACTIVITY_REQUEST_SEND_LOG = 1;
-    //private final Activity myContext;
+    private final Context myContext;
     private final String LINE_SEPARATOR = "\n";
 
 
-    public ExceptionHandler() {
-//        this.myContext = context;
+    public ExceptionHandler(Context context) {
+        this.myContext = context;
        // Thread.getDefaultUncaughtExceptionHandler();
     }
 
@@ -72,9 +73,9 @@ public class ExceptionHandler implements Thread.UncaughtExceptionHandler {
             @Override
             public void run() {
                 super.run();
-                MA.sendCrashDataToServer(exception.getMessage(),errorReport.toString());
-                MA.activityTimeTrackToServer();
-                MA.enddatatoserver();
+                MA.crashApi(exception.getMessage(),errorReport.toString());
+                MA.activityTimeTrackingApi(myContext);
+                MA.endApi(myContext);
             }
         }.start();
 

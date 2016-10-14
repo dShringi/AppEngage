@@ -19,7 +19,7 @@ android {
         abortOnError false
     }
 }
-/*task clearJar(type: Delete) {
+task clearJar(type: Delete) {
     delete 'build/outputs/ProjectName.jar'
 }
 
@@ -30,7 +30,7 @@ task makeJar(type: Copy) {
     rename ('classes.jar', 'ProjectName.jar')
 }
 
-makeJar.dependsOn(clearJar, build)*/
+makeJar.dependsOn(clearJar, build)
 dependencies {
     compile 'com.android.support:support-v4:24.+'
     compile 'com.google.android.gms:play-services-base:+'

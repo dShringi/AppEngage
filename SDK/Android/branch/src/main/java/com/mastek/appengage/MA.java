@@ -2,6 +2,7 @@ package com.mastek.appengage;
 
 import android.content.Context;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
@@ -27,39 +28,49 @@ import java.io.Writer;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class MA {
 	private static final String TAG = MA.class.getSimpleName();
 	private static String versionName;
 	//	private static User user;
-	public static String response;
-	public static String device2;
-	public static Context appContext;
-	private static DBUserManager dbUserManager;
-	private static String URL;
-	public static String API_KEY;
-	public static long CalculatedTime;
-	public static long timeDuration;
-	private static long time1;
-	private static long time2;
-	private static int days;
-	private static int hours;
-	private static int min;
-	private static long calTime;
-	private static ReturnResponse rResponse;
-	private static boolean isBeginApiCalled = false;
+	 static String response;
+	 static String device2;
+	 static Context appContext;
+	 static Context applicationContext;
+	 static DBUserManager dbUserManager;
+	 static String URL;
+	 static String API_KEY;
+	 static long time1;
+	 static ReturnResponse rResponse;
+	 static boolean isBeginApiCalled = false;
 
 	public static void init(Context context, String url, String akey)
 	{
-
+		if (context != null)
+			appContext = context;
 		if(context instanceof  ReturnResponse)
 		{
 			rResponse=(ReturnResponse) context;
 		}
 		URL = url;
+
+		SharedPreferences.Editor editor = context.getSharedPreferences("com.mastek.appengage", MODE_PRIVATE).edit();
+		editor.putString("URL", URL);
+		editor.commit();
+
+		SharedPreferences prefs = appContext.getSharedPreferences("com.mastek.appengage", MODE_PRIVATE);
+
+		Log.e("contains","----->"+prefs.contains("URL"));
+		if(prefs.contains("URL"))
+		{
+			URL = prefs.getString("URL",null);
+			Log.e("inSharedPref",URL);
+		}
+
 		API_KEY = akey;
-		if (context != null)
-			appContext = context;
-		CalculatedTime =Utils.currentTimeStamp;
+
+		Utils.getCurrentTimeStamp();
 		dbUserManager = new DBUserManager(appContext);
 		Utils.init(context);
 	}
@@ -69,16 +80,11 @@ public class MA {
 
 		Log.e(TAG,"-------SENDAPI");
 
-
-
 		new Thread() {
 
 			private MyReceiver mReceiver;
 
-
 			public void run() {
-
-
 
 				uiLog(" \n " +"Calling Send Api");
 //				user = getUserDetails();
@@ -86,8 +92,8 @@ public class MA {
 //				user.setMessegeType("B");
 
 				this.mReceiver = new MyReceiver();
-				appContext.registerReceiver(this.mReceiver, new IntentFilter(
-						ConnectivityManager.CONNECTIVITY_ACTION));
+				/*appContext.registerReceiver(this.mReceiver, new IntentFilter(
+						ConnectivityManager.CONNECTIVITY_ACTION));*/
 
 
 				time1 = System.currentTimeMillis();
@@ -131,12 +137,7 @@ public class MA {
 
 //				user = getUserDetails();
 
-					time2 = System.currentTimeMillis();
-
-
-					calTime = (time2 - time1) / 1000;
-
-					Log.i("======= calTime", " :: " + calTime);
+					Log.i("======= App Duration", " :: " + Utils.duration);
 					enddatatoserver();
 
 
@@ -165,13 +166,6 @@ public class MA {
 						appContext = context;
 
 //				user = getUserDetails();
-
-					time2 = System.currentTimeMillis();
-
-
-					calTime = (time2 - time1) / 1000;
-
-					Log.i("======= calTime", " :: " + calTime);
 					activityTimeTrackToServer();
 
 
@@ -210,11 +204,13 @@ public class MA {
 
 	// ///////////////////crash api\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-	public static void sendCrashDataToServer(String excSummary, String excStackTrace) {
+	static void sendCrashDataToServer(String excSummary, String excStackTrace) {
+
 		Log.e("crashAPI In MA","Called");
 		JSONObject post_data = new JSONObject();
 
 		try {
+			Utils.getCurrentTimeStamp();
 			post_data.put("mnu", Utils.MANUFACTURER);
 			post_data.put("mod", Utils.MODEL);
 			post_data.put("osv", Utils.RELEASE);
@@ -230,7 +226,7 @@ public class MA {
 				post_data.put("lng", "0.0");
 			}
 			Log.e("crashAPI In MA","Called");
-			post_data.put("rtc", CalculatedTime);
+			post_data.put("rtc", Utils.currentTimeStamp);
 			post_data.put("sid", time1 + "" + Utils.deviceId);
 			post_data.put("did", Utils.deviceId);
 			post_data.put("res", Utils.resolution);
@@ -259,12 +255,12 @@ public class MA {
 			e.printStackTrace();
 		}
 		if (post_data.length() > 0) {
-			Log.e(TAG, "POST_DATA..........." + post_data);
+			//Log.e(TAG, "POST_DATA........CRASH API..." + post_data);
 
 			if (ConnectionManager.isNetworkConnected(appContext)) {
 				//new SendCrashDataToServer().execute(String.valueOf(post_data));
 				//*********************
-				Log.e(TAG, "POST_DATA..........." + post_data);
+				Log.e(TAG, "POST_DATA......CRASH API....." + post_data);
 				{
 					String JsonResponse = null;
 					String JsonDATA = post_data.toString();
@@ -430,7 +426,7 @@ public class MA {
 
 	}*/
 
-	public static String networkDesc()
+	static String networkDesc()
 	{
 		if (Connectivity.isConnectedMobile(appContext))
 		{
@@ -449,7 +445,7 @@ public class MA {
 
 	// ///////////////////send api\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-	public static void senddatatoserver() {
+	static void senddatatoserver() {
 		// function in the activity that corresponds to the layout button
 		// LatLng = txtLatitudeLongitude.getText().toString();
 		versionName = Utils.VERSIONNAME;
@@ -460,8 +456,8 @@ public class MA {
 
 
 		try {
-			CalculatedTime =Utils.currentTimeStamp;
-			Log.e(TAG, "CalculatedTime  "+CalculatedTime);
+			Utils.getCurrentTimeStamp();
+			Log.e(TAG, "CalculatedTime  "+Utils.currentTimeStamp);
 
 			post_data.put("sync_status","");
 			post_data.put("test", "");
@@ -478,7 +474,7 @@ public class MA {
 				post_data.put("lat", "0.0");
 				post_data.put("lng", "0.0");
 			}
-			post_data.put("rtc", CalculatedTime);
+			post_data.put("rtc", Utils.currentTimeStamp);
 			post_data.put("sid", time1 + "" + Utils.deviceId);
 			post_data.put("did", Utils.deviceId);
 			post_data.put("res", Utils.resolution);
@@ -519,7 +515,7 @@ public class MA {
 		}
 	}
 
-	public static class SendJsonDataToServer extends
+	static class SendJsonDataToServer extends
 			AsyncTask<String, String, String> {
 
 		@Override
@@ -607,81 +603,14 @@ public class MA {
 
 	}
 
-	// /////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
-	// ///////////////////send data when
-	// online\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
-	/*public static void senddatawhenonline(JSONArray array1) {
-		// function in the activity that corresponds to the layout button
-
-//		user = getUserDetails();
-		*//*versionName = Utils.VERSIONNAME;
-		JSONObject post_data = new JSONObject();*//*
-
-		*//*try {
-			post_data.put("test", "");
-			post_data.put("mod", Utils.MODEL);
-			post_data.put("avn", Utils.VERSIONNAME);
-			post_data.put("mnu", Utils.MANUFACTURER);
-			post_data.put("osv", Utils.RELEASE);
-			post_data.put("pf", Utils.OSNAME);
-			if (Utils.gps_enabled) {
-				post_data.put("lat", Utils.locLatitude);
-				post_data.put("lng", Utils.locLongitude);
-
-			} else {
-				post_data.put("lat", "0.0");
-				post_data.put("lng", "0.0");
-			}
-			post_data.put("rtc", Utils.timeStamp);
-			post_data.put("sid", time1 + "" + Utils.deviceId);
-			post_data.put("did", Utils.deviceId);
-			post_data.put("res", Utils.screenWidth + "*" + Utils.screenHeight);
-			post_data.put("c", Utils.carrierName);
-			post_data.put("dt", Utils.deviceType);
-			post_data.put("ac", Utils.possibleEmail);
-			post_data.put("nw", networkDesc());
-			post_data.put("cpu", Utils.ARCH);
-			post_data.put("ori", Utils.orientation);
-			post_data.put("akey", API_KEY);
-			post_data.put("sdv", "1.0");
-			post_data.put("mt", "O");
-			//Log.e(TAG, "     send data;...............");
-
-			int maxLogSize = 1000;
-			String veryLongString = array1.toString();
-			for(int i = 0; i <= veryLongString.length() / maxLogSize; i++) {
-				int start = i * maxLogSize;
-				int end = (i+1) * maxLogSize;
-				end = end > veryLongString.length() ? veryLongString.length() : end;
-				Log.e("ARRAY1", veryLongString.substring(start, end));
-			}
-			//array1.put(post_data);
-
-			//Log.e("ARRAY1",array1.toString());
-
-		} catch (JSONException e) {
-			e.printStackTrace();
-			Log.e(TAG, "JSONException in catch......" + e.getMessage());
-		}*//*
-
-
-		*//*if (post_data.length() > 0) {
-			int maxLogSize = 1000;
-			String veryLongString = array1.toString();
-			for(int i = 0; i <= veryLongString.length() / maxLogSize; i++) {
-				int start = i * maxLogSize;
-				int end = (i+1) * maxLogSize;
-				end = end > veryLongString.length() ? veryLongString.length() : end;
-				Log.e("ARRAY1 when online", veryLongString.substring(start, end));
-			}
-			//Log.e(TAG, "POST_DATA..... send data to server when online......" + post_data);
-		}*//*
-	}
-
-	*/public static class SendJsonArrayToServerWhenOnline extends
+	static class SendJsonArrayToServerWhenOnline extends
 			AsyncTask<String, String, String> {
+
+		String offlineURL;
+		public SendJsonArrayToServerWhenOnline(String url)
+		{
+			this.offlineURL=url;
+		}
 
 		@Override
 		protected String doInBackground(String... params) {
@@ -690,55 +619,56 @@ public class MA {
 			HttpURLConnection urlConnection = null;
 			BufferedReader reader = null;
 			try {
-				URL url = new URL(URL+"i/bulk/O");
-				urlConnection = (HttpURLConnection) url.openConnection();
-				urlConnection.setDoOutput(true);
-				// is output buffer writter
-				urlConnection.setRequestMethod("POST");
-				urlConnection.setRequestProperty("Content-Type",
-						"application/json");
 
-				urlConnection.setRequestProperty("akey",
-						API_KEY);
-				// set headers and method
-				Writer writer = new BufferedWriter(new OutputStreamWriter(
-						urlConnection.getOutputStream(), "UTF-8"));
-				writer.write(JsonDATA);
-				// json data
-				Log.e(TAG, "WRITER... :- " + writer);
-				writer.close();
-				InputStream inputStream = urlConnection.getInputStream();
-				Log.e(TAG, "URLCONNECTION.....Status code......"
-						+ urlConnection.getResponseCode());
+				if(offlineURL != null) {
 
-				if (urlConnection.getResponseCode() == 200) {
-					response = "Json Array Online successfull";
-					Log.e(TAG, "Sending Json Array Online successfull;;;;;;;;;;;;;");
+
+					URL url = new URL(offlineURL + "i/bulk/O");
+					urlConnection = (HttpURLConnection) url.openConnection();
+					urlConnection.setDoOutput(true);
+					// is output buffer writter
+					urlConnection.setRequestMethod("POST");
+					urlConnection.setRequestProperty("Content-Type",
+							"application/json");
+
+					urlConnection.setRequestProperty("akey",
+							API_KEY);
+					// set headers and method
+					Writer writer = new BufferedWriter(new OutputStreamWriter(
+							urlConnection.getOutputStream(), "UTF-8"));
+					writer.write(JsonDATA);
+					// json data
+					Log.e(TAG, "WRITER... :- " + writer);
+					writer.close();
+					InputStream inputStream = urlConnection.getInputStream();
+					Log.e(TAG, "URLCONNECTION.....Status code......"
+							+ urlConnection.getResponseCode());
+
+					if (urlConnection.getResponseCode() == 200) {
+						response = "Json Array Online successfull";
+						Log.e(TAG, "Sending Json Array Online successfull;;;;;;;;;;;;;");
+					}
+					Log.e(TAG, "INPUTSTREAM..........." + inputStream);
+					// input stream
+					StringBuffer buffer = new StringBuffer();
+					if (inputStream == null) {
+						// Nothing to do.
+						return null;
+					}
+					reader = new BufferedReader(new InputStreamReader(inputStream));
+					Log.e(TAG, "READER..........." + reader);
+
+					String inputLine;
+					while ((inputLine = reader.readLine()) != null)
+						buffer.append(inputLine + "\n");
+					if (buffer.length() == 0) {
+						// Stream was empty. No point in parsing.
+						return null;
+					}
+					JsonResponse = buffer.toString();
+					// response data
+					Log.e(TAG, "JsonResponse..........." + JsonResponse);
 				}
-				Log.e(TAG, "INPUTSTREAM..........." + inputStream);
-				// input stream
-				StringBuffer buffer = new StringBuffer();
-				if (inputStream == null) {
-					// Nothing to do.
-					return null;
-				}
-				reader = new BufferedReader(new InputStreamReader(inputStream));
-				Log.e(TAG, "READER..........." + reader);
-
-				String inputLine;
-				while ((inputLine = reader.readLine()) != null)
-					buffer.append(inputLine + "\n");
-				if (buffer.length() == 0) {
-					// Stream was empty. No point in parsing.
-					return null;
-				}
-				JsonResponse = buffer.toString();
-				// response data
-				Log.e(TAG, "JsonResponse..........." + JsonResponse);
-
-				//delete entries in database
-				dbUserManager.removeAll();
-
 				// send to post execute
 				return JsonResponse;
 
@@ -763,6 +693,7 @@ public class MA {
 			return null;
 		}
 
+
 		@Override
 		protected void onPostExecute(String s) {
 			if(rResponse != null)
@@ -777,14 +708,16 @@ public class MA {
 
 	// /////////////////////////////Event Api\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-	public static void eventdatatoserver(String key,JSONObject prop) {
+	static void eventdatatoserver(String key,JSONObject prop) {
 		// function in the activity that corresponds to the layout button
 		// LatLng = txtLatitudeLongitude.getText().toString();
+
 		versionName = Utils.VERSIONNAME;
 		JSONObject post_data = new JSONObject();
 
 
 		try {
+			Utils.getCurrentTimeStamp();
 			post_data.put("mnu", Utils.MANUFACTURER);
 			post_data.put("mod", Utils.MODEL);
 			post_data.put("osv", Utils.RELEASE);
@@ -798,7 +731,7 @@ public class MA {
 				post_data.put("lat", "0.0");
 				post_data.put("lng", "0.0");
 			}
-			post_data.put("rtc", CalculatedTime);
+			post_data.put("rtc", Utils.currentTimeStamp);
 			post_data.put("sid", time1 + "" + Utils.deviceId);
 			post_data.put("did", Utils.deviceId);
 			post_data.put("res", Utils.resolution);
@@ -833,7 +766,7 @@ public class MA {
 					boolean save = dbUserManager.saveCompleteJson(post_data.toString());
 
 					Log.e(TAG, "DBUSERMANAGER :- " + dbUserManager);
-					uiLog("\n End API Saved IN DB");
+					uiLog("\n Event API Saved IN DB");
 				}
 			}
 			catch (Exception e)
@@ -847,7 +780,7 @@ public class MA {
 		}
 	}
 
-	public static class EventJsonDataToServer extends
+	static class EventJsonDataToServer extends
 			AsyncTask<String, String, String> {
 
 		@Override
@@ -934,27 +867,29 @@ public class MA {
 
 	// ////////////////////////////End Api\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-	public static void enddatatoserver() {
+	static void enddatatoserver() {
 		// function in the activity that corresponds to the layout button
 		// LatLng = txtLatitudeLongitude.getText().toString();
+
 		versionName = Utils.VERSIONNAME;
 		JSONObject post_data = new JSONObject();
 
 		try {
 			//ActivityTracker.convertHashToJsonArray(Utils.hashMap);
+			Utils.getCurrentTimeStamp();
+			post_data.put("tsd", Utils.duration);// //total session duration
 
-			post_data.put("tsd", calTime);// //total session duration
 			post_data.put("did", Utils.deviceId);
 			post_data.put("akey", API_KEY);// api
 			// key
-			post_data.put("rtc", CalculatedTime);
+			post_data.put("rtc", Utils.currentTimeStamp);
 			post_data.put("sid", time1 + "" + Utils.deviceId);
 			post_data.put("sdv", "1.0");// sdk version
 			post_data.put("dt", Utils.deviceType);
 			//post_data.put("act",Utils.jsonArray);
 			post_data.put("mt", "E");
 			Log.e(TAG, "     end api data;..............." /*+ user*/);
-
+			Utils.duration = 0;
 
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -977,24 +912,26 @@ public class MA {
 			}
 		}
 	}
-	public static void activityTimeTrackToServer() {
+	static void activityTimeTrackToServer() {
 		// function in the activity that corresponds to the layout button
 		// LatLng = txtLatitudeLongitude.getText().toString();
+
 		versionName = Utils.VERSIONNAME;
 		JSONObject post_data = new JSONObject();
 
 		try {
 			ActivityTracker.convertHashToJsonArray(Utils.hashMap);
-
+			Utils.getCurrentTimeStamp();
 			post_data.put("akey", API_KEY);// api
 			// key
-			post_data.put("rtc", CalculatedTime);
+			post_data.put("rtc", Utils.currentTimeStamp);
 			post_data.put("sid", time1 + "" + Utils.deviceId);
 			post_data.put("dt", Utils.deviceType);
 			post_data.put("did", Utils.deviceId);
 			post_data.put("act",Utils.jsonArray);
+			Utils.hashMap.clear();
 			post_data.put("mt", "S");
-			Log.e(TAG, "     activityTimeTracking data;..............." /*+ user*/);
+			Log.e(TAG, "     activityTimeTracking data;..............." + post_data.toString()/*+ user*/);
 
 
 		} catch (JSONException e) {
@@ -1005,21 +942,19 @@ public class MA {
 
 			if (ConnectionManager.isNetworkConnected(appContext)) {
 				new ActivityJsonDataToServer().execute(String.valueOf(post_data));
-				Log.e(TAG, "end data to server... :- ");
-				Utils.endApiCalled = true;
+				Log.e(TAG, "activity data to server... :- ");
 			} else {
 				Log.e(TAG, "save--------------------- " + (dbUserManager == null));
 				boolean save = dbUserManager.saveCompleteJson(post_data.toString());
 
 				Log.e(TAG, "DBUSERMANAGER :- " + dbUserManager);
-				uiLog("\n End API Saved IN DB");
+				uiLog("\n Activity API Saved IN DB");
 				Log.e(TAG, "SAVE....... :- " + save);
-				Utils.endApiCalled = true;
 			}
 		}
 	}
 
-	public static class EndJsonDataToServer extends
+	static class EndJsonDataToServer extends
 			AsyncTask<String, String, String> {
 
 		@Override
@@ -1106,7 +1041,7 @@ public class MA {
 
 	}
 
-	public static class ActivityJsonDataToServer extends
+	static class ActivityJsonDataToServer extends
 			AsyncTask<String, String, String> {
 
 		@Override
@@ -1123,7 +1058,6 @@ public class MA {
 				urlConnection.setRequestMethod("POST");
 				urlConnection.setRequestProperty("Content-Type",
 						"application/json");
-
 				urlConnection.setRequestProperty("akey",
 						API_KEY);
 				// urlConnection.setRequestProperty("Accept",
@@ -1195,7 +1129,7 @@ public class MA {
 
 
 	public static void beginApi(Context context) {
-		if(!isBeginApiCalled) {
+		//if(!isBeginApiCalled) {
 			if (Build.VERSION.SDK_INT >= 23) { // Build.VERSION_CODES.M
 				if (checkPermission()) {
 					Log.e(TAG, "checkPermission=-=====");
@@ -1208,6 +1142,8 @@ public class MA {
 					});
 				} else {
 					Log.e("sendApi", "---it is here");
+					Utils.locLatitude ="NP";
+					Utils.locLongitude ="NP";
 					sendApi(context);
 				}
 			} else {
@@ -1220,8 +1156,8 @@ public class MA {
 					}
 				});
 			}
-			isBeginApiCalled = true;
-		}
+			//isBeginApiCalled = true;
+		//}
 	}
 
 	private static boolean checkPermission() {

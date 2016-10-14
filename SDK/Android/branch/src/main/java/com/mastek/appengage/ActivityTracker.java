@@ -21,13 +21,16 @@ import java.util.concurrent.TimeUnit;
  */
 
 public class ActivityTracker implements Application.ActivityLifecycleCallbacks {
+    private static int started;
+    private static int stopped;
+    private static boolean isEndApiCalled = true;
 
     HashMap<String,Integer> hashMapActivityTracker = new HashMap<String,Integer>();
   /*  HashMap<String,Long> hashMapDifferenceTracker = new HashMap<String,Long>();
 */
     HashMap<String,Long> hashMapStartTracker = new HashMap<String,Long>();
     HashMap<String,Long> hashMapEndTracker = new HashMap<String,Long>();
-    static JSONArray jsonArray = new JSONArray();
+//    static JSONArray jsonArray = new JSONArray();
     /*long[] startTime = new long[2];
     long[] endTime = new long[2];*/
     long timeSpent;
@@ -43,7 +46,12 @@ public class ActivityTracker implements Application.ActivityLifecycleCallbacks {
     public void onActivityStarted(Activity activity) {
         //Log.e("onActivityStarted","Activity Name :"+ activity.getLocalClassName());
 
-
+        if(isEndApiCalled)
+        {
+            MA.beginApi(activity);
+            isEndApiCalled = false;
+        }
+        started++;
         /*if(temp0 == 1)
             temp0 = 0;
         else if(temp0 == 0)
@@ -77,29 +85,16 @@ public class ActivityTracker implements Application.ActivityLifecycleCallbacks {
 
         endTime[temp1] = System.nanoTime();
 */
+        stopped++;
+        timeCalculation(activity);
 
-
-        hashMapEndTracker.put(activity.getLocalClassName().toString(),System.nanoTime());
-        Log.e("onActivityStopped",activity.getLocalClassName()+" End time :"+hashMapEndTracker.get(activity.getLocalClassName()));
-        //timeSpent = endTime[temp1]-startTime[temp1];
-        timeSpent = hashMapEndTracker.get(activity.getLocalClassName()) - hashMapStartTracker.get(activity.getLocalClassName());
-        timeSpent = TimeUnit.NANOSECONDS.toSeconds(timeSpent);
-        //hashMapDifferenceTracker.put(activity.getLocalClassName().toString(),timeSpent);
-
-        Log.e("TimeSpent","TimeSpent"+" on "+activity.getLocalClassName()+" is "+timeSpent);
-        if(hashMapActivityTracker.containsKey(activity.getLocalClassName())) {
-            //timeSpent+=hashMapDifferenceTracker.get(activity.getLocalClassName());
-            timeSpent+=hashMapActivityTracker.get(activity.getLocalClassName());
-            hashMapActivityTracker.put(activity.getLocalClassName(), (int) timeSpent);
-            Utils.hashMap = hashMapActivityTracker;
+        if(!isApplicationInForeground())
+        {
+            Log.e("ActivityTracker","Application is in background");
+            MA.activityTimeTrackingApi(activity);
+            MA.endApi(activity);
+            isEndApiCalled = true;
         }
-        else{
-            hashMapActivityTracker.put(activity.getLocalClassName(),(int) timeSpent);
-            Utils.hashMap = hashMapActivityTracker;
-        }
-
-            Log.e("hash",hashMapActivityTracker.toString());
-
     }
 
     @Override
@@ -117,14 +112,22 @@ public class ActivityTracker implements Application.ActivityLifecycleCallbacks {
             MA.endApi(activity);
             Utils.endApiCalled = true;
         }*/
+
+        //timeCalculation(activity);
+    }
+
+    public static boolean isApplicationInForeground() {
+        return started > stopped;
     }
 
     public static void convertHashToJsonArray(HashMap hashMap)
     {
+        JSONArray jsonArray = new JSONArray();
         try
         {
+
             Iterator it = hashMap.entrySet().iterator();
-            while(it.hasNext()) {
+            while (it.hasNext()) {
                 JSONObject json = new JSONObject();
                 Map.Entry pair = (Map.Entry) it.next();
                 json.put("key", pair.getKey());
@@ -132,12 +135,41 @@ public class ActivityTracker implements Application.ActivityLifecycleCallbacks {
                 jsonArray.put(json);
                 it.remove();
             }
+
         }catch (JSONException e)
         {
             e.printStackTrace();
         }finally {
-            Log.e("Destroy Method Called",jsonArray.toString());
+            Log.e("JsonArray",jsonArray.toString());
             Utils.jsonArray = jsonArray;
+//            jsonArray = null;
         }
+    }
+
+    private void timeCalculation(Activity activity)
+    {
+        hashMapEndTracker.put(activity.getLocalClassName(),System.nanoTime());
+        Log.e("onActivityStopped",activity.getLocalClassName()+" End time :"+hashMapEndTracker.get(activity.getLocalClassName()));
+        //timeSpent = endTime[temp1]-startTime[temp1];
+        timeSpent = hashMapEndTracker.get(activity.getLocalClassName()) - hashMapStartTracker.get(activity.getLocalClassName());
+        timeSpent = TimeUnit.NANOSECONDS.toSeconds(timeSpent);
+        Utils.duration +=timeSpent;
+        Log.e("timeSpent","____>>>>>"+Utils.duration);
+        //hashMapDifferenceTracker.put(activity.getLocalClassName().toString(),timeSpent);
+
+        Log.e("TimeSpent","TimeSpent"+" on "+activity.getLocalClassName()+" is "+timeSpent);
+        if(hashMapActivityTracker.containsKey(activity.getLocalClassName())) {
+            //timeSpent+=hashMapDifferenceTracker.get(activity.getLocalClassName());
+
+            timeSpent+=hashMapActivityTracker.get(activity.getLocalClassName());
+            hashMapActivityTracker.put(activity.getLocalClassName(), (int) timeSpent);
+            Utils.hashMap = hashMapActivityTracker;
+        }
+        else{
+            hashMapActivityTracker.put(activity.getLocalClassName(),(int) timeSpent);
+            Utils.hashMap = hashMapActivityTracker;
+        }
+
+        Log.e("hash",hashMapActivityTracker.toString());
     }
 }
