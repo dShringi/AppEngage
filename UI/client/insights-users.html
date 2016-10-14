@@ -34,8 +34,8 @@
                     <li> &gt; </li>
                     <li>Users</li>
                 </ul>
-            </section>    
-            
+            </section>
+
             <section class="border-bottom paddl50 mrgnBtm0">
                 <div class="row chart-header">
                     <div class="col-md-6 txt-drk-gray"></div>
@@ -53,7 +53,7 @@
 					<h2 class="chart-title mrgnTp0 paddb0 mrgnBtm0">Total Users</h2>
                     <div id="line-chart-container-1"></div>
                 </div>
-                    
+
                 <div class="paddb40">
 					<h2 class="chart-title mrgnTp0 paddb0 mrgnBtm0 paddt25">Total Time Spent</h2>
                     <div id="line-chart-container-2"></div>
@@ -62,9 +62,9 @@
         </aside>
         <div class="overlay"></div>
         <script>
-		
+
 				var apiURL = APIBaseURL+"getUserInsights";
-                
+
                 // Set the dimensions of the canvas / graph
                 var	margin = {top: 30, right: 50, bottom: 30, left: 50}, divWidth = $("#line-chart-container-1").width(), width = (divWidth - 30) - margin.left - margin.right,
                     height = 250 - margin.top - margin.bottom;
@@ -74,28 +74,28 @@
                 var formatTime = d3.time.format("%e %B");// Format tooltip date / time
 
                 // Set the ranges
-                var	x = d3.time.scale().range([0, width]);
+                var	x = d3.time.scale.utc().range([0, width]);
                 var	y = d3.scale.linear().range([height, 0]);
 
                 // Define the line
                 var	valueline = d3.svg.line()
 					//.interpolate("basis")
-                    .x(function(d) { 
+                    .x(function(d) {
 						if((d.date).length === 8){
-							return x(new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2))); 
+							return x(new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2)));
 						}
 						else{
 							return x((d.date).substr(8,2));
 						}
 					})
                     .y(function(d) { return y(parseInt(d.tuu)); });
-                
+
                 // Define the line
                 var	valueline1 = d3.svg.line()
 					//.interpolate("basis")
-                    .x(function(d) { 
+                    .x(function(d) {
 						if((d.date).length === 8){
-							return x(new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2))); 
+							return x(new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2)));
 						}
 						else{
 							return x((d.date).substr(8,2));
@@ -105,12 +105,12 @@
 
                 // Define 'div' for tooltips
                 var div = d3.select("body")
-                    .append("div")  // declare the tooltip div 
+                    .append("div")  // declare the tooltip div
                     .attr("class", "tooltip")              // apply the 'tooltip' class
                     .style("opacity", 0);                  // set the opacity to nil
 				// Define 'div' for tooltips
                 var div1 = d3.select("body")
-                    .append("div")  // declare the tooltip div 
+                    .append("div")  // declare the tooltip div
                     .attr("class", "map-tooltip shadow")              // apply the 'tooltip' class
                     .style("opacity", 0);                  // set the opacity to nil
 
@@ -124,7 +124,7 @@
 					.attr("class","chart")
                     .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-				
+
 				// Adds the svg canvas
                 var	svg1 = d3.select("#line-chart-container-2")
                     .append("svg")
@@ -144,7 +144,7 @@
 					d3.json( apiURL + "?sd="+startDate+"&ed="+endDate+"&akey="+appKey, function(error, data)  {
 						console.log(data);
 						data = JSON.parse(data);
-						
+
 						plotLineChart(data,svg, div, false, "tuu", valueline, x, y, width, height);
 
 						plotLineChart(data,svg1, div1, true, "tts", valueline1, x, y, width, height);
