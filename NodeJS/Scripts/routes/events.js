@@ -1,3 +1,5 @@
+"use strict";
+
 var logger = require('../conf/log.js');
 var config = require('../conf/config.js');
 var common = require('../commons/common');
