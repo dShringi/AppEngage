@@ -1,4 +1,3 @@
-"use strict";
 
 var logger = require('../conf/log.js');
 var config = require('../conf/config.js');
@@ -181,7 +180,7 @@ exports.offline = function(server, producer) {
                 var jSON = JSON.parse(JSON.stringify(request.payload));
                 for(i=0;i<jSON.length;i++){
                     data.val = jSON[i];
-					let akey = request.headers.akey;
+					var akey = request.headers.akey;
                     console.log(data.val);
 					pushOfflineData(data.val, akey);
                 }
@@ -239,6 +238,7 @@ function pushToKafka(data,request,producer,callback){
 
 // this method will push offile data by calling API 
 function pushOfflineData(postData, akey){
+	"use strict";
 	let url = getUrl(postData.mt);
 	if(Boolean(url)){
 		var options = {method: config.url.post, body: postData, json: true, url: url, headers: {"content-type": "application/json","akey": akey}};
@@ -252,6 +252,7 @@ function pushOfflineData(postData, akey){
 }
 
 function getUrl(eventType){
+	"use strict";
 	let apiUrl = '';
 	const domain = config.server.domain;
 	switch(eventType) {
