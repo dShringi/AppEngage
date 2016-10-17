@@ -123,7 +123,7 @@ public class DBUserManager implements Idao {
 			Cursor cursor = dbObject.db.rawQuery(query, null);
 			int count = cursor.getCount();
 			Log.e("Cursor",cursor.toString());
-			Log.d(TAG, "Record Count :" + count);
+			Log.d(TAG, "Record Count :" + countEntries());
 
 			if (count > 0) {
 				array = cursorToModel(cursor);
@@ -240,5 +240,28 @@ public class DBUserManager implements Idao {
 		}
 
 		dbObject.close();
+	}
+
+	public int countEntries()
+	{	int count = 0;
+		dbObject.open();
+		JSONArray array=null;
+		try {
+			String query = UserTable.STATEMENT_SELECT1 /*+ " where "
+					+ UserTable.KEY_SYNC_STATUS + " = '" + user.getSyncStatus()
+					+ "'"*/;
+			Log.d(TAG, "find() Query : " + query);
+
+			Cursor cursor = dbObject.db.rawQuery(query, null);
+			count = cursor.getCount();
+
+			Log.d(TAG, "Count function :" + count);
+		} catch (Exception e) {
+
+			Log.e(TAG, "error in count function..." + e.getMessage());
+		}finally {
+			dbObject.close();
+			return count;
+		}
 	}
 }

@@ -34,7 +34,7 @@ public class MyReceiver extends BroadcastReceiver {
     }
 
 
-    private boolean isNetworkAvailable(Context context) {
+    public boolean isNetworkAvailable(Context context) {
           if (isOnline(context)) {
             Log.e("network", "insideIsOnlineIf");
             Log.v(TAG, "Now you are connected to Internet!");
@@ -45,10 +45,10 @@ public class MyReceiver extends BroadcastReceiver {
 
             dbUserManager = new DBUserManager(context);
             JSONArray array = dbUserManager.findArray();
-SharedPreferences prefs = context.getSharedPreferences("com.mastek.appengage", context.MODE_PRIVATE);
+            SharedPreferences prefs = context.getSharedPreferences("com.mastek.appengage", context.MODE_PRIVATE);
 
 				Log.e("contains","----->"+prefs.contains("URL"));
-              String URL="";
+                String URL="";
 				if(prefs.contains("URL"))
 				{
 					URL = prefs.getString("URL",null);

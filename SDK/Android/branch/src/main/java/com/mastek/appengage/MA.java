@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.mastek.appengage.dbusermanager.DBUserManager;
 import com.mastek.appengage.utils.ConnectionManager;
@@ -85,27 +86,27 @@ public class MA {
 			private MyReceiver mReceiver;
 
 			public void run() {
+				this.mReceiver = new MyReceiver();
+
+				if(dbUserManager.countEntries()>0)
+				{
+					/*appContext.registerReceiver(this.mReceiver, new IntentFilter(
+							ConnectivityManager.CONNECTIVITY_ACTION));*/
+					mReceiver.isNetworkAvailable(context);
+				}
 
 				uiLog(" \n " +"Calling Send Api");
-//				user = getUserDetails();
 
-//				user.setMessegeType("B");
 
-				this.mReceiver = new MyReceiver();
 				/*appContext.registerReceiver(this.mReceiver, new IntentFilter(
 						ConnectivityManager.CONNECTIVITY_ACTION));*/
-
-
 				time1 = System.currentTimeMillis();
 
 				senddatatoserver();
 
 				Utils.updateUI();
-
 			}
-
 		}.start();
-
 	}
 
 	public static void eventApi(final String key,final JSONObject prop) {
@@ -132,6 +133,7 @@ public class MA {
 				super.run();
 				try {
 					uiLog(" \n " + "Calling End Api");
+//					Toast.makeText(context,"Calling End Api",Toast.LENGTH_SHORT).show();
 					if (context != null)
 						appContext = context;
 
@@ -500,9 +502,7 @@ public class MA {
 
 			if (ConnectionManager.isNetworkConnected(appContext)) {
 
-
 				new SendJsonDataToServer().execute(String.valueOf(post_data));
-
 
 			} else {
 				boolean save = dbUserManager.saveCompleteJson(post_data.toString());
@@ -600,7 +600,6 @@ public class MA {
 			}
 
 		}
-
 	}
 
 	static class SendJsonArrayToServerWhenOnline extends
@@ -1036,6 +1035,7 @@ public class MA {
 			if(rResponse != null)
 			{
 				uiLog("End API data "+s);
+				Toast.makeText(appContext,"End API CALLED "+s,Toast.LENGTH_SHORT).show();
 			}
 		}
 
@@ -1122,6 +1122,7 @@ public class MA {
 			if(rResponse != null)
 			{
 				uiLog("ActivityTracking API data "+s);
+				Toast.makeText(appContext,"ActivityTracking API data "+s,Toast.LENGTH_SHORT).show();
 			}
 		}
 
