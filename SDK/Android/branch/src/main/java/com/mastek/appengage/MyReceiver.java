@@ -29,19 +29,19 @@ public class MyReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         //Toast.makeText(context,"OnRecieve Called",Toast.LENGTH_LONG);
-        Log.e("OnRecieve","onRecieve");
+        //Log.e("OnRecieve","onRecieve");
         isNetworkAvailable(context);
     }
 
 
     public boolean isNetworkAvailable(Context context) {
           if (isOnline(context)) {
-            Log.e("network", "insideIsOnlineIf");
+            //Log.e("network", "insideIsOnlineIf");
             Log.v(TAG, "Now you are connected to Internet!");
             //Toast.makeText(context, "Internet availablle via Broadcast receiver", Toast.LENGTH_SHORT).show();
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
             String sync_status = preferences.getString("sync_status", null);
-            Log.e(TAG, "sync_status:----" + sync_status);
+            //Log.e(TAG, "sync_status:----" + sync_status);
 
             dbUserManager = new DBUserManager(context);
             JSONArray array = dbUserManager.findArray();
@@ -56,7 +56,7 @@ public class MyReceiver extends BroadcastReceiver {
 
               //Log.e("network","abc "+array.length());
             if(array!=null) {
-                Log.e("network","insidearraylength");
+                //Log.e("network","insidearraylength");
                 new MA.SendJsonArrayToServerWhenOnline(URL).execute(String.valueOf(array));
                 dbUserManager.removeAll();
                 Log.e(TAG, "entries in database deleted:----");

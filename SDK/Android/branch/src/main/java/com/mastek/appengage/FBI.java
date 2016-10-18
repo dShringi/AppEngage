@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
+import com.mastek.appengage.utils.Utils;
 
 /**
  * Created by Badal13631 on 9/6/2016.
@@ -19,6 +20,7 @@ public class FBI extends FirebaseInstanceIdService {
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         //Displaying token on logcat
         Log.d(TAG, "Refreshed token: " + refreshedToken);
+        Utils.tokenGen = refreshedToken;
 
     }
 

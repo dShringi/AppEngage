@@ -32,13 +32,12 @@ task makeJar(type: Copy) {
 
 makeJar.dependsOn(clearJar, build)
 dependencies {
-    compile 'com.android.support:support-v4:24.+'
-    compile 'com.google.android.gms:play-services-base:+'
-    compile 'com.google.android.gms:play-services-location:+'
+    compile 'com.android.support:support-v4:24.2.1'
+    compile 'com.google.android.gms:play-services-base:9.6.1'
+    compile 'com.google.android.gms:play-services-location:9.6.1'
 
     compile 'com.google.firebase:firebase-core:9.4.0'
-    compile 'com.google.firebase:firebase-messaging:9.4.0'/*
-    compile 'com.google.firebase:firebase-crash:9.4.0'*/
+    compile 'com.google.firebase:firebase-messaging:9.4.0'
 
     compile files('libs/cordova.jar')
 }

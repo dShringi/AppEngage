@@ -37,7 +37,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
 import com.google.android.gms.common.api.GoogleApiClient.OnConnectionFailedListener;
 import com.google.android.gms.location.LocationServices;
-import com.google.firebase.iid.FirebaseInstanceId;
 import com.mastek.appengage.MA;
 import com.mastek.appengage.dbusermanager.DBUserManager;
 import com.mastek.appengage.locservice.LocationService1;
@@ -104,7 +103,7 @@ public class Utils implements LocationListener,
 	public static boolean endApiCalled = false;
 	//public static String akey = "4170b44d6459bba992acaa857ac5b25d7fac6cc1";
 
-	public static String tokenGen = FirebaseInstanceId.getInstance().getToken();
+	public static String tokenGen = "";
 	/*
 	 * static String eNdTime = "16:20:00"; private static Date endDate;
 	 */
@@ -124,7 +123,6 @@ public class Utils implements LocationListener,
 		getNetworkClass(context);
 		CarrierName(context);
 		TimeStamp();
-
 		startTime = System.currentTimeMillis();
 
 		Log.e(TAG, "Time " + startTime);
@@ -1001,7 +999,7 @@ public class Utils implements LocationListener,
 					}
 				}
 			}
-		}else if(Build.VERSION.SDK_INT <=23 )
+		}else if(Build.VERSION.SDK_INT <23 && Build.MODEL != "")
 		{
 			if (isNetworkEnabled) {
 				Criteria criteria = new Criteria();
