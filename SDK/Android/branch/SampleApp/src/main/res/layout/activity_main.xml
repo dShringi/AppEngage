@@ -51,7 +51,15 @@
                 android:text="Event"
                 android:onClick="onClick"
                 android:textColor="#fbfbfb" />
-
+            <Button
+                android:id="@+id/btnDB"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:background="#494949"
+                android:text="Print Database (Console)/ Go to activity 2"
+                android:onClick="onDBClick"
+                android:textColor="#fbfbfb" />
             <!--   <Button
                 android:id="@+id/btnEventPayment"
                 android:layout_width="match_parent"
