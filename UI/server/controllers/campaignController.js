@@ -260,18 +260,8 @@ function queryBuilder(JsonData){
 		for (var queryKey in JsonData) {
 			var innerQuery = JsonData[queryKey];
 			for (var innerKey in innerQuery) {
-				//var ruleKey = getMapping(queryKey);
-				//if(innerQuery.length >1){
 					qryStr+=formInnerArray(queryKey, innerQuery);
 					break;
-				/*} else {
-					if(count==0){
-						qryStr+='"'+ruleKey+'":'+'"'+innerQuery[innerKey]+'"';
-					} else {
-						qryStr+=',"'+ruleKey+'":'+'"'+innerQuery[innerKey]+'"';						
-					}
-					count++;
-				}*/
 			}
 		}	
 		var queryLength = qryStr.length;
@@ -293,11 +283,32 @@ function formInnerArray(ruleKey, query) {
 	var StringQuery = '';
 	var count =0; 
 	for (var queryKey in query) {
-		var hello = query[queryKey];
+		var arrayElement = query[queryKey];
+		
+		
+		//this if condition has to be removed after mapping element from UI
+		if(ruleKey ==  'lpf' || ruleKey == 'ldt'){
+			var indexAndroid = arrayElement.indexOf('Android');
+			var indexTeblet = arrayElement.indexOf('Tablet');
+			var indexSmartPhone = arrayElement.indexOf('Smart Phone');
+			
+			if (indexAndroid !== -1) {
+				arrayElement[indexAndroid] = 'A';
+			}
+			
+			if (indexTeblet !== -1) {
+				arrayElement[indexTeblet] = 'T';
+			}
+			
+			if (indexSmartPhone !== -1) {
+				arrayElement[indexSmartPhone] = 'S';
+			}
+		}
+		
 		if(count==0){
-			StringQuery+= '"'+hello+'"';
+			StringQuery+= '"'+arrayElement+'"';
 		} else {
-			StringQuery+= ',"'+hello+'"';
+			StringQuery+= ',"'+arrayElement+'"';
 		}
 		count++;
 	}

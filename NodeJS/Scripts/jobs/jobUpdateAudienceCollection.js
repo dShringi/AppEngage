@@ -56,13 +56,13 @@ function QueryBuilder(result, dbKey){
 	for(var key in result){
 		if(dbKey == 'mnu'){
 			if(result[key].lpf == 'iOS'){
-				var pushString = '{"key":"'+result[key].lmod+'"}';
+				var pushString = '{"key":"'+result[key].lm+'"}';
 				iOS.push(pushString);
 			} else if(result[key].lpf == 'A'){
-				var pushString = '{"key":"'+result[key].lmod+'"}';
+				var pushString = '{"key":"'+result[key].lm+'"}';
 				android.push(pushString);
 			}else if(result[key].lpf == 'window'){
-				var pushString = '{"key":"'+result[key].lmod+'"}';
+				var pushString = '{"key":"'+result[key].lm+'"}';
 				window.push(pushString);
 			}
 		} else if(dbKey == 'osv'){

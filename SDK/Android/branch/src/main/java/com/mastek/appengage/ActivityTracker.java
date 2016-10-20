@@ -75,7 +75,7 @@ public class ActivityTracker implements Application.ActivityLifecycleCallbacks {
 
     @Override
     public void onActivityStopped(Activity activity) {
-        //Log.e("onActivityStopped","Activity Name :"+ activity.getLocalClassName());
+        Log.e("onActivityStopped","Activity Name :"+ activity.getLocalClassName() + "onStop");
 /*
 
         if(temp1 == 1)

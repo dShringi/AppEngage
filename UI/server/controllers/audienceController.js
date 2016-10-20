@@ -2,6 +2,7 @@ var mongojs = require('mongojs');
 var moment = require('moment-timezone');
 var dateFormat = require('dateformat');
 var PropertiesReader = require('properties-reader');
+var _ = require("underscore");
 
 
 var config  = require('../../config/config');
@@ -27,7 +28,11 @@ module.exports.fetchAllPlatform = function(req,res){
 					for (var oskey in val) {
 						var resultList = val[oskey].key;
 						if(resultList != null){
-							returnResponse.push(resultList);
+							if(resultList.toUpperCase() =='A') {
+								returnResponse.push("Android");
+							} else {
+								returnResponse.push(resultList);
+							}
 						}
 					}
 				}
@@ -189,12 +194,19 @@ module.exports.fetchAllDevicetype = function(req,res){
 					for(var a=0;a<val.length;a++){
 						var allList = val[a].key;
 						if(allList != null){
-							returnResponse.push(allList);
+							if(allList.toUpperCase() == 'S'){
+								returnResponse.push('Smart Phone');
+							} else if(allList.toUpperCase() == 'T') {
+								returnResponse.push('Tablet');
+							} else {
+								returnResponse.push(allList);
+							}
+							
 						}
 					}
 				}
 			}
-			return res.json(returnResponse);
+			return res.json(getUniqueArray(returnResponse));
 		}
 		db.close();
 	}); 
@@ -223,13 +235,19 @@ module.exports.fetchDevicetypeFromPlatform = function(req,res){
 							for(var a=0;a<val.length;a++){
 								var allList = val[a].key;
 								if(allList != null){
-									returnResponse.push(val[a].key);
+									if(allList.toUpperCase() == 'S'){
+										returnResponse.push('Smart Phone');
+									} else if(allList.toUpperCase() == 'T') {
+										returnResponse.push('Tablet');
+									} else {
+										returnResponse.push(allList);
+									}
 								}
 							}
 						}
 					}
 				}
-				return res.json(returnResponse);
+				return res.json(getUniqueArray(returnResponse));
 			}
 			db.close();
 		}); 
@@ -256,10 +274,12 @@ module.exports.fetchAllModel = function(req,res){
 						var allList = val[a].key;
 						if(allList != null){
 							var modelMappedName = properties.get(allList);
-							var pushObject = {};
-							pushObject['cn'] = allList;
-							pushObject['an'] = modelMappedName;
-							returnResponse.push(pushObject);
+							if(modelMappedName != null) {
+								var pushObject = {};
+								pushObject['cn'] = allList;
+								pushObject['an'] = modelMappedName;
+								returnResponse.push(pushObject);
+							}
 						}
 					}
 				}
@@ -293,12 +313,13 @@ module.exports.fetchModelFromPlatform = function(req,res){
 							for(var a=0;a<val.length;a++){
 								var allList = val[a].key;
 								if(allList != null){
-									//returnResponse.push(allList);
 									var modelMappedName = properties.get(allList);
-									var pushObject = {};
-									pushObject['cn'] = allList;
-									pushObject['an'] = modelMappedName;
-									returnResponse.push(pushObject);
+									if(modelMappedName != null) {
+										var pushObject = {};
+										pushObject['cn'] = allList;
+										pushObject['an'] = modelMappedName;
+										returnResponse.push(pushObject);
+									}
 								}
 							}
 						}
@@ -336,7 +357,7 @@ module.exports.fetchAllAppversion = function(req,res){
 					}
 				}
 			}
-			return res.json(returnResponse);
+			return res.json(getUniqueArray(returnResponse));
 		}
 		db.close();
 	}); 
@@ -377,22 +398,9 @@ module.exports.fetchAppversionFromPlatform = function(req,res){
 		}); 
 	}	
 };
-/*
-Array.prototype.contains = function(obj) {
-    var i = this.length;
-    while (i--) {
-        if (this[i] === obj) {
-            return true;
-        }
-    }
-    return false;
+function getUniqueArray(array){
+	var uniqueList = _.uniq(array, function(item) { 
+		return item;	
+	});
+	return uniqueList;
 }
-
-function uniqBy(a, key) {
-    var seen = new Set();
-    return a.filter(item => {
-        var k = key(item);
-        return seen.has(k) ? false : seen.add(k);
-    });
-}
-*/

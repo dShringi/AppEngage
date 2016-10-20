@@ -112,32 +112,32 @@ public class DBUserManager implements Idao {
 	
 	
 	public JSONArray findArray() {
-		dbObject.open();
-		JSONArray array=null;
-		try {
-			String query = UserTable.STATEMENT_SELECT1 /*+ " where "
+		JSONArray array = null;
+			dbObject.open();
+			try {
+				String query = UserTable.STATEMENT_SELECT1 /*+ " where "
 					+ UserTable.KEY_SYNC_STATUS + " = '" + user.getSyncStatus()
 					+ "'"*/;
-			Log.d(TAG, "find() Query : " + query);
+				//Log.d(TAG, "find() Query : " + query);
 
-			Cursor cursor = dbObject.db.rawQuery(query, null);
-			int count = cursor.getCount();
-			Log.e("Cursor",cursor.toString());
-			Log.d(TAG, "Record Count :" + count);
+				Cursor cursor = dbObject.db.rawQuery(query, null);
+				int count = cursor.getCount();
+				Log.e("Cursor", cursor.toString());
+				Log.d(TAG, "Record Count :" + count);
 
-			if (count > 0) {
-				array = cursorToModel(cursor);
-			//	Log.d(TAG, "Record  : " + user);
+				if (count > 0) {
+					array = cursorToModel(cursor);
+					//	Log.d(TAG, "Record  : " + user);
+				}
+				cursor.close();
+
+			} catch (Exception e) {
+
+				Log.e(TAG, "error in find query..." + e.getMessage());
 			}
-			cursor.close();
 
-		} catch (Exception e) {
-
-			Log.e(TAG, "error in find query..." + e.getMessage());
-		}
-
-		dbObject.close();
-		return array;
+			dbObject.close();
+			return array;
 	}
 
 	@Override
@@ -240,5 +240,27 @@ public class DBUserManager implements Idao {
 		}
 
 		dbObject.close();
+	}
+
+	public int countEntries()
+	{	int count = 0;
+		dbObject.open();
+		try {
+			String query = UserTable.STATEMENT_SELECT1 /*+ " where "
+					+ UserTable.KEY_SYNC_STATUS + " = '" + user.getSyncStatus()
+					+ "'"*/;
+			Log.d(TAG, "find() Query : " + query);
+
+			Cursor cursor = dbObject.db.rawQuery(query, null);
+			count = cursor.getCount();
+
+			Log.d(TAG, "Count function :" + count);
+		} catch (Exception e) {
+
+			Log.e(TAG, "error in count function..." + e.getMessage());
+		}finally {
+			dbObject.close();
+			return count;
+		}
 	}
 }

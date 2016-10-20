@@ -4,11 +4,13 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -40,26 +42,18 @@ public class MainActivity extends Activity implements ReturnResponse {
 
     private static final String TAG = "Mainactivity";
     private Button crash, btnEvent;
-    private Object returnValue;
     public static TextView txtResponse;
-    String SENT = "SMS_SENT";
-    String DELIVERED = "SMS_DELIVERED";
     public static String key;
-    public static Date time1;
     private EditText edtEvent;
     private static final int PERMISSION_REQUEST_CODE = 1;
     public static long calTime;
-    public static final String PROPERTY_REG_ID = "registration_id";
-    private static final String PROPERTY_APP_VERSION = "appVersion";
-    private MyReceiver mReceiver = null;
-    private BroadcastReceiver sendBroadcastReceiver;
-    private BroadcastReceiver deliveryBroadcastReceiver;
     public static ScrollView sv;
+    private boolean exit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         setContentView(R.layout.activity_main);
-    requestPermission();
+        //requestPermission();
         //Activity act=(Activity)this;
         Log.e("Mobile Analytics", "done work");
 
@@ -98,40 +92,13 @@ public class MainActivity extends Activity implements ReturnResponse {
         edtEvent = (EditText) findViewById(R.id.edtEvent);
 
 
+           MA.init(this,"http://52.87.24.173/api/","4170b44d6459bba992acaa857ac5b25d7fac6cc1");
+           //if (Build.VERSION.SDK_INT < 23) {
+               //Log.e("beginApi", "---- It is here");
+               //MA.beginApi(this);
+           //}
         super.onCreate(savedInstanceState);
 
-    }
-
-    /*private void storeRegistrationId(Context context, String regId) {
-        final SharedPreferences prefs = getGCMPreferences(context);
-        int appVersion = getAppVersion(context);
-        Log.i(TAG, "Saving regId on app version " + appVersion);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(PROPERTY_REG_ID, regId);
-        editor.putInt(PROPERTY_APP_VERSION, appVersion);
-        editor.commit();
-    }
-*/
-
-    /*private SharedPreferences getGCMPreferences(Context context) {
-        // This sample app persists the registration ID in shared preferences, but
-        // how you store the registration ID in your app is up to you.
-        return getSharedPreferences(MainActivity.class.getSimpleName(),
-                Context.MODE_PRIVATE);
-    }*/
-
-    /**
-     * @return Application's version code from the {@code PackageManager}.
-     */
-    private static int getAppVersion(Context context) {
-        try {
-            PackageInfo packageInfo = context.getPackageManager()
-                    .getPackageInfo(context.getPackageName(), 0);
-            return packageInfo.versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            // should never happen
-            throw new RuntimeException("Could not get package name: " + e);
-        }
     }
 
     @Override
@@ -163,8 +130,8 @@ public class MainActivity extends Activity implements ReturnResponse {
 
 
             case R.id.btnCrash:
-                MA.crashApi(this);
-
+               // MA.crashApi(this);
+                int a = 1/0;
                 break;
 
             case R.id.btnEvent:
@@ -197,14 +164,10 @@ public class MainActivity extends Activity implements ReturnResponse {
         // TODO Auto-generated method stub
         super.onStart();
         Log.e(TAG, "startTime  " + Utils.startTime);
-        calTime = MA.CalculatedTime;
+        //calTime = MA.CalculatedTime;
         Log.e(TAG, "calTime :---" + calTime);
         Log.e(TAG, "onStart");
-        MA.init(this);
 
-        if (Build.VERSION.SDK_INT < 23) {
-            MA.beginApi(this);
-        }
     }
 
     @Override
@@ -235,23 +198,44 @@ public class MainActivity extends Activity implements ReturnResponse {
     protected void onStop() {
         // TODO Auto-generated method stub
         super.onStop();
-        MA.endApi(this);
-
-        Toast.makeText(this, "Calling End Api method", Toast.LENGTH_SHORT).show();
+       /* MA.endApi(this);
+*/
         Log.e(TAG, "onStop");
         Log.e(TAG, "startTime  " + Utils.startTime);
     }
 
-   /* @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    //@Override
+    /*public void onBackPressed() {
+        //super.onBackPressed();
+        
+        if (exit) {
+            Log.e("MainActivity2", "onBackPressed");
+            if (!Utils.endApiCalled) {
+                MA.activityTimeTrackingApi(this);
+                MA.endApi(this);
+                Utils.endApiCalled = true;
+                Toast.makeText(this, "Calling End Api method", Toast.LENGTH_SHORT).show();
 
-        Log.e(TAG, "onBackPressed");
-        MA.endApi(this);
-    }*/
+            }
+            finish(); // finish activity
+            System.exit(0);
+        } else {
+            Toast.makeText(this, "Press Back again to Exit.",
+                    Toast.LENGTH_SHORT).show();
+            exit = true;
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    exit = false;
+                }
+            }, 3 * 1000);
+
+        }*/
+
+    //}
 
 
-    private void requestPermission() {
+    /*private void requestPermission() {
         Log.e("Request is Here", "Request permission");
         ActivityCompat.requestPermissions(this, new String[]{
                         android.Manifest.permission.ACCESS_FINE_LOCATION,
@@ -264,8 +248,22 @@ public class MainActivity extends Activity implements ReturnResponse {
                                            @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
-                MA.beginApi(this);
+
+                //4170b44d6459bba992acaa857ac5b25d7fac6cc1
+                //private static String URL = "http://52.87.24.173/api/";
+                //MA.beginApi(this);
                 break;
+        }
+    }*/
+
+    public void onDBClick(View v)
+    {
+        if(v == findViewById(R.id.btnDB)) {
+            Intent i = new Intent(this, Main2Activity.class);
+            startActivity(i);
+
+        MA.check();
+        finish();
         }
     }
 }
