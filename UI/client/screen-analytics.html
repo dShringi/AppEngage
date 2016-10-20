@@ -1,74 +1,201 @@
-<!doctype html>
-<head>
-	<title>Mobile Analytics - Screen Analytics</title>
-    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
-    
-    <!-- Optional theme -->
-    <link rel="stylesheet" href="assets/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="assets/css/font-awesome.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
-    <link rel="icon" type="image/x-icon" href="favicon.ico" />
-    <script src="assets/js/jquery.js"></script>
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="assets/js/bootstrap.min.js"></script>
-    <script src="assets/js/d3.v3.min.js"></script>
-    <script src="assets/js/d3.legend.js"></script>
-    <script src="assets/js/moment.min.js"></script>
-    <link rel="stylesheet" href="assets/css/bootstrap-select.min.css">
-    <script src="assets/js/bootstrap-select.min.js"></script>
-    <link rel="stylesheet" href="assets/css/theme.blue.css">
-    <link rel="stylesheet" href="assets/css/sweetalert.css">
-    <script src="assets/js/sweetalert.min.js"></script>
-    <script src="assets/js/constants.js"></script>
+ <!doctype html>
+<html ng-app="screenAnalytics">
+    <head>
+	   <meta http-equiv="X-UA-Compatible" content="IE=10,11">
+	   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        <title>Mobile Analytics - Screen Analytics</title>
+		<link rel="icon" type="image/x-icon" href="favicon.ico" />
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+		<link rel="stylesheet" href="assets/css/font-awesome.css">
+		<link rel="stylesheet" href="assets/css/style.css">
+		<link rel="stylesheet" href="assets/coverflow/coverflow.css">
+		<link rel="stylesheet" href="assets/css/screen-analytics.css">
+		<!--script src="assets/js/jquery.js"></script-->	
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.js"></script>
+		<script src="assets/js/d3.v3.min.js"></script>
+		
+		<script src="assets/js/moment.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
+		<script src="assets/js/app-analytics.js"></script>
+		<script src="assets/js/daterangepicker.js"></script>
+		<link rel="stylesheet" type="text/css" href="assets/css/daterangepicker.css" />
+		<script src="assets/js/screen-analytics.js"></script>
 
-    <script src="assets/js/servicecalls.js"></script>
-    <script src="assets/js/daterangepicker.js"></script>
-    <script src="assets/js/clockpicker.js"></script>
-	<script src="assets/js/jquery.circular-carousel.js"></script> 
-	<script src="assets/js/screen-analytics.js"></script>
-    <link rel="stylesheet" href="assets/css/campaign.css">
-    <link rel="stylesheet" href="assets/css/daterangepicker.css">
-    <link rel="stylesheet" href="assets/css/clockpicker.css">
-	<link rel="stylesheet" href="assets/css/normalize.css">
-	<link rel="stylesheet" href="assets/css/foundation.min.css">
-	<link rel="stylesheet" href="assets/css/screen-analytics.css">
-	<link rel="stylesheet" href="assets/css/jquery.circular-carousel.css">
-</head>
-<body  style="height:100vh; background-color: #ffffff;">
-	<aside class="left-side sticky-left-side" tabindex="5000"></aside>
-	<aside class="main-container">
-		<section class="breadcrumb bg-white border-bottom paddl30">
-                <ul>
+		<!-- Optional: Reflection -->
+		<script type="text/javascript" src="assets/coverflow/reflection.js"></script>
+		<!-- interpolate, depends on jQ 1.8.0+ -->
+		<script src="assets/coverflow/jquery.interpolate.min.js"></script>
+		<!-- Coverflow -->
+		<script src="assets/coverflow/jquery.coverflow.js"></script>
+
+
+		
+		
+		
+        <style>
+		body {padding-top:74px !important;}
+		</style>
+		
+		<script>
+	
+		$(function() {
+
+			
+			if ($.fn.reflect) {
+					$('.photos .cover').reflect();
+				}
+
+				$('.photos').coverflow({
+					easing:			'',
+					duration:		'slow',
+					index:			3,
+					width:			320,
+					height:			240,
+					visible:		'density',
+					selectedCss:	{	opacity: 1	},
+					outerCss:		{	opacity: .1	},
+					
+					confirm:		function() {
+						console.log('Confirm');
+					},
+
+					change:			function(event, cover) {
+						var img = $(cover).children().andSelf().filter('img').last();
+						$('#photos-name').text(img.data('name') || 'unknown');
+					}
+					
+				});	
+		});
+		</script>
+    </head>
+    <body style="height:100vh; ">
+        <nav id="mainNav" class="navbar navbar-default navbar-fixed-top " >
+			<div class="left-side sticky-left-side" ng-include src="'menu.html'" tabindex="5000"></div>
+        	<div ng-include src="'header.html'"></div>
+        	<!-- /.container-fluid -->
+        </nav>
+		<div class="row breadcrumb bg-white border-bottom paddl30">
+			<div class="col-md-6">
+				<ul>
+                    <li><a href="">Devices</a></li>
+                    <li> &gt; </li>
                     <li>Screen Analytics</li>
                 </ul>
-        </section>
-		<section class="border-bottom paddl50 mrgnBtm0">
-                <div class="row chart-header">
-                    <div class="col-md-6 txt-drk-gray margnTp-5">
-						<div>
-							<div id="dateRange" class="pull-left">
-								<i class="glyphicon glyphicon-calendar txt-green fa fa-calendar"></i><span></span><b class="caret"></b>
+			</div>
+		</div>
+		<div ng-controller="deviceCtrl">
+			<div class="row mobile-select border-bottom ">
+        		<div class="col-md-6" >
+					<ul class="device-menu bg-white">
+						<li class="selected">
+							<a href="javascript:void(0)" ng-click="fetchAppData('Mobile')">Mobile</a> 
+							<span class="grey-pipe">|</span>
+						</li>
+						<li>
+							<a href="javascript:void(0)" ng-click="fetchAppData('Tablet')">Tablet</a></li>
+						<li class="hidden">
+							<input type="text" id="sDate">
+							<input type="text" id="eDate">
+						</li>
+						<li>
+							<div>
+								<div  id="data">
+									<table>
+											<tr ng-repeat="user in users">
+											   <td>{{user.name}}</td>
+												<td>{{user.path}}</td>
+												<td>{{user.alt}}</td>
+											</tr>
+										</table>
+								</div>
 							</div>
-						</div>
-                    </div>
-                </div>
-        </section>
-		<section class="section-carousel paddl50 paddr50 mrgnBtm0 bg-white">
+					</li>
+						
+					</ul>
+				</div>
+				<div class="col-md-6">
+					<div id="dateRange" class="pull-right">
+						<i class="glyphicon glyphicon-calendar txt-green fa fa-calendar"></i>
+						<span></span><b class="caret"></b>
+					</div>
+				</div>
+				 <!--div ng-controller="urlController"-->
+       			
+			</div>	
+			
+			<div class="row bg-white border-bottom">
+			
+				<div class="col-md-12">
+					<div class="photos" autofocus>
+						<span ng-repeat="user in users">
+						<img class="cover" ng-name="{{user.name}}" ng-src="{{user.path}}"/>
+						</span>
+						<!--img class="cover" data-name="app2"k src="assets/coverflow/images/app2.jpg"/>
+						<img class="cover" data-name="app3" src="assets/coverflow/images/app3.jpg"/>
+						<img class="cover" data-name="app4" src="assets/coverflow/images/app4.jpg"/>
+						<img class="cover" data-name="app5" src="assets/coverflow/images/app5.jpg"/>
+						<img class="cover" data-name="app6" src="assets/coverflow/images/app6.jpg"/>
+						<img class="cover" data-name="app7" src="assets/coverflow/images/app7.jpg"/>
+						<img class="cover" data-name="app8" src="assets/coverflow/images/app8.jpg"/>
+						<img class="cover" data-name="app9" src="assets/coverflow/images/app9.jpg"/>
+						<img class="cover" data-name="app10" src="assets/coverflow/images/app10.jpg"/>
+						<img class="cover" data-name="app11" src="assets/coverflow/images/app11.jpg"/>
+						<img class="cover" data-name="app12" src="assets/coverflow/images/app12.jpg"/>
+						<img class="cover" data-name="app13" src="assets/coverflow/images/app13.jpg"/-->
+					</div><!-- End of Photos -->
+					<!--div id="photos-info">
+						<div id="photos-name"></div>
+					</div-->
+				</div> <!-- End of col md 12 -->
+			</div><!-- End of row -->
 			<div class="row">
-			<ul class="carousel">
-				<li class="item active"></li>
-				<li class="item"></li>
-				<li class="item"></li>
-				<li class="item"></li>
-				<li class="item"></li>
-			</ul>
+
+				<ul class="info-container">
+					<li class="col-xs-12 col-sm-4 col-md-2">
+						<div class="info">
+							<div class="col-xs-12"><h3>Number of unique users</h3></div>
+							<div class="col-xs-12"><p>13</p></div>
+						</div>
+					</li>
+					<li class="col-xs-12 col-sm-4 col-md-2">
+						<div class="info">
+							<div class="col-xs-12"><h3>number of crashes</h3></div>
+								<div class="col-xs-12"><p>35</p></div>
+						</div>
+					</li>
+					<li class="col-xs-12 col-sm-4 col-md-2">
+						<div class="info">
+							<div class="col-xs-12"><h3>total time spent</h3></div>
+								<div class="col-xs-12"><p>03</p></div>
+						</div>
+					</li>
+					<li class="col-xs-12 col-sm-4 col-md-2">
+						<div class="info">
+							<div class="col-xs-12"><h3>Average Time spent by user</h3></div>
+								<div class="col-xs-12"><p>03</p></div>
+						</div>
+					</li>
+					<li class="col-xs-12 col-sm-4 col-md-2">
+						<div class="info">
+							<div class="col-xs-12"><h3>Total sessions</h3></div>
+								<div class="col-xs-12"><p>438</p></div>
+						</div>
+					</li>
+					<li class="col-xs-12 col-sm-4 col-md-2">
+						<div class="info">
+							<div class="col-xs-12"><h3>Average time spent per sessions</h3></div>
+								<div class="col-xs-12"><p>15</p></div>
+						</div>
+						
+					</li>
+				</ul>
 			</div>
-			<div class="controls">
-			<a href="#" class="previous">Previous</a> 
-			<a href="#" class="next">Next</a>
-			</div>
-		</section>
-	</aside>
-	<div class="overlay"></div>
-	
-</body>
+		</div>	
+			
+			
+		<!-- End of container -->
+		
+		
+    </body>
+</html>
