@@ -274,10 +274,12 @@ module.exports.fetchAllModel = function(req,res){
 						var allList = val[a].key;
 						if(allList != null){
 							var modelMappedName = properties.get(allList);
-							var pushObject = {};
-							pushObject['cn'] = allList;
-							pushObject['an'] = modelMappedName;
-							returnResponse.push(pushObject);
+							if(modelMappedName != null) {
+								var pushObject = {};
+								pushObject['cn'] = allList;
+								pushObject['an'] = modelMappedName;
+								returnResponse.push(pushObject);
+							}
 						}
 					}
 				}
@@ -311,12 +313,13 @@ module.exports.fetchModelFromPlatform = function(req,res){
 							for(var a=0;a<val.length;a++){
 								var allList = val[a].key;
 								if(allList != null){
-									//returnResponse.push(allList);
 									var modelMappedName = properties.get(allList);
-									var pushObject = {};
-									pushObject['cn'] = allList;
-									pushObject['an'] = modelMappedName;
-									returnResponse.push(pushObject);
+									if(modelMappedName != null) {
+										var pushObject = {};
+										pushObject['cn'] = allList;
+										pushObject['an'] = modelMappedName;
+										returnResponse.push(pushObject);
+									}
 								}
 							}
 						}
