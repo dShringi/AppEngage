@@ -594,7 +594,7 @@ function drawAxes(svg, x, y, width, height, xAxis, yAxis, hoursFlag){
 		}
 	}
 	if(typeof yAxis === "string"){
-		yAxis = d3.svg.axis().scale(y).orient("left").ticks(5).tickformat((d3.format("s"));
+		yAxis = d3.svg.axis().scale(y).orient("left").ticks(5).tickformat(d3.format("s"));
 	}
 	// Add the X Axis
 	svg.append("g")
