@@ -1,6 +1,6 @@
 //var appKey = "4170b44d6459bba992acaa857ac5b25d7fac6cc1";
 var service = {
-	
+
     validateLogin: function (uname, pwd) {
         console.log("service called");
 
@@ -78,7 +78,7 @@ var service = {
             }
         });
     },
-	
+
 	registerUser: function(arr){
 		console.log("service called");
 		// Array order - First Name, Email Id, User Name, Last Name, Phone, Password, App Name, App Description, Timeout, App Category, App Icon, Timezone
@@ -102,7 +102,7 @@ var service = {
                     "to": arr[8]
             }
 		}
-		
+
 		console.log(registerJSONReq);
 		$.ajax({
 		    type: 'POST',
@@ -120,7 +120,10 @@ var service = {
                             '<p style="font-size:14px;">Your application key is -</p>' +
                             '<h3>'+data.akey+'</h3>',
 		            html: true
-		        });
+		        },
+                    function () {
+                        window.location.href = window.location.href;
+                    });
             },
 		    error: function (x, t, m) {
 		        alert("Error connecting to server");
@@ -132,7 +135,7 @@ var service = {
 		    }
 
 		});
-	
+
 	},
 
 	makeCampaign: function (arr) {
@@ -174,7 +177,7 @@ var service = {
 	            }
 
 	        }
-	        
+
 	    }
 	    // SCHEDULED
 	    // ["name", "title", "message", "everyone", "scheduled", "cycle", "triggertime", "endtime", "MONTHLY_5", audience]
@@ -214,7 +217,7 @@ var service = {
 	                "query": arr[9]
 	            }
 	        }
-	        
+
 	    }
 	    console.log(makeCampaignJSONReq);
 
@@ -253,7 +256,7 @@ var service = {
 	        }
 	    })
 	},
-	
+
 	deleteCampaign:function(campaignid){
 		$.ajax({
 			type: 'DELETE',
@@ -268,10 +271,10 @@ var service = {
                     function () {
                         window.location.href = window.location.href;
                     });
-                    
+
 			        //window.location.href = window.location.href;
 			    }
-				
+
 			},
 	        error: function (x, t, m) {
 	            alert("Error connecting to server");
@@ -340,7 +343,7 @@ var service = {
 	                        showCancelButton: false
 	                    });
 	                }
-					
+
 				}
 	        },
 	        error: function (x, t, m) {
@@ -394,8 +397,8 @@ var service = {
 	                else {
 	                    $("select#dropdown-" + fType).append("<option value=" + data[i] + ">" + data[i] + "</option>");
 	                }
-	                
-	                
+
+
 	            }
 
 	            $('select#dropdown-' + fType).multipleSelect({
@@ -416,7 +419,7 @@ var service = {
 	            //else {
 	            //    $('select#dropdown-' + fType).attr("size", data.length);
 	            //}
-	            
+
 	            //$('select#dropdown-' + fType).parent().children().nextAll('.fa-trash-o').css("line-height", ($('select#dropdown-' + fType).parent().height() - 11)+"px");
 	            //console.log($('select#dropdown-' + fType).parent().height());
 	            //console.log($('select#dropdown-' + fType).parent().children().nextAll('.fa-trash-o'));
@@ -431,5 +434,5 @@ var service = {
 	        }
 	    })
 	}
-	
+
 };

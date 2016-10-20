@@ -195,7 +195,7 @@
                 });
 
                 $(".btn-confirm").click(function () {
-
+                    sessionStorage.removeItem("unameAvailability");
                     service.registerUser(arr);
 
                 });

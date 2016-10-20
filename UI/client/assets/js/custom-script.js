@@ -49,7 +49,7 @@ function numFormate(nums) {
 			break;
 	}
 	//console.log(nums+" : "+nums.toString().length+" : "+retStr);
-	
+
 	return retStr;
 }
 
@@ -57,23 +57,23 @@ $(document).ready(function () {
     "use strict";
     $('.left-side').load("menu.html");
 	$('.left-side').addClass('wdt80');
-    
+
 	$.get("header.html", function (data) {
 		$(".main-container").prepend(data);
 	});
-	
+
 	$(window).on("resize", function() {
 		var the_chart = $(".chart");
 		var aspect = the_chart.width() / the_chart.height(),
 		container = the_chart.parent();
-		
+
 		console.log('resize window');
 		var targetWidth = container.width();
 		console.log(the_chart.width());
 		the_chart.attr("width", targetWidth);
 		the_chart.attr("height", Math.round(targetWidth / aspect));
 	}).trigger("resize");
-    
+
 	var displayDate = function (date) {
         var today = new Date(), month, day, year;
         year = today.getFullYear();
@@ -82,19 +82,19 @@ $(document).ready(function () {
         if ((month - 1) <= 0) {
             year = today.getFullYear() - 1;
         }
-        
+
         var backdate = new Date(year, month - 1, date);
-        
+
         return backdate;
     }, oneMonthAgoDateObj = displayDate(todayObj);
-    
+
     var startDateCal = new Date(), endDateCal = displayDate(new Date()), type;
 	function cb(start, end) {
         $('#dateRange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
 		//alert(start+"--"+end);
 		startDateCal = start;
 		endDateCal = end;
-        
+
         if($('#sel_deviceType').length){
             type = $('#sel_deviceType').val();
         } else {
@@ -103,7 +103,7 @@ $(document).ready(function () {
 		loadChart(parseInt(start/1000),parseInt(end/1000), appKey, type);
     }
     cb(moment().subtract(29, 'days'), moment());
-	
+
     $('#dateRange').daterangepicker({
 		ranges: {
            'Today': [moment(), moment()],
@@ -113,7 +113,7 @@ $(document).ready(function () {
            'This Month': [moment().startOf('month'), moment().endOf('month')],
            'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
         },
-		
+
         locale: {
             format: 'YYYY-MM-DD',
             applyLabel: "Select"
@@ -121,7 +121,7 @@ $(document).ready(function () {
         startDate: startDateCal,
         endDate: endDateCal
     }, cb);
-    
+
     $('#sel_deviceType').on('change', function(){
         loadChart(parseInt(startDateCal/1000),parseInt(endDateCal/1000), appKey, $(this).val());
     });
@@ -146,7 +146,7 @@ var showMessagingTable = function (data, tableId) {
 		else{
 			var msgEndDt = moment(row.endDate, 'YYYYMMDD').format('YYYY-MM-DD');
 		}
-		
+
 		if(row.status === "active"){
 			var rowstatus1 = "status-active";
 			var rowstatus2 = "status-none";
@@ -159,7 +159,7 @@ var showMessagingTable = function (data, tableId) {
         tableHTML += "<tr id='row"+rowCounter+"'><td>" + msgCreateDt + "</td><td>" + row.name + "</td><td>" + row.channel + "</td><td>" + msgStartDt +"</td><td>"+ msgEndDt + "</td><td>" + row.total + "</td><td>" + row.openRate + "</td><td><i class='fa fa-square "+rowstatus1+"' onclick=changeStatus('"+rowstatus1+"','"+row._id+"','row"+rowCounter+"','"+ campaignName +"'); aria-hidden='true'></i><i class='fa fa-square "+rowstatus2+"' onclick=changeStatus('"+rowstatus2+"','"+row._id+"','row"+rowCounter+"','"+ campaignName +"'); aria-hidden='true'></i></td><td><i class=\"fa fa-pencil-square-o\" aria-hidden=\"true\"></i></td><td><i onclick=deleteRow('"+row._id+"'); class=\"fa fa-trash-o\" aria-hidden=\"true\" style='cursor: pointer;'></i></td></tr>";
 		console.log(tableHTML);
 		rowCounter++;
-        
+
     });
     updateTable(tableId, tableHTML);
 };
@@ -170,7 +170,7 @@ var showDeviceModelTable = function (data, tableId) {
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
         tableHTML += "<tr><td>" + row.model + "</td><td>" + numFormate(row.users) + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
-        
+
     });
     updateTable(tableId, tableHTML);
 };
@@ -181,7 +181,7 @@ var showCitiesTable = function (data, tableId) {
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
         tableHTML += "<tr><td>" + row.city + "</td><td>" + numFormate(row.users) + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
-        
+
     });
     updateTable(tableId, tableHTML);
 };
@@ -192,7 +192,7 @@ var showDeviceCarrierTable = function (data, tableId) {
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
         tableHTML += "<tr><td>" + row.carrier + "</td><td>" + numFormate(row.users) + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
-        
+
     });
     $("#" + tableId + " tbody").html(tableHTML);
 	sortTable();
@@ -204,7 +204,7 @@ var showDeviceResolutionTable = function (data, tableId) {
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
         tableHTML += "<tr><td>" + row.resolution + "</td><td>" + numFormate(row.users) + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
-        
+
     });
     updateTable(tableId, tableHTML);
 };
@@ -215,7 +215,7 @@ var showDeviceOSVersionTable = function (data, tableId) {
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
         tableHTML += "<tr><td>" + row.osversion + "</td><td>" + numFormate(row.users) + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
-        
+
     });
     updateTable(tableId, tableHTML);
 };
@@ -226,7 +226,7 @@ var showDeviceAppVersionTable = function (data, tableId) {
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
         tableHTML += "<tr><td>" + row.appversion + "</td><td>" + numFormate(row.users) + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
-        
+
     });
     updateTable(tableId, tableHTML);
 };
@@ -237,7 +237,7 @@ var showDevicePlatformTable = function (data, tableId) {
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
         tableHTML += "<tr><td>" + row.platform + "</td><td>" + numFormate(row.users) + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
-        
+
     });
     updateTable(tableId, tableHTML);
 };
@@ -248,7 +248,7 @@ var showDeviceTypeTable = function (data, tableId) {
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
         tableHTML += "<tr><td>" + row.type + "</td><td>" + numFormate(row.users) + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
-        
+
     });
     updateTable(tableId, tableHTML);
 };
@@ -259,7 +259,7 @@ var showDeviceMenufacturerTable = function (data, tableId) {
     $.each(data, function (index, row) {
         //alert(JSON.stringify(row));
         tableHTML += "<tr><td>" + row.manufacturer + "</td><td>" + numFormate(row.users) + "</td><td>" + sec2ISO(row.time) + "</td></tr>";
-        
+
     });
     updateTable(tableId, tableHTML);
 };
@@ -271,7 +271,7 @@ var showCrashReportTable = function (data, tableId) {
 	//var $table = $('#'+tableId);
 	    $.each(data, function (index, row) {
         tableHTML += "<tr><td>" + getFormatedDateDDMMYY(new Date(row.dt*1000)) + "</td><td>" + row.pf + "</td><td>" + row.os + "</td><td>" + row.avn + "</td><td>" + numFormate(row.totalCrashes) + "</td></tr>";
-        
+
     });
 	updateTable(tableId, tableHTML);
 };
@@ -302,7 +302,7 @@ var parseEventDate = function(eDate){
 		day = eDate.substring(6,8);
 		hour = 0;
 	}
-	
+
 	//return date object
 	return new Date(year,month-1,day,hour,0,0);
 };
@@ -405,7 +405,7 @@ var showTotalCrashesChart = function(data,svg,pie){
 var showCrashesDonutChart = function(data,svg,pie,parentdiv,maxcrash){
 	//console.log(JSON.stringify(data));
 	var tooltip = d3.select("body")
-		.append("div")  // declare the tooltip div 
+		.append("div")  // declare the tooltip div
 		.attr("class", "map-tooltip shadow")              // apply the 'tooltip' class
 		.style("opacity", 0);                  // set the opacity to nil
 
@@ -415,7 +415,7 @@ var showCrashesDonutChart = function(data,svg,pie,parentdiv,maxcrash){
 		.attr("class", "arc");
 
 	var maxcrashName;
-	
+
 	for(var i = 0; i<data.length; i++){
 		if(data[i].crash === maxcrash){
 			var obj = data[i];
@@ -425,7 +425,7 @@ var showCrashesDonutChart = function(data,svg,pie,parentdiv,maxcrash){
 				maxcrashName = obj.name;
 			}
 		}
-	
+
 	}
 
 	g.append("path")
@@ -441,7 +441,7 @@ var showCrashesDonutChart = function(data,svg,pie,parentdiv,maxcrash){
 				$("."+parentdiv+" text.inside").html(d.data.crash);
 				$("."+parentdiv+" text.inside-text").html(d.data.name);
 				console.log(d.data);
-			tooltip.transition().duration(200).style("opacity", 1);	
+			tooltip.transition().duration(200).style("opacity", 1);
 			tooltip.html(d.data.name +" : "+d.data.crash).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
 		})
 		.on("mouseleave", function (d) {
@@ -464,7 +464,7 @@ var showCrashesDonutChart = function(data,svg,pie,parentdiv,maxcrash){
 		.on("click", function (d) {
 			//alert("aaa");
 		});
-		
+
 	g.append("text")
 		.attr("dy", "2.7em")
 		.style("text-anchor", "middle")
@@ -491,11 +491,11 @@ var parseTime = function(eTime){
 	hh = eDate.substring(0,2);
 	mm = eDate.substring(2,4);
 	ss = eDate.substring(4,6);
-	
+
 	year = dateObj.getFullYear();
 	month = dateObj.getMonth()
 	date = dateObj.getDate()
-	
+
 	//return date object
 	return new Date(year,month,day,hh,mm,ss);
 };
@@ -527,32 +527,32 @@ function plotLineChart(data, svg, div,timestamp, ele, valueline, x, y, width, he
 	// Scale the range of the data
 	xAxis = "";
 	yAxis = "";
-	
+
 	var hoursFlag;
 	console.log(data);
 	x.domain(d3.extent(data, function(d) {
 			console.log((d.date).length);
 		if((d.date).length === 8){
-			return new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2)); 
+			return new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2));
 		}
 		else{
 			hoursFlag = true;
 			return (d.date).substr(8,2);
 		}
-		
+
 	}));
 	y.domain([0, d3.max(data, function(d) {console.log(d[ele]+"--"); return parseInt(d[ele]); })]);
 	//return new Date((d.date).substr(0,4)+"/"+(d.date).substr(4,2)+"/"+(d.date).substr(6,2));
-	
 
-	svg.append("path")		
+
+	svg.append("path")
 		.attr("class", "line")
 		.attr("d", valueline(data));
 
 	// draw the scatterplot
-	svg.selectAll("dot")									
-		.data(data)											
-		.enter().append("circle")								
+	svg.selectAll("dot")
+		.data(data)
+		.enter().append("circle")
 		.attr("r", 4)
 		.attr("stroke", "#7ABEE7")
 		.attr("fill", "white")
@@ -564,9 +564,9 @@ function plotLineChart(data, svg, div,timestamp, ele, valueline, x, y, width, he
 			}
 			else{
 				return x((d.date).substr(8,2));
-				
+
 			}
-		})		 
+		})
 		.attr("cy", function(d) { return y(parseInt(d[ele])); })
 		// Tooltip stuff after this
 		.on("mouseenter", function(d) {
@@ -575,7 +575,7 @@ function plotLineChart(data, svg, div,timestamp, ele, valueline, x, y, width, he
 			} else {
 				cnt = d[ele];
 			}
-			div.transition().duration(200).style("opacity", .9);	
+			div.transition().duration(200).style("opacity", .9);
 			div.html(cnt).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
 		})
 		.on("mouseleave", function(d){div.transition().duration(200).style("opacity", 0);});
@@ -594,16 +594,16 @@ function drawAxes(svg, x, y, width, height, xAxis, yAxis, hoursFlag){
 		}
 	}
 	if(typeof yAxis === "string"){
-		yAxis = d3.svg.axis().scale(y).orient("left").ticks(5);
+		yAxis = d3.svg.axis().scale(y).orient("left").ticks(5).tickformat((d3.format("s"));
 	}
 	// Add the X Axis
-	svg.append("g")	
+	svg.append("g")
 		.attr("class", "x axis")
 		.attr("transform", "translate(0," + height + ")")
 		.call(xAxis);
 
 	// Add the Y Axis
-	svg.append("g")	
+	svg.append("g")
 		.attr("class", "y axis")
 		.call(yAxis);
 }
@@ -800,12 +800,12 @@ var sortTable = function(){
 
 //***************************** DEVICE DONUT CHARTS ***********************************
 function plotDonutChart(data, ele, arc, arcOver, pie, svg, width, color){
-	
+
 	var tooltip = d3.select("body")
-		.append("div")  // declare the tooltip div 
+		.append("div")  // declare the tooltip div
 		.attr("class", "map-tooltip shadow")              // apply the 'tooltip' class
 		.style("opacity", 0);                  // set the opacity to nil
-		
+
 	var g = svg.selectAll(".arc")
 						.data(pie(data))
 						.enter().append("g")
@@ -821,7 +821,7 @@ function plotDonutChart(data, ele, arc, arcOver, pie, svg, width, color){
 								.duration(1000)
 								.attr("class", "shadow")
 								.attr("d", arcOver);
-								tooltip.transition().duration(200).style("opacity", 1);	
+								tooltip.transition().duration(200).style("opacity", 1);
 								tooltip.html(d.data[ele]+" : "+sec2ISO(d.data.time)).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
 						})
 						.on("mouseleave", function (d) {
@@ -864,7 +864,7 @@ function plotDonutChart(data, ele, arc, arcOver, pie, svg, width, color){
 								.transition()
 								.duration(1000)
 								.attr("d", arcOver);
-								tooltip.transition().duration(200).style("opacity", 1);	
+								tooltip.transition().duration(200).style("opacity", 1);
 								tooltip.html(d.data[ele]+" : "+d.data.users).style("left", (d3.event.pageX - 23) + "px").style("top", (d3.event.pageY - 46) + "px");
 						})
 						.on("mouseleave", function (d) {
@@ -890,7 +890,7 @@ function plotDonutChart(data, ele, arc, arcOver, pie, svg, width, color){
 						.attr("text-anchor", "middle")
 						.attr("x", -1 * 124 / 2)
 						.attr("y", -1 * 113 / 2);
-						
+
 
 					var legend = svg.append("g")
 						.attr("class", "legend")
@@ -913,7 +913,7 @@ function plotDonutChart(data, ele, arc, arcOver, pie, svg, width, color){
 							.attr("data-style-padding", 10)
 							.call(d3.legend);
 					}, 1000);
-					
+
 					switch(ele){
 						case "manufacturer":
 							showDeviceMenufacturerTable(data, 'tbl-device-manufacturers');
@@ -936,7 +936,7 @@ function plotDonutChart(data, ele, arc, arcOver, pie, svg, width, color){
 						case "appversion":
 							showDeviceAppVersionTable(data, 'tbl-device-app-version');
 							break;
-					
+
 					}
 
 }
