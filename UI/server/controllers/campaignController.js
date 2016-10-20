@@ -16,7 +16,7 @@ module.exports.createCampaign = function(req,res){
 	var recursive = body.recursive;
 	var trigger_time = body.trigger_time;
 	var creationDate = body.creationDate;
-	
+
 	common.getAppTimeZone(akey,function(err,appTZ){
 	
 		var currentTime = getTriggerTime(schedule_type.toUpperCase(), cycle, recursive, trigger_time, appTZ, creationDate);
@@ -280,29 +280,15 @@ function getMapping(k) {
 }
 
 function formInnerArray(ruleKey, query) {
+
 	var StringQuery = '';
 	var count =0; 
 	for (var queryKey in query) {
 		var arrayElement = query[queryKey];
 		
-		
 		//this if condition has to be removed after mapping element from UI
 		if(ruleKey ==  'lpf' || ruleKey == 'ldt'){
-			var indexAndroid = arrayElement.indexOf('Android');
-			var indexTeblet = arrayElement.indexOf('Tablet');
-			var indexSmartPhone = arrayElement.indexOf('Smart Phone');
-			
-			if (indexAndroid !== -1) {
-				arrayElement[indexAndroid] = 'A';
-			}
-			
-			if (indexTeblet !== -1) {
-				arrayElement[indexTeblet] = 'T';
-			}
-			
-			if (indexSmartPhone !== -1) {
-				arrayElement[indexSmartPhone] = 'S';
-			}
+			arrayElement = replaceQueryData(arrayElement);
 		}
 		
 		if(count==0){
@@ -313,4 +299,22 @@ function formInnerArray(ruleKey, query) {
 		count++;
 	}
 	return '"'+ruleKey+'":{"***in":['+StringQuery+']},';
+}
+
+
+function replaceQueryData(querydata) {
+	var returnstr;
+	if(querydata != null){
+		switch(querydata) {
+			case 'Tablet' :
+				returnstr = 'T'; break;
+			case 'Smart Phone' :
+				returnstr = 'S'; break;
+			case 'Android' :
+				returnstr = 'A'; break;
+			default :
+				returnstr = querydata;
+		}
+	}
+	return returnstr;
 }
