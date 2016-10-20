@@ -1,24 +1,25 @@
+"use strict";
 //TODO Clustering https://nodejs.org/api/cluster.html
 //node --optimize_for_size --max_old_space_size=460 --gc_interval=100 server.js
-var express 		= require('express');
-var app 			= express();
-var cookieParser 	= require('cookie-parser');
-var bodyParser  	= require('body-parser');
-var config			= require('./config/config');
-var logger 			= require('./config/log.js');
-//API Routes Embeding
-try{
-var crashController = require('./server/controllers/crashController');
-var dashboardController = require('./server/controllers/dashboardController');
-var userDashboardController = require('./server/controllers/userDashboardController');
-var userValidationController = require('./server/controllers/userValidationController');
-var sessionController = require('./server/controllers/sessionController');
-var locationController = require('./server/controllers/locationController');
-var eventController = require('./server/controllers/eventsController');
-var campaignController = require('./server/controllers/campaignController');
-var cohortController = require('./server/controllers/cohortController');
+const express 		= require('express');
+const app 			= express();
+const cookieParser 	= require('cookie-parser');
+const bodyParser  	= require('body-parser');
+const config			= require('./config/config');
 
-var audienceController = require('./server/controllers/audienceController');
+//API Routes Embeding
+const crashController = require('./server/controllers/crashController');
+const dashboardController = require('./server/controllers/dashboardController');
+const userDashboardController = require('./server/controllers/userDashboardController');
+const userValidationController = require('./server/controllers/userValidationController');
+const sessionController = require('./server/controllers/sessionController');
+const locationController = require('./server/controllers/locationController');
+const eventController = require('./server/controllers/eventsController');
+const campaignController = require('./server/controllers/campaignController');
+const cohortController = require('./server/controllers/cohortController');
+const audienceController = require('./server/controllers/audienceController');
+const screenController = require('./server/controllers/screenController');
+
 
 app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser()); // get information from html forms
@@ -45,31 +46,24 @@ app.put('/appengage/updateCampaign',campaignController.updateCampaign);
 app.delete('/appengage/deleteCampaign',campaignController.deleteCampaign);
 app.get('/appengage/fetchAllCampaigns',campaignController.fetchAllCampaigns);
 app.get('/appengage/fetchCohorts',cohortController.fetchCohorts);
+app.get('/appengage/fetchScreenStats',screenController.fetchScreenStats);
 
 // fetch api for Audience part for create query
 app.get('/appengage/audience/mnu',audienceController.fetchAllManufacturer);
 app.get('/appengage/audience/mnu/platform/:platform',audienceController.fetchManufacturerFromPlatform);
-
 app.get('/appengage/audience/platform',audienceController.fetchAllPlatform);
-
 app.get('/appengage/audience/os/platform/:platform',audienceController.fetchOSFromPlatform);
 app.get('/appengage/audience/os',audienceController.fetchAllOS);
-
 app.get('/appengage/audience/dt/platform/:platform',audienceController.fetchDevicetypeFromPlatform);
 app.get('/appengage/audience/dt',audienceController.fetchAllDevicetype);
-
 app.get('/appengage/audience/model/platform/:platform',audienceController.fetchModelFromPlatform);
 app.get('/appengage/audience/model',audienceController.fetchAllModel);
-
 app.get('/appengage/audience/appversion/platform/:platform',audienceController.fetchAppversionFromPlatform);
 app.get('/appengage/audience/appversion',audienceController.fetchAllAppversion);
 
-}catch(ex){
-  console.log(ex);
-}
-var server = app.listen(config.port, function () {
-	var host = server.address().address;
-	var port = server.address().port;
+let server = app.listen(config.port, function () {
+	let host = server.address().address;
+	let port = server.address().port;
 
 	console.log('Application listening at http://%s:%s', host, port);
 });
