@@ -197,7 +197,7 @@ module.exports.fetchAllDevicetype = function(req,res){
 							if(allList.toUpperCase() == 'S'){
 								returnResponse.push('Smart Phone');
 							} else if(allList.toUpperCase() == 'T') {
-								returnResponse.push('Teblet');
+								returnResponse.push('Tablet');
 							} else {
 								returnResponse.push(allList);
 							}
@@ -238,7 +238,7 @@ module.exports.fetchDevicetypeFromPlatform = function(req,res){
 									if(allList.toUpperCase() == 'S'){
 										returnResponse.push('Smart Phone');
 									} else if(allList.toUpperCase() == 'T') {
-										returnResponse.push('Teblet');
+										returnResponse.push('Tablet');
 									} else {
 										returnResponse.push(allList);
 									}
