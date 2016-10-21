@@ -10,7 +10,8 @@ const Collection = {
                     "crash"             : "coll_crashes",
                     "activesessions" 	: "coll_activesessions",
                     "user"              : "coll_users",
-                    "event"             : "coll_events"		
+                    "event"             : "coll_events",
+					"screen"             : "coll_screens"	
                    };
 
 // DB Schemas

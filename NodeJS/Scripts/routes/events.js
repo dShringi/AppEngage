@@ -206,10 +206,37 @@ exports.screen = function(server, producer) {
         handler: function (request, reply) {
             var data = {};
             var err;
-            try{
+            //try{
                 data.val = request.payload;
                 console.log(data.val);
-            }catch(ex){
+				
+				paramsKeys[0]='akey';   paramsValues[0] = request.headers.akey;
+				paramsKeys[1]='rtc';    paramsValues[1] = data.val.rtc;
+				paramsKeys[2]='mt';     paramsValues[2] = data.val.mt;
+				paramsKeys[3]='dt';     paramsValues[3] = data.val.dt;
+				paramsKeys[4]='sid';    paramsValues[4] = data.val.sid;
+				paramsKeys[5]='did';    paramsValues[5] = data.val.did;
+				msgStatus = common.hasValue(paramsKeys,paramsValues);
+				if(msgStatus === false){
+					reply.statusCode = config.msgcodes.success;
+					reply({ message: config.messages.success });
+					return;
+				}
+				data.type = Collection["screen"];
+				pushToKafka(data,request,producer,function(err,data){
+					if(err){
+						var errMsg = common.getErrorMessageFrom(err);
+						logger.error(errMsg);
+						reply.statusCode = config.msgcodes.failure;
+						reply({ message: errMsg });
+					} else {
+						reply.statusCode = config.msgcodes.success;
+						reply({ message: config.messages.success });
+					}
+				});
+				
+				
+            /*}catch(ex){
                 err = ex;
             }
             if(!err){
@@ -218,7 +245,7 @@ exports.screen = function(server, producer) {
             }else{
                 reply.statusCode = config.msgcodes.failure;
                 reply({ message: config.messages.failure });
-            }
+            }*/
         }
     });
 };
