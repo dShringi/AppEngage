@@ -13,6 +13,14 @@
 		<!--script src="assets/js/jquery.js"></script-->	
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.js"></script>
+		
+		<!-- Optional: Reflection -->
+		<script type="text/javascript" src="assets/coverflow/reflection.js"></script>
+		<!-- interpolate, depends on jQ 1.8.0+ -->
+		<script src="assets/coverflow/jquery.interpolate.min.js"></script>
+		<!-- Coverflow -->
+		<script src="assets/coverflow/jquery.coverflow.js"></script>
+		
 		<script src="assets/js/d3.v3.min.js"></script>
 		
 		<script src="assets/js/moment.min.js"></script>
@@ -20,14 +28,9 @@
 		<script src="assets/js/app-analytics.js"></script>
 		<script src="assets/js/daterangepicker.js"></script>
 		<link rel="stylesheet" type="text/css" href="assets/css/daterangepicker.css" />
-		<script src="assets/js/screen-analytics.js"></script>
+		
 
-		<!-- Optional: Reflection -->
-		<script type="text/javascript" src="assets/coverflow/reflection.js"></script>
-		<!-- interpolate, depends on jQ 1.8.0+ -->
-		<script src="assets/coverflow/jquery.interpolate.min.js"></script>
-		<!-- Coverflow -->
-		<script src="assets/coverflow/jquery.coverflow.js"></script>
+		
 
 
 		
@@ -37,37 +40,7 @@
 		body {padding-top:74px !important;}
 		</style>
 		
-		<script>
-	
-		$(function() {
-
-			
-			if ($.fn.reflect) {
-					$('.photos .cover').reflect();
-				}
-
-				$('.photos').coverflow({
-					easing:			'',
-					duration:		'slow',
-					index:			3,
-					width:			320,
-					height:			240,
-					visible:		'density',
-					selectedCss:	{	opacity: 1	},
-					outerCss:		{	opacity: .1	},
-					
-					confirm:		function() {
-						console.log('Confirm');
-					},
-
-					change:			function(event, cover) {
-						var img = $(cover).children().andSelf().filter('img').last();
-						$('#photos-name').text(img.data('name') || 'unknown');
-					}
-					
-				});	
-		});
-		</script>
+		
     </head>
     <body style="height:100vh; ">
         <nav id="mainNav" class="navbar navbar-default navbar-fixed-top " >
@@ -89,7 +62,7 @@
         		<div class="col-md-6" >
 					<ul class="device-menu bg-white">
 						<li class="selected">
-							<a href="javascript:void(0)" ng-click="fetchAppData('Mobile')">Mobile</a> 
+							<a href="javascript:void(0)" ng-click="fetchAppData('Mobile')" id="mobileAppScreens">Mobile</a> 
 							<span class="grey-pipe">|</span>
 						</li>
 						<li>
@@ -98,19 +71,7 @@
 							<input type="text" id="sDate">
 							<input type="text" id="eDate">
 						</li>
-						<li>
-							<div>
-								<div  id="data">
-									<table>
-											<tr ng-repeat="user in users">
-											   <td>{{user.name}}</td>
-												<td>{{user.path}}</td>
-												<td>{{user.alt}}</td>
-											</tr>
-										</table>
-								</div>
-							</div>
-					</li>
+						
 						
 					</ul>
 				</div>
@@ -128,9 +89,9 @@
 			
 				<div class="col-md-12">
 					<div class="photos" autofocus>
-						<span ng-repeat="user in users">
-						<img class="cover" ng-name="{{user.name}}" ng-src="{{user.path}}"/>
-						</span>
+						
+						<img ng-repeat="user in users" class="cover" data-name="{{user.name}}" ng-src="{{user.path}}"/>
+						
 						<!--img class="cover" data-name="app2"k src="assets/coverflow/images/app2.jpg"/>
 						<img class="cover" data-name="app3" src="assets/coverflow/images/app3.jpg"/>
 						<img class="cover" data-name="app4" src="assets/coverflow/images/app4.jpg"/>
@@ -144,48 +105,48 @@
 						<img class="cover" data-name="app12" src="assets/coverflow/images/app12.jpg"/>
 						<img class="cover" data-name="app13" src="assets/coverflow/images/app13.jpg"/-->
 					</div><!-- End of Photos -->
-					<!--div id="photos-info">
+					<div id="photos-info">
 						<div id="photos-name"></div>
-					</div-->
+					</div>
 				</div> <!-- End of col md 12 -->
 			</div><!-- End of row -->
 			<div class="row">
 
-				<ul class="info-container">
+				<ul class="info-container" ng-repeat="user in users" style="display:none">
 					<li class="col-xs-12 col-sm-4 col-md-2">
 						<div class="info">
 							<div class="col-xs-12"><h3>Number of unique users</h3></div>
-							<div class="col-xs-12"><p>13</p></div>
+							<div class="col-xs-12"><p>{{user.nuu}}</p></div>
 						</div>
 					</li>
 					<li class="col-xs-12 col-sm-4 col-md-2">
 						<div class="info">
 							<div class="col-xs-12"><h3>number of crashes</h3></div>
-								<div class="col-xs-12"><p>35</p></div>
+								<div class="col-xs-12"><p>{{user.noc}}</p></div>
 						</div>
 					</li>
 					<li class="col-xs-12 col-sm-4 col-md-2">
 						<div class="info">
 							<div class="col-xs-12"><h3>total time spent</h3></div>
-								<div class="col-xs-12"><p>03</p></div>
+								<div class="col-xs-12"><p>{{user.tts | secondsToHHmmss }}</p></div>
 						</div>
 					</li>
 					<li class="col-xs-12 col-sm-4 col-md-2">
 						<div class="info">
 							<div class="col-xs-12"><h3>Average Time spent by user</h3></div>
-								<div class="col-xs-12"><p>03</p></div>
+								<div class="col-xs-12"><p>{{user.tts/user.nuu |secondsToHHmmss}}</p></div>
 						</div>
 					</li>
 					<li class="col-xs-12 col-sm-4 col-md-2">
 						<div class="info">
 							<div class="col-xs-12"><h3>Total sessions</h3></div>
-								<div class="col-xs-12"><p>438</p></div>
+								<div class="col-xs-12"><p>{{user.ts}}</p></div>
 						</div>
 					</li>
 					<li class="col-xs-12 col-sm-4 col-md-2">
 						<div class="info">
 							<div class="col-xs-12"><h3>Average time spent per sessions</h3></div>
-								<div class="col-xs-12"><p>15</p></div>
+								<div class="col-xs-12"><p>{{user.tts/user.ts |secondsToHHmmss }}</p></div>
 						</div>
 						
 					</li>
@@ -196,6 +157,90 @@
 			
 		<!-- End of container -->
 		
-		
+		<script src="assets/js/screen-analytics.js"></script>
+   		<script>
+		$("document").ready(function() {
+			
+			var e = jQuery.Event( "DOMMouseScroll",{delta: -650} );
+
+			$("#mobileAppScreens").trigger('click');
+			
+			$('.photos').coverflow();
+
+			
+			$("#mobileAppScreens").trigger('e');
+			
+			
+		});
+			
+		$(function() {
+
+			
+			if ($.fn.reflect) {
+					$('.photos .cover').reflect();
+				}
+			
+				$('.photos').coverflow({
+					easing:			'',
+					duration:		'slow',
+					index:			3,
+					width:			320,
+					height:			240,
+					visible:		'density',
+					selectedCss:	{	opacity: 1	},
+					outerCss:		{	opacity: .1	},
+					
+					confirm:		function() {
+						console.log('Confirm');
+					},
+
+					change:			function(event, cover) {
+						var img = $(cover).children().andSelf().filter('img').last();
+						
+						$('#photos-name').text(img.data('name') || 'unknown');
+						//console.log(imgIndex);
+						//var imgIndex = img.index();
+						
+						//$(".info-container").not(':eq(imgIndex)').hide();
+						//$(".info-container").eq(imgIndex).show();
+						
+						var imgIndex = img.index();
+						var infoIndex = $(".info-container").index();
+						console.log(imgIndex);
+						
+						
+						$('.info-container').each(function (index, value){
+						  var listItem = $(this).index();
+							//console.log(listItem);
+						  if (imgIndex === listItem)
+							  {
+								 $(".info-container").eq(listItem).show();
+							  }
+							else{
+								
+								$(".info-container").eq(listItem).hide()
+							}
+						});
+						
+						
+						/*
+						if (imgIndex != null || imgIndex != -1 && imgIndex === infoIndex)
+							{
+								$(".info-container").eq(imgIndex).show();
+								
+								if (imgIndex != infoIndex){
+									$(".info-container").hide();
+								}
+								
+							}*/
+						
+						
+						
+					}
+					
+				});	
+		});
+		</script>
+   		
     </body>
 </html>

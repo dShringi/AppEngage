@@ -1,3 +1,4 @@
+
 .section-carousel .row {
 	text-align: center;
 }
@@ -40,3 +41,21 @@
 .section-carousel .controls .next {
 	float: right;
 }
+
+.photos{padding:30px 50px 30px 50px; height: 305px}
+
+.hidden {
+   visibility: hidden;
+} 
+
+.mobile-select {height:50px;padding-top:15px;padding-left:60px;padding-right:20px}
+
+#dateRange{margin-top:-5px}
+
+.info-container { padding-top:20px; padding-left: 0; width: 100%; display: inline-block;}
+.info-container li {    border-right: 1px solid #dadada;}
+.info-container li:last-child(){border-right: :0px}
+
+.info {text-align: center}
+.info h3{font-size:16px;text-transform: uppercase;height:40px}
+.info p{font-size: 26px;font-weight: bold}
