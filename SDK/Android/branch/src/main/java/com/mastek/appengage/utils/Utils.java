@@ -99,11 +99,12 @@ public class Utils implements LocationListener,
 	public static long startTime;
 	public static boolean gps_enabled;
 	public static JSONArray jsonArray;
-	public static HashMap hashMap;
+	public static HashMap hashMap=new HashMap();
 	public static boolean endApiCalled = false;
 	//public static String akey = "4170b44d6459bba992acaa857ac5b25d7fac6cc1";
 
 	public static String tokenGen = "";
+
 	/*
 	 * static String eNdTime = "16:20:00"; private static Date endDate;
 	 */
@@ -902,6 +903,8 @@ public class Utils implements LocationListener,
 							new LocationListener() {
 								@Override
 								public void onLocationChanged(Location location) {
+									Log.e("onLocationChanged>>","onStatusChanged");
+
 
 									locLatitude = String.valueOf(location.getLatitude());
 
@@ -925,16 +928,22 @@ public class Utils implements LocationListener,
 								@Override
 								public void onStatusChanged(String provider,
 															int status, Bundle extras) {
+
+									Log.e("onStatusChanged>>","onStatusChanged");
 								}
 
 								@Override
 								public void onProviderEnabled(String provider) {
+									Log.e("onStatusChanged>>","onStatusChanged");
 								}
 
 								@Override
 								public void onProviderDisabled(String provider) {
+									Log.e("onStatusChanged>>","onStatusChanged");
 								}
 							}, null);
+
+
 				} else {
 					Log.e("isNetworkEnabled", "2nd else if---it is here fine location:" + ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) + " Coarse Location: " + ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION));
 					locLatitude = "NP";
@@ -999,17 +1008,19 @@ public class Utils implements LocationListener,
 					}
 				}
 			}
-		}else if(Build.VERSION.SDK_INT <23 && Build.MODEL != "")
+		}else if(Build.VERSION.SDK_INT <23)
 		{
+			Log.e("inside <23","isNetworkEnable "+isNetworkEnabled);
 			if (isNetworkEnabled) {
 				Criteria criteria = new Criteria();
 				criteria.setAccuracy(Criteria.ACCURACY_COARSE);
 				Log.e(TAG, "done work   ------------" + isNetworkEnabled);
+
 				locationManager.requestSingleUpdate(criteria,
 						new LocationListener() {
 							@Override
 							public void onLocationChanged(Location location) {
-
+								Log.e("onLocationChanged >>","onLocationChanged");
 								locLatitude = String.valueOf(location.getLatitude());
 
 								Log.e(TAG,
@@ -1032,19 +1043,31 @@ public class Utils implements LocationListener,
 							@Override
 							public void onStatusChanged(String provider,
 														int status, Bundle extras) {
+								Log.e("onStatusChanged >>","onStatusChanged");
 							}
 
 							@Override
 							public void onProviderEnabled(String provider) {
+								Log.e("onProviderEnabled.>>","onProviderEnabled");
 							}
 
 							@Override
 							public void onProviderDisabled(String provider) {
+								Log.e("onProviderDisabled>>","onProviderDisabled");
 							}
 						}, null);
+				Log.e("########","##########");
+
+				/*if(miuiPermissionNotGranted){
+					locLatitude = "NP";
+					locLongitude = "NP";
+					MA.sendApi(context);
+				}*/
+
 			} else {
 				boolean isGPSEnabled = locationManager
 						.isProviderEnabled(LocationManager.GPS_PROVIDER);
+				Log.e("inside <23","isGPSEnabled "+isGPSEnabled);
 				if (isGPSEnabled) {
 					Criteria criteria = new Criteria();
 					criteria.setAccuracy(Criteria.ACCURACY_FINE);
@@ -1081,12 +1104,12 @@ public class Utils implements LocationListener,
 								public void onProviderDisabled(String provider) {
 								}
 							}, null);
+				}else{
+					locLatitude = "NP";
+					locLongitude = "NP";
+					MA.sendApi(context);
 				}
 			}
-		}else{
-			locLatitude = "NP";
-			locLongitude = "NP";
-			MA.sendApi(context);
 		}
 	}
 

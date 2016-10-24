@@ -16,7 +16,6 @@ import android.util.Log;
 public class HybridPlugin extends CordovaPlugin {
 
 	private Context context;
-
 	@Override
 	public boolean execute(String action, JSONArray args,
 			CallbackContext callbackContext) throws JSONException {

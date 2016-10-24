@@ -48,6 +48,7 @@ public class ActivityTracker implements Application.ActivityLifecycleCallbacks {
 
         if(isEndApiCalled)
         {
+            Log.e("Activity Started","Activity started");
             MA.beginApi(activity);
             isEndApiCalled = false;
         }
