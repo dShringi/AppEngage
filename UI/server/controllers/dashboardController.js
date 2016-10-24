@@ -10,7 +10,7 @@ module.exports.dashboardRealTime = function(req,res){
 	var startdate = req.query.sd;
 	var enddate  = req.query.ed;
 	var akey =req.query.akey;
-	var response="";
+
 	//Finding the extra seconds above rounding to 0.
 	startdate = parseInt(startdate - startdate%10);
 	enddate = parseInt(enddate - enddate%10);
@@ -27,6 +27,7 @@ module.exports.dashboardRealTime = function(req,res){
 	}else{
 		let totalUsers=0;
 		let outArray = [];
+		let response = '';
 
 		db.collection(config.coll_realtime).aggregate(
 		{ $match:{_id:{$lt:startdate}}},
@@ -45,9 +46,8 @@ module.exports.dashboardRealTime = function(req,res){
 				db.collection(config.coll_realtime).find(
 				{ '_id': {$gte: parseInt(startdate), $lte: parseInt(enddate)}}
 				,function(err,result){
-					db.close();
 					if(!err){
-						for(i=0;i<result.length;i++){
+						for(let i=0;i<result.length;i++){
 							outArray[result[i]._id] = {
 								totalUsers : result[i].val
 							};
@@ -90,8 +90,6 @@ module.exports.dashboardCounters = function(req,res){
 	var edmonth;
 	var sdyear;
 	var edyear;
-	var gteval;
-	var lteval;
 	var distinctUsers;
 	var type="D";
 	var diffDays;
@@ -101,6 +99,7 @@ module.exports.dashboardCounters = function(req,res){
 	var endDateWithoutHour;
 	const db = mongojs(config.connectionstring+akey);
 	var typeListarray=[];
+	var response = '';
 	async.waterfall([
 		function(callback) { //callback start
 			common.getAppTimeZone(akey,function(err,appTZ){
@@ -126,7 +125,7 @@ module.exports.dashboardCounters = function(req,res){
 				edmonth=endDateWithoutHour.substr(4, 2);										//get end date month
 				sdyear=startDateWithoutHour.substr(0, 4);										//get start date year
 				edyear=endDateWithoutHour.substr(0, 4);										//get end date year
-
+/*
 				diffDays=common.getDateDiffernce(sdateparam,edateparam);  //to find no of days between two dates
 				if(diffDays<=7){ //for weekly fetch
 					var weekFirstDateforStartDate=common.getWeekFirstdateForStartDate(sdateparam);    //find start date of week base on start date
@@ -162,6 +161,7 @@ module.exports.dashboardCounters = function(req,res){
 				else {
 					callback(null);
 				}
+*/
 			});
 		}, //callback end
 		function(callback) { //callback start
@@ -169,11 +169,11 @@ module.exports.dashboardCounters = function(req,res){
 				let gteval=parseInt(parseInt(sdmonth)+startDateWithoutHour.substr(6, 2));
 				let lteval=parseInt(parseInt(edmonth)+endDateWithoutHour.substr(6, 2));
 
-				let yyyy=Number(sdyear);
-				let keyVal='{"$and":[{ "_'+yyyy+'._id": { "$gte": '+ gteval +' }},{"_'+yyyy+'._id": { "$lte": '+ lteval +' }},{"ldt":{"$in":["'+typeListarray.toString().replace(',','","')+'"]}}]}';
+				let startYYYY = parseInt(sdyear);
+				let endYYYY = parseInt(edyear);
+				let keyVal='{"$and":[{ "_'+startYYYY+'._id": { "$gte": '+ gteval +' }},{"_'+endYYYY+'._id": { "$lte": '+ lteval +' }},{"ldt":{"$in":["'+typeListarray.toString().replace(',','","')+'"]}}]}';
 				let resultObject=JSON.parse(keyVal);
 				db.collection(config.coll_users).count(resultObject,function(err,res){
-					db.close();
 					distinctUsers=res;
 					callback(null);
 				});

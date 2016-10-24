@@ -6,7 +6,7 @@ const app 			= express();
 const cookieParser 	= require('cookie-parser');
 const bodyParser  	= require('body-parser');
 const config			= require('./config/config');
-
+try{
 //API Routes Embeding
 const crashController = require('./server/controllers/crashController');
 const dashboardController = require('./server/controllers/dashboardController');
@@ -60,7 +60,9 @@ app.get('/appengage/audience/model/platform/:platform',audienceController.fetchM
 app.get('/appengage/audience/model',audienceController.fetchAllModel);
 app.get('/appengage/audience/appversion/platform/:platform',audienceController.fetchAppversionFromPlatform);
 app.get('/appengage/audience/appversion',audienceController.fetchAllAppversion);
-
+}catch(ex){
+  console.log(ex);
+}
 let server = app.listen(config.port, function () {
 	let host = server.address().address;
 	let port = server.address().port;
