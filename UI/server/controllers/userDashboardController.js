@@ -1,19 +1,22 @@
 "use strict";
 
-var mongojs     = require('mongojs');
-var config      = require('../../config/config.js');
-var logger 		= require('../../config/log.js');
-var common 		= require('../../commons/common.js');
-var _ 			= require('underscore');
-var appTZ 		= config.defaultAppTimeZone;
+const mongojs     = require('mongojs');
+const config      = require('../../config/config.js');
+const logger 		= require('../../config/log.js');
+const common 		= require('../../commons/common.js');
+const PropertiesReader = require('properties-reader');
+const properties = PropertiesReader(config.propfilepath + '/android_models.properties');
+
 var searchParam='Notmatch';
-var arrPlatform = [],arrType=[];
+var arrPlatform = [];
+var arrType=[];
 var arrModel	= [];
 var arrManufacturer = [];
 var platform    = config.platform;
 var type    	= config.type;
 var model 		= config.model;
 var manufacturer = config.manufacturer;
+
 
 for(let i=0;i<platform.length;i++){
 	arrPlatform[platform[i].shortpf] = platform[i].displaypf;
@@ -31,33 +34,37 @@ for(let i=0;i<manufacturer.length;i++){
 	arrManufacturer[manufacturer[i].shortpf] = manufacturer[i].displaypf;
 }
 
-function aggregateCalulation(akey,yyyy,searchBy,searchParam,gtevalNumeric,ltevalNumeric,callback){ // function to fetch userCountersounter by searchparameter
-		var db = mongojs(config.connectionstring+akey);
-		var finaldetailstr="";
-		var resultstring=[],resultstr="";
-		var matchCon1='[{ "_'+ yyyy +'" : { "$elemMatch":{ "$and" :[ { "_id": { "$gte": '+ gtevalNumeric +' }, "_id": { "$lte": '+ ltevalNumeric +' } }]}} }]';
-		var matchJSON1=JSON.parse(matchCon1);
-		var yearParam='$_'+yyyy;
-		var ttsKeyValue=yearParam+'.tts';
-		var matchCon2='[{"_'+yyyy+'._id":{"$gte":'+gtevalNumeric+'}},{"_'+yyyy+'._id":{"$lte":'+ltevalNumeric+'}}]';
-		var matchJSON2=JSON.parse(matchCon2);
-		var grpParam1='{"dev":"$'+searchParam+'","did":"$_id"}';
-		var grpParamJSON1 = JSON.parse(grpParam1);
-		var grpParam2='{"_id":"$_id.dev","users": {"$sum": 1},"time": {"$sum":"$tts"}}';
-		var grpParamJSON2 = JSON.parse(grpParam2);
-		var modelVal,typeVal,platformVal,manufacturerVal;
+function aggregateCalulation(akey,startYYYY,endYYYY,searchBy,searchParam,gtevalNumeric,ltevalNumeric,callback){ // function to fetch userCountersounter by searchparameter
+	const db = mongojs(config.connectionstring+akey);
+	let finaldetailstr="";
+	let resultstring=[],resultstr="";
+	const matchCon1='[{ "_'+ startYYYY +'" : { "$elemMatch":{ "$and" :[ { "_id": { "$gte": '+ gtevalNumeric +' }, "_id": { "$lte": '+ ltevalNumeric +' } }]}} }]';
+	const matchJSON1=JSON.parse(matchCon1);
+	const yearParam='$_'+startYYYY;
+	const ttsKeyValue=yearParam+'.tts';
+	const matchCon2='[{"_'+startYYYY+'._id":{"$gte":'+gtevalNumeric+'}},{"_'+startYYYY+'._id":{"$lte":'+ltevalNumeric+'}}]';
+	const matchJSON2=JSON.parse(matchCon2);
+	const grpParam1='{"dev":"$'+searchParam+'","did":"$_id"}';
+	const grpParamJSON1 = JSON.parse(grpParam1);
+	const grpParam2='{"_id":"$_id.dev","users": {"$sum": 1},"time": {"$sum":"$tts"}}';
+	const grpParamJSON2 = JSON.parse(grpParam2);
+	let modelVal;
+	let typeVal;
+	let platformVal;
+	let manufacturerVal;
 
-		db.collection(config.coll_users).aggregate([
-			{ $match: { $and: matchJSON1 }},
-			{ $unwind: yearParam},
-			{ $match:{$and: matchJSON2 }},
-			{ $group: {_id : grpParamJSON1,'tts' : {$sum : ttsKeyValue}}},
-			{ $group: {_id:'$_id.dev',users: {$sum: 1},time: {$sum:'$tts'}}},
-			{ $project: {_id:1,users:1,time:1}}
-			],function(err, result) {
+	db.collection(config.coll_users).aggregate([
+		{ $match: { $and: matchJSON1 }},
+		{ $unwind: yearParam},
+		{ $match:{$and: matchJSON2 }},
+		{ $group: {_id : grpParamJSON1,'tts' : {$sum : ttsKeyValue}}},
+		{ $group: {_id:'$_id.dev',users: {$sum: 1},time: {$sum:'$tts'}}},
+		{ $project: {_id:1,users:1,time:1}}
+		],function(err, result) {
+			db.close();
 			if(!err){
 				if(result.length !== 0 && searchParam!='Notmatch'){
-					for(var i=0;i<result.length;i++){
+					for(let i=0;i<result.length;i++){
 						if(searchBy === 'platform'){
 							platformVal = arrPlatform[result[i]._id];
 							if(platformVal == config.UNDEFINED || platformVal == config.NULL || platformVal == config.EMPTYSTRING) platformVal = result[i]._id;
@@ -67,7 +74,7 @@ function aggregateCalulation(akey,yyyy,searchBy,searchParam,gtevalNumeric,lteval
 							if(typeVal == config.UNDEFINED || typeVal == config.NULL || typeVal == config.EMPTYSTRING) typeVal = result[i]._id;
 							resultstring[i] = (' {'+' "'+searchBy+'": "'+typeVal+'","users": "' +result[i].users + '","time": "' +result[i].time + '"}');
 						}else if(searchBy === 'model'){
-							modelVal = arrModel[result[i]._id];
+							modelVal = properties.get(result[i]._id);
 							if(modelVal == config.UNDEFINED || modelVal == config.NULL || modelVal == config.EMPTYSTRING) modelVal = result[i]._id;
 							resultstring[i] = (' {'+' "'+searchBy+'": "'+modelVal+'","users": "' +result[i].users + '","time": "' +result[i].time + '"}');
 						}else if(searchBy === 'manufacturer'){
@@ -81,10 +88,8 @@ function aggregateCalulation(akey,yyyy,searchBy,searchParam,gtevalNumeric,lteval
 					}
 					resultstr = resultstr.substr(0,resultstr.length-1);
 					finaldetailstr='[ '+ resultstr + ']'
-					db.close();
 					callback(err,finaldetailstr);
 				}else {
-					db.close();
 					callback(err,'[]');
 				}
 			}else {
@@ -97,42 +102,37 @@ function aggregateCalulation(akey,yyyy,searchBy,searchParam,gtevalNumeric,lteval
 } // end of aggregateCalulation function
 
 module.exports.getUserDashboardCounters = function(req,res){
+	const startDate = req.query.sd;
+	const endDate = req.query.ed;
+	const akey =req.query.akey;
+	const searchBy=req.query.searchBy;
 
-	let startDate = req.query.sd,endDate = req.query.ed,akey =req.query.akey,searchBy=req.query.searchBy;
-	let searchByArray=config.searchByModel;
-	let startDateWithoutHour,endDateWithoutHour,sdmonth,edmonth,sdyear,edyear,yyyy;
+	const searchByArray=config.searchByModel;
 
-	var application = config.appdetails;
+	common.getAppTimeZone(akey,function(err,appTZ){
+		const startDateWithoutHour=String(common.getStartDate(startDate,appTZ));  				//get start date after timezone
+		const endDateWithoutHour=String(common.getStartDate(endDate,appTZ));						//get start date after timezone
 
-	_.each(application,function(data){
-		if(data.app === akey){
-			appTZ = data.TZ;
-			return;
+		const startYYYY=parseInt(startDateWithoutHour.substr(0, 4));
+		const endYYYY = parseInt(endDateWithoutHour.substr(0, 4));
+
+		const gteval=parseInt(parseInt(startDateWithoutHour.substr(4, 2))+startDateWithoutHour.substr(6, 2));
+		const	lteval=parseInt(parseInt(endDateWithoutHour.substr(4, 2))+endDateWithoutHour.substr(6, 2));
+
+		for(let i=0;i<searchByArray.length;i++){
+			if (searchByArray[i].name==searchBy){
+				searchParam=searchByArray[i].value;
+			}
 		}
-	});
 
-	startDateWithoutHour=String(common.getStartDate(startDate,appTZ));  				//get start date after timezone
-	endDateWithoutHour=String(common.getStartDate(endDate,appTZ));						//get start date after timezone
-	sdmonth=startDateWithoutHour.substr(4, 2),edmonth=endDateWithoutHour.substr(4, 2);	//get start and end date month
-	sdyear=startDateWithoutHour.substr(0, 4),edyear=endDateWithoutHour.substr(0, 4);	//get start and end date year
-	yyyy=parseInt(sdyear);
-
-	let gteval=parseInt(parseInt(sdmonth)+startDateWithoutHour.substr(6, 2));
-	let	lteval=parseInt(parseInt(edmonth)+endDateWithoutHour.substr(6, 2));
-
-	for(let i=0;i<searchByArray.length;i++){
-		if (searchByArray[i].name==searchBy){
-			searchParam=searchByArray[i].value;
-		}
-	}
-
-	aggregateCalulation(akey,yyyy,searchBy,searchParam,gteval,lteval,function(err, result){
-		if(!err){
-			return res.json(result);
-		}
-		else {
-			logger.error(common.getErrorMessageFrom(err));
-			return res.json('[]');
-		}
+		aggregateCalulation(akey,startYYYY,endYYYY,searchBy,searchParam,gteval,lteval,function(err, result){
+			if(!err){
+				return res.json(result);
+			}
+			else {
+				logger.error(common.getErrorMessageFrom(err));
+				return res.json('[]');
+			}
+		});
 	});
 };
