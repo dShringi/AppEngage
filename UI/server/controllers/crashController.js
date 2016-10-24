@@ -124,21 +124,21 @@ module.exports.crashCounters = function(req,res){
 		},//callback end
 		//Aggregate by Manufacturers
 		function(callback) { //callback start
-			aggregateCalulation("mnu",startdate,enddate,akey,function(res){
+			aggregateCalulation("mnu",startdate,enddate,akey,(res)=>{
 			mnuString=res;
 			callback(null);
 			});
 		},//callback end
 		//Aggregate By Operating System Versions
 		function(callback) { //callback start
-			aggregateCalulation("osv",startdate,enddate,akey,function(res){
+			aggregateCalulation("osv",startdate,enddate,akey,(res)=>{
 			osvString=res;
 			callback(null);
 			});
 			},//callback end
 		//Aggregate By Platform
 		function(callback) { //callback start
-			aggregateCalulation("pf",startdate,enddate,akey,function(res){
+			aggregateCalulation("pf",startdate,enddate,akey,(res)=>{
 			pfString=res;
 			callback(null);
 			});

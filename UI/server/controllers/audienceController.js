@@ -1,33 +1,33 @@
-var mongojs = require('mongojs');
-var moment = require('moment-timezone');
-var dateFormat = require('dateformat');
-var PropertiesReader = require('properties-reader');
-var _ = require("underscore");
+"use strict";
 
-
-var config  = require('../../config/config');
-var logger  = require('../../config/log.js');
-var common = require('../../commons/common.js');
-var properties = PropertiesReader(config.propfilepath + '/android_models.properties');
+const mongojs = require('mongojs');
+const PropertiesReader = require('properties-reader');
+const _ = require("underscore");
+const config  = require('../../config/config');
+const logger  = require('../../config/log.js');
+const common = require('../../commons/common.js');
+const properties = PropertiesReader(config.propfilepath + '/android_models.properties');
 
 //fetch all platform
 //http://52.206.121.100/appengage/audience/platform?akey=4170b44d6459bba992acaa857ac5b25d7fac6cc1
 module.exports.fetchAllPlatform = function(req,res){
-	var akey = req.query["akey"];
-	var searchObject ='{"_id":"platform"}';
-	var returnResponse=[];
-	var db = mongojs(config.connectionstring+akey);
+	const akey = req.query.akey;
+	const searchObject ='{"_id":"platform"}';
+	let returnResponse=[];
+	const db = mongojs(config.connectionstring+akey);
 	db.collection(config.coll_audience).find(JSON.parse(searchObject) ,function(err,resp){
+		db.close();
 		if(err){
+			logger.error(common.getErrorMessageFrom(err));
 			return res.json(JSON.parse('{"msg":"error is there"}'));
 		}else{
-			for(var i=0;i<resp.length;i++){
-				var mnuList = resp[i];
-				for (var key in mnuList) {
-					var val = mnuList[key];
-					for (var oskey in val) {
-						var resultList = val[oskey].key;
-						if(resultList != null){
+			for(let i=0;i<resp.length;i++){
+				let mnuList = resp[i];
+				for (let key in mnuList) {
+					let val = mnuList[key];
+					for (let oskey in val) {
+						let resultList = val[oskey].key;
+						if(resultList !== config.NULL){
 							if(resultList.toUpperCase() =='A') {
 								returnResponse.push("Android");
 							} else {
@@ -39,33 +39,33 @@ module.exports.fetchAllPlatform = function(req,res){
 			}
 			return res.json(returnResponse);
 		}
-		db.close();
-	}); 
+	});
 };
 
 //fetch all  Manufacturer  from Platform
 //http://52.206.121.100/appengage/audience/mnu/platform/iOS?akey=4170b44d6459bba992acaa857ac5b25d7fac6cc1
 module.exports.fetchManufacturerFromPlatform = function(req,res){
-	var platform = req.params.platform;
-	var akey = req.query["akey"];
-	
+	const platform = req.params.platform;
+	const akey = req.query.akey;
 	if(Boolean(platform)){
-		var searchObject ='{"_id":"mnu"}';
-		var projection = '{"'+platform+'":1}';
-		var returnResponse=[];
-		var db = mongojs(config.connectionstring+akey);
+		const searchObject ='{"_id":"mnu"}';
+		const projection = '{"'+platform+'":1}';
+		let returnResponse=[];
+		const db = mongojs(config.connectionstring+akey);
 		db.collection(config.coll_audience).find(JSON.parse(searchObject), JSON.parse(projection) ,function(err,resp){
+			db.close();
 			if(err){
+				logger.error(common.getErrorMessageFrom(err));
 				return res.json(JSON.parse('{"msg":"error is there"}'));
 			}else{
-				for(var i=0;i<resp.length;i++){
-					var mnuList = resp[i];
-					  for (var key in mnuList) {
+				for(let i=0;i<resp.length;i++){
+					let mnuList = resp[i];
+					  for (let key in mnuList) {
 						if (mnuList.hasOwnProperty(platform)) {
-						  var val = mnuList[key];
-						  for(var a=0;a<val.length;a++){
-							var allList = val[a].key;
-							if(allList != null){
+						  let val = mnuList[key];
+						  for(let a=0;a<val.length;a++){
+							let allList = val[a].key;
+							if(allList !== config.NULL){
 								returnResponse.push(val[a].key);
 							}
 						  }
@@ -74,30 +74,29 @@ module.exports.fetchManufacturerFromPlatform = function(req,res){
 				}
 				return res.json(returnResponse);
 			}
-			db.close();
-		}); 
-	}	
+		});
+	}
 };
-
 
 //fetch All Manufacturer
 //http://52.206.121.100/appengage/audience/mnu?akey=4170b44d6459bba992acaa857ac5b25d7fac6cc1
 module.exports.fetchAllManufacturer = function(req,res){
-	var akey = req.query["akey"];
-	var searchObject ='{"_id":"mnu"}';
-	var returnResponse=[];
-	var db = mongojs(config.connectionstring+akey);
+	const akey = req.query.akey;
+	const searchObject ='{"_id":"mnu"}';
+	let returnResponse=[];
+	const db = mongojs(config.connectionstring+akey);
 	db.collection(config.coll_audience).find(JSON.parse(searchObject) ,function(err,resp){
 		if(err){
+			logger.error(common.getErrorMessageFrom(err));
 			return res.json(JSON.parse('{"msg":"error is there"}'));
 		}else{
-			for(var i=0;i<resp.length;i++){
-				var mnuList = resp[i];
-				for (var key in mnuList) {
-					var val = mnuList[key];
-					for (var oskey in val) {
-						var resultList = val[oskey].key;
-						if(resultList != null){
+			for(let i=0;i<resp.length;i++){
+				let mnuList = resp[i];
+				for (let key in mnuList) {
+					let val = mnuList[key];
+					for (let oskey in val) {
+						let resultList = val[oskey].key;
+						if(resultList !== config.NULL){
 							returnResponse.push(resultList);
 						}
 					}
@@ -106,27 +105,28 @@ module.exports.fetchAllManufacturer = function(req,res){
 			return res.json(returnResponse);
 		}
 		db.close();
-	}); 
+	});
 };
-
 
 //fetch all operating system
 //http://52.206.121.100/appengage/audience/os?akey=4170b44d6459bba992acaa857ac5b25d7fac6cc1
 module.exports.fetchAllOS = function(req,res){
-	var akey = req.query["akey"];
-	var searchObject ='{"_id":"osv"}';
-	var returnResponse=[];
-	var db = mongojs(config.connectionstring+akey);
+	const akey = req.query.akey;
+	const searchObject ='{"_id":"osv"}';
+	let returnResponse=[];
+	const db = mongojs(config.connectionstring+akey);
 	db.collection(config.coll_audience).find(JSON.parse(searchObject),function(err,resp){
+		db.close();
 		if(err){
+			logger.error(common.getErrorMessageFrom(err));
 			return res.json(JSON.parse('{"msg":"error is there"}'));
 		}else{
-			for(var i=0;i<resp.length;i++){
-				var mnuList = resp[i];
-				for (var key in mnuList) {
-					var val = mnuList[key];
-					for(var a=0;a<val.length;a++){
-						var allList = val[a].key;
+			for(let i=0;i<resp.length;i++){
+				let mnuList = resp[i];
+				for (let key in mnuList) {
+					let val = mnuList[key];
+					for(let a=0;a<val.length;a++){
+						let allList = val[a].key;
 						if(allList != null){
 							returnResponse.push(val[a].key);
 						}
@@ -135,33 +135,33 @@ module.exports.fetchAllOS = function(req,res){
 			}
 			return res.json(returnResponse);
 		}
-		db.close();
-	}); 
+	});
 };
-
 
 //fetch all version from operating system
 //http://52.206.121.100/appengage/audience/os/platform/iOS?akey=4170b44d6459bba992acaa857ac5b25d7fac6cc1
 module.exports.fetchOSFromPlatform = function(req,res){
-	var akey = req.query["akey"];
-	var platform = req.params.platform;
+	const akey = req.query.akey;
+	const platform = req.params.platform;
 	if(Boolean(platform)){
-		var searchObject ='{"_id":"osv"}';
-		var projection = '{"'+platform+'":1}';
-		var returnResponse=[];
-		var db = mongojs(config.connectionstring+akey);
+		const searchObject ='{"_id":"osv"}';
+		const projection = '{"'+platform+'":1}';
+		let returnResponse=[];
+		const db = mongojs(config.connectionstring+akey);
 		db.collection(config.coll_audience).find(JSON.parse(searchObject), JSON.parse(projection) ,function(err,resp){
+			db.close();
 			if(err){
+				logger.error(common.getErrorMessageFrom(err));
 				return res.json(JSON.parse('{"msg":"error is there"}'));
 			}else{
-				for(var i=0;i<resp.length;i++){
-					var mnuList = resp[i];
-					for (var key in mnuList) {
+				for(let i=0;i<resp.length;i++){
+					let mnuList = resp[i];
+					for (let key in mnuList) {
 						if (mnuList.hasOwnProperty(platform)) {
-							var val = mnuList[key];
-							for(var a=0;a<val.length;a++){
-								var allList = val[a].key;
-								if(allList != null){
+							let val = mnuList[key];
+							for(let a=0;a<val.length;a++){
+								let allList = val[a].key;
+								if(allList !== config.NULL){
 									returnResponse.push(val[a].key);
 								}
 							}
@@ -170,30 +170,30 @@ module.exports.fetchOSFromPlatform = function(req,res){
 				}
 				return res.json(returnResponse);
 			}
-			db.close();
-		}); 
-	}	
+		});
+	}
 };
 
 //fetch all device type
 //http://52.206.121.100/appengage/audience/dt?akey=4170b44d6459bba992acaa857ac5b25d7fac6cc1
-
 module.exports.fetchAllDevicetype = function(req,res){
-	var returnResponse=[];
-	var akey = req.query["akey"];
-	var searchObject ='{"_id":"devType"}';
-	var db = mongojs(config.connectionstring+akey);
+	let returnResponse=[];
+	const akey = req.query.akey;
+	const searchObject ='{"_id":"devType"}';
+	const db = mongojs(config.connectionstring+akey);
 	db.collection(config.coll_audience).find(JSON.parse(searchObject),function(err,resp){
+		db.close();
 		if(err){
+			logger.error(common.getErrorMessageFrom(err));
 			return res.json(JSON.parse('{"msg":"error is there"}'));
 		}else{
-			for(var i=0;i<resp.length;i++){
-				var mnuList = resp[i];
-				for (var key in mnuList) {
-					var val = mnuList[key];
-					for(var a=0;a<val.length;a++){
-						var allList = val[a].key;
-						if(allList != null){
+			for(let i=0;i<resp.length;i++){
+				let mnuList = resp[i];
+				for (let key in mnuList) {
+					let val = mnuList[key];
+					for(let a=0;a<val.length;a++){
+						let allList = val[a].key;
+						if(allList !== config.NULL){
 							if(allList.toUpperCase() == 'S'){
 								returnResponse.push('Smart Phone');
 							} else if(allList.toUpperCase() == 'T') {
@@ -201,40 +201,40 @@ module.exports.fetchAllDevicetype = function(req,res){
 							} else {
 								returnResponse.push(allList);
 							}
-							
+
 						}
 					}
 				}
 			}
 			return res.json(getUniqueArray(returnResponse));
 		}
-		db.close();
-	}); 
+	});
 };
-
 
 //fetch all device type from platform
 //http://52.206.121.100/appengage/audience/dt/platform/iOS?akey=4170b44d6459bba992acaa857ac5b25d7fac6cc1
 module.exports.fetchDevicetypeFromPlatform = function(req,res){
-	var akey = req.query["akey"];
-	var platform = req.params.platform;
+	const akey = req.query.akey;
+	const platform = req.params.platform;
 	if(Boolean(platform)){
-		var searchObject ='{"_id":"devType"}';
-		var projection = '{"'+platform+'":1}';
-		var returnResponse=[];
-		var db = mongojs(config.connectionstring+akey);
+		const searchObject ='{"_id":"devType"}';
+		const projection = '{"'+platform+'":1}';
+		let returnResponse=[];
+		const db = mongojs(config.connectionstring+akey);
 		db.collection(config.coll_audience).find(JSON.parse(searchObject), JSON.parse(projection) ,function(err,resp){
+			db.close();
 			if(err){
+				logger.error(common.getErrorMessageFrom(err));
 				return res.json(JSON.parse('{"msg":"error is there"}'));
 			}else{
-				for(var i=0;i<resp.length;i++){
-					var mnuList = resp[i];
-					for (var key in mnuList) {
+				for(let i=0;i<resp.length;i++){
+					let mnuList = resp[i];
+					for (let key in mnuList) {
 						if (mnuList.hasOwnProperty(platform)) {
-							var val = mnuList[key];
-							for(var a=0;a<val.length;a++){
-								var allList = val[a].key;
-								if(allList != null){
+							let val = mnuList[key];
+							for(let a=0;a<val.length;a++){
+								let allList = val[a].key;
+								if(allList !== config.NULL){
 									if(allList.toUpperCase() == 'S'){
 										returnResponse.push('Smart Phone');
 									} else if(allList.toUpperCase() == 'T') {
@@ -249,33 +249,33 @@ module.exports.fetchDevicetypeFromPlatform = function(req,res){
 				}
 				return res.json(getUniqueArray(returnResponse));
 			}
-			db.close();
-		}); 
-	}	
+		});
+	}
 };
 
 //fetch all model
 //http://52.206.121.100/appengage/audience/model?akey=4170b44d6459bba992acaa857ac5b25d7fac6cc1
 module.exports.fetchAllModel = function(req,res){
-	var akey = req.query["akey"];
-	var searchObject ='{"_id":"model"}';
-	var returnResponse=[];
-	var db = mongojs(config.connectionstring+akey);
+	const akey = req.query.akey;
+	const searchObject ='{"_id":"model"}';
+	let returnResponse=[];
+	const db = mongojs(config.connectionstring+akey);
 	db.collection(config.coll_audience).find(JSON.parse(searchObject),function(err,resp){
+		db.close();
 		if(err){
+			logger.error(common.getErrorMessageFrom(err));
 			return res.json(JSON.parse('{"msg":"error is there"}'));
-			db.close();
 		}else{
-			for(var i=0;i<resp.length;i++){
-				var mnuList = resp[i];
-				for (var key in mnuList) {
-					var val = mnuList[key];
-					for(var a=0;a<val.length;a++){
-						var allList = val[a].key;
-						if(allList != null){
-							var modelMappedName = properties.get(allList);
-							if(modelMappedName != null) {
-								var pushObject = {};
+			for(let i=0;i<resp.length;i++){
+				let mnuList = resp[i];
+				for (let key in mnuList) {
+					let val = mnuList[key];
+					for(let a=0;a<val.length;a++){
+						let allList = val[a].key;
+						if(allList !== config.NULL){
+							let modelMappedName = properties.get(allList);
+							if(modelMappedName !== config.NULL) {
+								let pushObject = {};
 								pushObject['cn'] = allList;
 								pushObject['an'] = modelMappedName;
 								returnResponse.push(pushObject);
@@ -286,36 +286,36 @@ module.exports.fetchAllModel = function(req,res){
 			}
 			return res.json(returnResponse);
 		}
-		db.close();
-	}); 
+	});
 };
-
 
 //fetch all model from operating system
 //http://52.206.121.100/appengage/audience/model/platform/iOS?akey=4170b44d6459bba992acaa857ac5b25d7fac6cc1
 module.exports.fetchModelFromPlatform = function(req,res){
-	var akey = req.query["akey"];
-	var platform = req.params.platform;
+	const akey = req.query.akey;
+	const platform = req.params.platform;
 	if(Boolean(platform)){
-		var searchObject ='{"_id":"model"}';
-		var projection = '{"'+platform+'":1}';
-		var returnResponse=[];
-		var db = mongojs(config.connectionstring+akey);
+		const searchObject ='{"_id":"model"}';
+		const projection = '{"'+platform+'":1}';
+		let returnResponse=[];
+		const db = mongojs(config.connectionstring+akey);
 		db.collection(config.coll_audience).find(JSON.parse(searchObject), JSON.parse(projection) ,function(err,resp){
+			db.close();
 			if(err){
+				logger.error(common.getErrorMessageFrom(err));
 				return res.json(JSON.parse('{"msg":"error is there"}'));
 			}else{
-				for(var i=0;i<resp.length;i++){
-					var mnuList = resp[i];
-					for (var key in mnuList) {
+				for(let i=0;i<resp.length;i++){
+					let mnuList = resp[i];
+					for (let key in mnuList) {
 						if (mnuList.hasOwnProperty(platform)) {
-							var val = mnuList[key];
-							for(var a=0;a<val.length;a++){
-								var allList = val[a].key;
-								if(allList != null){
-									var modelMappedName = properties.get(allList);
-									if(modelMappedName != null) {
-										var pushObject = {};
+							let val = mnuList[key];
+							for(let a=0;a<val.length;a++){
+								let allList = val[a].key;
+								if(allList !== config.NULL){
+									let modelMappedName = properties.get(allList);
+									if(modelMappedName !== config.NULL) {
+										let pushObject = {};
 										pushObject['cn'] = allList;
 										pushObject['an'] = modelMappedName;
 										returnResponse.push(pushObject);
@@ -327,31 +327,31 @@ module.exports.fetchModelFromPlatform = function(req,res){
 				}
 				return res.json(returnResponse);
 			}
-			db.close();
-		}); 
-	}	
+		});
+	}
 };
-
 
 //fetch all model
 //http://52.206.121.100/appengage/audience/appversion?akey=4170b44d6459bba992acaa857ac5b25d7fac6cc1
 module.exports.fetchAllAppversion = function(req,res){
-	var akey = req.query["akey"];
-	var searchObject ='{"_id":"appversion"}';
-	var returnResponse=[];
-	var db = mongojs(config.connectionstring+akey);
+	const akey = req.query.akey;
+	const searchObject ='{"_id":"appversion"}';
+	let returnResponse=[];
+	const db = mongojs(config.connectionstring+akey);
 	db.collection(config.coll_audience).find(JSON.parse(searchObject),function(err,resp){
+		db.close();
 		if(err){
+			logger.error(common.getErrorMessageFrom(err));
 			return res.json(JSON.parse('{"msg":"error is there"}'));
 		}else{
-			for(var i=0;i<resp.length;i++){
-				var mnuList = resp[i];
-				for (var key in mnuList) {
-					var val = mnuList[key];
-					for(var a=0;a<val.length;a++){
-						var allList = val[a].key;
-						if(allList != null){
-							var listVal = val[a].key;
+			for(let i=0;i<resp.length;i++){
+				let mnuList = resp[i];
+				for (let key in mnuList) {
+					let val = mnuList[key];
+					for(let a=0;a<val.length;a++){
+						let allList = val[a].key;
+						if(allList !== config.NULL){
+							let listVal = val[a].key;
 								returnResponse.push(listVal);
 						}
 					}
@@ -359,33 +359,32 @@ module.exports.fetchAllAppversion = function(req,res){
 			}
 			return res.json(getUniqueArray(returnResponse));
 		}
-		db.close();
-	}); 
+	});
 };
-
 
 //fetch all model from operating system
 //http://52.206.121.100/appengage/audience/appversion/platform/iOS?akey=4170b44d6459bba992acaa857ac5b25d7fac6cc1
 module.exports.fetchAppversionFromPlatform = function(req,res){
-	var akey = req.query["akey"];
-	var platform = req.params.platform;
+	const akey = req.query.akey;
+	const platform = req.params.platform;
 	if(Boolean(platform)){
-		var searchObject ='{"_id":"appversion"}';
-		var projection = '{"'+platform+'":1}';
-		var returnResponse=[];
-		var db = mongojs(config.connectionstring+akey);
+		const searchObject ='{"_id":"appversion"}';
+		const projection = '{"'+platform+'":1}';
+		let returnResponse=[];
+		const db = mongojs(config.connectionstring+akey);
 		db.collection(config.coll_audience).find(JSON.parse(searchObject), JSON.parse(projection) ,function(err,resp){
 			if(err){
+				logger.error(common.getErrorMessageFrom(err));
 				return res.json(JSON.parse('{"msg":"error is there"}'));
 			}else{
-				for(var i=0;i<resp.length;i++){
-					var mnuList = resp[i];
-					for (var key in mnuList) {
+				for(let i=0;i<resp.length;i++){
+					let mnuList = resp[i];
+					for (let key in mnuList) {
 						if (mnuList.hasOwnProperty(platform)) {
-							var val = mnuList[key];
-							for(var a=0;a<val.length;a++){
-								var allList = val[a].key;
-								if(allList != null){
+							let val = mnuList[key];
+							for(let a=0;a<val.length;a++){
+								let allList = val[a].key;
+								if(allList !== config.NULL){
 									returnResponse.push(val[a].key);
 								}
 							}
@@ -395,12 +394,13 @@ module.exports.fetchAppversionFromPlatform = function(req,res){
 				return res.json(returnResponse);
 			}
 			db.close();
-		}); 
-	}	
+		});
+	}
 };
+
 function getUniqueArray(array){
-	var uniqueList = _.uniq(array, function(item) { 
-		return item;	
+	let uniqueList = _.uniq(array, function(item) {
+		return item;
 	});
 	return uniqueList;
 }

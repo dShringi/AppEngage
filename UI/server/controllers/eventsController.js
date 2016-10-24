@@ -9,7 +9,6 @@ function eventSummary(startDate,endDate,aKey,eventKey,callback){
 	var db = mongojs(config.connectionstring+aKey);
 	var application = config.appdetails;
 	var responseArray = [];
-	var outArrayElement
 	var outArray = [];
 	var dateFormat=config.YYYYMMDD;
 
@@ -43,6 +42,7 @@ function eventSummary(startDate,endDate,aKey,eventKey,callback){
 	],function(err,result){
 		if(!err){
 			var event_date;
+			var outArrayElement;
 
 			for(i=0;i<result.length;i++){
 				if(result[i]._id.toString().length == 3){
@@ -68,19 +68,19 @@ function eventSummary(startDate,endDate,aKey,eventKey,callback){
 						event_date:outArrayElement,
 						event_count:0,
 						user_count:0
-					}
+					};
 					responseArray.push(outArray[outArrayElement]);
 				}else{
 					responseArray.push(outArray[outArrayElement]);
 				}
-			};
+			}
 
 			db.close();
 			callback(null,responseArray);
 		}else{
 			db.close();
 			logger.error(common.getErrorMessageFrom(err));
-			callback(err,null);;
+			callback(err,null);
 		}
 	});
 }
@@ -97,7 +97,7 @@ module.exports.getEventSummary = function(req,res){
 			res.json(JSON.parse('[]'));
 		}
 	});
-}
+};
 
 module.exports.getEventsComparison = function(req,res){
 	var startDate = req.query["sd"];
@@ -127,9 +127,9 @@ module.exports.getEventsComparison = function(req,res){
 					logger.error(common.getErrorMessageFrom(err));
 				}
 			});
-		})
+		});
 	}
-}
+};
 
 module.exports.getEventNames = function(req,res){
 	var startDate = req.query["sd"];
@@ -178,7 +178,7 @@ module.exports.getEventNames = function(req,res){
 						{ $group: groupOperatorJSON},
 						{ $project: {_id:0,'key':'$_id','Total_Event_Count':'$te'}}
 						],function(err,result){
-							if(result.length==0){
+							if(result.length === 0){
 								responseArray.push(JSON.parse('{"key":"'+eventKey+'","Total_Event_Count":'+0+'}'));
 							}else{
 								responseArray.push(result[0]);

@@ -1,3 +1,5 @@
+"use strict";
+
 var mongojs     = require('mongojs');
 var config      = require('../../config/config.js');
 var logger 		= require('../../config/log.js');
@@ -12,21 +14,20 @@ var platform    = config.platform;
 var type    	= config.type;
 var model 		= config.model;
 var manufacturer = config.manufacturer;
-var startDate ,endDate ,akey;
 
-for(i=0;i<platform.length;i++){
+for(let i=0;i<platform.length;i++){
 	arrPlatform[platform[i].shortpf] = platform[i].displaypf;
 }
 
-for(i=0;i<type.length;i++){
+for(let i=0;i<type.length;i++){
 	arrType[type[i].shortpf] = type[i].displaypf;
 }
 
-for(i=0;i<model.length;i++){
+for(let i=0;i<model.length;i++){
 	arrModel[model[i].shortpf] = model[i].displaypf;
 }
 
-for(i=0;i<manufacturer.length;i++){
+for(let i=0;i<manufacturer.length;i++){
 	arrManufacturer[manufacturer[i].shortpf] = manufacturer[i].displaypf;
 }
 
@@ -55,7 +56,7 @@ function aggregateCalulation(akey,yyyy,searchBy,searchParam,gtevalNumeric,lteval
 			{ $project: {_id:1,users:1,time:1}}
 			],function(err, result) {
 			if(!err){
-				if(result.length != 0 && searchParam!='Notmatch'){
+				if(result.length !== 0 && searchParam!='Notmatch'){
 					for(var i=0;i<result.length;i++){
 						if(searchBy === 'platform'){
 							platformVal = arrPlatform[result[i]._id];
@@ -97,9 +98,9 @@ function aggregateCalulation(akey,yyyy,searchBy,searchParam,gtevalNumeric,lteval
 
 module.exports.getUserDashboardCounters = function(req,res){
 
-	var startDate = req.query["sd"],endDate = req.query["ed"],akey =req.query["akey"],searchBy=req.query["searchBy"];
-	var searchByArray=config.searchByModel;
-	var startDateWithoutHour,endDateWithoutHour,sdmonth,edmonth,sdyear,edyear,yyyy;
+	let startDate = req.query.sd,endDate = req.query.ed,akey =req.query.akey,searchBy=req.query.searchBy;
+	let searchByArray=config.searchByModel;
+	let startDateWithoutHour,endDateWithoutHour,sdmonth,edmonth,sdyear,edyear,yyyy;
 
 	var application = config.appdetails;
 
@@ -116,10 +117,10 @@ module.exports.getUserDashboardCounters = function(req,res){
 	sdyear=startDateWithoutHour.substr(0, 4),edyear=endDateWithoutHour.substr(0, 4);	//get start and end date year
 	yyyy=parseInt(sdyear);
 
-	var gteval=parseInt(parseInt(sdmonth)+startDateWithoutHour.substr(6, 2)),
-		lteval=parseInt(parseInt(edmonth)+endDateWithoutHour.substr(6, 2));
+	let gteval=parseInt(parseInt(sdmonth)+startDateWithoutHour.substr(6, 2));
+	let	lteval=parseInt(parseInt(edmonth)+endDateWithoutHour.substr(6, 2));
 
-	for(i=0;i<searchByArray.length;i++){
+	for(let i=0;i<searchByArray.length;i++){
 		if (searchByArray[i].name==searchBy){
 			searchParam=searchByArray[i].value;
 		}
@@ -131,7 +132,7 @@ module.exports.getUserDashboardCounters = function(req,res){
 		}
 		else {
 			logger.error(common.getErrorMessageFrom(err));
-			return res.json('[]');;
+			return res.json('[]');
 		}
 	});
-}
+};
