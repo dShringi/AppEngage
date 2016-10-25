@@ -1,0 +1,487 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;\f1\fswiss\fcharset0 Helvetica;\f2\fnil\fcharset0 Menlo-Bold;
+\f3\froman\fcharset0 Times-Roman;\f4\fmodern\fcharset0 Courier;\f5\fswiss\fcharset0 ArialMT;
+}
+{\colortbl;\red255\green255\blue255;\red196\green26\blue22;\red100\green56\blue32;\red217\green11\blue0;
+\red170\green13\blue145;\red92\green38\blue153;\red63\green110\blue116;\red38\green71\blue75;\red46\green13\blue110;
+\red255\green0\blue0;\red25\green25\blue25;\red42\green55\blue62;\red245\green245\blue245;\red21\green129\blue62;
+\red206\green59\blue0;\red182\green37\blue31;\red136\green0\blue160;\red46\green95\blue225;\red204\green0\blue78;
+\red18\green135\blue222;\red0\green116\blue0;\red27\green29\blue31;}
+{\*\listtable{\list\listtemplateid1\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\*\levelmarker \{hyphen\}}{\leveltext\leveltemplateid1\'01\uc0\u8259 ;}{\levelnumbers;}\fi-360\li720\lin720 }{\listname ;}\listid1}}
+{\*\listoverridetable{\listoverride\listid1\listoverridecount0\ls1}}
+\paperw11900\paperh16840\margl1440\margr1440\vieww24500\viewh17260\viewkind0
+\deftab529
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+
+\f0\fs22 \cf2 \CocoaLigature0 \
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+\cf3 \
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+\cf2 About\
+-----\
+\pard\pardeftab720\sl517\partightenfactor0
+\cf0 \expnd0\expndtw0\kerning0
+\CocoaLigature1 - If you\'92ve been developing for iOS for some time, you probably have a decent set of your own classes and utility functions that you reuse in most of your projects.\
+\
+- The easiest way to reuse code is simply to copy/paste the source files. However, this can quickly become a maintenance nightmare. Since each app gets its own copy of the shared code, it\'92s difficult to keep all the copies in synch for bugfixes and updates.\
+\
+- This is where static libraries come to the rescue! A static library is a package of classes, functions, definitions and resources, which you can pack together and easily share between your projects.
+\f1\fs32 \
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+
+\f0\fs22 \cf2 \kerning1\expnd0\expndtw0 \CocoaLigature0 \
+\
+\
+Requirements\
+\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+\cf0 - Mac OS X\
+- Xcode (min v6.0)\cf2 \
+\
+\
+\
+\
+Features\
+--------\
+\cf0 - Modular, no dependencies, use what you like\
+- Detailed error handling\
+- Captures offline data\
+- iOS compatible, PushNotification\cf2 \
+\
+\
+\
+Getting started\
+---------------\
+\cf0 - Before you can start first need to understand about library methods.\
+  Basically you need to call make three call (Begin Event and End),\
+  1) Begin call: You need to call this when you launch your app, It starts the session of app.\
+  2) Event call: You need to call this on every event you do in app. for eg: Button click, table row click, page refresh etc\
+  3) End call: You need to call this when your app goes in the background state.\
+  4) Crash call: You don\'92t need to call this, it automatically gets call when app gets crashed and it will show full detailed about crash.\
+  5) Screen time Call:  You don\'92t need to call this, it gets called automatically when your app goes in background state.\
+\
+\
+\
+\cf4 How to call method\
+\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\cf0 \
+  \
+
+\f2\b Step 1:
+\f0\b0 \
+   first of all you need to add \'91libAnalytic.a\'92 to your project (At a root level)\
+   create a folder named \'91Analytic\'92 in your project then add header file inside a created folder \'92Analytic.h\'92,\
+   import the `Analytic.h` header in AppDelegate and RootViewController of your app with this line 
+\f1\b\fs26 #import "Analytic.h\'94
+\f0\b0\fs22 \
+  \
+
+\f2\b Step 2:
+\f0\b0 \
+	1) Begin call: \cf2 \
+       \cf0 Initialize\cf2  \cf0 the library in your\cf2   \cf0 didFinishLaunchingWithOptions function of \cf2 AppDelegate \cf0 and make the session start\cf2 \
+\cf0        syntax used for Initialisation is `
+\f1\b\fs26 [Analytic sharedObject];
+\f0\b0\fs22 `\
+\
+       Start the session with 2 arguments url and appKey\'85\
+	   syntax used for begin call is `
+\f1\b\fs26 [[Analytic sharedObject] BeginCallWithkUrl:@"http://52.87.24.173/" AppKey:@"4170b44d6459bba992acaa857ac5b25d7fac6cc1\'94];
+\f0\b0\fs22 `\
+	   \
+      \
+ After doing this your code will look like:\
+\
+\pard\tx543\pardeftab543\pardirnatural\partightenfactor0
+\cf0 - (\cf5 BOOL\cf0 )application:(\cf6 UIApplication\cf0  *)application didFinishLaunchingWithOptions:(\cf6 NSDictionary\cf0  *)launchOptions \{\
+    \
+     //Initialises the library\'85\
+       [\cf7 Analytic\cf0  \cf8 sharedObject\cf0 ];\
+\
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+\cf0 	//Start the session with 2 arguments url and appKey\'85\
+\pard\tx543\pardeftab543\pardirnatural\partightenfactor0
+\cf0 	   [[\cf7 Analytic\cf0  \cf8 sharedObject\cf0 ] \cf8 BeginCallWithkUrl\cf0 :\cf2 @\'93\{url given\}\'94\cf0  \cf8 AppKey\cf0 :\cf2 @\'93\{appKey generated\}\'94\cf0 ];\
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+\cf0 		/*for e.g.:url is \cf2 http://52.87.24.173/ and app key is 4170b44d6459bba992acaa857ac5b25d7fac6cc1\
+					////then call will be,\
+\pard\tx543\pardeftab543\pardirnatural\partightenfactor0
+\cf0 				   ////[[\cf7 Analytic\cf0  \cf8 sharedObject\cf0 ] \cf8 BeginCallWithkUrl\cf0 :\cf2 @"http://52.87.24.173/"\cf0  \cf8 AppKey\cf0 :\cf2 @"4170b44d6459bba992acaa857ac5b25d7fac6cc1"\cf0 ];\
+         */\
+    \
+    \
+    \cf5 return\cf0  \cf5 YES\cf0 ;\
+\}\
+\
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+\cf0 \
+\
+\
+     
+\f2\b 1.1
+\f0\b0 ) Also call Begin Function when your app starts from background and resumes to foreground\
+          - (\cf5 void\cf0 )applicationWillEnterForeground:(\cf6 UIApplication\cf0  *)application \{\
+\
+\pard\tx543\pardeftab543\pardirnatural\partightenfactor0
+\cf0              //CALL THE NOTIFIER WITH SAME LINE THIS IS USED FOR CAPTURING SCREEN TIME (SIMPLY COPY AND PASTE DO NOT CHANGE) \
+             [[\cf6 NSNotificationCenter\cf0  \cf9 defaultCenter\cf0 ] \cf9 postNotificationName\cf0 :\cf2 @"notifier"\cf0  \cf9 object\cf0 :\cf2 @"foreground"\cf0 ];\
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+\cf0 \
+				   [[\cf7 Analytic\cf0  \cf8 sharedObject\cf0 ] \cf8 BeginCallWithkUrl\cf0 :\cf2 @\'93\{url given\}\'94\cf0  \cf8 AppKey\cf0 :\cf2 @\'93\{appKey generated\}\'94\cf0 ];\
+\
+					/*for e.g.:url is \cf2 http://52.87.24.173/ and app key is 4170b44d6459bba992acaa857ac5b25d7fac6cc1\
+					////then call will be,\
+\pard\tx543\pardeftab543\pardirnatural\partightenfactor0
+\cf0 				    ////[[\cf7 Analytic\cf0  \cf8 sharedObject\cf0 ] \cf8 BeginCallWithkUrl\cf0 :\cf2 @"http://52.87.24.173/"\cf0  \cf8 AppKey\cf0 :\cf2 @"4170b44d6459bba992acaa857ac5b25d7fac6cc1"\cf0 ];\
+ 					*/\cf2 \
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+\cf0 \
+			\}\
+\
+\
+\
+\
+\
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+
+\f2\b \cf10 2
+\f0\b0 ) Event Call:\cf0  \
+\cf10 \'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\cf0 \
+       You need to call this to track every event of your app, for example if you want to track any button click of app\
+       then call `
+\f1\b\fs26 EventCall
+\f0\b0\fs22 ` function. It has one argument suggesting name of event.\
+\
+       syntax used for event is `
+\f1\b\fs26 [[Analytic sharedObject] EventCall:@\'93Event Name\'93];
+\f0\b0\fs22 ` \
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+\cf2 \
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+\cf0 Demo example:\cf2 \
+\cf0 - (\cf5 IBAction\cf0 )ButtonClick:(\cf5 id\cf0 )sender \{\
+    //Call to Event method\
+    [[\cf7 Analytic\cf0  \cf8 sharedObject\cf0 ] \cf8 EventCall\cf0 :\cf2 @"Event Button Click"\cf0 ];\
+\}\cf2 \
+\
+\
+\
+\
+\
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+
+\f2\b \cf10 3
+\f0\b0 ) End Call: \
+\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+\cf0 \
+        End your session with EndCall.\
+        syntax used for event is `
+\f1\b\fs26 [[Analytic sharedObject] EndCall];
+\f0\b0\fs22 ` \
+\
+\
+Demo example:\
+       - (\cf5 void\cf0 )applicationDidEnterBackground:(\cf6 UIApplication\cf0  *)application \{\
+\
+     //CALL THE NOTIFIER WITH SAME LINE (SIMPLY COPY AND PASTE DO NOT CHANGE)\
+\pard\tx543\pardeftab543\pardirnatural\partightenfactor0
+\cf0      [[\cf6 NSNotificationCenter\cf0  \cf9 defaultCenter\cf0 ] \cf9 postNotificationName\cf0 :\cf2 @"notifier"\cf0  \cf9 object\cf0 :\cf5 self\cf0 ];\
+  \
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+\cf0       //Call to End Method\
+      [[\cf7 Analytic\cf0  \cf8 sharedObject\cf0 ] \cf8 EndCall\cf0 ];\
+\}\
+\
+also call on app terminate method\
+      - (\cf5 void\cf0 )applicationWillTerminate:(\cf6 UIApplication\cf0  *)application \{\
+\
+     //CALL THE NOTIFIER WITH SAME LINE (SIMPLY COPY AND PASTE DO NOT CHANGE)\
+\pard\tx543\pardeftab543\pardirnatural\partightenfactor0
+\cf0      [[\cf6 NSNotificationCenter\cf0  \cf9 defaultCenter\cf0 ] \cf9 postNotificationName\cf0 :\cf2 @"notifier"\cf0  \cf9 object\cf0 :\cf5 self\cf0 ];\
+  \
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+\cf0       //Call to End Method\
+      [[\cf7 Analytic\cf0  \cf8 sharedObject\cf0 ] \cf8 EndCall\cf0 ];\
+\}\
+\
+\
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+\cf10 4) COMMON CALL FOR ALL VIEW_CONTROLLER\
+\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\cf0 \
+ \
+\pard\tx543\pardeftab543\pardirnatural\partightenfactor0
+\cf0 -(\cf5 void\cf0 )viewWillAppear:(\cf5 BOOL\cf0 )animated\{\
+  \
+    //Add this line in Every View Controller of your app (used for capturing screen time)\
+    [[\cf6 NSNotificationCenter\cf0  \cf9 defaultCenter\cf0 ] \cf9 postNotificationName\cf0 :\cf2 @"notifier"\cf0  \cf9 object\cf0 :\cf2 @\'93\{Screen Name\}\'94\cf0 ];\
+\
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+\cf0 	  /*for e.g.: If your screen is Login page(Any name you can write but must be unique for each View_Controller)\
+      		[[\cf6 NSNotificationCenter\cf0  \cf9 defaultCenter\cf0 ] \cf9 postNotificationName\cf0 :\cf2 @"notifier"\cf0  \cf9 object\cf0 :\cf2 @\'93Login Screen\'94\cf0 ];\
+      */\
+\pard\tx543\pardeftab543\pardirnatural\partightenfactor0
+\cf0 \}\
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+\cf2 \
+\
+\
+5) INTEGRATE FCM PUSHNOTIFICATION\
+\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\
+\
+We will integrate PushNotification using Firebase pod file.\
+follow these  12 steps to integrate:\
+\
+\pard\tx566\pardeftab720\sl400\partightenfactor0
+\cf2 \
+
+\f1\fs36 \cf10 Step 1
+\f0\fs22 :\cf2  
+\fs28 \cf11 \expnd0\expndtw0\kerning0
+\CocoaLigature1 Open your Xcode project.
+\f1\fs32 \
+\pard\tx220\tx720\pardeftab720\li720\fi-720\sl400\partightenfactor0
+\ls1\ilvl0
+\fs36 \cf10 Step 2
+\fs32 :\cf11   
+\f0\fs28 \cf0 Create a \cf12 \cb13 Podfile\cf0 \cb1  if you don't have one using terminal 
+\f3\fs24 \
+\pard\pardeftab720\sl280\partightenfactor0
+\ls1\ilvl0
+\f4\fs28 \cf12 \cb13 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+$ cd your-project directory\cb1 \
+\pard\pardeftab720\sl280\partightenfactor0
+\ls1\ilvl0\cf12 \cb13 \kerning1\expnd0\expndtw0 		\expnd0\expndtw0\kerning0
+$ pod init\
+\pard\tx566\pardeftab720\sl400\partightenfactor0
+
+\f3\fs24 \cf0 \cb1 \
+\pard\tx566\pardeftab720\sl360\partightenfactor0
+
+\f1\fs36 \cf10 \kerning1\expnd0\expndtw0 \CocoaLigature0 Step 3
+\f0 :
+\fs22 \cf2  
+\fs28 \cf11 \expnd0\expndtw0\kerning0
+\CocoaLigature1 Add the pods
+\f1\fs32 \
+\pard\pardeftab720\sl280\partightenfactor0
+
+\f4\fs28 \cf12 \cb13 		pod \cf14 'Firebase/Core'\cf12 \cb1 \
+\cb13 		pod \cf14 'Firebase/Messaging'\cf12 \
+\pard\tx566\pardeftab720\sl360\partightenfactor0
+
+\f0\fs22 \cf2 \cb1 \kerning1\expnd0\expndtw0 \CocoaLigature0 \
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+
+\f1\fs36 \cf10 Step 4:
+\f0\fs22 \cf2  
+\fs28 \cf11 \expnd0\expndtw0\kerning0
+\CocoaLigature1 Install the pods
+\f1\fs32 \
+\pard\pardeftab720\sl280\partightenfactor0
+
+\f4\fs28 \cf12 \cb13 		$ pod install\
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+
+\f0\fs22 \cf2 \cb1 \kerning1\expnd0\expndtw0 \CocoaLigature0 \
+\
+
+\f1\fs36 \cf10 Step 5:
+\f0\fs22 \cf2  
+\fs28 \cf11 \expnd0\expndtw0\kerning0
+\CocoaLigature1 open the .xcworkspace file to see the project in Xcode (Now onwards always open \cf4 .
+\f2\b xcworkspace
+\f0\b0 \cf11  and not \cf15 .
+\f2\b xcodeproj
+\f0\b0 \cf11 )
+\fs22 \cf2 \kerning1\expnd0\expndtw0 \CocoaLigature0 \
+           
+\f4\fs28 \cf12 \cb13 \expnd0\expndtw0\kerning0
+\CocoaLigature1 $
+\f0\fs22 \cf2 \cb1 \kerning1\expnd0\expndtw0 \CocoaLigature0  
+\f4\fs28 \cf12 \cb13 \expnd0\expndtw0\kerning0
+\CocoaLigature1 open your-project.xcworkspace\
+
+\f0\fs22 \cf2 \cb1 \kerning1\expnd0\expndtw0 \CocoaLigature0 \
+\
+
+\f1\fs36 \cf10 step 6:
+\f0\fs22 \cf2  
+\fs28 \cf11 \expnd0\expndtw0\kerning0
+\CocoaLigature1 Drag\cf2 \kerning1\expnd0\expndtw0 \CocoaLigature0  \cf11 \expnd0\expndtw0\kerning0
+\CocoaLigature1 GoogleService-Info.plist file given and include it in your app.
+\f1\fs32 \
+\
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+
+\fs36 \cf10 Step 7:
+\f0\fs28 \cf11  Initialize Firebase in your app in your AppDelegate class
+\f1\fs40 \
+             
+\f4\fs28 \cf16 \cb13 @import\cf12  \cf17 Firebase\cf12 ;\
+
+\f1\fs40 \cf11 \cb1 \
+\
+\cf10 step 8:\cf11  
+\f0\fs28 Register for remote notifications write this in your AppDelegate class
+\f1\fs40 \
+  
+\f4\fs28 \cf18 \cb13 if\cf12  (floor(\cf17 NSFoundationVersionNumber\cf12 ) <= \cf17 NSFoundationVersionNumber_iOS_9_x_Max\cf12 ) \{\cb1 \
+\pard\pardeftab720\sl400\partightenfactor0
+\cf12 \cb13 \'a0 \cf17 UIUserNotificationType\cf12  allNotificationTypes =\cb1 \
+\cb13 \'a0 (\cf17 UIUserNotificationTypeSound\cf12  | \cf17 UIUserNotificationTypeAlert\cf12  | \cf17 UIUserNotificationTypeBadge\cf12 );\cb1 \
+\cb13 \'a0 \cf17 UIUserNotificationSettings\cf12  *settings =\cb1 \
+\cb13 \'a0 [\cf17 UIUserNotificationSettings\cf12  settingsForTypes:allNotificationTypes categories:\cf18 nil\cf12 ];\cb1 \
+\cb13 \'a0 [[\cf17 UIApplication\cf12  sharedApplication] registerUserNotificationSettings:settings];\cb1 \
+\cb13 \} \cf18 else\cf12  \{\cb1 \
+\cb13 \'a0 \cf19 // iOS 10 or later\cf12 \cb1 \
+\cb13 \'a0 \cf19 #if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0\cf12 \cb1 \
+\cb13 \'a0 \cf17 UNAuthorizationOptions\cf12  authOptions =\cb1 \
+\cb13 \'a0 \'a0 \'a0 \cf17 UNAuthorizationOptionAlert\cf12 \cb1 \
+\cb13 \'a0 \'a0 \'a0 | \cf17 UNAuthorizationOptionSound\cf12 \cb1 \
+\cb13 \'a0 \'a0 \'a0 | \cf17 UNAuthorizationOptionBadge\cf12 ;\cb1 \
+\cb13 \'a0 [[\cf17 UNUserNotificationCenter\cf12  currentNotificationCenter]\cb1 \
+\cb13 \'a0 \'a0 \'a0 requestAuthorizationWithOptions:authOptions\cb1 \
+\cb13 \'a0 \'a0 \'a0 completionHandler:^(BOOL granted, \cf17 NSError\cf12  * _Nullable error) \{\cb1 \
+\cb13 \'a0 \'a0 \'a0 \}\cb1 \
+\cb13 \'a0 \'a0];\cb1 \
+\
+\cb13 \'a0 \cf19 // For iOS 10 display notification (sent via APNS)\cf12 \cb1 \
+\cb13 \'a0 [[\cf17 UNUserNotificationCenter\cf12  currentNotificationCenter] setDelegate:\cf18 self\cf12 ];\cb1 \
+\cb13 \'a0 \cf19 // For iOS 10 data message (sent via FCM)\cf12 \cb1 \
+\cb13 \'a0 [[\cf17 FIRMessaging\cf12  messaging] setRemoteMessageDelegate:\cf18 self\cf12 ];\cb1 \
+\cb13 \'a0 \cf19 #endif\cf12 \cb1 \
+\cb13 \}\cb1 \
+\
+\cb13 [[\cf17 UIApplication\cf12  sharedApplication] registerForRemoteNotifications];\
+\pard\pardeftab720\sl400\qr\partightenfactor0
+\cf20 \
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+
+\f1\fs40 \cf11 \cb1 \
+Add Below functions to your AppDelegate class\'85\
+\
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+
+\fs36 \cf10 \kerning1\expnd0\expndtw0 \CocoaLigature0 Step 9:
+\f0\fs22 \cf2  
+\fs28 \cf11 \expnd0\expndtw0\kerning0
+\CocoaLigature1 Retrieve the current registration token
+\f1\fs40 \
+\pard\pardeftab720\sl400\partightenfactor0
+
+\f4\fs28 \cf12 \cb13 - (\cf18 void\cf12 )tokenRefreshNotification:(\cf17 NSNotification\cf12  *)notification \{\cb1 \
+\cb13 \'a0 \cf19 // Note that this callback will be fired everytime a new token is generated, including the first\cf12 \cb1 \
+\cb13 \'a0 \cf19 // time. So if you need to retrieve the token as soon as it is available this is where that\cf12 \cb1 \
+\cb13 \'a0 \cf19 // should be done.\cf12 \cb1 \
+\cb13 \'a0 \cf17 NSString\cf12  *refreshedToken = [[\cf17 FIRInstanceID\cf12  instanceID] token];\cb1 \
+\cb13 \'a0 \cf17 NSLog\cf12 (@\cf14 "InstanceID token: %@"\cf12 , refreshedToken);\
+\
+  //Send token to Analytic Library\'85\cb1 \
+\pard\tx543\pardeftab543\pardirnatural\partightenfactor0
+
+\f0\fs22 \cf0 \kerning1\expnd0\expndtw0 \CocoaLigature0   [[\cf6 NSNotificationCenter\cf0  \cf9 defaultCenter\cf0 ] \cf9 postNotificationName\cf0 :\cf2 @"fcmtoken"\cf0  \cf9 object\cf0 :refreshedToken];\
+
+\f4\fs28 \cf12 \expnd0\expndtw0\kerning0
+\CocoaLigature1 \
+\pard\pardeftab720\sl400\partightenfactor0
+\cf12 \cb13 \'a0 \cf19 // Connect to FCM since connection may have failed when attempted before having a token.\cf12 \cb1 \
+\cb13 \'a0 [\cf18 self\cf12  connectToFcm];\cb1 \
+\
+\cb13 \}\
+\
+- (\cf18 void\cf12 )connectToFcm \{\cb1 \
+\cb13 \'a0 [[\cf17 FIRMessaging\cf12  messaging] connectWithCompletion:^(\cf17 NSError\cf12  * _Nullable error) \{\cb1 \
+\cb13 \'a0 \'a0 \cf18 if\cf12  (error != \cf18 nil\cf12 ) \{\cb1 \
+\cb13 \'a0 \'a0 \'a0 \cf17 NSLog\cf12 (@\cf14 "Unable to connect to FCM. %@"\cf12 , error);\cb1 \
+\cb13 \'a0 \'a0 \} \cf18 else\cf12  \{\cb1 \
+\cb13 \'a0 \'a0 \'a0 \cf17 NSLog\cf12 (@\cf14 "Connected to FCM."\cf12 );\cb1 \
+\cb13 \'a0 \'a0 \}\cb1 \
+\cb13 \'a0 \}];\cb1 \
+\cb13 \}\
+\pard\pardeftab720\sl400\qr\partightenfactor0
+\cf12 \cb1 \
+\pard\pardeftab720\sl400\partightenfactor0
+\cf12 \cb13 - (\cf18 void\cf12 )applicationDidEnterBackground:(\cf17 UIApplication\cf12  *)application \{\cb1 \
+\cb13 \'a0 [[\cf17 FIRMessaging\cf12  messaging] disconnect];\cb1 \
+\cb13 \'a0 \cf17 NSLog\cf12 (@\cf14 "Disconnected from FCM"\cf12 );\cb1 \
+\cb13 \}\
+\pard\tx543\pardeftab543\pardirnatural\partightenfactor0
+
+\f0\fs22 \cf0 \cb1 \kerning1\expnd0\expndtw0 \CocoaLigature0 - (\cf5 void\cf0 )applicationDidBecomeActive:(\cf6 UIApplication\cf0  *)application \{\
+    [\cf5 self\cf0  \cf8 connectToFcm\cf0 ];\
+\}\
+\
+\pard\tx543\pardeftab543\pardirnatural\partightenfactor0
+\cf21 // To receive notifications for iOS 9 and below.\cf0 \
+- (\cf5 void\cf0 )application:(\cf6 UIApplication\cf0  *)application didReceiveRemoteNotification:(\cf6 NSDictionary\cf0  *)userInfo\
+fetchCompletionHandler:(\cf5 void\cf0  (^)(\cf6 UIBackgroundFetchResult\cf0 ))completionHandler \{\
+    \cf21 // If you are receiving a notification message while your app is in the background,\cf0 \
+    \cf21 // this callback will not be fired till the user taps on the notification launching the application.\cf0 \
+    \cf21 // TODO: Handle data of notification\cf0 \
+    \
+    \cf21 // Print message ID.\cf0 \
+    \cf9 NSLog\cf0 (\cf2 @"Message ID: %@"\cf0 , userInfo[\cf2 @"gcm.message_id"\cf0 ]);\
+    \
+    \cf21 // Print full message.\cf0 \
+    \cf9 NSLog\cf0 (\cf2 @"%@"\cf0 , userInfo);\
+\}\
+\
+\cf21 // Receive displayed notifications for iOS 10 devices.\cf0 \
+\pard\tx543\pardeftab543\pardirnatural\partightenfactor0
+\cf3 #if defined(__IPHONE_10_0) && __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_10_0\
+\pard\tx543\pardeftab543\pardirnatural\partightenfactor0
+\cf0 - (\cf5 void\cf0 )userNotificationCenter:(\cf6 UNUserNotificationCenter\cf0  *)center\
+       willPresentNotification:(\cf6 UNNotification\cf0  *)notification\
+         withCompletionHandler:(\cf5 void\cf0  (^)(\cf6 UNNotificationPresentationOptions\cf0 ))completionHandler \{\
+    \cf21 // Print message ID.\cf0 \
+    \cf6 NSDictionary\cf0  *userInfo = notification.\cf6 request\cf0 .\cf6 content\cf0 .\cf6 userInfo\cf0 ;\
+    \cf9 NSLog\cf0 (\cf2 @"Message ID: %@"\cf0 , userInfo[\cf2 @"gcm.message_id"\cf0 ]);\
+    \
+    \cf21 // Print full message.\cf0 \
+    \cf9 NSLog\cf0 (\cf2 @"%@"\cf0 , userInfo);\
+\}\
+\
+\pard\tx543\pardeftab543\pardirnatural\partightenfactor0
+\cf21 // Receive data message on iOS 10 devices.\cf0 \
+- (\cf5 void\cf0 )applicationReceivedRemoteMessage:(\cf7 FIRMessagingRemoteMessage\cf0  *)remoteMessage \{\
+    \cf21 // Print full message\cf0 \
+    \cf9 NSLog\cf0 (\cf2 @"%@"\cf0 , [remoteMessage \cf8 appData\cf0 ]);\
+\}\
+\pard\tx543\pardeftab543\pardirnatural\partightenfactor0
+\cf3 #endif
+\f4\fs28 \cf12 \cb13 \expnd0\expndtw0\kerning0
+\CocoaLigature1 \
+\pard\pardeftab720\sl400\qr\partightenfactor0
+\cf20 \
+\
+\pard\pardeftab720\sl400\qr\partightenfactor0
+
+\f0\fs22 \cf2 \cb1 \kerning1\expnd0\expndtw0 \CocoaLigature0 \
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+
+\f1\fs36 \cf10 Step 10:
+\f0\fs22 \cf2  
+\fs28 \cf11 \expnd0\expndtw0\kerning0
+\CocoaLigature1 Generate an SSL certificate for an App ID enabled for Push Notifications. Firebase Cloud Messaging will use this certificate to send Push Notifications to the application identified by the App ID. (For reference steps given here {\field{\*\fldinst{HYPERLINK "https://firebase.google.com/docs/cloud-messaging/ios/client"}}{\fldrslt https://firebase.google.com/docs/cloud-messaging/ios/client}})
+\f1\fs32 \
+\
+\cf10 Step 11:\cf11  
+\f0\fs28 Upload the generated .p12 certificate on firebase setting located under cloud messaging.
+\f1\fs32 \
+\
+\cf10 Step 12:\cf11  
+\f0\fs28 Done
+\f5\b\fs44 \cf22 \
+
+\f0\b0\fs22 \cf2 \kerning1\expnd0\expndtw0 \CocoaLigature0 \
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+}

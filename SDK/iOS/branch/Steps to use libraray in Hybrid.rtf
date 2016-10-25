@@ -1,0 +1,150 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1404\cocoasubrtf470
+{\fonttbl\f0\fnil\fcharset0 Menlo-Regular;\f1\fswiss\fcharset0 Helvetica;\f2\fnil\fcharset0 Menlo-Bold;
+}
+{\colortbl;\red255\green255\blue255;\red196\green26\blue22;\red255\green39\blue18;\red38\green71\blue75;
+\red0\green0\blue0;\red255\green0\blue0;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww20120\viewh15080\viewkind0
+\deftab529
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+
+\f0\fs22 \cf2 \CocoaLigature0 About\
+-----\
+\pard\pardeftab720\sl517\partightenfactor0
+\cf0 \expnd0\expndtw0\kerning0
+\CocoaLigature1 - If you\'92ve been developing for iOS for some time, you probably have a decent set of your own classes and utility functions that you reuse in most of your projects.\
+\
+- The easiest way to reuse code is simply to copy/paste the source files. However, this can quickly become a maintenance nightmare. Since each app gets its own copy of the shared code, it\'92s difficult to keep all the copies in synch for bugfixes and updates.\
+\
+- This is where static libraries come to the rescue! A static library is a package of classes, functions, definitions and resources, which you can pack together and easily share between your projects.
+\f1\fs32 \
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+
+\f0\fs22 \cf2 \kerning1\expnd0\expndtw0 \CocoaLigature0 \
+\
+\
+Requirements\
+\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+\cf0 - Mac OS X OR WINDOWS 7 LATER\
+- Xcode (min v6.0) OR Any HTML Editor\cf2 \
+\
+\
+\
+\
+Features\
+--------\
+\cf0 - Modular, no dependencies, use what you like\
+- Detailed error handling\
+- Captures offline data\
+- iOS compatible, PushNotification\cf2 \
+\
+\
+\
+Getting started\
+---------------\
+\cf0 - Before you can start first need to understand about library methods.\
+  Basically you need to call make three call (Begin Event and End),\
+  1) Begin call: You need to call this when you launch your app, It starts the session of app.\
+  2) Event call: You need to call this on every event you do in app. for eg: Button click, table row click, page refresh etc\
+  3) End call: You need to call this when your app goes in the background state.\
+  4) Crash call: You don\'92t need to call this, it automatically gets call when app gets crashed and it will show full detailed about crash.\
+  5) Screen time Call:  You don\'92t need to call this, it gets called automatically when your app goes in background state.\
+\
+\
+
+\f2\b Step \cf3 1:
+\f0\b0 \cf0 \
+   first of all you need to add \'91libAnalytic.a\'92 to your project (At a root level)\
+   create a folder named \'91Analytic\'92 in your project then add header file inside a created folder \'92Analytic.h\'92,\
+   \
+  \
+\
+\
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+\cf3 BeginCall:\
+\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\cf0 \
+\
+	    Initialize\cf2  \cf0 the library in your\cf2   \cf0 main function of \cf2 App \cf0 and make the session start.\
+        call 
+\f1\b\fs26 sharedObject 
+\b0 method of library.\
+\
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+
+\f0\fs22 \cf0 		Start the session with 2 arguments url and appKey\'85\
+        call \cf4 BeginCallWithkUrl
+\f2\b  
+\f0\b0 \cf0 Function
+\f2\b \cf4  which takes 2 parameter i.e url and appKey.
+\f0\b0 \cf0 \
+\
+\
+\
+
+\f2\b 1.1
+\f0\b0 ) Also call \cf4 BeginCallWithkUrl\cf0  Function when your app starts from background and resumes to foreground\
+\
+add one more call to function called 
+\f2\b ScreenChanged
+\f0\b0  which take one parameter(para will be \'93
+\f2\b \cf2 foreground
+\f0\b0 \cf0 \'94)\
+\
+\
+\
+\
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+
+\f2\b \cf5 STEP\cf6  2
+\f0\b0 ) Event Call:\cf0  \
+\cf6 \'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\cf0 \
+       \
+	   You need to call this to track every event of your app, for example if you want to track any button click of app\
+       then call `
+\f1\b\fs26 EventCall
+\f0\b0\fs22 ` function. It has one argument suggesting name of event\
+\
+\
+\
+\
+\
+\
+
+\f2\b \cf5 STEP\cf6  3
+\f0\b0 ) End Call: \
+\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+\cf0 \
+        End your session with EndCall.\
+        call 
+\f1\b\fs26 EndCall 
+\b0 function of library.
+\f0\fs22 \
+        \
+\
+add one more call to function called 
+\f2\b ScreenChanged
+\f0\b0  which take one parameter(para will be \'93\cf2 AppDelegate\cf0 \'94)\
+\
+\
+\
+\
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+\cf5 4\cf6 ) COMMON CALL FOR ALL PAGE YOU LOAD\
+\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\'97\
+\
+\pard\tx529\pardeftab529\pardirnatural\partightenfactor0
+\cf0 call to function called 
+\f2\b ScreenChanged
+\f0\b0  which take one parameter(para will be \'93\cf2 \{YOUR SCREEN NAME\}\cf0 \'94)\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+\
+}
