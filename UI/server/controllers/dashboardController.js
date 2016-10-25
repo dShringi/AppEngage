@@ -1,10 +1,10 @@
 "use strict";
 
-var mongojs     = require('mongojs');
-var config      = require('../../config/config');
-var common 		= require('../../commons/common.js');
-var logger 		= require('../../config/log.js');
-var async       = require('async');
+const mongojs     = require('mongojs');
+const config      = require('../../config/config');
+const common 		= require('../../commons/common.js');
+const logger 		= require('../../config/log.js');
+const async       = require('async');
 
 module.exports.dashboardRealTime = function(req,res){
 	let startdate = req.query.sd;
@@ -14,7 +14,7 @@ module.exports.dashboardRealTime = function(req,res){
 	//Finding the extra seconds above rounding to 0.
 	startdate = parseInt(startdate - startdate%10);
 	enddate = parseInt(enddate - enddate%10);
-	var db = mongojs(config.connectionstring+akey);
+	const db = mongojs(config.connectionstring+akey);
 	if(startdate == enddate){
 		db.collection(config.coll_activesessions).count(function(err,result){
 			db.close();
