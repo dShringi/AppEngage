@@ -10,19 +10,24 @@
 #import <UIKit/UIKit.h>
 #import <CoreLocation/CoreLocation.h>
 
-
 @interface Analytic : NSObject<CLLocationManagerDelegate>{
-    NSString *deviceType,*orientatin,*netwrokType,*sdkVersion,*cpuType;
+    NSString *deviceType,*orientatin,*netwrokType,*sdkVersion,*cpuType,*kUrl,*deviceId,*lastVisitedPage;
     CLLocationManager *locationManager;
-    NSTimer *timer;
-    int tsd;
+    NSTimer *timer,*timerVC;
+    int tsd,timerForVC;
     double batteryLevel;
     natural_t mem_free,mem_total;
-    NSMutableArray *jsonObjArr,*jsonArr;
+    NSMutableArray *jsonObjArr,*jsonArr,*viewControllerArr,*tempArr;
+    NSNumberFormatter *formatter;
 }
+
 + (Analytic *)sharedObject;
--(void)BeginCall;
+-(void)BeginCallWithkUrl:(NSString *)url AppKey:(NSString *)appkey;
 -(void)EventCall:(NSString*)eventName;
 -(void)EndCall;
 -(void)BulkCall:(NSString*)eventName;
+-(void)RegisterForPushNotification;
+-(void)crashCall:(NSArray*)crashStackSymbol crashDescription:(NSString*)crashDesc;
+-(void)ScreenChanged:(NSString*)ScreenName;
+//-(void)SetOfflineDataCounter;
 @end
