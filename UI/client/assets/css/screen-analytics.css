@@ -42,7 +42,7 @@
 	float: right;
 }
 
-.photos{padding:30px 50px 30px 50px; height: 305px}
+.photos{padding:20px 50px 20px 50px; height: 280px}
 
 .hidden {
    visibility: hidden;
@@ -59,3 +59,12 @@
 .info {text-align: center}
 .info h3{font-size:16px;text-transform: uppercase;height:40px}
 .info p{font-size: 26px;font-weight: bold}
+
+
+.user-info-tbl {text-align: center;border: 0px ;text-transform: uppercase}
+.user-info-tbl th, .user-info-tbl td{border-right:1px solid #ddd ; border-top:0px !important; border-bottom:0px !important}
+.user-info-tbl th {text-align: center;}
+.user-info-tbl th:last-child, .user-info-tbl td:last-child{border-right:0px solid #ddd ;}
+
+
+.carousel-info{position:absolute;margin-top:-20px;color:crimson;font-size:12px}

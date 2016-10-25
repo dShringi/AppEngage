@@ -357,3 +357,6 @@ td.tablesorter-pager {
 .user-info-tbl th, .user-info-tbl td{border-right:1px solid #ddd ; border-top:0px !important; border-bottom:0px !important}
 .user-info-tbl th {text-align: center;}
 .user-info-tbl th:last-child, .user-info-tbl td:last-child{border-right:0px solid #ddd ;}
+
+
+.carousel-info{position:absolute;margin-top:-20px;color:crimson;font-size:12px}
