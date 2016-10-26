@@ -24,7 +24,7 @@ module.exports.fetchScreenStats = function(req,res){
       //console.log(screennames);
       let jsonResponse = [];
       for(let i=0;i<screennames.length;i++){
-        response[screennames[i]._id.aname] ={
+        jsonResponse[screennames[i]._id.aname] ={
           alt : screennames[i]._id.aname,
           name : screennames[i].name,
           path : screennames[i].path,
@@ -69,11 +69,4 @@ module.exports.fetchScreenStats = function(req,res){
       });
     });
   });
-
-
-let response = '[{"name": "app1","path": "assets/appscreenimages/4170b44d6459bba992acaa857ac5b25d7fac6cc1/img1.jpg","alt": "app1","nuu": 13,"noc": 5,"tts": 300,"ts": 430},' +
-                 '{"name": "app2","path": "assets/appscreenimages/4170b44d6459bba992acaa857ac5b25d7fac6cc1/img2.jpg","alt": "app2","nuu": 23,"noc": 50,"tts": 500,"ts": 830},' +
-                 '{"name": "app2","path": "assets/appscreenimages/4170b44d6459bba992acaa857ac5b25d7fac6cc1/img3.jpg","alt": "app2","nuu": 33,"noc": 20,"tts": 700,"ts": 338}' +
-                 ']';
-return res.json(JSON.parse(response));
 };
