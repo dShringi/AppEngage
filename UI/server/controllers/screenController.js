@@ -46,7 +46,10 @@ module.exports.fetchScreenStats = function(req,res){
               jsonResponse[resp[j]._id] ={
                 ts : resp[j]._id.ts,
                 noc : resp[j].noc,
-                tts : resp[j].tts
+                tts : resp[j].tts,
+                alt : jsonResponse[resp[j]._id].alt,
+                name : jsonResponse[resp[j]._id].name,
+                path : jsonResponse[resp[j]._id].path,
               };
             }
 
