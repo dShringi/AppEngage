@@ -65,6 +65,7 @@ module.exports.fetchScreenStats = function(req,res){
             }
         });
       }else{
+              if(err)
               logger.error(common.getErrorMessageFrom(err));
               return res.json(JSON.parse('[]'));
       }
