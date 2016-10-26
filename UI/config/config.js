@@ -21,6 +21,8 @@ module.exports.coll_eventnames		=	'coll_eventnames';
 module.exports.coll_campaigns = 'coll_campaigns';
 module.exports.coll_cohorts = 'coll_cohorts';
 module.exports.coll_audience = 'coll_audience';
+module.exports.coll_screenmetrics = 'coll_screenmetrics';
+module.exports.coll_screennames = 'coll_screennames';
 
 module.exports.logdir	= '/var/log/appengage/UI/logs';
 

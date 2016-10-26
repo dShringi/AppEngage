@@ -1,15 +1,13 @@
-// this script is used to send push notification 
+// this script is used to send push notification
 'use strict'
 
-var logger = require('../conf/log.js');
-var config = require('../conf/config.js');
-var common = require('../commons/common');
+const logger = require('../conf/log.js');
+const config = require('../conf/config.js');
+const common = require('../commons/common');
 
-var cron = require('node-schedule');
 var mongodb = require('mongodb');
 var dateFormat = require('dateformat');
 var FCM = require('fcm-push');
-var moment = require('moment-timezone');
 var ObjectID = require('mongodb').ObjectID;
 
 var MongoClient = mongodb.MongoClient;
@@ -24,8 +22,7 @@ var iosServerKey = 'AIzaSyBugP2RtRsfpqhY_mY-Q6U0aB_GHdpzDoU';
 
 var andriodFcm = new FCM(andriodServerKey);
 var iosFcm = new FCM(iosServerKey);
- 
-//var j = cron.scheduleJob('*/1 * * * *', function(){
+
 	MongoClient.connect(url, function (err, db) {
 		if (err) {
 			printErrorMessage(err);
@@ -40,7 +37,7 @@ var iosFcm = new FCM(iosServerKey);
 					printErrorMessage(err);
 					db.close();
 				} else if (result.length) {
-				
+
 					var usersCollection = db.collection(config.mongodb.coll_users);
 					for (var i = 0; i < result.length; i++) {
 						var campaignResult = result[i];
@@ -53,11 +50,11 @@ var iosFcm = new FCM(iosServerKey);
 								db.close();
 							} else if(docs.length){
 								var countTotal = 0;
-								for (var i = 0; i < docs.length; i++) { 
+								for (var i = 0; i < docs.length; i++) {
 								var userResult = docs[i];
 									if(userResult.rkey != null){
 										countTotal++;
-										var message = {priority : 'high',to: userResult.rkey, notification:{title:campaignResult.pn_title,body:campaignResult.pn_msg}};
+										var message = {priority : 'high',to: userResult.rkey, data:{title:campaignResult.pn_title,body:campaignResult.pn_msg}};
 										try {
 											if(userResult.lpf == 'iOS'){
 												pushToFcmIos(message);
@@ -74,14 +71,14 @@ var iosFcm = new FCM(iosServerKey);
 								var findQuery = {_id:cpn_Id};
 								var updateQuery
 								if((campaignResult.schedule_type =='cyclic') || (campaignResult.schedule_type == 'scheduled' && campaignResult.recursive == true)){
-							
+
 									var cycle = campaignResult.cycle;
 									var scheduleType = campaignResult.schedule_type;
-									
+
 									var nextTriggerTime = getNextTriggerTime(cycle, scheduleType);
-									
+
 									updateQuery = '{"$set":{"trigger_time":'+parseInt(nextTriggerTime)+',"last_execution":'+parseInt(datekey)+',"total":'+countTotal+'}}';
-									
+
 								} else {
 									updateQuery = '{"$set":{"total":'+countTotal+'}}';
 								}
@@ -101,7 +98,7 @@ var iosFcm = new FCM(iosServerKey);
 					console.log('No document(s) found with defined "find" criteria! ',datekey);
 					db.close();
 				}
-			}); 
+			});
 		}
 	});
 //});
@@ -112,7 +109,7 @@ function pushToFcmAndroid(message){
 			printErrorMessage(err);
 		} else {
 			printErrorMessage(err);
-			
+
 		}
 	});
 }
@@ -124,7 +121,7 @@ function pushToFcmIos(message){
 			printErrorMessage(err);
 		} else {
 			printErrorMessage(err);
-			
+
 		}
 	});
 }
@@ -139,15 +136,15 @@ function getNextTriggerTime(cycle, scheduleType){
 			var cycleArray = cycle.split('_');
 			var cycleType = cycleArray[0].toUpperCase();
 			switch(cycleType) {
-				case 'DAILY' :{ 
+				case 'DAILY' :{
 					date.setHours(date.getHours() + 24); break;
-				} case 'ALTERNATE' :{ 
+				} case 'ALTERNATE' :{
 					date.setHours(date.getHours() + 48); break;
-				} case 'WEEKLY' :{ 
+				} case 'WEEKLY' :{
 					date = new Date(date.getFullYear(), date.getMonth(), date.getDate()+7, date.getHours(), date.getMinutes()); break;
-				} case 'MONTHLY' :{ 
+				} case 'MONTHLY' :{
 					date = new Date(date.getFullYear(), date.getMonth()+1, date.getDate(), date.getHours(), date.getMinutes()); break;
-				} 
+				}
 			}
 		}
 		return dateFormat(date, "yyyymmddHHMM");
@@ -162,7 +159,7 @@ function printErrorMessage(err) {
 }
 
 function getUtcCurrentTime(){
-	var now = new Date(); 
+	var now = new Date();
 	return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
 }
 
