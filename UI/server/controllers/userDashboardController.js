@@ -14,7 +14,6 @@ var arrModel	= [];
 var arrManufacturer = [];
 var platform    = config.platform;
 var type    	= config.type;
-var model 		= config.model;
 var manufacturer = config.manufacturer;
 
 
@@ -24,10 +23,6 @@ for(let i=0;i<platform.length;i++){
 
 for(let i=0;i<type.length;i++){
 	arrType[type[i].shortpf] = type[i].displaypf;
-}
-
-for(let i=0;i<model.length;i++){
-	arrModel[model[i].shortpf] = model[i].displaypf;
 }
 
 for(let i=0;i<manufacturer.length;i++){
