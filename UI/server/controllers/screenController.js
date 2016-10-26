@@ -11,8 +11,8 @@ module.exports.fetchScreenStats = function(req,res){
   const startDateEpoch = req.query.sd;
   const endDateEpoch = req.query.ed;
   const aKey = req.query.akey;
-  const dt = (req.query.type==='Tablet') ? 'T':'S';
-  const pf = (req.query.platform==='Android') ? 'A':'iOS';
+  const dt = (req.query.type==='Tablet') ? "T":"S";
+  const pf = (req.query.platform==='Android') ? "A":"iOS";
   const db = mongojs(config.connectionstring+aKey);
 
   common.getAppTimeZone(aKey,function(err,appTZ){
@@ -20,9 +20,18 @@ module.exports.fetchScreenStats = function(req,res){
     const startDate = common.getStartDate(startDateEpoch,appTZ);
     const endDate = common.getStartDate(endDateEpoch,appTZ);
 
-    db.collection(config.coll_screennames).find(JSON.parse('{"_id.dt":'+dt+',"_id.pf":'+pf+'}'),function(err,screennames){
+    db.collection(config.coll_screennames).find(JSON.parse('{"_id.dt":"'+dt+'","_id.pf":"'+pf+'""}'),function(err,screennames){
       console.log(screennames);
-      db.collection(config.coll_screenmetrics).find([
+      let response = [];
+      for(let i=0;i<screennames.length;i++){
+        response[screennames[i]._id.aname] ={
+          aname : screennames[i]._id.aname,
+          name : screennames[i].name,
+          path : screennames[i].path
+        };
+      }
+      console.log(response);
+      db.collection(config.coll_screenmetrics).aggregate([
       {$match:{$and:[{"_id.key":{$gte:startDate}},{"_id.key":{$lte:endDate}},{"_id.dt":dt},{"_id.pf":pf}]}},
       {$group:{_id:"$_id.act",ts:{$sum:"$val.tse"},noc:{$sum:"$val.tce"},tts:{$sum:"$val.tts"}}}
         ],function(err,resp){
