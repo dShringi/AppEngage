@@ -96,7 +96,7 @@ module.exports.fetchScreenStats = function(req,res){
                   getUniqiueUsers(status,key._id.aname,startYYYY,endYYYY,startMMDD,endMMDD,db,dt,pf,function(err,result){
                     jsonResponse[key._id.aname].nuu = result;
                     if(!err){
-                      response[tasksToGo] = jsonResponse[key._id.aname];
+                      response[tasksToGo-1] = jsonResponse[key._id.aname];
                       console.log(response);
                       if (--tasksToGo === 0) {
                         onComplete(response);
