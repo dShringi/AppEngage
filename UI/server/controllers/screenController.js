@@ -36,8 +36,8 @@ module.exports.fetchScreenStats = function(req,res){
   const startDateEpoch = req.query.sd;
   const endDateEpoch = req.query.ed;
   const aKey = req.query.akey;
-  const dt = (req.query.type==='Tablet' || req.query.type==='tablet' || req.query.type===undefined) ? "T":"S";
-  const pf = (req.query.platform==='Android' || req.query.platform==='android' || req.query.platform===undefined) ? "A":"iOS";
+  const dt = (req.query.type==='Tablet' || req.query.type==='tablet' || req.query.type===config.UNDEFINED) ? "T":"S";
+  const pf = (req.query.platform==='Android' || req.query.platform==='android' || req.query.platform===config.UNDEFINED) ? "A":"iOS";
   const db = mongojs(config.connectionstring+aKey);
 
   common.getAppTimeZone(aKey,function(err,appTZ){
@@ -71,15 +71,19 @@ module.exports.fetchScreenStats = function(req,res){
           ],function(err,resp){
             if(!err){
               for(let j=0;j<resp.length;j++){
+                jsonResponse[resp[j]._id].ts = resp[j].ts;
+                jsonResponse[resp[j]._id].noc = resp[j].noc;
+                jsonResponse[resp[j]._id].tts = resp[j].tts;
+/*
                 jsonResponse[resp[j]._id] ={
                   ts : resp[j].ts,
                   noc : resp[j].noc,
                   tts : resp[j].tts,
-                  nuu : 10,
                   alt : jsonResponse[resp[j]._id].alt,
                   name : jsonResponse[resp[j]._id].name,
                   path : jsonResponse[resp[j]._id].path,
                 };
+*/
               }
 
               var onComplete = function(response) {
@@ -97,7 +101,6 @@ module.exports.fetchScreenStats = function(req,res){
                     jsonResponse[key._id.aname].nuu = result;
                     if(!err){
                       response[tasksToGo-1] = jsonResponse[key._id.aname];
-                      console.log(response);
                       if (--tasksToGo === 0) {
                         onComplete(response);
                       }
