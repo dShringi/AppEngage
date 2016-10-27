@@ -91,7 +91,7 @@ $(document).ready(function () {
 
 
 $(window).load(function() {
-			console.log("window load");
+			//console.log("window load");
 
 			$('.photos').coverflow({
 					easing:			'',
