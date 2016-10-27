@@ -6,7 +6,7 @@ const config  = require('../../config/config');
 const logger  = require('../../config/log.js');
 const common = require('../../commons/common.js');
 
-function getUniqiueUsersSameYear(screenName,startYYYY,startMMDD,endMMDD,db,dt,pf){
+function getUniqiueUsersSameYear(screenName,startYYYY,startMMDD,endMMDD,db,dt,pf,callback){
 
   const matchOperator = JSON.parse('{"$and":[{"'+screenName+'._'+startYYYY+'._id":{"$gte":'+startMMDD+'}},{"'+screenName+'._'+startYYYY+'._id":{"$lte":'+endMMDD+'}},{"dt":"'+dt+'"},{"pf":"'+pf+'"}]}');
   db.collection(config.coll_userscreens).aggregate([
@@ -15,12 +15,12 @@ function getUniqiueUsersSameYear(screenName,startYYYY,startMMDD,endMMDD,db,dt,pf
     ],function(err,resp){
       if(!err)
         if(resp.total === config.UNDEFINED)
-          return 0;
+          callback(null,0);
         else
-          return resp.total;
+          callback(null,resp.total);
       else{
         logger.error(common.getErrorMessageFrom(err));
-        return 0;
+        callback(err,0);
       }
     });
 }
@@ -106,19 +106,19 @@ module.exports.fetchScreenStats = function(req,res){
               if (tasksToGo === 0) {
                 onComplete(response);
               }else{
-                screennames._id.aname.forEach(function(key){
-                  console.log(key);
-                  nuu = getUniqiueUsersSameYear(key,startYYYY,startMMDD,endMMDD,db,dt,pf);
-                  console.log(nuu);
-                  response[tasksToGo] = jsonResponse[screennames[tasksToGo]._id.aname];
-                  if(!nuu){
-                    if (--tasksToGo === 0) {
-                      onComplete(response);
+                screennames.forEach(function(key){
+                  getUniqiueUsersSameYear(key._id.aname,startYYYY,startMMDD,endMMDD,db,dt,pf,function(err,result){
+                    console.log(result);
+                    if(!err){
+                      response[tasksToGo] = jsonResponse[key._id.aname];
+                      if (--tasksToGo === 0) {
+                        onComplete(response);
+                      }
+                    }else{
+                      tasksToGo = tasksToGo - 1;
+                      logger.error(common.getErrorMessageFrom(err));
                     }
-                  }else{
-                    tasksToGo = tasksToGo - 1;
-                    logger.error(common.getErrorMessageFrom(err));
-                  }
+                  });
                 });
               }
 /*
