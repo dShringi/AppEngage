@@ -32,16 +32,8 @@
 		<script src="assets/coverflow/jquery.touchSwipe.min.js"></script>
 		<!-- Coverflow -->
 		<script src="assets/coverflow/jquery.coverflow.js " ></script>
-		
-
-		
-
-
-		
-		
-		
         <style>
-		body {padding-top:74px !important;}
+			body {padding-top:74px !important;}
 		</style>
 		
 		
@@ -66,18 +58,30 @@
         		<div class="col-md-6" >
 					<ul class="device-menu bg-white">
 						<li class="selected">
-							<a href="javascript:void(0)" ng-click="fetchAppData('Mobile')" id="mobileAppScreens">Mobile</a> 
+							<a href="javascript:void(0)" id="mobileAppScreens">Mobile</a> 
+							<span class="sub-menu-menu"> 
+								<i class="fa fa-chevron-right" aria-hidden="true"></i>
+								<a href="javascript:void(0)" ng-click="fetchAppData('Mobile','ios')" id="iosMobileAppScreens"> <i class="fa fa-apple" aria-hidden="true"></i> ios</a>
+								
+								<a href="javascript:void(0)" ng-click="fetchAppData('Mobile','android')" id="androidMobileAppScreens"><i class="fa fa-android" aria-hidden="true"></i> Android</a>
+							</span>
 							<span class="grey-pipe">|</span>
 						</li>
 						<li>
-							<a href="javascript:void(0)" ng-click="fetchAppData('Tablet')" id="tabletAppScreens">Tablet</a></li>
+							<a href="javascript:void(0)" id="tabletAppScreens">Tablet</a>
+							<span class="sub-menu-menu hide"> 
+								<i class="fa fa-chevron-right" aria-hidden="true"></i>
+								<a href="javascript:void(0)" ng-click="fetchAppData('Tablet','ios')" id="iostabletAppScreens"><i class="fa fa-apple" aria-hidden="true"></i> ios</a>
+								
+							<a href="javascript:void(0)" ng-click="fetchAppData('Tablet','android')"  id="androidtabletAppScreens"> <i class="fa fa-android" aria-hidden="true"></i> Android</a>
+							</span>
+						</li>
 						<li class="hidden">
 							<input type="text" id="sDate">
 							<input type="text" id="eDate">
 						</li>
-						
-						
 					</ul>
+					
 				</div>
 				<div class="col-md-6">
 					<div id="dateRange" class="pull-right">
@@ -225,104 +229,7 @@
 		
 		});*/
 			
-		$(window).load(function() {
-			console.log("window load");
-
-			$('.photos').coverflow({
-					easing:			'',
-					duration:		'slow',
-					index:			3,
-					width:			320,
-					height:			240,
-					visible:		'density',
-					selectedCss:	{	opacity: 1	},
-					outerCss:		{	opacity: .1	},
-					
-					confirm:		function() {
-						console.log('Confirm');
-					},
-					
-					refresh: function(){
-						console.log('refresh');
-					},
-
-					change:	function(event, cover) {
-						var img = $(cover).children().andSelf().filter('img').last();
-						
-						$('#photos-name').text(img.data('name') || 'unknown');
-						//console.log(imgIndex);
-						//var imgIndex = img.index();
-						
-						//$(".info-container").not(':eq(imgIndex)').hide();
-						//$(".info-container").eq(imgIndex).show();
-						
-						var imgIndex = img.index();
-						var infoIndex = $(".info-container").index();
-						//console.log(imgIndex);
-						
-						
-						$('.info-container').each(function (index, value){
-						  
-						 var listItem = $(this).index();
-							
-						  if (imgIndex === listItem)
-							  {
-								 $(".info-container").eq(listItem).show();
-							  }
-							else{
-								
-								$(".info-container").eq(listItem).hide();
-							}
-						});						
-					}
-				});	
 		
-		
-			
-			
-			$('.photos').on('click', function(){
-				$('.photos img').first().mousedown();
-				
-			});
-			
-			setTimeout(function(){
-				$('.photos').trigger('click')
-			}, 500);
-			
-			
-			$("#mobileAppScreens").on('click', function(){  
-				
-				
-				$('.photos').on('click', function(){
-					$('.photos img').mousedown();
-				
-				});
-				
-				setTimeout(function(){
-					$('.photos').trigger('click')
-				}, 500);
-				
-			});
-			
-			$("#tabletAppScreens").on('click', function(){  
-				
-				$('.photos').on('click', function(){
-					$('.photos img').mousedown();
-				
-				});
-				
-				setTimeout(function(){
-					$('.photos').trigger('click')
-					console.log("hi click called")
-				}, 500);
-				
-			});
-			
-			$('#tabletAppScreens').click();
-			$('#mobileAppScreens').click();
-			
-			
-		});
 		</script>
    		
     </body>

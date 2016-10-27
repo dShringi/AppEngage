@@ -67,6 +67,144 @@ $(document).ready(function () {
     $('#sel_deviceType').on('change', function(){
         loadChart(parseInt(startDateCal/1000),parseInt(endDateCal/1000), appKey, $(this).val());
     });
+	
+	$("#mobileAppScreens").on("click", function(){
+		$(this).parent().addClass("selected");
+		$("#mobileAppScreens").next().removeClass("hide");
+		$("#tabletAppScreens").next().addClass("hide");
+		$("#tabletAppScreens").parent().removeClass("selected");
+		
+	});
+	
+	$("#tabletAppScreens").on("click", function(){
+		$(this).parent().addClass("selected");
+		$("#mobileAppScreens").next().addClass("hide");
+		$("#tabletAppScreens").next().removeClass("hide");
+		$("#mobileAppScreens").parent().removeClass("selected");
+		
+		
+	});
+	
+	
+	
+});
+
+
+$(window).load(function() {
+			console.log("window load");
+
+			$('.photos').coverflow({
+					easing:			'',
+					duration:		'slow',
+					index:			3,
+					width:			320,
+					height:			240,
+					visible:		'density',
+					selectedCss:	{	opacity: 1	},
+					outerCss:		{	opacity: .1	},
+					
+					confirm:		function() {
+						//console.log('Confirm');
+					},
+					
+					refresh: function(){
+						console.log('refresh');
+					},
+
+					change:	function(event, cover) {
+						var img = $(cover).children().andSelf().filter('img').last();
+						
+						$('#photos-name').text(img.data('name') || 'unknown');
+						//console.log(imgIndex);
+						//var imgIndex = img.index();
+						
+						//$(".info-container").not(':eq(imgIndex)').hide();
+						//$(".info-container").eq(imgIndex).show();
+						
+						var imgIndex = img.index();
+						var infoIndex = $(".info-container").index();
+						//console.log(imgIndex);
+						
+						
+						$('.info-container').each(function (index, value){
+						  
+						 var listItem = $(this).index();
+							
+						  if (imgIndex === listItem)
+							  {
+								 $(".info-container").eq(listItem).show();
+							  }
+							else{
+								
+								$(".info-container").eq(listItem).hide();
+							}
+						});						
+					}
+			});	
+		
+		
+			
+			
+			$('.photos').on('click', function(){
+				$('.photos img').first().mousedown();
+			});
+			
+			setTimeout(function(){
+				$('.photos').trigger('click')
+			}, 500);
+			
+			
+			$("#iosMobileAppScreens").on('click', function(){  
+				$('.photos').on('click', function(){
+					$('.photos img').mousedown();
+				});
+				
+				setTimeout(function(){
+					$('.photos').trigger('click')
+				}, 500);	
+			});
+			
+			$("#androidMobileAppScreens").on('click', function(){  
+				$('.photos').on('click', function(){
+					$('.photos img').mousedown();
+				});
+				
+				setTimeout(function(){
+					$('.photos').trigger('click')
+					//console.log("hi click called")
+				}, 500);
+			});
+			
+			//$('#androidMobileAppScreens').click();
+			
+			
+			
+			$("#iostabletAppScreens").on('click', function(){  
+				$('.photos').on('click', function(){
+					$('.photos img').mousedown();
+				});
+				
+				setTimeout(function(){
+					$('.photos').trigger('click')
+				}, 500);	
+			});
+			
+			$("#androidtabletAppScreens").on('click', function(){  
+				$('.photos').on('click', function(){
+					$('.photos img').mousedown();
+				});
+				
+				setTimeout(function(){
+					$('.photos').trigger('click')
+					//console.log("hi click called")
+				}, 500);
+			});
+			
+			//$('#androidtabletAppScreens').click();
+			//$('#iostabletAppScreens').click();
+			
+			$('#iosMobileAppScreens').click();
+			
 });
 
 

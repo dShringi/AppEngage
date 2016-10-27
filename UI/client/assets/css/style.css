@@ -199,7 +199,8 @@ div.tooltip {
 
 
 .overlay{}
-.breadcrumb ul{margin: 0; padding: 8px 30px }
+.breadcrumb {margin-bottom:0px;}
+.breadcrumb ul{margin: 0; padding: 1px 30px;  }
 .breadcrumb li{padding: 3px}
 .breadcrumb li:last-child{font-weight: bold;color: black;}
 .breadcrumb li, .breadcrumb li a{color: rgb(176,188,200);}
@@ -216,8 +217,10 @@ div.tooltip {
 .mrgnTp0{margin-top: 0 !important}
 .margnTp-5{margin-top: -5px;}
 .mrgnlR0 {margin-left: 0px; margin-right:0px;}
+.mrgnl20 {margin-left:20px}
 .chart-header{padding-bottom: 15px;}
 .ht150{height: 150px}
+.negative-mrgnr30{margin-right:-30px}
 
 
 .left-side-inner .nav > li > a{display: inline-block}
@@ -347,16 +350,21 @@ td.tablesorter-pager {
 
 .fa-home{margin-bottom:-6px}
 
-.device-menu{padding:5px !important; border:1px solid #CCC; border-radius: 3px; width:120px}
-.device-menu { }
-.device-menu {list-style-type: none; display:inline}
-.device-menu .selected{font-weight: 700}
-.device-menu .grey-pipe{font-weight: 700;padding: 8px}
-
-.user-info-tbl {text-align: center;border: 0px ;text-transform: uppercase}
-.user-info-tbl th, .user-info-tbl td{border-right:1px solid #ddd ; border-top:0px !important; border-bottom:0px !important}
-.user-info-tbl th {text-align: center;}
-.user-info-tbl th:last-child, .user-info-tbl td:last-child{border-right:0px solid #ddd ;}
 
 
-.carousel-info{position:absolute;margin-top:-20px;color:crimson;font-size:12px}
+.profile-section {background-color: #42ce9f;text-align: center;padding-top:20px;margin-right: -15px}
+
+.profile-section img {margin-bottom: -40px}
+
+.linear-graph-box{background-color: #FFF; padding:15px 0px 15px 0px;margin:20px}
+.linear-graph-box .grey {height:5px;background-color: #ccc;margin-top: 10px}
+.linear-graph-box .orange{height:5px; background-color: #B7410E;width:60%}
+.user-profile-info {margin-top:40px}
+
+hr {height:1px;background-color: #ccc;margin-left:15px;margin-right:15px}
+
+.indv-details{padding:15px 0px 15px 0px;}
+
+dt, dd {padding-bottom: 10px}
+
+

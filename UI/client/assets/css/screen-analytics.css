@@ -52,6 +52,13 @@
 
 #dateRange{margin-top:-5px}
 
+.device-menu{padding:8px !important; border:1px solid #CCC; border-radius: 1px; width:120px;margin-right: 20px}
+.device-menu { }
+.device-menu {list-style-type: none; display:inline}
+.device-menu .selected{font-weight: 700}
+.device-menu .grey-pipe{font-weight: 700;padding: 4px}
+
+
 .info-container { padding-top:20px; padding-left: 0; width: 100%; display: inline-block;}
 .info-container li {    border-right: 1px solid #dadada;}
 .info-container li:last-child(){border-right: :0px}
@@ -67,4 +74,9 @@
 .user-info-tbl th:last-child, .user-info-tbl td:last-child{border-right:0px solid #ddd ;}
 
 
-.carousel-info{position:absolute;margin-top:-20px;color:crimson;font-size:12px}
+.carousel-info{position:absolute;margin-top:-20px;color:#333;font-size:12px}
+
+.sub-menu-menu{ padding-left: 5px; }
+.sub-menu-menu a {padding-right: 10px}
+.sub-menu-menu .fa-chevron-right{font-size: 12px;margin-right:5px}
+
