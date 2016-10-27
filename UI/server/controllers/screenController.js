@@ -8,7 +8,7 @@ const common = require('../../commons/common.js');
 
 function getUniqiueUsersSameYear(screenName,startYYYY,startMMDD,endMMDD,db,dt,pf){
 
-  const matchOperator = '{"$and":[{"'+screenName+'._'+startYYYY+'._id":{$gte:'+startMMDD+'}},{"'+screenName+'._'+startYYYY+'._id":{$lte:'+endMMDD+'}},{"dt":'+dt+'},{"pf":'+pf+'}]}';
+  const matchOperator = JSON.parse('{"$and":[{"'+screenName+'._'+startYYYY+'._id":{"$gte":'+startMMDD+'}},{"'+screenName+'._'+startYYYY+'._id":{"$lte":'+endMMDD+'}},{"dt":"'+dt+'"},{"pf":"'+pf+'"}]}');
   db.collection(config.coll_userscreens).aggregate([
     {$match: matchOperator},
     {$group:{_id:"Total",total:{$sum:1}}}
@@ -27,7 +27,7 @@ function getUniqiueUsersSameYear(screenName,startYYYY,startMMDD,endMMDD,db,dt,pf
 
 function getUniqiueUsersDifferentYear(screenName,startYYYY,endYYYY,startMMDD,endMMDD,db,dt,pf){
 
-  const matchOperator = '{"$and":[{$or:[{"'+screenName+'._'+startYYYY+'._id":{$gte:'+startMMDD+'}},{"'+screenName+'._'+endYYYY+'._id":{$lte:'+endMMDD+'}}]},{"dt":'+dt+'},{"pf":'+pf+'}]}';
+  const matchOperator = JSON.parse('{"$and":[{"$or":[{"'+screenName+'._'+startYYYY+'._id":{"$gte":'+startMMDD+'}},{"'+screenName+'._'+endYYYY+'._id":{"$lte":'+endMMDD+'}}]},{"dt":"'+dt+'"},{"pf":"'+pf+'"}]}');
   db.collection(config.coll_userscreens).aggregate([
     {$match: matchOperator},
     {$group:{_id:"Total",total:{$sum:1}}}
@@ -97,13 +97,28 @@ module.exports.fetchScreenStats = function(req,res){
                 };
               }
               let nuu;
+              let matchOperator;
               for(let k=0;k<screennames.length;k++){
                 if(status===0){
-                  nuu = getUniqiueUsersSameYear(screennames[k]._id.aname,startYYYY,startMMDD,endMMDD,db,dt,pf);
+                  matchOperator = JSON.parse('{"$and":[{"'+screennames[k]._id.aname+'._'+startYYYY+'._id":{"$gte":'+startMMDD+'}},{"'+screennames[k]._id.aname+'._'+startYYYY+'._id":{"$lte":'+endMMDD+'}},{"dt":"'+dt+'"},{"pf":"'+pf+'"}]}');
+                  db.collection(config.coll_userscreens).aggregate([
+                    {$match: matchOperator},
+                    {$group:{_id:"Total",total:{$sum:1}}}
+                    ],function(err,resp){
+                      if(!err)
+                        if(resp.total === config.UNDEFINED)
+                          jsonResponse[screennames[k]._id.aname].nuu = 0;
+                        else
+                          jsonResponse[screennames[k]._id.aname].nuu = resp.total;
+                      else{
+                        logger.error(common.getErrorMessageFrom(err));
+                        jsonResponse[screennames[k]._id.aname].nuu = 0;
+                      }
+                    });
                 }else{
                   nuu = getUniqiueUsersDifferentYear(screennames[k]._id.aname,startYYYY,endYYYY,startMMDD,endMMDD,db,dt,pf);
                 }
-                console.log(nuu);
+                //console.log(nuu);
                 response[k] = jsonResponse[screennames[k]._id.aname];
               }
               db.close();
