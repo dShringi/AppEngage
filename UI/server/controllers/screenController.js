@@ -14,7 +14,10 @@ function getUniqiueUsersSameYear(screenName,startYYYY,startMMDD,endMMDD,db,dt,pf
     {$group:{_id:"Total",total:{$sum:1}}}
     ],function(err,resp){
       if(!err)
-        return resp.total;
+        if(resp.total === config.UNDEFINED)
+          return 0;
+        else
+          return resp.total;
       else{
         logger.error(common.getErrorMessageFrom(err));
         return 0;
@@ -30,7 +33,10 @@ function getUniqiueUsersDifferentYear(screenName,startYYYY,endYYYY,startMMDD,end
     {$group:{_id:"Total",total:{$sum:1}}}
     ],function(err,resp){
       if(!err)
-        return resp.total;
+        if(resp.total === config.UNDEFINED)
+          return 0;
+        else
+          return resp.total;
       else{
         logger.error(common.getErrorMessageFrom(err));
         return 0;
@@ -53,10 +59,10 @@ module.exports.fetchScreenStats = function(req,res){
 
     const startDate = common.getStartDate(startDateEpoch,appTZ);
     const endDate = common.getStartDate(endDateEpoch,appTZ);
-    const startYYYY = startDate.substr(0, 4);
-    const endYYYY = endDate.substr(0,4);
-    const startMMDD = parseInt(startDate.substr(4,4));
-    const endMMDD = parseInt(endDate.substr(4,4));
+    const startYYYY = startDate.toString().substr(0, 4);
+    const endYYYY = endDate.toString().substr(0,4);
+    const startMMDD = parseInt(startDate.toString().substr(4,4));
+    const endMMDD = parseInt(endDate.toString().substr(4,4));
     const status = (startYYYY === endYYYY) ? 0:1;
 
     db.collection(config.coll_screennames).find(JSON.parse('{"_id.dt":"'+dt+'","_id.pf":"'+pf+'"}'),function(err,screennames){
@@ -92,7 +98,11 @@ module.exports.fetchScreenStats = function(req,res){
               }
               let nuu;
               for(let k=0;k<screennames.length;k++){
-                nuu = (status===0) ? getUniqiueUsersSameYear(screennames[k]._id.aname,startYYYY,startMMDD,endMMDD,db,dt,pf) : getUniqiueUsersDifferentYear(screennames[k]._id.aname,startYYYY,endYYYY,startMMDD,endMMDD,db,dt,pf);
+                if(status===0){
+                  nuu = getUniqiueUsersSameYear(screennames[k]._id.aname,startYYYY,startMMDD,endMMDD,db,dt,pf);
+                }else{
+                  nuu = getUniqiueUsersDifferentYear(screennames[k]._id.aname,startYYYY,endYYYY,startMMDD,endMMDD,db,dt,pf);
+                }
                 console.log(nuu);
                 response[k] = jsonResponse[screennames[k]._id.aname];
               }

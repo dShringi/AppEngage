@@ -63,9 +63,9 @@ app.get('/appengage/audience/appversion',audienceController.fetchAllAppversion);
 }catch(ex){
   console.log(ex);
 }
-let server = app.listen(config.port, function () {
-	let host = server.address().address;
-	let port = server.address().port;
+const server = app.listen(config.port, function () {
+	const host = server.address().address;
+	const port = server.address().port;
 
 	console.log('Application listening at http://%s:%s', host, port);
 });
