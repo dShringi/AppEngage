@@ -14,10 +14,10 @@ function getUniqiueUsersSameYear(screenName,startYYYY,startMMDD,endMMDD,db,dt,pf
     {$group:{_id:"Total",total:{$sum:1}}}
     ],function(err,resp){
       if(!err)
-        if(resp.total === config.UNDEFINED)
+        if(resp.length === 0)
           callback(null,0);
         else
-          callback(null,resp.total);
+          callback(null,resp[0].total);
       else{
         logger.error(common.getErrorMessageFrom(err));
         callback(err,0);
@@ -25,7 +25,7 @@ function getUniqiueUsersSameYear(screenName,startYYYY,startMMDD,endMMDD,db,dt,pf
     });
 }
 
-function getUniqiueUsersDifferentYear(screenName,startYYYY,endYYYY,startMMDD,endMMDD,db,dt,pf){
+function getUniqiueUsersDifferentYear(screenName,startYYYY,endYYYY,startMMDD,endMMDD,db,dt,pf,callback){
 
   const matchOperator = JSON.parse('{"$and":[{"$or":[{"'+screenName+'._'+startYYYY+'._id":{"$gte":'+startMMDD+'}},{"'+screenName+'._'+endYYYY+'._id":{"$lte":'+endMMDD+'}}]},{"dt":"'+dt+'"},{"pf":"'+pf+'"}]}');
   db.collection(config.coll_userscreens).aggregate([
@@ -33,13 +33,13 @@ function getUniqiueUsersDifferentYear(screenName,startYYYY,endYYYY,startMMDD,end
     {$group:{_id:"Total",total:{$sum:1}}}
     ],function(err,resp){
       if(!err)
-        if(resp.total === config.UNDEFINED)
-          return 0;
+        if(resp.length === 0)
+          callback(null,0);
         else
-          return resp.total;
+          callback(null,resp[0].total);
       else{
         logger.error(common.getErrorMessageFrom(err));
-        return 0;
+        callback(err,0);
       }
     });
 }
@@ -109,6 +109,7 @@ module.exports.fetchScreenStats = function(req,res){
                 screennames.forEach(function(key){
                   getUniqiueUsersSameYear(key._id.aname,startYYYY,startMMDD,endMMDD,db,dt,pf,function(err,result){
                     console.log(result);
+                    jsonResponse[key._id.aname].nuu = result;
                     if(!err){
                       response[tasksToGo] = jsonResponse[key._id.aname];
                       if (--tasksToGo === 0) {
