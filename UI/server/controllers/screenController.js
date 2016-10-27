@@ -97,32 +97,43 @@ module.exports.fetchScreenStats = function(req,res){
                 };
               }
               let nuu;
-              let matchOperator;
+              var onComplete = function() {
+                db.close();
+                return res.json(response);
+              };
+
+              let tasksToGo = screennames.length;
+              if (tasksToGo === 0) {
+                onComplete(response);
+              }else{
+                screennames._id.aname.forEach(function(key){
+                  console.log(key);
+                  nuu = getUniqiueUsersSameYear(key,startYYYY,startMMDD,endMMDD,db,dt,pf);
+                  console.log(nuu);
+                  response[tasksToGo] = jsonResponse[screennames[tasksToGo]._id.aname];
+                  if(!nuu){
+                    if (--tasksToGo === 0) {
+                      onComplete(response);
+                    }
+                  }else{
+                    tasksToGo = tasksToGo - 1;
+                    logger.error(common.getErrorMessageFrom(err));
+                  }
+                });
+              }
+/*
               for(let k=0;k<screennames.length;k++){
                 if(status===0){
-                  matchOperator = JSON.parse('{"$and":[{"'+screennames[k]._id.aname+'._'+startYYYY+'._id":{"$gte":'+startMMDD+'}},{"'+screennames[k]._id.aname+'._'+startYYYY+'._id":{"$lte":'+endMMDD+'}},{"dt":"'+dt+'"},{"pf":"'+pf+'"}]}');
-                  db.collection(config.coll_userscreens).aggregate([
-                    {$match: matchOperator},
-                    {$group:{_id:"Total",total:{$sum:1}}}
-                    ],function(err,resp){
-                      if(!err)
-                        if(resp.total === config.UNDEFINED)
-                          jsonResponse[screennames[k]._id.aname].nuu = 0;
-                        else
-                          jsonResponse[screennames[k]._id.aname].nuu = resp.total;
-                      else{
-                        logger.error(common.getErrorMessageFrom(err));
-                        jsonResponse[screennames[k]._id.aname].nuu = 0;
-                      }
-                    });
+                  nuu = getUniqiueUsersSameYear(screennames[k]._id.aname,startYYYY,startMMDD,endMMDD,db,dt,pf);
                 }else{
                   nuu = getUniqiueUsersDifferentYear(screennames[k]._id.aname,startYYYY,endYYYY,startMMDD,endMMDD,db,dt,pf);
                 }
-                //console.log(nuu);
+                console.log(nuu);
                 response[k] = jsonResponse[screennames[k]._id.aname];
               }
-              db.close();
-              return res.json(response);
+*/
+              //db.close();
+              //return res.json(response);
             }else{
               db.close();
               logger.error(common.getErrorMessageFrom(err));
