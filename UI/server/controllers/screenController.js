@@ -6,28 +6,15 @@ const config  = require('../../config/config');
 const logger  = require('../../config/log.js');
 const common = require('../../commons/common.js');
 
-function getUniqiueUsersSameYear(screenName,startYYYY,startMMDD,endMMDD,db,dt,pf,callback){
+function getUniqiueUsers(status,screenName,startYYYY,endYYYY,startMMDD,endMMDD,db,dt,pf,callback){
+  let matchOperator;
+  if(status === 0){
+    matchOperator = JSON.parse('{"$and":[{"'+screenName+'._'+startYYYY+'._id":{"$gte":'+startMMDD+'}},{"'+screenName+'._'+startYYYY+'._id":{"$lte":'+endMMDD+'}},{"dt":"'+dt+'"},{"pf":"'+pf+'"}]}');
+  }
+  else{
+    matchOperator = JSON.parse('{"$and":[{"$or":[{"'+screenName+'._'+startYYYY+'._id":{"$gte":'+startMMDD+'}},{"'+screenName+'._'+endYYYY+'._id":{"$lte":'+endMMDD+'}}]},{"dt":"'+dt+'"},{"pf":"'+pf+'"}]}');
+  }
 
-  const matchOperator = JSON.parse('{"$and":[{"'+screenName+'._'+startYYYY+'._id":{"$gte":'+startMMDD+'}},{"'+screenName+'._'+startYYYY+'._id":{"$lte":'+endMMDD+'}},{"dt":"'+dt+'"},{"pf":"'+pf+'"}]}');
-  db.collection(config.coll_userscreens).aggregate([
-    {$match: matchOperator},
-    {$group:{_id:"Total",total:{$sum:1}}}
-    ],function(err,resp){
-      if(!err)
-        if(resp.length === 0)
-          callback(null,0);
-        else
-          callback(null,resp[0].total);
-      else{
-        logger.error(common.getErrorMessageFrom(err));
-        callback(err,0);
-      }
-    });
-}
-
-function getUniqiueUsersDifferentYear(screenName,startYYYY,endYYYY,startMMDD,endMMDD,db,dt,pf,callback){
-
-  const matchOperator = JSON.parse('{"$and":[{"$or":[{"'+screenName+'._'+startYYYY+'._id":{"$gte":'+startMMDD+'}},{"'+screenName+'._'+endYYYY+'._id":{"$lte":'+endMMDD+'}}]},{"dt":"'+dt+'"},{"pf":"'+pf+'"}]}');
   db.collection(config.coll_userscreens).aggregate([
     {$match: matchOperator},
     {$group:{_id:"Total",total:{$sum:1}}}
@@ -52,8 +39,6 @@ module.exports.fetchScreenStats = function(req,res){
   const dt = (req.query.type==='Tablet' || req.query.type==='tablet' || req.query.type===undefined) ? "T":"S";
   const pf = (req.query.platform==='Android' || req.query.platform==='android' || req.query.platform===undefined) ? "A":"iOS";
   const db = mongojs(config.connectionstring+aKey);
-
-  var response = [];
 
   common.getAppTimeZone(aKey,function(err,appTZ){
 
@@ -96,22 +81,23 @@ module.exports.fetchScreenStats = function(req,res){
                   path : jsonResponse[resp[j]._id].path,
                 };
               }
-              let nuu;
-              var onComplete = function() {
+
+              var onComplete = function(response) {
                 db.close();
                 return res.json(response);
               };
 
               let tasksToGo = screennames.length;
+              let response = [];
               if (tasksToGo === 0) {
                 onComplete(response);
               }else{
                 screennames.forEach(function(key){
-                  getUniqiueUsersSameYear(key._id.aname,startYYYY,startMMDD,endMMDD,db,dt,pf,function(err,result){
-                    console.log(result);
+                  getUniqiueUsers(status,key._id.aname,startYYYY,endYYYY,startMMDD,endMMDD,db,dt,pf,function(err,result){
                     jsonResponse[key._id.aname].nuu = result;
                     if(!err){
                       response[tasksToGo] = jsonResponse[key._id.aname];
+                      console.log(response);
                       if (--tasksToGo === 0) {
                         onComplete(response);
                       }
@@ -122,19 +108,6 @@ module.exports.fetchScreenStats = function(req,res){
                   });
                 });
               }
-/*
-              for(let k=0;k<screennames.length;k++){
-                if(status===0){
-                  nuu = getUniqiueUsersSameYear(screennames[k]._id.aname,startYYYY,startMMDD,endMMDD,db,dt,pf);
-                }else{
-                  nuu = getUniqiueUsersDifferentYear(screennames[k]._id.aname,startYYYY,endYYYY,startMMDD,endMMDD,db,dt,pf);
-                }
-                console.log(nuu);
-                response[k] = jsonResponse[screennames[k]._id.aname];
-              }
-*/
-              //db.close();
-              //return res.json(response);
             }else{
               db.close();
               logger.error(common.getErrorMessageFrom(err));
