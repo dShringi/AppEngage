@@ -30,6 +30,10 @@ var eventNameSchema = new Schema({
     _id : { type: String }
 },{versionKey:false});
 
+var screenNameSchema = new Schema({
+    _id : { type: String }
+},{versionKey:false});
+
 var realtimeSchema = new Schema({
     _id  : { type: Number, required: true },
     val  : { type: Number }
@@ -92,6 +96,12 @@ var userSchema = new Schema({
 	tts	:	{type:	Number},
 },{strict:false,versionKey:false});
 
+var userScreenSchema = new Schema({
+    _id :   {type:  String, require :   true},
+    dt :   {type:  String},
+    pf :   {type:  String},
+},{strict:false,versionKey:false});
+
 // MongoDB Collection
 var appCollection 		= Mongoose.model('coll_app', appSchema);
 var realtimeCollection 		= Mongoose.model('coll_realtime', realtimeSchema);
@@ -102,8 +112,10 @@ var endCollection 		= Mongoose.model('coll_ends', endSchema);
 var eventCollection 		= Mongoose.model('coll_events', eventSchema);
 var activeSessionCollection 	= Mongoose.model('coll_activesessions', activeSessionSchema);
 var userCollection		= Mongoose.model('coll_users',userSchema);
+var userScreenCollection      = Mongoose.model('coll_userscreens',userScreenSchema);
 var eventCollection		= Mongoose.model('coll_events',eventSchema);
 var eventNamesCollection    =   Mongoose.model('coll_eventNames',eventNameSchema);
+var screenNamesCollection   =   Mongoose.model('coll_screennames',screenNameSchema);
 
 // Factory to get model based on event type
 function eventFactory(){
@@ -187,6 +199,12 @@ function eventFactory(){
 				    ts	: 1,
 				    tts	: 0
                 });
+            case Collection["screen"]:
+                return new userCollection({
+                    _id : _event.val.did,
+                    pf  : _event.val.pf,
+                    dt : _event.val.dt
+                });
             default:
                 logger.error("Invalid event type: "+_event.type);
                 return null;
@@ -201,6 +219,8 @@ module.exports = {
   Dashboard: dashboardCollection,
   ActiveSession: activeSessionCollection,
   User: userCollection,
+  Screen: userScreenCollection,
   RealTime: realtimeCollection,
-  EventNames: eventNamesCollection
+  EventNames: eventNamesCollection,
+  ScreenNames: screenNamesCollection
 };

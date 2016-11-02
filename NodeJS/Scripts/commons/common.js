@@ -1,3 +1,5 @@
+"use strict";
+
 var logger = require('../conf/log.js');
 var config = require('../conf/config.js');
 var moment = require('moment-timezone');
@@ -11,14 +13,14 @@ var common = {};
     		if (err.errors) {
         		for (var prop in err.errors) {
         			if(err.errors.hasOwnProperty(prop)) {
-            			errorMessage += err.errors[prop].message + ' '
+            			errorMessage += err.errors[prop].message + ' ';
         			}
         		}
     		} else {
         		errorMessage = err.message;
     		}
 		return errorMessage;
-	}
+	};
 
 	common.hasValue = function(dataKeys,dataValues){
 		var msgStatus = true;

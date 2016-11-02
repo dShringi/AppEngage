@@ -107,10 +107,11 @@ function pushToFcmAndroid(message){
 	andriodFcm.send(message, function(err, response){
 		if (err) {
 			printErrorMessage(err);
-		} else {
+		}
+		/* else {
 			printErrorMessage(err);
 
-		}
+		}*/
 	});
 }
 
@@ -119,10 +120,11 @@ function pushToFcmIos(message){
 	iosFcm.send(message, function(err, response){
 		if (err) {
 			printErrorMessage(err);
-		} else {
+		}
+		/* else {
 			printErrorMessage(err);
 
-		}
+		}*/
 	});
 }
 
