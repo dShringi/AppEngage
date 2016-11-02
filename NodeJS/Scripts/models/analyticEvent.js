@@ -200,7 +200,7 @@ function eventFactory(){
 				    tts	: 0
                 });
             case Collection["screen"]:
-                return new userCollection({
+                return new userScreenCollection({
                     _id : _event.val.did,
                     pf  : _event.val.pf,
                     dt : _event.val.dt
