@@ -96,10 +96,14 @@ var userSchema = new Schema({
 	tts	:	{type:	Number},
 },{strict:false,versionKey:false});
 
-var userScreenSchema = new Schema({
+var screenSchema = new Schema({
     _id :   {type:  String, require :   true},
     dt :   {type:  String},
     pf :   {type:  String},
+    did :  {type:  String},
+    rtc :  {type:  Number},
+    sid :  {type: String},
+    act :  {type: Object}
 },{strict:false,versionKey:false});
 
 // MongoDB Collection
@@ -112,7 +116,7 @@ var endCollection 		= Mongoose.model('coll_ends', endSchema);
 var eventCollection 		= Mongoose.model('coll_events', eventSchema);
 var activeSessionCollection 	= Mongoose.model('coll_activesessions', activeSessionSchema);
 var userCollection		= Mongoose.model('coll_users',userSchema);
-var userScreenCollection      = Mongoose.model('coll_userscreens',userScreenSchema);
+var screenCollection      = Mongoose.model('coll_screens',screenSchema);
 var eventCollection		= Mongoose.model('coll_events',eventSchema);
 var eventNamesCollection    =   Mongoose.model('coll_eventNames',eventNameSchema);
 var screenNamesCollection   =   Mongoose.model('coll_screennames',screenNameSchema);
@@ -200,8 +204,11 @@ function eventFactory(){
 				    tts	: 0
                 });
             case Collection["screen"]:
-                return new userScreenCollection({
-                    _id : _event.val.did,
+                return new screenCollection({
+                    rtc : _event.val.rtc,
+                    sid : _event.val.sid,
+                    did : _event.val.did,
+                    act : _event.val.act,
                     pf  : _event.val.pf,
                     dt : _event.val.dt
                 });
@@ -219,7 +226,7 @@ module.exports = {
   Dashboard: dashboardCollection,
   ActiveSession: activeSessionCollection,
   User: userCollection,
-  Screen: userScreenCollection,
+  Screen: screenCollection,
   RealTime: realtimeCollection,
   EventNames: eventNamesCollection,
   ScreenNames: screenNamesCollection
