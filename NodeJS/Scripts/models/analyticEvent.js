@@ -97,7 +97,6 @@ var userSchema = new Schema({
 },{strict:false,versionKey:false});
 
 var screenSchema = new Schema({
-    _id :   {type:  String, require :   true},
     dt :   {type:  String},
     pf :   {type:  String},
     did :  {type:  String},
