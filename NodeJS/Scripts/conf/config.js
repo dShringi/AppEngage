@@ -1,3 +1,5 @@
+"use strict";
+
 var config = {};
 
 config.server = {};
@@ -32,11 +34,12 @@ config.consumer.url = 'DWHBI-SRV2:2181';
 config.url = {};
 config.url.post = 'POST';
 config.url.beginep = '/api/i/single/B';
-config.url.endep = '/api/i/single/E'
+config.url.endep = '/api/i/single/E';
 config.url.crashep = '/api/i/single/C';
 config.url.eventsep = '/api/i/single/event';
 config.url.offlineep = '/api/i/bulk/O';
 config.url.screenep = '/api/i/single/S';
+config.url.campaignep = '/api/i/single/campaign';
 
 config.app = {};
 config.defaultAppTimeZone = 'Asia/Kolkata';
@@ -84,5 +87,6 @@ config.object = {};
 config.object.UNDEFINED = undefined;
 config.object.NULL = null;
 config.object.EMPTYSTRING ="";
+config.object.FALSE = false;
 
 module.exports = config;

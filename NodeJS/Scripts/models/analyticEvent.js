@@ -1,28 +1,32 @@
-var Mongoose   = require('mongoose');
-var Schema     = Mongoose.Schema;
+"use strict";
+const logger = require('../conf/log.js');
+const Mongoose   = require('mongoose');
+const Schema     = Mongoose.Schema;
 
-const Collection = { 
-                    "app"               : "coll_app", 
-                    "realtime"          : "coll_realtime", 
-                    "dashboard"         : "coll_dashboard", 
-                    "begin"             : "coll_begins", 
-                    "end"               : "coll_ends", 
+
+const Collection = {
+                    "app"               : "coll_app",
+                    "realtime"          : "coll_realtime",
+                    "dashboard"         : "coll_dashboard",
+                    "begin"             : "coll_begins",
+                    "end"               : "coll_ends",
                     "crash"             : "coll_crashes",
                     "activesessions" 	: "coll_activesessions",
                     "user"              : "coll_users",
                     "event"             : "coll_events",
-					"screen"             : "coll_screens"	
+					"screen"            : "coll_screens",
+                    "campaign"          : "coll_campaigns"
                    };
 
 // DB Schemas
-var appSchema = new Schema({ 
+var appSchema = new Schema({
     name : { type: String },
     cty  : { type: String },
     tz   : { type: String },
     ctg  : { type: String }
 },{versionKey:false});
 
-var eventNameSchema = new Schema({ 
+var eventNameSchema = new Schema({
     _id : { type: String }
 },{versionKey:false});
 
@@ -80,7 +84,7 @@ var userSchema = new Schema({
     lres:   {type:  String},
     lcty:   {type:  String},
     lctry:  {type:  String},
-    llat:   {type:  String},    
+    llat:   {type:  String},
     llong:  {type:  String},
 	flog	:	{type:	Number},
 	llog	:	{type:	Number},
@@ -137,17 +141,17 @@ function eventFactory(){
                 });
             case Collection["begin"]:
                 return new beginCollection({
-                   	rtr : _event.val.rtc,	
+                   	rtr : _event.val.rtc,
 			val : _event.val
                 });
             case Collection["end"]:
                 return new endCollection({
 			rtr : _event.val.rtc,
                     	val : _event.val
-                });                
+                });
             case Collection["crash"]:
                 return new crashCollection({
-                    rtr : _event.val.rtc, 
+                    rtr : _event.val.rtc,
                     val : _event.val
                 });
             case Collection["event"]:
@@ -173,21 +177,21 @@ function eventFactory(){
 				    losv	: _event.val.osv,
 				    lavn	: _event.val.avn,
 				    lc	: _event.val.c,
-                    lres: _event.val.res,      
+                    lres: _event.val.res,
                     lcty:	_event.val.city,
-                    lctry:   _event.val.ctry,   
+                    lctry:   _event.val.ctry,
                     llat:   _event.val.dlat,
-                    llong:   _event.val.dlog,                                        
+                    llong:   _event.val.dlog,
 				    flog	: _event.val.rtc,
 				    llog	: _event.val.rtc,
 				    ts	: 1,
-				    tts	: 0 	
+				    tts	: 0
                 });
             default:
-                logger.error("Invalid event type: "+_event.type)
+                logger.error("Invalid event type: "+_event.type);
                 return null;
         }
-    }
+    };
 }
 
 module.exports = {

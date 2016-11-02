@@ -1,9 +1,10 @@
+"use strict";
 
-var logger = require('../conf/log.js');
-var config = require('../conf/config.js');
-var common = require('../commons/common');
-var Collection = require('../models/analyticEvent').Collection;
-var request = require('request');
+const logger = require('../conf/log.js');
+const config = require('../conf/config.js');
+const common = require('../commons/common');
+const Collection = require('../models/analyticEvent').Collection;
+const request = require('request');
 
 module.exports = exports = function (server, producer) {
 	exports.begin(server, producer);
@@ -12,6 +13,7 @@ module.exports = exports = function (server, producer) {
 	exports.events(server,producer);
     exports.offline(server,producer);
     exports.screen(server,producer);
+    exports.campaign(server,producer);
 };
 
 exports.begin = function(server, producer) {
@@ -30,8 +32,8 @@ exports.begin = function(server, producer) {
 			paramsKeys[3]='dt';     paramsValues[3] = data.val.dt;
 			paramsKeys[4]='sid';	paramsValues[4] = data.val.sid;
             paramsKeys[5]='did';    paramsValues[5] = data.val.did;
-            msgStatus = common.hasValue(paramsKeys,paramsValues);
-			if(msgStatus === false){
+            let msgStatus = common.hasValue(paramsKeys,paramsValues);
+			if(msgStatus === config.object.FALSE){
 				reply.statusCode = config.msgcodes.success;
 				reply({ message: config.messages.success });
 				return;
@@ -68,8 +70,8 @@ exports.crash = function(server, producer) {
             paramsKeys[3]='dt';     paramsValues[3] = data.val.dt;
             paramsKeys[4]='sid';    paramsValues[4] = data.val.sid;
             paramsKeys[5]='did';    paramsValues[5] = data.val.did;
-            msgStatus = common.hasValue(paramsKeys,paramsValues);
-            if(msgStatus === false){
+            let msgStatus = common.hasValue(paramsKeys,paramsValues);
+            if(msgStatus === config.object.FALSE){
                 reply.statusCode = config.msgcodes.success;
                 reply({ message: config.messages.success });
                 return;
@@ -107,8 +109,8 @@ exports.end = function(server, producer) {
             paramsKeys[3]='dt';     paramsValues[3] = data.val.dt;
             paramsKeys[4]='sid';    paramsValues[4] = data.val.sid;
             paramsKeys[5]='did';    paramsValues[5] = data.val.did;
-            msgStatus = common.hasValue(paramsKeys,paramsValues);
-            if(msgStatus === false){
+            let msgStatus = common.hasValue(paramsKeys,paramsValues);
+            if(msgStatus === config.object.FALSE){
                 reply.statusCode = config.msgcodes.success;
                 reply({ message: config.messages.success });
                 return;
@@ -145,8 +147,8 @@ exports.events = function(server, producer) {
             paramsKeys[3]='dt';     paramsValues[3] = data.val.dt;
             paramsKeys[4]='sid';    paramsValues[4] = data.val.sid;
             paramsKeys[5]='did';    paramsValues[5] = data.val.did;
-            msgStatus = common.hasValue(paramsKeys,paramsValues);
-            if(msgStatus === false){
+            let msgStatus = common.hasValue(paramsKeys,paramsValues);
+            if(msgStatus === config.object.FALSE){
                 reply.statusCode = config.msgcodes.success;
                 reply({ message: config.messages.success });
                 return;
@@ -178,7 +180,7 @@ exports.offline = function(server, producer) {
             var err;
             try{
                 var jSON = JSON.parse(JSON.stringify(request.payload));
-                for(i=0;i<jSON.length;i++){
+                for(let i=0;i<jSON.length;i++){
                     data.val = jSON[i];
 					var akey = request.headers.akey;
                     console.log(data.val);
@@ -204,20 +206,20 @@ exports.screen = function(server, producer) {
         method: config.url.post,
         path: config.url.screenep,
         handler: function (request, reply) {
+            var paramsValues = [], paramsKeys = [];
             var data = {};
-            var err;
             //try{
                 data.val = request.payload;
                 console.log(data.val);
-				
+
 				paramsKeys[0]='akey';   paramsValues[0] = request.headers.akey;
 				paramsKeys[1]='rtc';    paramsValues[1] = data.val.rtc;
 				paramsKeys[2]='mt';     paramsValues[2] = data.val.mt;
 				paramsKeys[3]='dt';     paramsValues[3] = data.val.dt;
 				paramsKeys[4]='sid';    paramsValues[4] = data.val.sid;
 				paramsKeys[5]='did';    paramsValues[5] = data.val.did;
-				msgStatus = common.hasValue(paramsKeys,paramsValues);
-				if(msgStatus === false){
+				let msgStatus = common.hasValue(paramsKeys,paramsValues);
+				if(msgStatus === config.object.FALSE){
 					reply.statusCode = config.msgcodes.success;
 					reply({ message: config.messages.success });
 					return;
@@ -234,18 +236,41 @@ exports.screen = function(server, producer) {
 						reply({ message: config.messages.success });
 					}
 				});
-				
-				
-            /*}catch(ex){
-                err = ex;
-            }
-            if(!err){
+        }
+    });
+};
+
+exports.campaign = function(server, producer) {
+    //Server route for Real Time Events
+    server.route({
+        method: config.url.post,
+        path: config.url.campaignep,
+        handler: function (request, reply) {
+            var paramsValues = [], paramsKeys = [];
+            var data = {};
+            data.val = request.payload;
+            console.log(data.val);
+
+            paramsKeys[0]='akey';   paramsValues[0] = request.headers.akey;
+            paramsKeys[1]='campaignid';    paramsValues[1] = data.val.rtc;
+            let msgStatus = common.hasValue(paramsKeys,paramsValues);
+            if(msgStatus === config.object.FALSE){
                 reply.statusCode = config.msgcodes.success;
                 reply({ message: config.messages.success });
-            }else{
-                reply.statusCode = config.msgcodes.failure;
-                reply({ message: config.messages.failure });
-            }*/
+                return;
+            }
+            data.type = Collection["campaign"];
+            pushToKafka(data,request,producer,function(err,data){
+                if(err){
+                    var errMsg = common.getErrorMessageFrom(err);
+                    logger.error(errMsg);
+                    reply.statusCode = config.msgcodes.failure;
+                    reply({ message: errMsg });
+                } else {
+                    reply.statusCode = config.msgcodes.success;
+                    reply({ message: config.messages.success });
+                }
+            });
         }
     });
 };
@@ -253,20 +278,18 @@ exports.screen = function(server, producer) {
 function pushToKafka(data,request,producer,callback){
 	//Deriving the IP Address of the request for location.
 	data.val.ipa = common.getIP(request);
-    //data.val.ipa = '125.17.114.110';
-	payloads = [{ topic: request.headers.akey, messages: JSON.stringify(data), partition: 0 }];
+	let payloads = [{ topic: request.headers.akey, messages: JSON.stringify(data), partition: 0 }];
 
 	//Push the payload to the queue.
-        producer.send(payloads, function(err, data){
-		callback(err,data);
+    producer.send(payloads, function(err, data){
+	   callback(err,data);
 	});
 
 }
 
-// this method will push offile data by calling API 
+// this method will push offile data by calling API
 function pushOfflineData(postData, akey){
-	"use strict";
-	let url = getUrl(postData.mt);
+	let url = getURL(postData.mt);
 	if(Boolean(url)){
 		var options = {method: config.url.post, body: postData, json: true, url: url, headers: {"content-type": "application/json","akey": akey}};
 		request(options, function (err, res, body) {
@@ -274,22 +297,21 @@ function pushOfflineData(postData, akey){
 				let errMsg = common.getErrorMessageFrom(err);
 				logger.error(errMsg);
 			}
-		})
+		});
 	}
 }
 
-function getUrl(eventType){
-	"use strict";
+function getURL(eventType){
 	let apiUrl = '';
 	const domain = config.server.domain;
 	switch(eventType) {
-		case 'E' :{ 
+		case 'E' :{
 			apiUrl = domain + config.url.endep; break;
-		} case 'B' :{ 
+		} case 'B' :{
 			apiUrl = domain  + config.url.beginep; break;
-		} case 'C' :{ 
+		} case 'C' :{
 			apiUrl = domain  + config.url.crashep; break;
-		} case 'event' :{ 
+		} case 'event' :{
 			apiUrl = domain  + config.url.eventsep; break;
 		} case 'S'	:{
 			apiUrl = domain  + config.url.screenep; break;
