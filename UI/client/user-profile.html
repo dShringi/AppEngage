@@ -1,0 +1,224 @@
+ <!doctype html>
+    <html ng-app="screenAnalytics">
+    	<head>
+			<meta http-equiv="X-UA-Compatible" content="IE=10,11">
+			<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+        	<title>Profile User Data</title>
+        	<link rel="icon" type="image/x-icon" href="favicon.ico" />
+        	<link rel="stylesheet" href="assets/css/bootstrap.min.css">
+			<link rel="stylesheet" href="assets/css/font-awesome.css">
+			<link rel="stylesheet" href="assets/css/style.css">
+      		
+       		
+       		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
+			<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.js"></script>
+       		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
+       		<script src="assets/js/bootstrap.js"></script>
+       		<script src="assets/js/d3.v3.min.js"></script>
+			<script src="assets/js/moment.min.js"></script>
+      		<script src="assets/js/daterangepicker.js"></script>
+			<link rel="stylesheet" type="text/css" href="assets/css/daterangepicker.css" />
+       		<script src="assets/js/common.js"></script>
+       		<script src="assets/js/app-analytics.js"></script>
+			
+       	 	
+        	 <style>
+			body {padding-top:74px !important;}
+		</style>
+			
+        </head>
+     <body>
+     	<nav id="mainNav" class="navbar navbar-default navbar-fixed-top " >
+			<div class="left-side sticky-left-side" ng-include src="'menu.html'" tabindex="5000"></div>
+        	<div ng-include src="'header.html'"></div>
+        	<!-- /.container-fluid -->
+        </nav>
+       
+    	<div class="row">
+    		<div class="col-md-9 left-content">
+    			 <div class="row breadcrumb bg-white border-bottom negative-mrgnr30">
+					<div class="col-md-6">
+						<ul>
+							<li><a href="">Devices</a></li>
+							<li> &gt; </li>
+							<li>Screen Analytics</li>
+						</ul>
+					</div>
+				</div>
+				<div class="row date-range">
+					<div class="col-md-6 pull-right">
+						<div id="dateRange" class="pull-right">
+							<i class="glyphicon glyphicon-calendar txt-green fa fa-calendar"></i>
+							<span></span><b class="caret"></b>
+						</div>
+					</div>
+				</div><!-- end of date range picker -->
+				
+				<div class="row tab-blks">
+					<ul class="col-md-12 ">
+						<li class="col-md-6 active">
+							<div class="col-md-2">
+								<div class="icon">
+									<i class="fa fa-desktop fa-2x" aria-hidden="true"></i>
+								</div> 
+							</div>
+							<div class="col-md-6">
+							
+								<h2>Total<br/> Sessions</h2>
+							</div>
+							<div class="col-md-4 large-txt text-right">
+								13
+							</div>
+						</li>
+						<li class="col-md-6">
+							<div class="col-md-2">
+								<div class="icon">
+									<i class="fa fa-calendar fa-2x" aria-hidden="true"></i>
+								</div> 
+							</div>
+							<div class="col-md-6">
+								<h2>Total<br/> Events</h2>
+							</div>
+							<div class="col-md-4 large-txt text-right">
+								35
+							</div>
+						</li>
+					</ul>
+				</div><!-- end of tab block -->
+				
+				<div class="row">
+					<div class="col-md-12 bg-white border-bottom text-center">
+						<img src="assets/img/graph1-sample.png"/>
+					</div>
+					
+				</div>
+				<div class="row ">
+					<div class="col-md-12 border-bottom">
+						<div class="col-md-6">
+							<h3>Events</h3>
+						</div>
+						<div class="col-md-6">
+						
+							<div class="dropdown pull-right">
+							  <button class="dropdown-toggle" id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								Dropdown trigger
+								<span class="caret"></span>
+							  </button>
+							  <ul class="dropdown-menu pull-right" aria-labelledby="dLabel">
+								  <li><a tabindex="-1" href="#">Action</a></li>
+								  <li><a tabindex="-1" href="#">Another action</a></li>
+								  <li><a tabindex="-1" href="#">Something else here</a></li>
+								  <li class="divider"></li>
+								  <li><a tabindex="-1" href="#">Separated link</a></li>
+							  </ul>
+							</div>
+							
+						</div>
+					</div>
+				</div>
+				
+				<div class="row">
+					<div class="col-md-12 bg-white border-bottom text-center">
+						<img src="assets/img/graph1-sample.png"/>
+					</div>
+					
+				</div>
+				
+				<div class="row">
+					<div class="col-md-12 border-bottom">
+						<div class="col-md-6">
+							<h3>Events</h3>
+						</div>
+						<div class="col-md-6">chf
+							<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" data-toggle="dropdown">
+							  <li><a tabindex="-1" href="#">Action</a></li>
+							  <li><a tabindex="-1" href="#">Another action</a></li>
+							  <li><a tabindex="-1" href="#">Something else here</a></li>
+							  <li class="divider"></li>
+							  <li><a tabindex="-1" href="#">Separated link</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12 bg-white border-bottom text-center">
+						<img src="assets/img/graph2-sample.png"/>
+					</div>
+					
+				</div>
+				
+				
+   		
+    		</div><!-- End of left col -->
+    		
+    		<div class="col-md-3">
+    			<div class="profile-section">
+    				<img src="assets/img/1477482048_unknown.png" alt="profile-pic" />
+    			</div>
+    			<div class="user-profile-info">
+    				
+    				<div class="row">
+    					<div class="col-md-12 text-center">
+    						<h1>John Doe</h1>
+							<i class="fa fa-map-marker" aria-hidden="true"></i> London <i class="fa fa-circle fa-1x" aria-hidden="true"></i> UK
+							<p><em>Last Seen 6 Days ago</em></p>
+    					</div>
+    				</div>
+    				
+    				<div class="row linear-graph-box">
+						<div class="row">
+							<div class="col-md-8">Engagement Level</div> 
+							<div class="col-md-4"><i class="fa fa-square" aria-hidden="true"></i> <span>60</span><span>%</span></div>
+						</div> 
+   						<div class="row">
+   							<div class="col-md-12">
+								<div class="grey">
+									<div class="orange"> </div>
+								</div>
+							</div>
+						</div>
+    				</div>
+    				
+    				<hr>
+    				
+    				<div class="row indv-details">
+    					<div class="col-md-12">
+    						<dl class="dl-vertical">
+								<dt>Username</dt>
+								<dd>John Doe</dd>
+								<dt>E-mail</dt>
+								<dd>johndoe@appengage.com</dd>
+								<dt>Organization:</dt>
+								<dd>Amodo</dd>
+								<dt>Full name</dt>
+								<dd>John Davis Doe</dd>
+								<dt>Device & OS </dt>
+								<dd>Ipad 4 (WA8 4.1)</dd>
+								<dt>Contact Phone:</dt>
+								<dd> +374-628 9058</dd>
+								<dt>Gender: </dt>
+								<dd>Male</dd>
+								<dt>Age:</dt>
+								<dd>35</dd>
+							</dl>
+						</div>
+   						<div class="col-md-12">
+						</div>
+   						
+    				</div>
+    				
+    			</div>
+    		</div><!-- end right col 3 -->
+    	</div><!-- end main row -->
+    	
+    	
+    	<script>
+		 $('body').on('load', function() {
+	  // Handler for .load() called.
+			alert('loaded');
+			$( ".device-menu li.selected a" ).trigger( "click" );
+			
+		});
+		 </script>
+     </body>							
+</html>

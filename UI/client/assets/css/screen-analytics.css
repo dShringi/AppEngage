@@ -57,6 +57,13 @@
 .device-menu {list-style-type: none; display:inline}
 .device-menu .selected{font-weight: 700}
 .device-menu .grey-pipe{font-weight: 700;padding: 4px}
+.device-menu .checked{background-color: #efefef;padding:3px;border: 1px solid #ccc;border-radius:3px}
+
+
+.sub-menu-menu { padding-left: 5px; }
+.sub-menu-menu a {margin-right: 15px}
+.sub-menu-menu .fa-chevron-right{font-size: 12px;margin-right:5px}
+
 
 
 .info-container { padding-top:20px; padding-left: 0; width: 100%; display: inline-block;}
@@ -76,7 +83,5 @@
 
 .carousel-info{position:absolute;margin-top:-20px;color:#333;font-size:12px}
 
-.sub-menu-menu{ padding-left: 5px; }
-.sub-menu-menu a {padding-right: 10px}
-.sub-menu-menu .fa-chevron-right{font-size: 12px;margin-right:5px}
+
 
