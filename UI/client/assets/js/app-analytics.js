@@ -5,13 +5,7 @@ var screenAnalytics = angular.module('screenAnalytics', []);
 screenAnalytics.controller('deviceCtrl', ['$scope', '$http', '$q', function($scope, $http, $q) {
 	
 	
-		$scope.toggleSubMenu = function(anchorID){
-			var callerName = anchorID;
-			if (callerName === "tablet")
-				{
-					$("#tabletAppScreens").ne
-				}
-		};
+		
 		
      	$scope.fetchAppData = function(device,os){
 	
@@ -39,22 +33,42 @@ screenAnalytics.controller('deviceCtrl', ['$scope', '$http', '$q', function($sco
 				//console.log(response);
 				//$scope.users = response.data;
 				var data = response.data;
-
+				console.log(data);
 				for(var i = 0; i<data.length; i++){
+					
+					var tts = data[i].tts;
+					var ts = data[i].ts;
+					var nuu = data[i].nuu;
 					
 					var atsps = data[i].tts / data[i].ts;
 					var atsbu = data[i].tts / data[i].nuu;
 					
-					if (isNaN(atsps) && isNaN(atsbu))
-						{	
+					
+					//console.log(atsbu);
+					//console.log(atsbu);
+					if ( isNaN(atsps)||  atsps == Number.POSITIVE_INFINITY || atsps == Number.NEGATIVE_INFINITY || atsps === null)
+						{	console.log("false atsps" +atsps);
 							data[i].atsps = 0;
-							data[i].atsbu = 0;
 						}
+					else{
+						data[i].atsps = atsps; 
+					}
+					if ( isNaN(atsbu) || atsbu == Number.POSITIVE_INFINITY || atsbu == Number.NEGATIVE_INFINITY || atsbu === null)
+						{
+							
+							console.log("false atsbu" +atsbu);
+							data[i].atsbu = 0;
+						} 
 					else{	
-							data[i].atsps = atsps; 
+/*							console.log("true" +atsps);
+						 	console.log("true" +atsbu);
+						
+							data[i].atsps = atsps; */
+						
 							data[i].atsbu = atsbu;
 						}
 				}
+				 //console.log(data);
 				//console.log(JSON.stringify(data));
 				$scope.users = data;
 				

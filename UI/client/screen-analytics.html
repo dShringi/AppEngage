@@ -14,24 +14,20 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.js"></script>
 		
-		
-		
 		<script src="assets/js/d3.v3.min.js"></script>
-		
 		<script src="assets/js/moment.min.js"></script>
+		<script src="assets/js/common.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
 		<script src="assets/js/app-analytics.js"></script>
 		<script src="assets/js/daterangepicker.js"></script>
 		<link rel="stylesheet" type="text/css" href="assets/css/daterangepicker.css" />
-		
 		<!-- Optional: Reflection -->
 		<script type="text/javascript" src="assets/coverflow/reflection.js" ></script>
 		<!-- interpolate, depends on jQ 1.8.0+ -->
 		<script src="assets/coverflow/jquery.interpolate.min.js" ></script>
-		
 		<script src="assets/coverflow/jquery.touchSwipe.min.js"></script>
 		<!-- Coverflow -->
-		<script src="assets/coverflow/jquery.coverflow.js " ></script>
+		<script src="assets/coverflow/jquery.coverflow.js"></script>
         <style>
 			body {padding-top:74px !important;}
 		</style>
@@ -61,7 +57,7 @@
 							<a href="javascript:void(0)" id="mobileAppScreens">Mobile</a> 
 							<span class="sub-menu-menu"> 
 								<i class="fa fa-chevron-right" aria-hidden="true"></i>
-								<a href="javascript:void(0)" ng-click="fetchAppData('Mobile','ios')" id="iosMobileAppScreens"> <i class="fa fa-apple" aria-hidden="true"></i> ios</a>
+								<a href="javascript:void(0)" ng-click="fetchAppData('Mobile','ios')" id="iosMobileAppScreens" class="checked"> <i class="fa fa-apple" aria-hidden="true" ></i> ios</a>
 								
 								<a href="javascript:void(0)" ng-click="fetchAppData('Mobile','android')" id="androidMobileAppScreens"><i class="fa fa-android" aria-hidden="true"></i> Android</a>
 							</span>
@@ -77,6 +73,7 @@
 							</span>
 						</li>
 						<li class="hidden">
+							<input type="text" id="selMenu" value="iosMobileAppScreens">
 							<input type="text" id="sDate">
 							<input type="text" id="eDate">
 						</li>
@@ -170,67 +167,7 @@
 		<!-- End of container -->
 		
 		<script src="assets/js/screen-analytics.js"></script>
-   		<script>
-		/*$(function() {
-	
-			//if ($.fn.reflect) {
-					//$('.photos .cover').reflect();
-				//}
-			//console.log("timeout");
-			
-			$('.photos').coverflow({
-					easing:			'',
-					duration:		'slow',
-					index:			3,
-					width:			320,
-					height:			240,
-					visible:		'density',
-					selectedCss:	{	opacity: 1	},
-					outerCss:		{	opacity: .1	},
-					
-					confirm:		function() {
-						console.log('Confirm');
-					},
-					
-					refresh: function(){
-						console.log('refresh');
-					},
-
-					change:	function(event, cover) {
-						var img = $(cover).children().andSelf().filter('img').last();
-						
-						$('#photos-name').text(img.data('name') || 'unknown');
-						//console.log(imgIndex);
-						//var imgIndex = img.index();
-						
-						//$(".info-container").not(':eq(imgIndex)').hide();
-						//$(".info-container").eq(imgIndex).show();
-						
-						var imgIndex = img.index();
-						var infoIndex = $(".info-container").index();
-						//console.log(imgIndex);
-						
-						
-						$('.info-container').each(function (index, value){
-						  
-						 var listItem = $(this).index();
-							
-						  if (imgIndex === listItem)
-							  {
-								 $(".info-container").eq(listItem).show();
-							  }
-							else{
-								
-								$(".info-container").eq(listItem).hide();
-							}
-						});						
-					}
-				});	
-		
-		});*/
-			
-		
-		</script>
+   		
    		
     </body>
 </html>
