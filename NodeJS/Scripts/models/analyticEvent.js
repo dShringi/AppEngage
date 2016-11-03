@@ -3,7 +3,6 @@ const logger = require('../conf/log.js');
 const Mongoose   = require('mongoose');
 const Schema     = Mongoose.Schema;
 
-
 const Collection = {
                     "app"               : "coll_app",
                     "realtime"          : "coll_realtime",
@@ -15,7 +14,8 @@ const Collection = {
                     "user"              : "coll_users",
                     "event"             : "coll_events",
 					"screen"            : "coll_screens",
-                    "campaign"          : "coll_campaigns"
+                    "campaign"          : "coll_campaigns",
+                    "screenmetrics"     : "coll_screenmetrics"
                    };
 
 // DB Schemas
@@ -44,6 +44,13 @@ var dashboardSchema = new Schema({
     val  : { type: Object }
 }, {
     collection : 'coll_dashboard'
+});
+
+var screenMetricsSchema = new Schema({
+    _id  : { type: Object, require: true },
+    val  : { type: Object }
+}, {
+    collection : 'coll_screenmetrics'
 });
 
 var beginSchema = new Schema({
@@ -119,6 +126,8 @@ var screenCollection      = Mongoose.model('coll_screens',screenSchema);
 var eventCollection		= Mongoose.model('coll_events',eventSchema);
 var eventNamesCollection    =   Mongoose.model('coll_eventNames',eventNameSchema);
 var screenNamesCollection   =   Mongoose.model('coll_screennames',screenNameSchema);
+var screenMetricsCollection     = Mongoose.model('coll_screenmetrics', screenMetricsSchema);
+
 
 // Factory to get model based on event type
 function eventFactory(){
@@ -228,5 +237,6 @@ module.exports = {
   Screen: screenCollection,
   RealTime: realtimeCollection,
   EventNames: eventNamesCollection,
-  ScreenNames: screenNamesCollection
+  ScreenNames: screenNamesCollection,
+  ScreenMetrics: screenMetricsCollection
 };
