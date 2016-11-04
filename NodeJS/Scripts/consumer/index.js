@@ -265,7 +265,7 @@ common.getAppTimeZone(akey,function(err,appTZ){
 				});
 			break;
 			case Collection["screen"]:
-				screen.populateUniqueNames(Model,data.val.act,function(err,status){
+				screen.populateUniqueNames(Model,data.val,function(err,status){
 					if(err) logError(err);
 					return;
 				});

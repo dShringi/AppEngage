@@ -15,7 +15,8 @@ const Collection = {
                     "event"             : "coll_events",
 					"screen"            : "coll_screens",
                     "campaign"          : "coll_campaigns",
-                    "screenmetrics"     : "coll_screenmetrics"
+                    "screenmetrics"     : "coll_screenmetrics",
+                    "screennames"       : "coll_screennames"
                    };
 
 // DB Schemas
@@ -31,7 +32,7 @@ var eventNameSchema = new Schema({
 },{versionKey:false});
 
 var screenNameSchema = new Schema({
-    _id : { type: String }
+    _id : { type: Object }
 },{versionKey:false});
 
 var realtimeSchema = new Schema({
@@ -219,6 +220,10 @@ function eventFactory(){
                     act : _event.val.act,
                     pf  : _event.val.pf,
                     dt : _event.val.dt
+                });
+            case Collection["screennames"]:
+                return new screenNamesCollection({
+                    _id : _event.activity
                 });
             default:
                 logger.error("Invalid event type: "+_event.type);

@@ -3,22 +3,26 @@
 var logger = require('../conf/log.js');
 var config = require('../conf/config.js');
 var common = require('../commons/common.js');
-
+var Model = require('../models/analyticEvent');
+var Collection = Model.Collection;
+var EventFactory = new Model.EventFactory();
 var screen = {};
 
 (function(screen){
 
-    screen.populateUniqueNames = function(Model,activities,callback) {
-        for(let i=0;i<activities.length;i++){
-            Model.ScreenNames.findOneAndUpdate({_id:activities[i].key},{_id:activities[i].key},{upsert:true},function(err,doc){
-                if(err){
-                    //console.log(err);
-                    logger.error(common.getErrorMessageFrom(err));
-                    callback(err,config.NULL);
-                }else{
-                    callback(config.NULL,'success');
-                }
-            });
+    screen.populateUniqueNames = function(Model,data,callback) {
+        data.type = Collection["screennames"];
+        for(let i=0;i<data.act.length;i++){
+            //let key = JSON.parse('{"_id":{"aname":"'+data.act[i].key+'","pf":"'+data.pf+'","dt":"'+data.dt+'"}}');
+            data.activity = JSON.parse('{"aname":"'+data.act[i].key+'","pf":"'+data.pf+'","dt":"'+data.dt+'"}');
+
+            let event = EventFactory.getEvent(data);
+            event.save(function (err) {
+                if (err && err.code!==11000) {
+                        logger.error(common.getErrorMessageFrom(err));
+                        return;
+                    }
+                });
         }
     };
 
