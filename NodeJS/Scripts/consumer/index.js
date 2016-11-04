@@ -63,6 +63,9 @@ common.getAppTimeZone(akey,function(err,appTZ){
 		data.val.rtc = parseInt(data.val.rtc);
 
 		let currDate = parseInt(Math.floor(Date.now()/1000));
+		if(data.val.rtc.toString().length === 13){
+			data.val.rtc = data.val.rtc/1000;
+		}
 		if(data.val.rtc > currDate || data.val.rtc === 0){
 			data.val.rtc = currDate;
 		}
