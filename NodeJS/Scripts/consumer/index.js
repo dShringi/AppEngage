@@ -546,7 +546,7 @@ function updateActiveSessions(req,callback){
 							return;
 						}else{
 							//Incrementing Active Session Count in the RealTime Collection
-							updateRealTimeSessionCount(data.val.rtc,1,function onupdateRealTimeSessionCountComplete(err){
+							updateRealTimeSessionCount(req.val.rtc,1,function onupdateRealTimeSessionCountComplete(err){
 								if(err) {
 									logError(err);
 									return;
