@@ -57,8 +57,8 @@ var screen = {};
                 for(let i=0;i<data.act.length;i++){
                     let key = data.act[i].key;
                     let tts = data.act[i].ts;
-                    let updateEventsDoc = JSON.parse('{"$inc":{"_'+key+'._'+yyyy+'.$.tse":1,"_'+key+'._'+yyyy+'.$.tts":'+tts+'}}');
-                    let searchEventsDoc = JSON.parse('{"_id":"'+did+'","_'+key+'._'+yyyy+'._id":'+parseInt(mm.toString().concat(dd))+'}');
+                    let updateEventsDoc = JSON.parse('{"$inc":{"'+key+'._'+yyyy+'.$.tse":1,"_'+key+'._'+yyyy+'.$.tts":'+tts+'}}');
+                    let searchEventsDoc = JSON.parse('{"_id":"'+did+'","'+key+'._'+yyyy+'._id":'+parseInt(mm.toString().concat(dd))+'}');
                     //Update the counters for the user against the respective date for the key.
                     Model.UserScreens.findOneAndUpdate(searchEventsDoc,updateEventsDoc,function(err,doc){
                         //If none of the document gets updated.
@@ -66,7 +66,7 @@ var screen = {};
                             // If there are no errors
                             if(!err){
                                 let push = {};
-                                push['_'+key+'._'+yyyy] = JSON.parse('{"_id":'+parseInt(mm.toString().concat(dd))+',"tse":1,"tts":'+tts+'}');
+                                push[key+'._'+yyyy] = JSON.parse('{"_id":'+parseInt(mm.toString().concat(dd))+',"tse":1,"tts":'+tts+'}');
                                 //Against the user add the counters for data which he has performed a login.
                                 Model.UserScreens.findByIdAndUpdate(did,{$push:push},function(err,doc){
                                     if(err){
