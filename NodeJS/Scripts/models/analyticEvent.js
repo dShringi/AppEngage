@@ -16,7 +16,8 @@ const Collection = {
 					"screen"            : "coll_screens",
                     "campaign"          : "coll_campaigns",
                     "screenmetrics"     : "coll_screenmetrics",
-                    "screennames"       : "coll_screennames"
+                    "screennames"       : "coll_screennames",
+                    "userscreens"       : "coll_userscreens"
                    };
 
 // DB Schemas
@@ -104,6 +105,12 @@ var userSchema = new Schema({
 	tts	:	{type:	Number},
 },{strict:false,versionKey:false});
 
+var userScreenSchema = new Schema({
+    _id :   {type:  String, require :   true},
+    dt  :   {type:  String},
+    pf :   {type:  String}
+},{strict:false,versionKey:false});
+
 var screenSchema = new Schema({
     dt :   {type:  String},
     pf :   {type:  String},
@@ -128,6 +135,7 @@ var eventCollection		= Mongoose.model('coll_events',eventSchema);
 var eventNamesCollection    =   Mongoose.model('coll_eventNames',eventNameSchema);
 var screenNamesCollection   =   Mongoose.model('coll_screennames',screenNameSchema);
 var screenMetricsCollection     = Mongoose.model('coll_screenmetrics', screenMetricsSchema);
+var userScreensCollection   = Mongoose.model('coll_userscreens', userScreenSchema);
 
 
 // Factory to get model based on event type
@@ -212,6 +220,12 @@ function eventFactory(){
 				    ts	: 1,
 				    tts	: 0
                 });
+            case Collection["userscreens"]:
+                return new userScreensCollection({
+                    _id : _event.val.did,
+                    pf  : _event.val.pf,
+                    dt : _event.val.dt
+                });
             case Collection["screen"]:
                 return new screenCollection({
                     rtc : _event.val.rtc,
@@ -243,5 +257,6 @@ module.exports = {
   RealTime: realtimeCollection,
   EventNames: eventNamesCollection,
   ScreenNames: screenNamesCollection,
-  ScreenMetrics: screenMetricsCollection
+  ScreenMetrics: screenMetricsCollection,
+  UserScreens: userScreensCollection
 };

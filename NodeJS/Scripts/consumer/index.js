@@ -276,6 +276,10 @@ common.getAppTimeZone(akey,function(err,appTZ){
 					if(err) logError(err);
 					return;
 				});
+				screen.populateUserScreens(Model,data.val,appTZ,function(err,status){
+					if(err) logError(err);
+					return;
+				});
 			break;
 		}
 	});

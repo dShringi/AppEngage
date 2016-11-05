@@ -18,12 +18,14 @@ var screen = {};
 
             let event = EventFactory.getEvent(data);
             event.save(function (err) {
+                //11000 is the err code for duplicate record. Here we are handling duplicate error as its an expected error.
                 if (err && err.code!==11000) {
                         logger.error(common.getErrorMessageFrom(err));
                         return;
                     }
                 });
         }
+        callback(config.NULL,'success');
     };
 
     screen.populateMetrics = function(Model,data,appTZ,callback){
@@ -40,6 +42,52 @@ var screen = {};
             });
         }
     };
+
+    screen.populateUserScreens = function(Model,data,appTZ,callback){
+        let date = common.getStartDate(data.rtc,appTZ);
+        let yyyy    =   parseInt(date.toString().substring(0,4));
+        let mm  =   parseInt(date.toString().substring(4,6));
+        let dd  =   date.toString().substring(6,8);
+        let did =   data.did;
+        Model.UserScreens.findByIdAndUpdate(did,{$set:{pf:data.pf,dt:data.dt}},{upsert:true},function(err,doc){
+            if(err){
+                logger.error(common.getErrorMessageFrom(err));
+                callback(err,config.NULL);
+            }else{
+                for(let i=0;i<data.act.length;i++){
+                    let key = data.act[i].key;
+                    let tts = data.act[i].ts;
+                    let updateEventsDoc = JSON.parse('{"$inc":{"_'+key+'._'+yyyy+'.$.tse":1,"_'+key+'._'+yyyy+'.$.tts":'+tts+'}}');
+                    let searchEventsDoc = JSON.parse('{"_id":"'+did+'","_'+key+'._'+yyyy+'._id":'+parseInt(mm.toString().concat(dd))+'}');
+                    //Update the counters for the user against the respective date for the key.
+                    Model.UserScreens.findOneAndUpdate(searchEventsDoc,updateEventsDoc,function(err,doc){
+                        //If none of the document gets updated.
+                        if(doc===config.object.NULL || doc===config.object.UNDEFINED){
+                            // If there are no errors
+                            if(!err){
+                                let push = {};
+                                push['_'+key+'._'+yyyy] = JSON.parse('{"_id":'+parseInt(mm.toString().concat(dd))+',"tse":1,"tts":'+tts+'}');
+                                //Against the user add the counters for data which he has performed a login.
+                                Model.UserScreens.findByIdAndUpdate(did,{$push:push},function(err,doc){
+                                    if(err){
+                                        logger.error(common.getErrorMessageFrom(err));
+                                        return;
+                                    }
+                                });
+                            }else{
+                                logger.error(common.getErrorMessageFrom(err));
+                                return;
+                            }
+                        }else{
+                            callback(err,0);
+                            return;
+                        }
+                    });
+                }
+            }
+        });
+    };
+
 
 }(screen));
 
