@@ -1,0 +1,22 @@
+html { 
+  background: url(../img/landing/H_14.jpg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+body{
+	background-color: transparent;
+}
+#modalRegister .modal-content {
+    min-height: 420px;
+    max-height: 420px;
+}
+#modalRegister .tab-content {
+    max-height: 280px;
+    min-height: 280px;
+}
+.error-help{
+	height:20px;
+	color:red;
+}
