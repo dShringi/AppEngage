@@ -3,7 +3,6 @@ const logger = require('../conf/log.js');
 const Mongoose   = require('mongoose');
 const Schema     = Mongoose.Schema;
 
-
 const Collection = {
                     "app"               : "coll_app",
                     "realtime"          : "coll_realtime",
@@ -15,7 +14,10 @@ const Collection = {
                     "user"              : "coll_users",
                     "event"             : "coll_events",
 					"screen"            : "coll_screens",
-                    "campaign"          : "coll_campaigns"
+                    "campaign"          : "coll_campaigns",
+                    "screenmetrics"     : "coll_screenmetrics",
+                    "screennames"       : "coll_screennames",
+                    "userscreens"       : "coll_userscreens"
                    };
 
 // DB Schemas
@@ -31,7 +33,7 @@ var eventNameSchema = new Schema({
 },{versionKey:false});
 
 var screenNameSchema = new Schema({
-    _id : { type: String }
+    _id : { type: Object }
 },{versionKey:false});
 
 var realtimeSchema = new Schema({
@@ -44,6 +46,13 @@ var dashboardSchema = new Schema({
     val  : { type: Object }
 }, {
     collection : 'coll_dashboard'
+});
+
+var screenMetricsSchema = new Schema({
+    _id  : { type: Object, require: true },
+    val  : { type: Object }
+}, {
+    collection : 'coll_screenmetrics'
 });
 
 var beginSchema = new Schema({
@@ -96,6 +105,12 @@ var userSchema = new Schema({
 	tts	:	{type:	Number},
 },{strict:false,versionKey:false});
 
+var userScreenSchema = new Schema({
+    _id :   {type:  String, require :   true},
+    dt  :   {type:  String},
+    pf :   {type:  String}
+},{strict:false,versionKey:false});
+
 var screenSchema = new Schema({
     dt :   {type:  String},
     pf :   {type:  String},
@@ -119,6 +134,9 @@ var screenCollection      = Mongoose.model('coll_screens',screenSchema);
 var eventCollection		= Mongoose.model('coll_events',eventSchema);
 var eventNamesCollection    =   Mongoose.model('coll_eventNames',eventNameSchema);
 var screenNamesCollection   =   Mongoose.model('coll_screennames',screenNameSchema);
+var screenMetricsCollection     = Mongoose.model('coll_screenmetrics', screenMetricsSchema);
+var userScreensCollection   = Mongoose.model('coll_userscreens', userScreenSchema);
+
 
 // Factory to get model based on event type
 function eventFactory(){
@@ -202,6 +220,12 @@ function eventFactory(){
 				    ts	: 1,
 				    tts	: 0
                 });
+            case Collection["userscreens"]:
+                return new userScreensCollection({
+                    _id : _event.val.did,
+                    pf  : _event.val.pf,
+                    dt : _event.val.dt
+                });
             case Collection["screen"]:
                 return new screenCollection({
                     rtc : _event.val.rtc,
@@ -210,6 +234,10 @@ function eventFactory(){
                     act : _event.val.act,
                     pf  : _event.val.pf,
                     dt : _event.val.dt
+                });
+            case Collection["screennames"]:
+                return new screenNamesCollection({
+                    _id : _event.activity
                 });
             default:
                 logger.error("Invalid event type: "+_event.type);
@@ -228,5 +256,7 @@ module.exports = {
   Screen: screenCollection,
   RealTime: realtimeCollection,
   EventNames: eventNamesCollection,
-  ScreenNames: screenNamesCollection
+  ScreenNames: screenNamesCollection,
+  ScreenMetrics: screenMetricsCollection,
+  UserScreens: userScreensCollection
 };

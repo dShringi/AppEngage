@@ -27,7 +27,7 @@ module.exports.fetchAllPlatform = function(req,res){
 					let val = mnuList[key];
 					for (let oskey in val) {
 						let resultList = val[oskey].key;
-						if(resultList !== config.NULL){
+						if(resultList !== config.NULL && resultList !== config.UNDEFINED){
 							if(resultList.toUpperCase() =='A') {
 								returnResponse.push("Android");
 							} else {
@@ -65,7 +65,7 @@ module.exports.fetchManufacturerFromPlatform = function(req,res){
 						  let val = mnuList[key];
 						  for(let a=0;a<val.length;a++){
 							let allList = val[a].key;
-							if(allList !== config.NULL){
+							if(allList !== config.NULL && allList !== config.UNDEFINED){
 								returnResponse.push(val[a].key);
 							}
 						  }
@@ -96,7 +96,7 @@ module.exports.fetchAllManufacturer = function(req,res){
 					let val = mnuList[key];
 					for (let oskey in val) {
 						let resultList = val[oskey].key;
-						if(resultList !== config.NULL){
+						if(resultList !== config.NULL && resultList !== config.UNDEFINED){
 							returnResponse.push(resultList);
 						}
 					}
@@ -127,7 +127,7 @@ module.exports.fetchAllOS = function(req,res){
 					let val = mnuList[key];
 					for(let a=0;a<val.length;a++){
 						let allList = val[a].key;
-						if(allList != null){
+						if(allList !== config.NULL && allList!== config.UNDEFINED){
 							returnResponse.push(val[a].key);
 						}
 					}
@@ -161,7 +161,7 @@ module.exports.fetchOSFromPlatform = function(req,res){
 							let val = mnuList[key];
 							for(let a=0;a<val.length;a++){
 								let allList = val[a].key;
-								if(allList !== config.NULL){
+								if(allList !== config.NULL && allList !== config.UNDEFINED){
 									returnResponse.push(val[a].key);
 								}
 							}
@@ -193,7 +193,7 @@ module.exports.fetchAllDevicetype = function(req,res){
 					let val = mnuList[key];
 					for(let a=0;a<val.length;a++){
 						let allList = val[a].key;
-						if(allList !== config.NULL){
+						if(allList !== config.NULL && allList !== config.UNDEFINED){
 							if(allList.toUpperCase() == 'S'){
 								returnResponse.push('Smart Phone');
 							} else if(allList.toUpperCase() == 'T') {
@@ -234,7 +234,7 @@ module.exports.fetchDevicetypeFromPlatform = function(req,res){
 							let val = mnuList[key];
 							for(let a=0;a<val.length;a++){
 								let allList = val[a].key;
-								if(allList !== config.NULL){
+								if(allList !== config.NULL && allList !== config.UNDEFINED){
 									if(allList.toUpperCase() == 'S'){
 										returnResponse.push('Smart Phone');
 									} else if(allList.toUpperCase() == 'T') {
@@ -274,7 +274,7 @@ module.exports.fetchAllModel = function(req,res){
 						let allList = val[a].key;
 						if(allList !== config.NULL){
 							let modelMappedName = properties.get(allList);
-							if(modelMappedName !== config.NULL) {
+							if(modelMappedName !== config.NULL && modelMappedName !== config.UNDEFINED) {
 								let pushObject = {};
 								pushObject['cn'] = allList;
 								pushObject['an'] = modelMappedName;
@@ -314,7 +314,7 @@ module.exports.fetchModelFromPlatform = function(req,res){
 								let allList = val[a].key;
 								if(allList !== config.NULL){
 									let modelMappedName = properties.get(allList);
-									if(modelMappedName !== config.NULL) {
+									if(modelMappedName !== config.NULL && modelMappedName !== config.UNDEFINED) {
 										let pushObject = {};
 										pushObject['cn'] = allList;
 										pushObject['an'] = modelMappedName;
@@ -350,7 +350,7 @@ module.exports.fetchAllAppversion = function(req,res){
 					let val = mnuList[key];
 					for(let a=0;a<val.length;a++){
 						let allList = val[a].key;
-						if(allList !== config.NULL){
+						if(allList !== config.NULL && allList !== config.UNDEFINED){
 							let listVal = val[a].key;
 								returnResponse.push(listVal);
 						}
@@ -384,7 +384,7 @@ module.exports.fetchAppversionFromPlatform = function(req,res){
 							let val = mnuList[key];
 							for(let a=0;a<val.length;a++){
 								let allList = val[a].key;
-								if(allList !== config.NULL){
+								if(allList !== config.NULL && allList !== config.UNDEFINED){
 									returnResponse.push(val[a].key);
 								}
 							}

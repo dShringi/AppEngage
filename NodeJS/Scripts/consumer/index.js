@@ -1,3 +1,5 @@
+"use strict";
+
 var Kafka = require('kafka-node');
 var Model = require('../models/analyticEvent');
 var Collection = Model.Collection;
@@ -6,8 +8,8 @@ var config = require('../conf/config.js');
 var logger = require('../conf/log.js');
 var Mongoose = require('mongoose');
 var common = require('../commons/common.js');
-//var _ = require('underscore');
 var geoip = require('geoip-lite');
+var screen = require('./screen.js');
 var akey = process.argv[2];
 
 if(akey===config.object.UNDEFINED||akey===config.object.NULL){
@@ -54,10 +56,16 @@ common.getAppTimeZone(akey,function(err,appTZ){
 
 	consumer.on('message', function(message) {
 
-		data = JSON.parse(message.value);
+		var data = JSON.parse(message.value);
 		logger.info(data);
 
-		currDate = Math.floor(Date.now()/1000);
+		//Standardize the required Values
+		data.val.rtc = parseInt(data.val.rtc);
+
+		let currDate = parseInt(Math.floor(Date.now()/1000));
+		if(data.val.rtc.toString().length === 13){
+			data.val.rtc = data.val.rtc/1000;
+		}
 		if(data.val.rtc > currDate || data.val.rtc === 0){
 			data.val.rtc = currDate;
 		}
@@ -80,7 +88,7 @@ common.getAppTimeZone(akey,function(err,appTZ){
 		}
 
 		// Save Begin, Crash End & Event data
-		event = EventFactory.getEvent(data);
+		let event = EventFactory.getEvent(data);
 		event.save(function (err) {
 			if (err) {
 					logger.error(common.getErrorMessageFrom(err));
@@ -88,11 +96,11 @@ common.getAppTimeZone(akey,function(err,appTZ){
 			}
 		});
 
-		dashboardYearData		= {dt  : data.val.dt	,key : common.getStartYear(data.val.rtc,appTZ)	,ty  : 'Y'};
-		dashboardMonthData	= {dt  : data.val.dt	,key : common.getStartMonth(data.val.rtc,appTZ)	,ty  : 'M'};
-		dashboardDayData		= {dt  : data.val.dt	,key : common.getStartDate(data.val.rtc,appTZ)	,ty  : 'D'};
-		dashboardWeekData 	= {dt  : data.val.dt	,key : common.getStartWeek(data.val.rtc,appTZ)	,ty  : 'W'};
-		dashboardHourData		= {dt  : data.val.dt	,key : common.getStartHour(data.val.rtc,appTZ)	,ty  : 'H'};
+//		var dashboardYearData		= {dt  : data.val.dt	,key : common.getStartYear(data.val.rtc,appTZ)	,ty  : 'Y'};
+//		var dashboardMonthData	= {dt  : data.val.dt	,key : common.getStartMonth(data.val.rtc,appTZ)	,ty  : 'M'};
+		var dashboardDayData		= {dt  : data.val.dt	,key : common.getStartDate(data.val.rtc,appTZ)	,ty  : 'D'};
+//		var dashboardWeekData 	= {dt  : data.val.dt	,key : common.getStartWeek(data.val.rtc,appTZ)	,ty  : 'W'};
+		var dashboardHourData		= {dt  : data.val.dt	,key : common.getStartHour(data.val.rtc,appTZ)	,ty  : 'H'};
 
 		switch(data.type){
 			case Collection["begin"]:
@@ -100,25 +108,25 @@ common.getAppTimeZone(akey,function(err,appTZ){
 				//Insert in Users and Dashboard Collection
 				updateUsers(data,dashboardDayData.key,function onUpdateUsersComplete(err,newUserIncrement){
 					if(!err){
-						updateDashboard(dashboardYearData,data.type,1,newUserIncrement,function onUpdateDashboardComplete(err){
-							if(err) logError(err);
-							return;
-						});
+//						updateDashboard(dashboardYearData,data.type,1,newUserIncrement,function onUpdateDashboardComplete(err){
+//							if(err) logError(err);
+//							return;
+//						});
 
-						updateDashboard(dashboardMonthData,data.type,1,newUserIncrement,function onUpdateDashboardComplete(err){
-							if(err) logError(err);
-							return;
-						});
+//						updateDashboard(dashboardMonthData,data.type,1,newUserIncrement,function onUpdateDashboardComplete(err){
+//							if(err) logError(err);
+//							return;
+//						});
 
 						updateDashboard(dashboardDayData,data.type,1,newUserIncrement,function onUpdateDashboardComplete(err){
 							if(err) logError(err);
 							return;
 						});
 
-						updateDashboard(dashboardWeekData,data.type,1,newUserIncrement,function onUpdateDashboardComplete(err){
-							if(err) logError(err);
-							return;
-						});
+//						updateDashboard(dashboardWeekData,data.type,1,newUserIncrement,function onUpdateDashboardComplete(err){
+//							if(err) logError(err);
+//							return;
+//						});
 
 						updateDashboard(dashboardHourData,data.type,1,newUserIncrement,function onUpdateDashboardComplete(err){
 							if(err) logError(err);
@@ -141,25 +149,25 @@ common.getAppTimeZone(akey,function(err,appTZ){
 			case Collection["crash"]:
 				// TODO : Implement Bulk Insert.
 				//Increment the crash count in the dashboard collection
-				updateDashboard(dashboardYearData,data.type,1,0,function onUpdateDashboardComplete(err){
-					if(err) logError(err);
-					return;
-				});
+//				updateDashboard(dashboardYearData,data.type,1,0,function onUpdateDashboardComplete(err){
+//					if(err) logError(err);
+//					return;
+//				});
 
-				updateDashboard(dashboardMonthData,data.type,1,0,function onUpdateDashboardComplete(err){
-					if(err) logError(err);
-						return;
-				});
+//				updateDashboard(dashboardMonthData,data.type,1,0,function onUpdateDashboardComplete(err){
+//					if(err) logError(err);
+//						return;
+//				});
 
 				updateDashboard(dashboardDayData,data.type,1,0,function onUpdateDashboardComplete(err){
 					if(err) logError(err);
 					return;
 				});
 
-				updateDashboard(dashboardWeekData,data.type,1,0,function onUpdateDashboardComplete(err){
-					if(err) logError(err);
-					return;
-				});
+//				updateDashboard(dashboardWeekData,data.type,1,0,function onUpdateDashboardComplete(err){
+//					if(err) logError(err);
+//					return;
+//				});
 
 				updateDashboard(dashboardHourData,data.type,1,0,function onUpdateDashboardComplete(err){
 					if(err) logError(err);
@@ -179,31 +187,31 @@ common.getAppTimeZone(akey,function(err,appTZ){
 				//Decrementing Active Session Count in the RealTime Collection
 
 				// Delete active session
-				removeActiveSession(data.val.did,function onremoveActiveSessionComplete(err){
+				removeActiveSession(data.val.did,data.val.rtc,function onremoveActiveSessionComplete(err){
 					if(err) logError(err);
 					return;
 				});
 
 				//Increment the timespent in the dashboard collection
-				updateDashboard(dashboardYearData,data.type,data.val.tsd,0,function onUpdateDashboardComplete(err){
-					if(err) logError(err);
-					return;
-				});
+//				updateDashboard(dashboardYearData,data.type,data.val.tsd,0,function onUpdateDashboardComplete(err){
+//					if(err) logError(err);
+//					return;
+//				});
 
-				updateDashboard(dashboardMonthData,data.type,data.val.tsd,0,function onUpdateDashboardComplete(err){
-					if(err) logError(err);
-					return;
-				});
+//				updateDashboard(dashboardMonthData,data.type,data.val.tsd,0,function onUpdateDashboardComplete(err){
+//					if(err) logError(err);
+//					return;
+//				});
 
 				updateDashboard(dashboardDayData,data.type,data.val.tsd,0,function onUpdateDashboardComplete(err){
 					if(err) logError(err);
 					return;
 				});
 
-				updateDashboard(dashboardWeekData,data.type,data.val.tsd,0,function onUpdateDashboardComplete(err){
-					if(err) logError(err);
-					return;
-				});
+//				updateDashboard(dashboardWeekData,data.type,data.val.tsd,0,function onUpdateDashboardComplete(err){
+//					if(err) logError(err);
+//					return;
+//				});
 
 				updateDashboard(dashboardHourData,data.type,data.val.tsd,0,function onUpdateDashboardComplete(err){
 					if(err) logError(err);
@@ -222,25 +230,25 @@ common.getAppTimeZone(akey,function(err,appTZ){
 				// TODO : Implement Bulk Insert.
 				//Increment the total events count in the dashboard collection
 
-				updateDashboard(dashboardYearData,data.type,1,0,function onUpdateDashboardComplete(err){
-					if(err) logError(err);
-					return;
-				});
+//				updateDashboard(dashboardYearData,data.type,1,0,function onUpdateDashboardComplete(err){
+//					if(err) logError(err);
+//					return;
+//				});
 
-				updateDashboard(dashboardMonthData,data.type,1,0,function onUpdateDashboardComplete(err){
-					if(err) logError(err);
-					return;
-				});
+//				updateDashboard(dashboardMonthData,data.type,1,0,function onUpdateDashboardComplete(err){
+//					if(err) logError(err);
+//					return;
+//				});
 
 				updateDashboard(dashboardDayData,data.type,1,0,function onUpdateDashboardComplete(err){
 					if(err) logError(err);
 					return;
 				});
 
-				updateDashboard(dashboardWeekData,data.type,1,0,function onUpdateDashboardComplete(err){
-					if(err) logError(err);
-					return;
-				});
+//				updateDashboard(dashboardWeekData,data.type,1,0,function onUpdateDashboardComplete(err){
+//					if(err) logError(err);
+//					return;
+//				});
 
 				updateDashboard(dashboardHourData,data.type,1,0,function onUpdateDashboardComplete(err){
 					if(err) logError(err);
@@ -255,7 +263,21 @@ common.getAppTimeZone(akey,function(err,appTZ){
 
 				//update user collection for timspent
 				updateUsers(data,dashboardDayData.key,function onupdateUsersComplete(err,data){
-					if(err) log(err);
+					if(err) logError(err);
+					return;
+				});
+			break;
+			case Collection["screen"]:
+				screen.populateUniqueNames(Model,data.val,function(err,status){
+					if(err) logError(err);
+					return;
+				});
+				screen.populateMetrics(Model,data.val,appTZ,function(err,status){
+					if(err) logError(err);
+					return;
+				});
+				screen.populateUserScreens(Model,data.val,appTZ,function(err,status){
+					if(err) logError(err);
 					return;
 				});
 			break;
@@ -298,7 +320,7 @@ function updateUsers(req,dateKey,callback){
 						req.type = Collection["user"];
 						req.val.ts = 1;
 						req.val.tts = 0;
-						event = EventFactory.getEvent(req);
+						let event = EventFactory.getEvent(req);
 						//Add the user in the coll_users collection.
 						event.save(function (err) {
 							if (err) {
@@ -528,7 +550,7 @@ function updateActiveSessions(req,callback){
 							return;
 						}else{
 							//Incrementing Active Session Count in the RealTime Collection
-							updateRealTimeSessionCount(data.val.rtc,1,function onupdateRealTimeSessionCountComplete(err){
+							updateRealTimeSessionCount(req.val.rtc,1,function onupdateRealTimeSessionCountComplete(err){
 								if(err) {
 									logError(err);
 									return;
@@ -594,13 +616,13 @@ function updateDashboard(dashboardData,eventType,valueIncrement,newUserIncrement
 	}
 }
 
-function removeActiveSession(did,callback){
+function removeActiveSession(did,rtc,callback){
 	Model.ActiveSession.findByIdAndRemove(did,function(err,doc){
 		if(err){
 			logger.error(err);
 			return;
 		}else if(doc){
-			updateRealTimeSessionCount(data.val.rtc,-1,function onupdateRealTimeSessionCountComplete(err){
+			updateRealTimeSessionCount(rtc,-1,function onupdateRealTimeSessionCountComplete(err){
 				if(err) {
 					logError(err);
 					return;

@@ -252,7 +252,7 @@ exports.campaign = function(server, producer) {
             console.log(data.val);
 
             paramsKeys[0]='akey';   paramsValues[0] = request.headers.akey;
-            paramsKeys[1]='campaignid';    paramsValues[1] = data.val.rtc;
+            paramsKeys[1]='campaignid';    paramsValues[1] = data.val.campaignId;
             let msgStatus = common.hasValue(paramsKeys,paramsValues);
             if(msgStatus === config.object.FALSE){
                 reply.statusCode = config.msgcodes.success;
@@ -282,6 +282,8 @@ function pushToKafka(data,request,producer,callback){
 
 	//Push the payload to the queue.
     producer.send(payloads, function(err, data){
+        console.log(data);
+        console.log(err);
 	   callback(err,data);
 	});
 
