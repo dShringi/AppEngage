@@ -47,7 +47,7 @@ app.delete('/appengage/deleteCampaign',campaignController.deleteCampaign);
 app.get('/appengage/fetchAllCampaigns',campaignController.fetchAllCampaigns);
 app.get('/appengage/fetchCohorts',cohortController.fetchCohorts);
 app.get('/appengage/fetchScreenStats',screenController.fetchScreenStats);
-app.get('/appengae/fetchUserProfiles',userProfileController.fetchUserProfiles);
+app.get('/appengage/fetchUserProfiles',userProfileController.fetchUserProfiles);
 // fetch api for Audience part for create query
 app.get('/appengage/audience/mnu',audienceController.fetchAllManufacturer);
 app.get('/appengage/audience/mnu/platform/:platform',audienceController.fetchManufacturerFromPlatform);
