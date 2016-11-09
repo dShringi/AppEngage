@@ -15,6 +15,7 @@
         <script src="assets/js/sweetalert.min.js"></script>
         <script src="assets/js/servicecalls.js"></script>
         <script src="assets/js/timezones.full.min.js"></script>
+        <script src="assets/js/jquery.carouFredSel.packed.js"></script>
         <link rel="stylesheet" type="text/css" href="http://fonts.googleapis.com/css?family=Montserrat">
 
         <script>
@@ -274,28 +275,64 @@
         </nav>
 
         <div class="wrapper">
-            <div class="parallax" id="section1">
+          
+          <div id="carousel-example-generic" class="carousel slide" data-ride="carousel" data-interval="3000">
+				  <!-- Indicators -->
+				  <ol class="carousel-indicators">
+					<li data-target="#carousel-example-generic" data-slide-to="0" class="active"></li>
+					<li data-target="#carousel-example-generic" data-slide-to="1"></li>
+					<!--li data-target="#carousel-example-generic" data-slide-to="2"></li-->
+				  </ol>
+
+			  <!-- Wrapper for slides -->
+			  <div class="carousel-inner">
+
+					<div class="item active">
+					  <img src="assets/img/landing/H_14.jpg" alt="...">
+					  <div class="carousel-caption">
+						<h3>Caption Text</h3>
+					  </div>
+					</div>
+					<div class="item">
+					  <img src="assets/img/landing/H_15.jpg" alt="...">
+					  <div class="carousel-caption">
+						<h3>Caption Text</h3>
+					  </div>
+					</div>
+					<!--div class="item">
+					  <img src="assets/img/landing/H_14.jpg" alt="...">
+					  <div class="carousel-caption">
+						<h3>Caption Text</h3>
+					  </div>
+					</div-->
+
+			  </div>
+
+				  <!-- Controls -->
+				  <a class="left carousel-control" href="#carousel-example-generic" role="button" data-slide="prev">
+					<span class="glyphicon glyphicon-chevron-left"></span>
+				  </a>
+				  <a class="right carousel-control" href="#carousel-example-generic" role="button" data-slide="next">
+					<span class="glyphicon glyphicon-chevron-right"></span>
+				  </a>
+
+			</div> <!-- End Of Carousel -->
+           
+			
+            <!--div class="parallax" id="section1">
                 <div class="parallax-background">
                     <img class="parallax-background-image" src="assets/img/landing/H_14.jpg">
+                    <img class="parallax-background-image" src="assets/img/landing/H_15.jpg">
                 </div>
                 <div class="container">
                     <div class="row">
                         <div class="col-md-5">
-                            <div class="description">
-                                <h1>Your Destination for Mobile Analytics</h1>
-                                <p>
-                                    A one stop shop for all your mobile analytics needs.
-                                    Fast Integration and Rich Analytics at your fingertips.
-                                    Keep you data secured with our in-premise deployments and gain access to all your data.
-                                </p>
-                            </div>
-                            <!--<div class="buttons">
-                            <button class="btn btn-fill btn-neutral">Read More</button>
-                        </div>-->
+                           
+                           
                         </div>
                     </div>
                 </div>
-            </div>
+            </div-->
             <div class="section section-2" id="section2">
                 <div class="container">
                     <h2 class="header-text text-center">Single platform for your Mobile Analytic needs</h2>
@@ -626,5 +663,6 @@
         <div id="floating-anchor">
             <a href="#section2"><img src="assets\img\landing\Arrow_Down.png" /></a>
         </div>
+        
 </body>
 </html>
