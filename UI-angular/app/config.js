@@ -4,32 +4,32 @@ require.config({
 	waitSeconds: 500,
     paths: {
         jquery: 'assets/js/jquery-1.11.1.min',
-        timeZone: 'assets/js/timezones.full.min',
+        moment:'assets/js/moment.min',
         bootstrap: 'assets/js/bootstrap.min',
 		sweetAlert: 'assets/js/sweetalert.min',
-		angular: 'assets/js/angular.min'
-		/*"angular-ui-router": '../assets/js/angular-ui-router.min'*/
+		angular: 'assets/js/angular.min',
+		"ui-router": 'assets/js/angular-ui-router.min'
     },
     shim: {
         "jquery":{
             exports:"$"
         },
-        "timeZone":{
-            deps : ['jquery']
-        },
         "angular": {
             exports : 'angular'
+        },
+        "ui-router":{
+            exports: 'uiRouter',
+            deps : ['angular']
         },
         'bootstrap' : {
             deps : [ 'jquery' ]
         }
-
     }
 });
-require([ 'angular', 'jquery', 'timeZone', 'bootstrap', 'sweetAlert'],
-    function(angular) {
+require([ 'angular', 'ui-router', 'jquery', 'bootstrap', 'sweetAlert'],
+    function(angular, uiRouter) {
     require(['app'],
         function () {
-        angular.bootstrap(document, ["AppEngage"]);
-    });
+            angular.bootstrap(document, ["AppEngage"]);
+        });
 });

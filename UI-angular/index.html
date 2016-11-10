@@ -14,10 +14,12 @@
 	</head>
 	<body class="landing-page">
 		<nav class="navbar navbar-transparent navbar-top">
-			<div  class="container" ng-include="'app/components/landingPage/view/navbar.html'"></div>
+			<div ui-view="nav"></div>
 		</nav>
-		<div class="wrapper" style="color:white;"></div>
-		<div class="footer"></div>
+		<div class="wrapper">
+			<div ui-view="main"></div>
+		</div>
 		<div ng-include="'app/components/landingPage/view/registerApp.html'"></div>
+		<div ng-include="'app/components/landingPage/view/login.html'"></div>
 	</body>
 </html>

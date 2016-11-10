@@ -1,7 +1,6 @@
-define(['app'],function () {
-	debugger;
-	var registerApp = angular.module('RegisterApp', []);
-	registerApp.controller("registerAppController",['$scope','$http',function($scope,$http){
+define(['app','assets/js/moment-timezone-with-data-2010-2020'],function (app, moment) {
+	var landingPageApp = angular.module('LandingPageApp', []);
+	landingPageApp.controller("registerAppController",['$scope','$http','apiUrl', function($scope,$http,apiUrl){
 		this.registerAppDetails={
 			"user": {
 				"fn": "",
@@ -20,6 +19,7 @@ define(['app'],function () {
 				"to": ""
 			}
 		};
+		$scope.timeZones = moment.tz.names();
 		$scope.originForm = angular.copy(this.registerAppDetails);
 		angular.element(document).ready(function () {
 			$('#modalRegister').on('hidden.bs.modal', function (e) {
@@ -45,7 +45,6 @@ define(['app'],function () {
 			readURL(event.srcElement,this.registerAppCtrl.registerAppDetails);
 		};
 		function readURL(input, model) {
-			debugger;
 			if (input.files && input.files[0]) {
 				var reader = new FileReader();
 				reader.onload = function (e) {
@@ -57,12 +56,6 @@ define(['app'],function () {
 				}
 				reader.readAsDataURL(input.files[0]);
 			}
-		};
-
-		$scope.loadTimeZones = function(){
-            debugger;
-			//$(".timezone-select").timezones();
-            $('select').timezones();
 		};
 
 		this.fadeProceed = function(tabcurrent, tabnext){
@@ -97,7 +90,7 @@ define(['app'],function () {
 		this.registerUser = function(dataModel){
 			$http({
 				method: "POST",
-				url: "http://52.206.121.100/appengage/registerUser",
+				url: apiUrl+"/registerUser",
 				contentType: "application/json",
 				datatype: "json",
 				timeout: 180000,
@@ -117,7 +110,7 @@ define(['app'],function () {
 				if (t === "timeout") {
 					alert("timeout");
 				} else {
-					//alert(t);
+					alert(t);
 				}
 			});
 		};
@@ -125,70 +118,73 @@ define(['app'],function () {
 		/*Validate user name ajax call*/
 
 		this.validateUname = function (uname) {
-			/*$http({
+			$http({
 			 method: "GET",
-			 url: "http://52.206.121.100/appengage/getUserNameValidated",
+			 url: apiUrl+"/getUserNameValidated",
 			 contentType: "application/json",
 			 dataType: "json",
 			 timeout: 180000,  //180 sec
-			 data: "username=" + uname
+			 params: {'username': uname}
 			 }).success(function(data){
-			 sessionStorage.setItem("unameAvailability", data.msg);
+				console.log(JSON.stringify(data));
+			 	sessionStorage.setItem("unameAvailability", data.msg);
 			 if ($("#reg-uname").val() === "") {
-			 $("#uname-check").css("display", "none");
+			 	$("#uname-check").css("display", "none");
 			 }
 			 else if (data.msg === "Success") {
-			 $("#uname-check i.fa").removeClass("fa-close").addClass("fa-check");
-			 $("#uname-check").css({"display":"block","color":"#33cc33"});
-			 $("#uname-check #avail-message").html("&nbsp;&nbsp;This username is available");
+				 $("#uname-check i.fa").removeClass("fa-close").addClass("fa-check");
+				 $("#uname-check").css({"display":"block","color":"#33cc33"});
+				 $("#uname-check #avail-message").html("&nbsp;&nbsp;This username is available");
 			 }
 			 else {
-			 $("#uname-check i.fa").removeClass("fa-check").addClass("fa-close");
-			 $("#uname-check").css({"display":"block","color":"#ff3300"});
-			 $("#uname-check #avail-message").html("&nbsp;&nbsp;This username is taken");
+				 $("#uname-check i.fa").removeClass("fa-check").addClass("fa-close");
+				 $("#uname-check").css({"display":"block","color":"#ff3300"});
+				 $("#uname-check #avail-message").html("&nbsp;&nbsp;This username is taken");
 			 }
 			 }).error(function (x, t, m) {
-			 alert("Error connecting to server");
+			 	alert("Error connecting to server");
 			 if (t === "timeout") {
-			 alert("timeout");
+				 alert("timeout");
 			 } else {
-			 //alert(t);
+				 //alert(t);
 			 }
-			 });*/
-			$.ajax({
-				type: 'GET',
-				url: "http://52.206.121.100/appengage/getUserNameValidated",
-				contentType: "application/json",
-				dataType: "json",
-				timeout: 180000,  //180 sec
-				data: "username=" + uname,
-				success: function (data) {
-					sessionStorage.setItem("unameAvailability", data.msg);
-					if ($("#reg-uname").val() === "") {
-						$("#uname-check").css("display", "none");
-					}
-					else if (data.msg === "Success") {
-						$("#uname-check i.fa").removeClass("fa-close").addClass("fa-check");
-						$("#uname-check").css({"display":"block","color":"#33cc33"});
-						$("#uname-check #avail-message").html("&nbsp;&nbsp;This username is available");
-					}
-					else {
-						$("#uname-check i.fa").removeClass("fa-check").addClass("fa-close");
-						$("#uname-check").css({"display":"block","color":"#ff3300"});
-						$("#uname-check #avail-message").html("&nbsp;&nbsp;This username is taken");
-					}
-				},
-				error: function (x, t, m) {
-					alert("Error connecting to server");
-					if (t === "timeout") {
-						alert("timeout");
-					} else {
-						//alert(t);
-					}
-				}
-			});
+			 });
 		};
 	}]);
-	//registerAppController.$inject = ['$scope','$http'];
-	return registerApp;
+	landingPageApp.controller('loginController',['$scope', '$http','apiUrl', function ($scope, $http, apiUrl) {
+		this.loginData={
+			username:"",
+			password:""
+		};
+		/*Login Validate ajax call*/
+		this.validateUser = function (uname, pwd) {
+			debugger;
+			$http({
+				method:'GET',
+				url: apiUrl+"/getUserValidated",
+				timeout: 180000,  //180 sec
+				params: {"username":uname, "password": pwd}
+			}).success(function(data){
+				debugger;
+				console.log(data);
+				if (data.msg === "Success") {
+					localStorage.setItem("userName", data.name);
+					localStorage.setItem("appKey", data.akey);
+					window.location.href = "index.html";
+				}
+				else {
+					alert("Login Failed");
+				}
+			}).error(function(x, t, m){
+				debugger;
+				alert("Error connecting to server");
+				if (t === "timeout") {
+					alert("timeout");
+				} else {
+					//alert(t);
+				}
+			});
+		}
+	}]);
+	return landingPageApp;
 });

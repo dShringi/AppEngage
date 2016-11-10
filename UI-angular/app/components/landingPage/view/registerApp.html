@@ -17,7 +17,6 @@
 						<div class="col-md-6 text-part">
 							Customer Details
 						</div>
-
 					</div>
 					<div class="col-md-1">
 						<i class="fa fa-chevron-right" aria-hidden="true"></i>
@@ -171,11 +170,10 @@
 									<div class="col-md-11">
 										<div class="input-group">
 											<select class="form-control timezone-select"  ng-model="registerAppCtrl.registerAppDetails.app.tz" name="timeZone" style="border-radius: 4px;"  ng-init="loadTimeZones();"
-											required></select>
+											required>
+											<option ng-repeat="timeZone in timeZones">{{timeZone}}</option>
+											</select>
 										</div>
-										<script>
-											$('select').timezones();
-										</script>
 									</div>
 									<div class="col-md-1"><i class="fa fa-info-circle" aria-hidden="true"></i></div>
 								</div>

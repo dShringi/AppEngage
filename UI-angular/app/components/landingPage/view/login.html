@@ -1,0 +1,13 @@
+<!--modal LOGIN-->
+<div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content" ng-controller="loginController as loginCtrl">
+            <div>
+                <input type="text" class="usrname" placeholder="Username" ng-model="loginCtrl.loginData.username"/>
+                <input type="password" class="passwrd" placeholder="Password" ng-model="loginCtrl.loginData.password"/>
+                <button class="btn btn-neutral btn-block" ng-click="loginCtrl.validateUser(loginCtrl.loginData.username, loginCtrl.loginData.password);">Submit</button>
+                <a href="#">Forgot password?</a>
+            </div>
+        </div>
+    </div>
+</div>
