@@ -28,19 +28,17 @@
 		<script src="assets/coverflow/jquery.touchSwipe.min.js"></script>
 		<!-- Coverflow -->
 		<script src="assets/coverflow/jquery.coverflow.js"></script>
-        <style>
-			body {padding-top:74px !important;}
-		</style>
+      
 		
 		
     </head>
     <body style="height:100vh; ">
-       <div class="container">
-			<nav id="mainNav" class="navbar navbar-default navbar-fixed-top " >
+       <div class="row bg-white">
+			
 				<div class="left-side sticky-left-side" ng-include src="'menu.html'" tabindex="5000"></div>
-				<div ng-include src="'header.html'"></div>
+				<div ng-include src="'header.html'" class="col-md-12"></div>
 				<!-- /.container-fluid -->
-			</nav>
+			
 		</div>
 		<div class="container-fluid">
 			<div class="row breadcrumb bg-white border-bottom paddl30">
@@ -168,7 +166,8 @@
 			
 		</div><!-- End of container -->
 		
-		
+		<div class="overlay"></div>
+		 
 		<script src="assets/js/screen-analytics.js"></script>
    		
    		
