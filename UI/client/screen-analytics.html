@@ -35,136 +35,139 @@
 		
     </head>
     <body style="height:100vh; ">
-        <nav id="mainNav" class="navbar navbar-default navbar-fixed-top " >
-			<div class="left-side sticky-left-side" ng-include src="'menu.html'" tabindex="5000"></div>
-        	<div ng-include src="'header.html'"></div>
-        	<!-- /.container-fluid -->
-        </nav>
-		<div class="row breadcrumb bg-white border-bottom paddl30">
-			<div class="col-md-6">
-				<ul>
-                    <li><a href="">Devices</a></li>
-                    <li> &gt; </li>
-                    <li>Screen Analytics</li>
-                </ul>
-			</div>
+       <div class="container">
+			<nav id="mainNav" class="navbar navbar-default navbar-fixed-top " >
+				<div class="left-side sticky-left-side" ng-include src="'menu.html'" tabindex="5000"></div>
+				<div ng-include src="'header.html'"></div>
+				<!-- /.container-fluid -->
+			</nav>
 		</div>
-		<div ng-controller="deviceCtrl">
-			<div class="row mobile-select border-bottom ">
-        		<div class="col-md-6" >
-					<ul class="device-menu bg-white">
-						<li class="selected">
-							<a href="javascript:void(0)" id="mobileAppScreens">Mobile</a> 
-							<span class="sub-menu-menu"> 
-								<i class="fa fa-chevron-right" aria-hidden="true"></i>
-								<a href="javascript:void(0)" ng-click="fetchAppData('Mobile','ios')" id="iosMobileAppScreens" class="checked"> <i class="fa fa-apple" aria-hidden="true" ></i> ios</a>
-								
-								<a href="javascript:void(0)" ng-click="fetchAppData('Mobile','android')" id="androidMobileAppScreens"><i class="fa fa-android" aria-hidden="true"></i> Android</a>
-							</span>
-							<span class="grey-pipe">|</span>
+		<div class="container-fluid">
+			<div class="row breadcrumb bg-white border-bottom paddl30">
+				<div class="col-md-6">
+					<ul>
+						<li><a href="">Devices</a></li>
+						<li> &gt; </li>
+						<li>Screen Analytics</li>
+					</ul>
+				</div>
+			</div>
+			<div ng-controller="deviceCtrl">
+				<div class="row mobile-select border-bottom ">
+					<div class="col-md-6" >
+						<ul class="device-menu bg-white">
+							<li class="selected">
+								<a href="javascript:void(0)" id="mobileAppScreens">Mobile</a> 
+								<span class="sub-menu-menu"> 
+									<i class="fa fa-chevron-right" aria-hidden="true"></i>
+									<a href="javascript:void(0)" ng-click="fetchAppData('Mobile','ios')" id="iosMobileAppScreens" class="checked"> <i class="fa fa-apple" aria-hidden="true" ></i> ios</a>
+
+									<a href="javascript:void(0)" ng-click="fetchAppData('Mobile','android')" id="androidMobileAppScreens"><i class="fa fa-android" aria-hidden="true"></i> Android</a>
+								</span>
+								<span class="grey-pipe">|</span>
+							</li>
+							<li>
+								<a href="javascript:void(0)" id="tabletAppScreens">Tablet</a>
+								<span class="sub-menu-menu hide"> 
+									<i class="fa fa-chevron-right" aria-hidden="true"></i>
+									<a href="javascript:void(0)" ng-click="fetchAppData('Tablet','ios')" id="iostabletAppScreens"><i class="fa fa-apple" aria-hidden="true"></i> ios</a>
+
+								<a href="javascript:void(0)" ng-click="fetchAppData('Tablet','android')"  id="androidtabletAppScreens"> <i class="fa fa-android" aria-hidden="true"></i> Android</a>
+								</span>
+							</li>
+							<li class="hidden">
+								<input type="text" id="selMenu" value="iosMobileAppScreens">
+								<input type="text" id="sDate">
+								<input type="text" id="eDate">
+							</li>
+						</ul>
+
+					</div>
+					<div class="col-md-6">
+						<div id="dateRange" class="pull-right">
+							<i class="glyphicon glyphicon-calendar txt-green fa fa-calendar"></i>
+							<span></span><b class="caret"></b>
+						</div>
+					</div>
+					 <!--div ng-controller="urlController"-->
+
+				</div>	
+
+				<div class="row bg-white border-bottom">
+
+					<div class="col-md-12">
+						<div class="photos" autofocus>
+
+							<img ng-repeat="user in users" class="cover" data-name="{{user.name}}" ng-src="{{user.path}}"/>
+
+							<!--img class="cover" data-name="app2"k src="assets/coverflow/images/app2.jpg"/>
+							<img class="cover" data-name="app3" src="assets/coverflow/images/app3.jpg"/>
+							<img class="cover" data-name="app4" src="assets/coverflow/images/app4.jpg"/>
+							<img class="cover" data-name="app5" src="assets/coverflow/images/app5.jpg"/>
+							<img class="cover" data-name="app6" src="assets/coverflow/images/app6.jpg"/>
+							<img class="cover" data-name="app7" src="assets/coverflow/images/app7.jpg"/>
+							<img class="cover" data-name="app8" src="assets/coverflow/images/app8.jpg"/>
+							<img class="cover" data-name="app9" src="assets/coverflow/images/app9.jpg"/>
+							<img class="cover" data-name="app10" src="assets/coverflow/images/app10.jpg"/>
+							<img class="cover" data-name="app11" src="assets/coverflow/images/app11.jpg"/>
+							<img class="cover" data-name="app12" src="assets/coverflow/images/app12.jpg"/>
+							<img class="cover" data-name="app13" src="assets/coverflow/images/app13.jpg"/-->
+						</div><!-- End of Photos -->
+						<div id="photos-info">
+							<div id="photos-name"></div>
+						</div>
+					</div> <!-- End of col md 12 -->
+
+				</div><!-- End of row -->
+				<div class="carousel-info text-right col-md-12">
+						<p>Use arrow < > keys or mouse scroll to view carousel.</p>
+					</div>
+				<div class="row">
+
+					<ul class="info-container" ng-repeat="user in users" style="display:none">
+						<li class="col-xs-12 col-sm-4 col-md-2">
+							<div class="info">
+								<div class="col-xs-12"><h3>Number of unique users</h3></div>
+								<div class="col-xs-12"><p>{{user.nuu}}</p></div>
+							</div>
 						</li>
-						<li>
-							<a href="javascript:void(0)" id="tabletAppScreens">Tablet</a>
-							<span class="sub-menu-menu hide"> 
-								<i class="fa fa-chevron-right" aria-hidden="true"></i>
-								<a href="javascript:void(0)" ng-click="fetchAppData('Tablet','ios')" id="iostabletAppScreens"><i class="fa fa-apple" aria-hidden="true"></i> ios</a>
-								
-							<a href="javascript:void(0)" ng-click="fetchAppData('Tablet','android')"  id="androidtabletAppScreens"> <i class="fa fa-android" aria-hidden="true"></i> Android</a>
-							</span>
+						<li class="col-xs-12 col-sm-4 col-md-2">
+							<div class="info">
+								<div class="col-xs-12"><h3>number of crashes</h3></div>
+									<div class="col-xs-12"><p>{{user.noc}}</p></div>
+							</div>
 						</li>
-						<li class="hidden">
-							<input type="text" id="selMenu" value="iosMobileAppScreens">
-							<input type="text" id="sDate">
-							<input type="text" id="eDate">
+						<li class="col-xs-12 col-sm-4 col-md-2">
+							<div class="info">
+								<div class="col-xs-12"><h3>total time spent</h3></div>
+									<div class="col-xs-12"><p>{{user.tts | secondsToHHmmss }}</p></div>
+							</div>
+						</li>
+						<li class="col-xs-12 col-sm-4 col-md-2">
+							<div class="info">
+								<div class="col-xs-12"><h3>Average Time spent by user</h3></div>
+									<div class="col-xs-12"><p>{{user.atsbu |secondsToHHmmss}}</p></div>
+							</div>
+						</li>
+						<li class="col-xs-12 col-sm-4 col-md-2">
+							<div class="info">
+								<div class="col-xs-12"><h3>Total sessions</h3></div>
+									<div class="col-xs-12"><p>{{user.ts}}</p></div>
+							</div>
+						</li>
+						<li class="col-xs-12 col-sm-4 col-md-2">
+							<div class="info">
+								<div class="col-xs-12"><h3>Average time spent per sessions</h3></div>
+			<div class="col-xs-12"><p>{{ user.atsps |secondsToHHmmss}} </p>
+								</div>
+							</div>
 						</li>
 					</ul>
-					
 				</div>
-				<div class="col-md-6">
-					<div id="dateRange" class="pull-right">
-						<i class="glyphicon glyphicon-calendar txt-green fa fa-calendar"></i>
-						<span></span><b class="caret"></b>
-					</div>
-				</div>
-				 <!--div ng-controller="urlController"-->
-       			
 			</div>	
 			
-			<div class="row bg-white border-bottom">
-			
-				<div class="col-md-12">
-					<div class="photos" autofocus>
-						
-						<img ng-repeat="user in users" class="cover" data-name="{{user.name}}" ng-src="{{user.path}}"/>
-						
-						<!--img class="cover" data-name="app2"k src="assets/coverflow/images/app2.jpg"/>
-						<img class="cover" data-name="app3" src="assets/coverflow/images/app3.jpg"/>
-						<img class="cover" data-name="app4" src="assets/coverflow/images/app4.jpg"/>
-						<img class="cover" data-name="app5" src="assets/coverflow/images/app5.jpg"/>
-						<img class="cover" data-name="app6" src="assets/coverflow/images/app6.jpg"/>
-						<img class="cover" data-name="app7" src="assets/coverflow/images/app7.jpg"/>
-						<img class="cover" data-name="app8" src="assets/coverflow/images/app8.jpg"/>
-						<img class="cover" data-name="app9" src="assets/coverflow/images/app9.jpg"/>
-						<img class="cover" data-name="app10" src="assets/coverflow/images/app10.jpg"/>
-						<img class="cover" data-name="app11" src="assets/coverflow/images/app11.jpg"/>
-						<img class="cover" data-name="app12" src="assets/coverflow/images/app12.jpg"/>
-						<img class="cover" data-name="app13" src="assets/coverflow/images/app13.jpg"/-->
-					</div><!-- End of Photos -->
-					<div id="photos-info">
-						<div id="photos-name"></div>
-					</div>
-				</div> <!-- End of col md 12 -->
-				
-			</div><!-- End of row -->
-			<div class="carousel-info text-right col-md-12">
-					<p>Use arrow < > keys or mouse scroll to view carousel.</p>
-				</div>
-			<div class="row">
-				
-				<ul class="info-container" ng-repeat="user in users" style="display:none">
-					<li class="col-xs-12 col-sm-4 col-md-2">
-						<div class="info">
-							<div class="col-xs-12"><h3>Number of unique users</h3></div>
-							<div class="col-xs-12"><p>{{user.nuu}}</p></div>
-						</div>
-					</li>
-					<li class="col-xs-12 col-sm-4 col-md-2">
-						<div class="info">
-							<div class="col-xs-12"><h3>number of crashes</h3></div>
-								<div class="col-xs-12"><p>{{user.noc}}</p></div>
-						</div>
-					</li>
-					<li class="col-xs-12 col-sm-4 col-md-2">
-						<div class="info">
-							<div class="col-xs-12"><h3>total time spent</h3></div>
-								<div class="col-xs-12"><p>{{user.tts | secondsToHHmmss }}</p></div>
-						</div>
-					</li>
-					<li class="col-xs-12 col-sm-4 col-md-2">
-						<div class="info">
-							<div class="col-xs-12"><h3>Average Time spent by user</h3></div>
-								<div class="col-xs-12"><p>{{user.atsbu |secondsToHHmmss}}</p></div>
-						</div>
-					</li>
-					<li class="col-xs-12 col-sm-4 col-md-2">
-						<div class="info">
-							<div class="col-xs-12"><h3>Total sessions</h3></div>
-								<div class="col-xs-12"><p>{{user.ts}}</p></div>
-						</div>
-					</li>
-					<li class="col-xs-12 col-sm-4 col-md-2">
-						<div class="info">
-							<div class="col-xs-12"><h3>Average time spent per sessions</h3></div>
-		<div class="col-xs-12"><p>{{ user.atsps |secondsToHHmmss}} </p>
-							</div>
-						</div>
-					</li>
-				</ul>
-			</div>
-		</div>	
-			
-			
-		<!-- End of container -->
+		</div><!-- End of container -->
+		
 		
 		<script src="assets/js/screen-analytics.js"></script>
    		

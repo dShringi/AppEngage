@@ -1,5 +1,5 @@
  <!doctype html>
-    <html ng-app="screenAnalytics">
+    <html ng-app="userData">
     	<head>
 			<meta http-equiv="X-UA-Compatible" content="IE=10,11">
 			<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
@@ -13,38 +13,48 @@
        		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js"></script>
 			<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.js"></script>
        		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
+       		
        		<script src="assets/js/bootstrap.js"></script>
        		<script src="assets/js/d3.v3.min.js"></script>
 			<script src="assets/js/moment.min.js"></script>
       		<script src="assets/js/daterangepicker.js"></script>
 			<link rel="stylesheet" type="text/css" href="assets/css/daterangepicker.css" />
        		<script src="assets/js/common.js"></script>
-       		<script src="assets/js/app-analytics.js"></script>
-			
-       	 	
+       		
+
         	 <style>
-			body {padding-top:74px !important;}
-		</style>
+				body {padding-top:74px !important;}
+			</style>
 			
         </head>
      <body>
-     	<nav id="mainNav" class="navbar navbar-default navbar-fixed-top " >
-			<div class="left-side sticky-left-side" ng-include src="'menu.html'" tabindex="5000"></div>
-        	<div ng-include src="'header.html'"></div>
-        	<!-- /.container-fluid -->
-        </nav>
-       
-    	<div class="row">
+     	<div class="container">
+			<nav id="mainNav" class="navbar navbar-default navbar-fixed-top " >
+				<div class="left-side sticky-left-side" ng-include src="'menu.html'" tabindex="5000"></div>
+				<div ng-include src="'header.html'"></div>
+				<!-- /.container-fluid -->
+			</nav>
+		</div>
+   	
+   		<div class="container-fluid">
+    		<div class="row" ng-controller="userDataCtrl">
     		<div class="col-md-9 left-content">
-    			 <div class="row breadcrumb bg-white border-bottom negative-mrgnr30">
+    			 <div class="row breadcrumb bg-white border-bottom">
 					<div class="col-md-6">
 						<ul>
-							<li><a href="">Devices</a></li>
+							<li><a href="">Profile</a></li>
 							<li> &gt; </li>
-							<li>Screen Analytics</li>
+							<li>User Data</li>
 						</ul>
 					</div>
-				</div>
+					<div class="col-md-4 pull-right">
+						<div class="input-group">
+						  
+						  	<input type="text" id="searchUserTxt" class="form-control" placeholder="Username" aria-describedby="searchUser" value="">
+							<span class="input-group-addon" id="searchUser" ng-click="fetchUserData()"><i class="fa fa-search"></i></span>
+						</div>
+					</div>
+				</div> <!-- end of breadcrumb -->
 				<div class="row date-range">
 					<div class="col-md-6 pull-right">
 						<div id="dateRange" class="pull-right">
@@ -52,9 +62,15 @@
 							<span></span><b class="caret"></b>
 						</div>
 					</div>
+					<div class="hidden">
+							<input type="hidden" id="sDate">
+							<input type="hidden" id="eDate">
+					</div>
 				</div><!-- end of date range picker -->
 				
-				<div class="row tab-blks">
+				<div id="graphicalData" class="hide">
+				
+					<div class="row tab-blks">
 					<ul class="col-md-12 ">
 						<li class="col-md-6 active">
 							<div class="col-md-2">
@@ -67,7 +83,7 @@
 								<h2>Total<br/> Sessions</h2>
 							</div>
 							<div class="col-md-4 large-txt text-right">
-								13
+								{{user.tSC}}
 							</div>
 						</li>
 						<li class="col-md-6">
@@ -80,145 +96,248 @@
 								<h2>Total<br/> Events</h2>
 							</div>
 							<div class="col-md-4 large-txt text-right">
-								35
+								{{user.tSE}}
 							</div>
 						</li>
 					</ul>
 				</div><!-- end of tab block -->
 				
-				<div class="row">
-					<div class="col-md-12 bg-white border-bottom text-center">
-						<img src="assets/img/graph1-sample.png"/>
+					<div class="row">
+						<div class="col-md-12 bg-white border-bottom text-center">
+							<div id="line-chart-container-1"></div>
+						</div>
 					</div>
 					
-				</div>
-				<div class="row ">
-					<div class="col-md-12 border-bottom">
-						<div class="col-md-6">
-							<h3>Events</h3>
-						</div>
-						<div class="col-md-6">
-						
-							<div class="dropdown pull-right">
-							  <button class="dropdown-toggle" id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								Dropdown trigger
-								<span class="caret"></span>
-							  </button>
-							  <ul class="dropdown-menu pull-right" aria-labelledby="dLabel">
-								  <li><a tabindex="-1" href="#">Action</a></li>
-								  <li><a tabindex="-1" href="#">Another action</a></li>
-								  <li><a tabindex="-1" href="#">Something else here</a></li>
-								  <li class="divider"></li>
-								  <li><a tabindex="-1" href="#">Separated link</a></li>
-							  </ul>
+					<div class="row">
+						<div class="col-md-12 border-bottom">
+							<div class="col-md-6">
+								<h3>Events</h3>
 							</div>
-							
+							<div class="col-md-6">
+
+								<div class="dropdown pull-right">
+								  <button class="dropdown-toggle" id="dLabel" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+									Dropdown trigger
+									<span class="caret"></span>
+								  </button>
+								  <ul class="dropdown-menu pull-right" aria-labelledby="dLabel">
+									  <li><a tabindex="-1" href="#">Action</a></li>
+									  <li><a tabindex="-1" href="#">Another action</a></li>
+									  <li><a tabindex="-1" href="#">Something else here</a></li>
+									  <li class="divider"></li>
+									  <li><a tabindex="-1" href="#">Separated link</a></li>
+								  </ul>
+								</div>
+
+							</div>
 						</div>
 					</div>
-				</div>
 				
-				<div class="row">
-					<div class="col-md-12 bg-white border-bottom text-center">
-						<img src="assets/img/graph1-sample.png"/>
-					</div>
-					
-				</div>
-				
-				<div class="row">
-					<div class="col-md-12 border-bottom">
-						<div class="col-md-6">
-							<h3>Events</h3>
+					<div class="row">
+						<div class="col-md-12 bg-white border-bottom text-center">
+							 <div id="line-chart-container-2"></div>
 						</div>
-						<div class="col-md-6">chf
-							<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" data-toggle="dropdown">
-							  <li><a tabindex="-1" href="#">Action</a></li>
-							  <li><a tabindex="-1" href="#">Another action</a></li>
-							  <li><a tabindex="-1" href="#">Something else here</a></li>
-							  <li class="divider"></li>
-							  <li><a tabindex="-1" href="#">Separated link</a></li>
-							</ul>
+
+					</div>
+				
+					<div class="row">
+						<div class="col-md-12 border-bottom">
+							<div class="col-md-6">
+								<h3>Funnel Progress</h3>
+							</div>
+							<div class="col-md-6">chf
+
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-12 bg-white border-bottom text-center">
-						<img src="assets/img/graph2-sample.png"/>
+					<div class="row">
+						<div class="col-md-12 bg-white border-bottom text-center">
+							<img src="assets/img/graph2-sample.png"/>
+						</div>
+
 					</div>
-					
-				</div>
 				
-				
+				</div><!-- End of hide div -->
    		
     		</div><!-- End of left col -->
     		
     		<div class="col-md-3">
-    			<div class="profile-section">
-    				<img src="assets/img/1477482048_unknown.png" alt="profile-pic" />
-    			</div>
-    			<div class="user-profile-info">
-    				
-    				<div class="row">
-    					<div class="col-md-12 text-center">
-    						<h1>John Doe</h1>
-							<i class="fa fa-map-marker" aria-hidden="true"></i> London <i class="fa fa-circle fa-1x" aria-hidden="true"></i> UK
-							<p><em>Last Seen 6 Days ago</em></p>
-    					</div>
-    				</div>
-    				
-    				<div class="row linear-graph-box">
+    			<div id="profileData" class="hide">
+    			
+					<div class="profile-section">
+						<img src="assets/img/1477482048_unknown.png" alt="profile-pic" />
+					</div>
+					<div class="user-profile-info">
+
 						<div class="row">
-							<div class="col-md-8">Engagement Level</div> 
-							<div class="col-md-4"><i class="fa fa-square" aria-hidden="true"></i> <span>60</span><span>%</span></div>
-						</div> 
-   						<div class="row">
-   							<div class="col-md-12">
-								<div class="grey">
-									<div class="orange"> </div>
+							<div class="col-md-12 text-center">
+								<h1>{{user.fName}}{{user.lName}}</h1>
+								<i class="fa fa-map-marker" aria-hidden="true"></i> {{user.city}} <i class="fa fa-circle fa-1x" aria-hidden="true"></i> {{data.ctry}}
+								<p><em>Last Seen {{user.lSeen}} Days ago</em></p>
+							</div>
+						</div>
+
+						<div class="row linear-graph-box">
+							<div class="row">
+								<div class="col-md-8">Engagement Level</div> 
+								<div class="col-md-4"><i class="fa fa-square" aria-hidden="true"></i> <span>60</span><span>%</span></div>
+							</div> 
+							<div class="row">
+								<div class="col-md-12">
+									<div class="grey">
+										<div class="orange"> </div>
+									</div>
 								</div>
 							</div>
 						</div>
-    				</div>
-    				
-    				<hr>
-    				
-    				<div class="row indv-details">
-    					<div class="col-md-12">
-    						<dl class="dl-vertical">
-								<dt>Username</dt>
-								<dd>John Doe</dd>
-								<dt>E-mail</dt>
-								<dd>johndoe@appengage.com</dd>
-								<dt>Organization:</dt>
-								<dd>Amodo</dd>
-								<dt>Full name</dt>
-								<dd>John Davis Doe</dd>
-								<dt>Device & OS </dt>
-								<dd>Ipad 4 (WA8 4.1)</dd>
-								<dt>Contact Phone:</dt>
-								<dd> +374-628 9058</dd>
-								<dt>Gender: </dt>
-								<dd>Male</dd>
-								<dt>Age:</dt>
-								<dd>35</dd>
-							</dl>
+
+						<hr>
+
+						<div class="row indv-details">
+							<div class="col-md-12">
+								<dl class="dl-vertical">
+									<dt>Username</dt>
+									<dd>{{user.uName}}</dd>
+									<dt>E-mail</dt>
+									<dd>{{user.eM}}</dd>
+									<dt>Organization:</dt>
+									<dd>{{user.org}}</dd>
+									<dt>Full name</dt>
+									<dd>{{user.fName}}  {{user.lName}}</dd>
+									<dt>Device & OS </dt>
+									<dd>{{data.dType}}</dd>
+									<dt>Contact Phone:</dt>
+									<dd>{{user.con}}</dd>
+									<dt>Gender: </dt>
+									<dd>{{user.gen}}</dd>
+									<dt>Age:</dt>
+									<dd>{{user.age}}</dd>
+								</dl>
+							</div>
+							<div class="col-md-12">
+							</div>
+
 						</div>
-   						<div class="col-md-12">
-						</div>
-   						
-    				</div>
-    				
-    			</div>
+
+					</div>
+    			
+    			</div><!-- end of hide div col 3 -->
+    			
     		</div><!-- end right col 3 -->
+    		
     	</div><!-- end main row -->
-    	
+		
+   		</div><!-- end of container div -->
     	
     	<script>
 		 $('body').on('load', function() {
 	  // Handler for .load() called.
-			alert('loaded');
+			console.log('loaded');
 			$( ".device-menu li.selected a" ).trigger( "click" );
 			
 		});
 		 </script>
+    
+    	  <script>
+		
+				
+				var apiURL = 'http://52.206.121.100/appengage/fetchUserProfiles';
+				
+                // Set the dimensions of the canvas / graph
+                var	margin = {top: 30, right: 50, bottom: 30, left: 50}, divWidth = $("#line-chart-container-1").width(), width = (divWidth - 30) - margin.left - margin.right, height = 250 - margin.top - margin.bottom;
+
+                // Parse the date / time
+                var	parseDate = d3.time.format("%d-%b-%y").parse;
+                var formatTime = d3.time.format("%e %B");// Format tooltip date / time
+				
+                // Set the ranges
+                var	x = d3.time.scale.utc().range([0, width]);
+                var	y = d3.scale.linear().range([height, 0]);
+				//y.clamp(true);
+
+                // Define the line
+                var	valueline = d3.svg.line()
+					//.interpolate("basis")
+                    .x(function(d) { 
+						if((d.date).length === 8){
+							return x(new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2))); 
+						}
+						else{
+							return x((d.date).substr(8,2));
+						}
+					})
+                    .y(function(d) { return y(parseInt(d.tse)); });
+                
+                // Define the line
+                var	valueline1 = d3.svg.line()
+					//.interpolate("basis")
+                    .x(function(d) { 
+						if((d.date).length === 8){
+							return x(new Date((d.date).substr(0,4)+"-"+(d.date).substr(4,2)+"-"+(d.date).substr(6,2))); 
+						}
+						else{
+							return x((d.date).substr(8,2));
+						}
+					})
+                    .y(function(d) { return y(parseInt(d.tts)); });
+
+			  
+                // Define 'div' for tooltips
+                var div = d3.select("body")
+                    .append("div")  // declare the tooltip div 
+                    .attr("class", "tooltip")              // apply the 'tooltip' class
+                    .style("opacity", 0);                  // set the opacity to nil
+			  
+				// Define 'div' for tooltips
+                var div1 = d3.select("body")
+                    .append("div")  // declare the tooltip div 
+                    .attr("class", "map-tooltip shadow")              // apply the 'tooltip' class
+                    .style("opacity", 0);                  // set the opacity to nil
+
+                
+				// Adds the svg canvas
+                var	svg = d3.select("#line-chart-container-1")
+                    .append("svg")
+					.attr("class","chart")
+					.attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+					.attr('viewBox', '0 0 '+(width + margin.left + margin.right)+' '+(height + margin.top + margin.bottom))
+					.attr('perserveAspectRatio', 'xMinYMid')
+                    .append("g")
+					.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+				
+				// Adds the svg canvas
+               var	svg1 = d3.select("#line-chart-container-2")
+                    .append("svg")
+					.attr("class","chart")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+					.attr('viewBox', '0 0 '+(width + margin.left + margin.right)+' '+(height + margin.top + margin.bottom))
+					.attr('perserveAspectRatio', 'xMinYMid')
+                    .append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+					
+
+			/*function loadChart(startDate, endDate, appKey){
+				svg.selectAll("*").remove();
+                svg1.selectAll("*").remove();
+				// Get the data for total session
+				//console.log(apiURL + "?sd="+startDate+"&ed="+endDate+"&akey="+appKey);
+                d3.json( apiURL + "?sd="+startDate+"&ed="+endDate+"&akey="+appKey, function(error, data) {
+                   // console.log(data);
+					data = JSON.parse(data);
+					
+                    plotLineChart(data,svg, div, false, "tse", valueline, x, y, width, height);
+                    
+                    plotLineChart(data,svg1, div1, true, "tts", valueline1, x, y, width, height);
+                    
+                });
+			};*/
+			  
+			  
+			
+			  
+        </script>
+        <script src="assets/js/app-user-data.js"></script>
      </body>							
 </html>
