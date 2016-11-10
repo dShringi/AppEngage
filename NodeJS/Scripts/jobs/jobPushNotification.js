@@ -1,78 +1,79 @@
 // this script is used to send push notification
-'use strict'
+'use strict';
 
 const logger = require('../conf/log.js');
 const config = require('../conf/config.js');
 const common = require('../commons/common');
 
-var mongodb = require('mongodb');
-var dateFormat = require('dateformat');
-var FCM = require('fcm-push');
-var ObjectID = require('mongodb').ObjectID;
+const mongodb = require('mongodb');
+const dateFormat = require('dateformat');
+const FCM = require('fcm-push');
+const ObjectID = require('mongodb').ObjectID;
 
-var MongoClient = mongodb.MongoClient;
-
-var url = config.mongodb.url+'/'+process.argv[2];
+const MongoClient = mongodb.MongoClient;
+const akey = process.argv[2];
+const url = config.mongodb.url+'/'+akey;
 
 //appengage url
-var appengageurl = config.mongodb.appengage;
+const appengageurl = config.mongodb.appengage;
 
+function printErrorMessage(err) {
+	var errMsg = common.getErrorMessageFrom(err);
+	logger.error(errMsg);
+	console.log('err  ',err);
+	return;
+}
 
 //connecting to appengage database to fetch android and ios key from coll_apps collection
-MongoClient.connect(appengageurl, function (err, db) 
+MongoClient.connect(appengageurl, function (err, db)
 {
-	if (err) 
+	if (err)
 	{
 		printErrorMessage(err);
 		db.close();
-	} 
-	else 
+	}
+	else
 	{
 		//get database object to perform operations
-		var appkeysCollection = db.collection('coll_apps');		
-		var findQuery = ' { "akey": "'+process.argv[2]+'" } ';
-
-		//Android server key
-		var andriodServerKey = '';
-
-		//iOS server key
-		var iosServerKey = '';
+		const appkeysCollection = db.collection(config.mongodb.coll_appengageapps);
+		let findQuery = ' { "akey": "'+akey+'" } ';
 
 		appkeysCollection.find(JSON.parse(findQuery)).toArray(function(err,result)
 		{
+			db.close();
 			if(err)
 			{
 				printErrorMessage(err);
-				db.close();
-				
-			} 
+			}
 			else if(result.length)
 			{
-				andriodServerKey = result[0].androidKey;
-				iosServerKey     = result[0].iosKey;
+				let andriodFcm;
+				let iosFcm;
 
-				var andriodFcm = new FCM(andriodServerKey);
-				var iosFcm = new FCM(iosServerKey);
-
+				if(result[0].androidKey){
+					andriodFcm = new FCM(result[0].androidKey);
+				}
+				if(result[0].iosKey){
+					iosFcm = new FCM(result[0].iosKey);
+				}
 
 				MongoClient.connect(url, function (err, db) {
 					if (err) {
 						printErrorMessage(err);
 					} else {
 
-						var datekey =  dateFormat(getUtcCurrentTime(), "yyyymmddHHMM");
-						var endDate =  dateFormat(getUtcCurrentTime(), "yyyymmdd");
+						let datekey =  dateFormat(getUtcCurrentTime(), "yyyymmddHHMM");
+						let endDate =  dateFormat(getUtcCurrentTime(), "yyyymmdd");
 						//get database object to perform operations
-						var campaignCollection = db.collection(config.mongodb.coll_campaigns);
+						const campaignCollection = db.collection(config.mongodb.coll_campaigns);
 						//var findQuery = '{"$or":[{"status":"active","trigger_time":'+datekey+'},{"status":"active","recursive":true,"schedule_type": "scheduled","trigger_time":'+datekey+'},{"status":"active","recursive":true,"schedule_type": "cyclic","trigger_time":'+datekey+'} ]}';
-						var findQuery = '{"$or":[{"endDate":null,"status":"active","trigger_time":'+datekey+'},{"endDate":{"$gte": '+endDate+' },"status":"active","trigger_time":'+datekey+'}]}';
+						let findQuery = '{"$or":[{"endDate":null,"status":"active","trigger_time":'+datekey+'},{"endDate":{"$gte": '+endDate+' },"status":"active","trigger_time":'+datekey+'}]}';
 
 						campaignCollection.find(JSON.parse(findQuery)).toArray(function (err, result) {
 							if (err) {
 								printErrorMessage(err);
 								db.close();
 							} else if (result.length) {
-
 								var usersCollection = db.collection(config.mongodb.coll_users);
 								for (var i = 0; i < result.length; i++) {
 									var campaignResult = result[i];
@@ -137,17 +138,12 @@ MongoClient.connect(appengageurl, function (err, db)
 					}
 				});
 
-
 				function pushToFcmAndroid(message){
-					
+
 					andriodFcm.send(message, function(err, response){
 						if (err) {
 							printErrorMessage(err);
 						}
-						/* else {
-							printErrorMessage(err);
-
-						}*/
 					});
 				}
 
@@ -156,10 +152,6 @@ MongoClient.connect(appengageurl, function (err, db)
 						if (err) {
 							printErrorMessage(err);
 						}
-						/* else {
-							printErrorMessage(err);
-
-						}*/
 					});
 				}
 
@@ -188,13 +180,6 @@ MongoClient.connect(appengageurl, function (err, db)
 					}
 				}
 
-				function printErrorMessage(err) {
-					var errMsg = common.getErrorMessageFrom(err);
-					logger.error(errMsg);
-					console.log('err  ',err);
-					return;
-				}
-
 				function getUtcCurrentTime(){
 					var now = new Date();
 					return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
@@ -214,11 +199,9 @@ MongoClient.connect(appengageurl, function (err, db)
 			{
 				console.log('No document(s) found with defined "find" criteria! ');
 				db.close();
-
 			}
 		});
 	}
-	
 });
 //END
 

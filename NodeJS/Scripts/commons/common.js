@@ -72,7 +72,7 @@ var common = {};
         var db = mongojs(config.mongodb.appengage);
         db.collection(config.mongodb.coll_appengageapps).find({"akey":appID},function(err,result){
             db.close();
-            if(err){
+            if(err || result.length === 0){
                 callback(err,null);
             }else{
                 callback(null,result[0].tz);
