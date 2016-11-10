@@ -22,18 +22,16 @@
        		<script src="assets/js/common.js"></script>
        		
 
-        	 <style>
-				body {padding-top:74px !important;}
-			</style>
+        
 			
         </head>
      <body>
-     	<div class="container">
-			<nav id="mainNav" class="navbar navbar-default navbar-fixed-top " >
+     	 <div class="row bg-white">
+			
 				<div class="left-side sticky-left-side" ng-include src="'menu.html'" tabindex="5000"></div>
-				<div ng-include src="'header.html'"></div>
+				<div ng-include src="'header.html'" class="col-md-12"></div>
 				<!-- /.container-fluid -->
-			</nav>
+			
 		</div>
    	
    		<div class="container-fluid">
@@ -228,7 +226,7 @@
     	</div><!-- end main row -->
 		
    		</div><!-- end of container div -->
-    	
+    	 <div class="overlay"></div>
     	<script>
 		 $('body').on('load', function() {
 	  // Handler for .load() called.
@@ -241,7 +239,7 @@
     	  <script>
 		
 				
-				var apiURL = 'http://52.206.121.100/appengage/fetchUserProfiles';
+				//var apiURL = 'http://52.206.121.100/appengage/fetchUserProfiles';
 				
                 // Set the dimensions of the canvas / graph
                 var	margin = {top: 30, right: 50, bottom: 30, left: 50}, divWidth = $("#line-chart-container-1").width(), width = (divWidth - 30) - margin.left - margin.right, height = 250 - margin.top - margin.bottom;
