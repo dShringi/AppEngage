@@ -5,7 +5,7 @@
 //For Production
 module.exports.port             = 6000;
 module.exports.propfilepath = '/opt/AppEngage/UI/config'
-
+module.exports.salt = '$2a$10$2bcGZRHuqiatshKdY0vDT.';
 
 module.exports.connectionstring = 'mongodb://localhost/';
 module.exports.appengageConnString	=	'mongodb://localhost/appengage';

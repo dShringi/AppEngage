@@ -2,6 +2,10 @@ var mongojs	= require('mongojs');
 var config	= require('../../config/config');
 var logger	= require('../../config/log.js');
 var commons	= require('../../commons/common.js');
+var bcrypt = require('bcryptjs');
+// password salt
+var salt = config.salt;
+
 
 module.exports.registerUser	=	function(req,res){
 	var data = req.body;
@@ -24,6 +28,9 @@ module.exports.registerUser	=	function(req,res){
 						console.log(appresult);
 						var akey = appresult._id;
 						db.collection(config.coll_appengageapps).update({"_id":mongojs.ObjectID(akey)},{$set:{akey:akey.toString()}},function(err,result){});
+
+						data.user.pass = bcrypt.hashSync(data.user.pass, salt);
+
 						var insertUser = JSON.parse('{"_id":"'+data.user.uname+'","pass":"'+data.user.pass+'","app_id":"'+akey.toString()+'","app_name":"'+data.app.name+'","fn":"'+data.user.fn+'","ln":"'+data.user.ln+'","email":"'+data.user.email+'","phone":"'+data.user.phone+'"}');
 						db.collection(config.coll_appengageusers).insert(insertUser,function onRegisterUserComplete(err,userresult){
 							db.close();
@@ -55,10 +62,12 @@ module.exports.registerUser	=	function(req,res){
 module.exports.validateUser = function(req,res){
 	var userName = req.query.username;
 	var userPassword = req.query.password;
+	var comparePassword = bcrypt.hashSync(req.query.password,salt);
 	var db = mongojs(config.appengageConnString);
+	
 	if(db){
 		db.collection(config.coll_appengageusers).find(
-			{ $and:[{_id:userName},{pass:userPassword}]},function onValidateUserComplete(err,result){
+			{ $and:[{_id:userName},{pass:comparePassword}]},function onValidateUserComplete(err,result){
 				db.close();
 				if(!err){
 					if(result.length===1){
