@@ -1,6 +1,5 @@
 "use strict";
 
-const logger = require('../config/log.js');
 const config = require('../config/config.js');
 const moment = require('moment-timezone');
 const mongojs = require('mongojs');
@@ -12,7 +11,7 @@ var common = {};
     var db = mongojs(config.appengageConnString);
     db.collection(config.coll_appengageapps).find({"akey":appID},function(err,result){
       db.close();
-      if(err){
+      if(err || result.length === 0){
           callback(err,null);
       }else{
           callback(null,result[0].tz);

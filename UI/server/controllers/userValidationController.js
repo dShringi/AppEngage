@@ -1,11 +1,12 @@
-var mongojs	= require('mongojs');
-var config	= require('../../config/config');
-var logger	= require('../../config/log.js');
-var commons	= require('../../commons/common.js');
-var bcrypt = require('bcryptjs');
-// password salt
-var salt = config.salt;
+"use strict";
 
+const mongojs	= require('mongojs');
+const config	= require('../../config/config');
+const logger	= require('../../config/log.js');
+const common	= require('../../commons/common.js');
+const bcrypt = require('bcryptjs');
+// password salt
+const salt = config.salt;
 
 module.exports.registerUser	=	function(req,res){
 	var data = req.body;
@@ -21,12 +22,11 @@ module.exports.registerUser	=	function(req,res){
 				if(data.app.tz===config.UNDEFINED	||	data.app.tz===config.NULL	||	data.app.tz===config.EMPTYSTRING){
 					timeZone=config.defaultAppTimeZone;
 				}
-				var db = mongojs(config.appengageConnString);
-				var insertApp = JSON.parse('{"name":"'+data.app.name+'","desc":"'+data.app.desc+'","ctg":"'+data.app.ctg+'","tz":"'+timeZone+'","to":"'+timeOut+'"}');
+				const db = mongojs(config.appengageConnString);
+				const insertApp = JSON.parse('{"name":"'+data.app.name+'","desc":"'+data.app.desc+'","ctg":"'+data.app.ctg+'","tz":"'+timeZone+'","to":"'+timeOut+'"}');
 				db.collection(config.coll_appengageapps).insert(insertApp,function onRegisterAppComplete(err,appresult){
 					if(!err){
-						console.log(appresult);
-						var akey = appresult._id;
+						const akey = appresult._id;
 						db.collection(config.coll_appengageapps).update({"_id":mongojs.ObjectID(akey)},{$set:{akey:akey.toString()}},function(err,result){});
 
 						data.user.pass = bcrypt.hashSync(data.user.pass, salt);
@@ -60,11 +60,10 @@ module.exports.registerUser	=	function(req,res){
 };
 
 module.exports.validateUser = function(req,res){
-	var userName = req.query.username;
-	var userPassword = req.query.password;
-	var comparePassword = bcrypt.hashSync(req.query.password,salt);
-	var db = mongojs(config.appengageConnString);
-	
+	const userName = req.query.username;
+	const comparePassword = bcrypt.hashSync(req.query.password,salt);
+	const db = mongojs(config.appengageConnString);
+
 	if(db){
 		db.collection(config.coll_appengageusers).find(
 			{ $and:[{_id:userName},{pass:comparePassword}]},function onValidateUserComplete(err,result){
@@ -82,15 +81,14 @@ module.exports.validateUser = function(req,res){
 				}
 		});
 	}else{
-		logger.error(common.getErrorMessageFrom(err));
 		return res.json({"msg":"Failed"});
 	}
 
 };
 
 module.exports.validateUserName = function(req,res){
-	var userName = req.query.username;
-	var db = mongojs(config.appengageConnString);
+	const userName = req.query.username;
+	const db = mongojs(config.appengageConnString);
 
 	if(db){
 		db.collection(config.coll_appengageusers).find(
@@ -109,7 +107,6 @@ module.exports.validateUserName = function(req,res){
 				}
 		});
 	}else{
-		logger.error(common.getErrorMessageFrom(err));
 		return res.json({"msg":"Failed"});
 	}
 };
