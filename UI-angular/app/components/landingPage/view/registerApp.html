@@ -47,7 +47,10 @@
 						<form name="customerDetailsForm" class="row">
 							<div class="col-md-5">
 								<input type="text" name="userFirstName" 
-								ng-model="registerAppCtrl.registerAppDetails.user.fn"
+								ng-model="registerAppCtrl.
+
+
+								.user.fn"
 								id="reg-fname" 
 								class="form-control" tabindex="1" placeholder="First Name" required/>
 								<div class="error-help">
@@ -59,13 +62,13 @@
 									<p ng-show="customerDetailsForm.userEmailId.$error.required && !customerDetailsForm.userEmailId.$pristine">Email ID is required</p>
 									<p ng-show="customerDetailsForm.userEmailId.$dirty && customerDetailsForm.userEmailId.$error.email" ng-hide="customerDetailsForm.userEmailId.$pristine">Email ID is invalid</p>
 								</div>
-								
-								<input type="text" name="userName" ng-model="registerAppCtrl.registerAppDetails.user.uname" id="reg-uname" class="form-control" tabindex="5" placeholder="User Name" ng-keyup="registerAppCtrl.validateUname(registerAppCtrl.registerAppDetails.user.uname)" required/>
+								<!--Custom directive username-available for sername validation-->
+								<input type="text" name="userName" ng-model="registerAppCtrl.registerAppDetails.user.uname" id="reg-uname" class="form-control" tabindex="5" placeholder="User Name" username-available required/>
 								<div class="error-help">
-									<p ng-show="customerDetailsForm.userName.$invalid && !customerDetailsForm.userName.$pristine">User name is required</p>
-									<p id="uname-check" style="display: none;"><i class="fa"></i><i id="avail-message"></i></p>
+									<p ng-if="customerDetailsForm.userName.$error.required && !customerDetailsForm.userName.$pristine">User name is required</p>
+									<p ng-if="customerDetailsForm.userName.$error.usernameExists==true">This username is taken</p>
+									<p ng-if="customerDetailsForm.userName.$error.usernameExists==false && !customerDetailsForm.userName.$error.required" style="color: #33cc33;">This username is available</p>
 								</div>
-
 							</div>
 							<div class="col-md-5 col-md-offset-1">
 								<input type="text" name="userLastName" ng-model="registerAppCtrl.registerAppDetails.user.ln" id="reg-lname" class="form-control" tabindex="2" placeholder="Last Name" required/>
