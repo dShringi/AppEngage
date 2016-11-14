@@ -23,15 +23,15 @@ define(['app','assets/js/moment-timezone-with-data-2010-2020'],function (app, mo
 		$scope.originForm = angular.copy(this.registerAppDetails);
 		angular.element(document).ready(function () {
 			$('#modalRegister').on('hidden.bs.modal', function (e) {
-				$("#modalRegister #tab1").addClass("in active").fadeIn();
-				$("#modalRegister #tab2").removeClass("in active");
-				$("#modalRegister #tab3").removeClass("in active");
-				$(".register-part01").addClass("active-underline");
-				$(".register-part02").removeClass("active-underline");
-				$(".register-part03").removeClass("active-underline");
-				$("#uname-check").css("opacity", "0");
+				angular.element( document.querySelector('#modalRegister #tab1')).addClass("in active");
+				$("#modalRegister #tab1").fadeIn();
+				angular.element( document.querySelector('#modalRegister #tab2')).removeClass("in active");
+				angular.element( document.querySelector('#modalRegister #tab3')).removeClass("in active");
+				angular.element( document.querySelector('.register-part01')).addClass("active-underline");
+				angular.element( document.querySelector('.register-part02')).removeClass("active-underline");
+				angular.element( document.querySelector('.register-part03')).removeClass("active-underline");
 				sessionStorage.removeItem("unameAvailability");
-				var form1=$('form[name="customerDetailsForm"]');
+				var form1=angular.element( document.querySelector('form[name="customerDetailsForm"]'));
 				$scope.$apply(function(form1){
 					if(form1!=undefined){
 						form1.customerDetailsForm.$setPristine();
@@ -49,7 +49,6 @@ define(['app','assets/js/moment-timezone-with-data-2010-2020'],function (app, mo
 				var reader = new FileReader();
 				reader.onload = function (e) {
 					model.app.icon=e.target.result;
-					debugger;
 					$('#reg-appicon').val(model.app.icon);
 					$("#appicon-img").attr('src', model.app.icon);
 					$("#appicon-img").attr("alt", model.app.icon);
@@ -88,6 +87,7 @@ define(['app','assets/js/moment-timezone-with-data-2010-2020'],function (app, mo
 		};
 		/*Register user ajax call*/
 		this.registerUser = function(dataModel){
+			debugger;
 			$http({
 				method: "POST",
 				url: apiUrl+"/registerUser",
@@ -114,43 +114,42 @@ define(['app','assets/js/moment-timezone-with-data-2010-2020'],function (app, mo
 				}
 			});
 		};
-
-		/*Validate user name ajax call*/
-
-		this.validateUname = function (uname) {
-			$http({
-			 method: "GET",
-			 url: apiUrl+"/getUserNameValidated",
-			 contentType: "application/json",
-			 dataType: "json",
-			 timeout: 180000,  //180 sec
-			 params: {'username': uname}
-			 }).success(function(data){
-				console.log(JSON.stringify(data));
-			 	sessionStorage.setItem("unameAvailability", data.msg);
-			 if ($("#reg-uname").val() === "") {
-			 	$("#uname-check").css("display", "none");
-			 }
-			 else if (data.msg === "Success") {
-				 $("#uname-check i.fa").removeClass("fa-close").addClass("fa-check");
-				 $("#uname-check").css({"display":"block","color":"#33cc33"});
-				 $("#uname-check #avail-message").html("&nbsp;&nbsp;This username is available");
-			 }
-			 else {
-				 $("#uname-check i.fa").removeClass("fa-check").addClass("fa-close");
-				 $("#uname-check").css({"display":"block","color":"#ff3300"});
-				 $("#uname-check #avail-message").html("&nbsp;&nbsp;This username is taken");
-			 }
-			 }).error(function (x, t, m) {
-			 	alert("Error connecting to server");
-			 if (t === "timeout") {
-				 alert("timeout");
-			 } else {
-				 //alert(t);
-			 }
-			 });
-		};
 	}]);
+	landingPageApp.directive('usernameAvailable',function ($timeout, $q, $http) {
+		return {
+			restrict: 'AE',
+			require: 'ngModel',
+			link: function (scope, elm, attr, model) {
+				scope.$watch(attr.ngModel, function(uname) {
+					/*Validate user name ajax call*/
+					$http({
+						method: "GET",
+						url: "http://52.206.121.100/appengage/getUserNameValidated",
+						contentType: "application/json",
+						dataType: "json",
+						timeout: 180000,  //180 sec
+						params: {'username': uname}
+					}).success(function(res){
+						sessionStorage.setItem('unameAvailability',res.msg);
+						$timeout(function(){
+							if(res.msg=="Success"){
+								model.$setValidity('usernameExists', true);
+							}else{
+								model.$setValidity('usernameExists', false);
+							}
+						}, 1000);
+					}).error(function (x, t, m) {
+						alert("Error connecting to server");
+						if (t === "timeout") {
+							alert("timeout");
+						} else {
+							//alert(t);
+						}
+					});
+				});
+			}
+		}
+	});
 	landingPageApp.controller('loginController',['$scope', '$http','apiUrl', function ($scope, $http, apiUrl) {
 		this.loginData={
 			username:"",
@@ -158,14 +157,12 @@ define(['app','assets/js/moment-timezone-with-data-2010-2020'],function (app, mo
 		};
 		/*Login Validate ajax call*/
 		this.validateUser = function (uname, pwd) {
-			debugger;
 			$http({
 				method:'GET',
 				url: apiUrl+"/getUserValidated",
 				timeout: 180000,  //180 sec
 				params: {"username":uname, "password": pwd}
 			}).success(function(data){
-				debugger;
 				console.log(data);
 				if (data.msg === "Success") {
 					localStorage.setItem("userName", data.name);
@@ -176,7 +173,6 @@ define(['app','assets/js/moment-timezone-with-data-2010-2020'],function (app, mo
 					alert("Login Failed");
 				}
 			}).error(function(x, t, m){
-				debugger;
 				alert("Error connecting to server");
 				if (t === "timeout") {
 					alert("timeout");
