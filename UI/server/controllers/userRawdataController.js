@@ -8,7 +8,7 @@ var fs = require('fs');
 /*
 	input filters: 	begin(date),end(date),akey(string),eventype(array)
 	eventypes    :  begin,end,crash,screen      
-	return type  : 	json
+	return type  : 	csv/xml/json
 	description  : 	Fetch User's data on the basis of begin/end date 
 					and event performed by user 
 */
