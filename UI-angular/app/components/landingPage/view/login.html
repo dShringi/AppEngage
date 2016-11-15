@@ -5,7 +5,7 @@
             <div>
                 <input type="text" class="usrname" placeholder="Username" ng-model="loginCtrl.loginData.username"/>
                 <input type="password" class="passwrd" placeholder="Password" ng-model="loginCtrl.loginData.password"/>
-                <button class="btn btn-neutral btn-block" ng-click="loginCtrl.validateUser(loginCtrl.loginData.username, loginCtrl.loginData.password);">Submit</button>
+                <button class="btn btn-neutral btn-block" id="loginBtn" ng-click="loginCtrl.validateUser(loginCtrl.loginData.username, loginCtrl.loginData.password);" ui-sref="Dashboard">Submit</button>
                 <a href="#">Forgot password?</a>
             </div>
         </div>

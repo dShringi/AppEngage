@@ -6,17 +6,18 @@
 	<title>AppEngage</title>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.6/css/bootstrap.css" />
 	<link rel="stylesheet" href="app/assets/css/font-awesome.min.css">
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
 	<link rel="stylesheet" href="app/assets/css/sweetalert.css">
 	<link rel="stylesheet" href="app/css/landingpage.css" />
 	<link rel="stylesheet" href="app/css/custom.css" />
+	<link rel="stylesheet" href="app/css/style.css"/>
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
 	<script src="app/assets/js/require.min.js" data-main="app/config.js"></script>
 	</head>
 	<body class="landing-page">
-		<nav class="navbar navbar-transparent navbar-top">
+		<div class="headerSection">
 			<div ui-view="nav"></div>
-		</nav>
-		<div class="wrapper">
+		</div>
+		<div class="mainContentSection">
 			<div ui-view="main"></div>
 		</div>
 		<div ng-include="'app/components/landingPage/view/registerApp.html'"></div>

@@ -15,6 +15,17 @@ define(['components/landingPage/controller/landingPageController'],function () {
             }
          }
       });
+      $stateProvider.state("Dashboard",{
+         url:"/dashboard",
+         views: {
+            'nav@': {
+               templateUrl: 'app/components/dashboard/view/header.html'
+            }/*,
+            'main@': {
+               templateUrl: ''
+            }*/
+         }
+      });
    });
    return appEngage;
 });

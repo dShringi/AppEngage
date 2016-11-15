@@ -171,7 +171,7 @@ define(['app','assets/js/moment-timezone-with-data-2010-2020'],function (app, mo
 			}
 		}
 	});
-	landingPageApp.controller('loginController',['$scope', '$http','apiUrl', function ($scope, $http, apiUrl) {
+	landingPageApp.controller('loginController',['$scope', '$http','$state', 'apiUrl', function ($scope, $http, $state, apiUrl) {
 		this.loginData={
 			username:"",
 			password:""
@@ -188,7 +188,9 @@ define(['app','assets/js/moment-timezone-with-data-2010-2020'],function (app, mo
 				if (data.msg === "Success") {
 					localStorage.setItem("userName", data.name);
 					localStorage.setItem("appKey", data.akey);
-					window.location.href = "index.html";
+					//window.location.href = "index.html";
+					//Navigate to dashboard page
+					$state.go("Dashboard");
 				}
 				else {
 					alert("Login Failed");
