@@ -1,6 +1,22 @@
 define(['app','assets/js/moment-timezone-with-data-2010-2020'],function (app, moment) {
 	var landingPageApp = angular.module('LandingPageApp', []);
-	landingPageApp.controller("registerAppController",['$scope','$http','apiUrl', function($scope,$http,apiUrl){
+	landingPageApp.factory('FocusWithinModal',function () {
+		return {
+			modalFocus : function (e) {
+				/*if(($(".modal.in .tab-pane.fade.in input:last").is(":focus")||$(".modal.in .tab-pane.fade.in select:last").is(":focus"))&& (e.which || e.keyCode) == 9){
+					if($(".modal.in .tab-pane.fade.in button:last").is(':disabled')){
+						//$(".modal.in .tab-pane.fade.in button:first").focus();
+						$(".modal.in .tab-pane.fade.in input:first").focus();
+						e.preventDefault();
+					}else{
+						$(".modal.in .tab-pane.fade.in button:last").focus();
+						e.preventDefault();
+					}
+				}*/
+			}
+		}
+	});
+	landingPageApp.controller("registerAppController",['$scope','$http','apiUrl','FocusWithinModal', function($scope,$http,apiUrl,FocusWithinModal){
 		this.registerAppDetails={
 			"user": {
 				"fn": "",
@@ -21,6 +37,10 @@ define(['app','assets/js/moment-timezone-with-data-2010-2020'],function (app, mo
 		};
 		$scope.timeZones = moment.tz.names();
 		$scope.originForm = angular.copy(this.registerAppDetails);
+		$scope.modalFocus = function (ele){
+			debugger;
+			FocusWithinModal.modalFocus(ele);
+		};
 		angular.element(document).ready(function () {
 			$('#modalRegister').on('hidden.bs.modal', function (e) {
 				angular.element( document.querySelector('#modalRegister #tab1')).addClass("in active");
@@ -61,13 +81,13 @@ define(['app','assets/js/moment-timezone-with-data-2010-2020'],function (app, mo
 			$("#" + tabcurrent).fadeOut().removeClass("in active");
 			$("#" + tabnext).fadeIn().addClass("in active");
 
-			if ($(".register-part01").hasClass("active-underline")) {
-				$(".register-part01").removeClass("active-underline");
-				$(".register-part02").addClass("active-underline");
+			if (angular.element( document.querySelector('.register-part01')).hasClass("active-underline")) {
+				angular.element( document.querySelector('.register-part01')).removeClass("active-underline");
+				angular.element( document.querySelector('.register-part02')).addClass("active-underline");
 			}
 			else {
-				$(".register-part02").removeClass("active-underline");
-				$(".register-part03").addClass("active-underline");
+				angular.element( document.querySelector('.register-part02')).removeClass("active-underline");
+				angular.element( document.querySelector('.register-part03')).addClass("active-underline");
 			}
 		};
 
@@ -76,17 +96,18 @@ define(['app','assets/js/moment-timezone-with-data-2010-2020'],function (app, mo
 			$("#" + tabprev).css("display", "block");
 			$("#" + tabprev).addClass("in active").fadeIn();
 
-			if ($(".register-part02").hasClass("active-underline")) {
-				$(".register-part02").removeClass("active-underline");
-				$(".register-part01").addClass("active-underline");
+			if (angular.element( document.querySelector('.register-part02')).hasClass("active-underline")) {
+				angular.element( document.querySelector('.register-part02')).removeClass("active-underline");
+				angular.element( document.querySelector('.register-part01')).addClass("active-underline");
 			}
 			else {
-				$(".register-part03").removeClass("active-underline");
-				$(".register-part02").addClass("active-underline");
+				angular.element( document.querySelector('.register-part03')).removeClass("active-underline");
+				angular.element( document.querySelector('.register-part02')).addClass("active-underline");
 			}
 		};
 		/*Register user ajax call*/
 		this.registerUser = function(dataModel){
+
 			debugger;
 			$http({
 				method: "POST",

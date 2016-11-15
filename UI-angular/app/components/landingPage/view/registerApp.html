@@ -1,5 +1,5 @@
 <!--modal REGISTRATION-->
-<div class="modal fade" id="modalRegister" role="dialog" ng-controller="registerAppController as registerAppCtrl">
+<div class="modal fade" id="modalRegister" role="dialog" ng-controller="registerAppController as registerAppCtrl" ng-keydown="modalFocus($event);">
 	<div class="modal-dialog modal-md">
 		<!-- Modal content-->
 		<div class="modal-content">
@@ -49,7 +49,7 @@
 								<input type="text" name="userFirstName" 
 								ng-model="registerAppCtrl.registerAppDetails.user.fn"
 								id="reg-fname" 
-								class="form-control" tabindex="1" placeholder="First Name" required/>
+								class="form-control" tabindex="1" placeholder="First Name" autofocus required/>
 								<div class="error-help">
 									<p ng-show="customerDetailsForm.userFirstName.$invalid && !customerDetailsForm.userFirstName.$pristine">First name is required</p>
 								</div>
@@ -84,7 +84,7 @@
 								</div>
 							</div>
 							<div class="col-md-12">
-								<button class="btn btn-proceed1"  ng-disabled="customerDetailsForm.$invalid" ng-click="registerAppCtrl.fadeProceed('tab1', 'tab2');">Proceed</button>
+								<button class="btn btn-proceed1"  ng-disabled="customerDetailsForm.$invalid" ng-click="registerAppCtrl.fadeProceed('tab1', 'tab2');" tabindex="7">Proceed</button>
 							</div>	
 						</form>
 					</div>
@@ -93,7 +93,7 @@
 							<div class="col-md-6">
 								<div class="col-md-12" style="padding:0px;">
 									<div class="col-md-11">
-										<input type="text" ng-model="registerAppCtrl.registerAppDetails.app.name" name="appName" id="reg-appname" class="form-control" tabindex="1" placeholder="App Name" required/>
+										<input type="text" ng-model="registerAppCtrl.registerAppDetails.app.name" name="appName" id="reg-appname" class="form-control" tabindex="1" placeholder="App Name" autofocus required/>
 										<div class="error-help">
 											<p ng-show="appDetailsForm.appName.$invalid && !appDetailsForm.appName.$pristine">App name is required</p>
 										</div>
@@ -104,7 +104,7 @@
 								<div class="col-md-12" style="padding:0px;">
 									<div class="col-md-11">
 										<input type="text" ng-model="registerAppCtrl.registerAppDetails.app.desc" name="appDescription"
-										id="reg-appdesc" class="form-control" tabindex="2" placeholder="App Description" required/>
+										id="reg-appdesc" class="form-control" tabindex="3" placeholder="App Description" required/>
 										<div class="error-help">
 											<p ng-show="appDetailsForm.appDescription.$invalid && !appDetailsForm.appDescription.$pristine">App description is required</p>
 										</div>
@@ -115,7 +115,7 @@
 								<div class="col-md-12" style="padding:0px;">
 									<div class="col-md-11">
 										<div class="input-group">
-											<input type="text" ng-model="registerAppCtrl.registerAppDetails.app.to" name="appTimeOut" id="ref-timeout" tabindex="3" class="form-control" placeholder="App Timeout" required/>
+											<input type="text" ng-model="registerAppCtrl.registerAppDetails.app.to" name="appTimeOut" id="ref-timeout" tabindex="5" class="form-control" placeholder="App Timeout" required/>
 											<div class="input-group-btn">
 												<button type="button" class="btn btn-default"><i class="fa fa-clock-o"></i></button>
 											</div>
@@ -136,7 +136,7 @@
 								<div class="col-md-12" style="padding:0px;">
 									<div class="col-md-11">
 										<div class="input-group">
-											<input type="text" ng-model="registerAppCtrl.registerAppDetails.app.ctg" name="appCategory" id="reg-appcat" tabindex="4" class="form-control" placeholder="App Category" required>
+											<input type="text" ng-model="registerAppCtrl.registerAppDetails.app.ctg" name="appCategory" id="reg-appcat" tabindex="2" class="form-control" placeholder="App Category" required>
 											<div class="input-group-btn">
 												<button type="button" class="btn btn-default"><i class="caret"></i></button>
 											</div>
@@ -153,7 +153,7 @@
 										<div class="input-group">
 											<input type="text" ng-model="registerAppCtrl.registerAppDetails.app.icon" name="appImage" class="form-control" id="reg-appicon" readonly/>
 											<label class="input-group-btn">
-												<span class="btn btn-default">
+												<span class="btn btn-default" tabindex="4">
 													<i class="fa fa-upload"></i>
 													<input type='file' onchange="angular.element(this).scope().imageUpload(event)" style="display:none;"/>
 													 <!-- <input type="file"  ng-model="appImage" accept="image/*" value="" ng-change="imageUpload(event)" style="border:solid 1px;" multiple> -->
@@ -170,7 +170,7 @@
 									<div class="col-md-11">
 										<div class="input-group">
 											<select class="form-control timezone-select"  ng-model="registerAppCtrl.registerAppDetails.app.tz" name="timeZone" style="border-radius: 4px;"  ng-init="loadTimeZones();"
-											required>
+													tabindex="6" required>
 											<option ng-repeat="timeZone in timeZones">{{timeZone}}</option>
 											</select>
 										</div>
@@ -184,8 +184,8 @@
 								<i class="fa fa-info-circle" aria-hidden="true"></i>
 							</div> -->
 							<div class="col-md-12">
-								<button class="btn btn-back" ng-click="registerAppCtrl.fadeBack('tab2', 'tab1');">Back</button>
-								<button class="btn btn-proceed2" ng-disabled="appDetailsForm.$invalid" ng-click="registerAppCtrl.fadeProceed('tab2', 'tab3');">Proceed</button>
+								<button class="btn btn-back" ng-click="registerAppCtrl.fadeBack('tab2', 'tab1');" tabindex="7">Back</button>
+								<button class="btn btn-proceed2" ng-disabled="appDetailsForm.$invalid" ng-click="registerAppCtrl.fadeProceed('tab2', 'tab3');" tabindex="8">Proceed</button>
 							</div>
 						</form>   
 					</div>
@@ -213,8 +213,8 @@
 								</span></p>
 							</div>
 							<div class="col-md-12">
-								<button class="btn btn-back" ng-click="registerAppCtrl.fadeBack('tab3', 'tab2');">Back</button>
-								<button class="btn btn-confirm" ng-click="registerAppCtrl.registerUser(registerAppCtrl.registerAppDetails);">Confirm</button>
+								<button class="btn btn-back" ng-click="registerAppCtrl.fadeBack('tab3', 'tab2');" tabindex="1" autofocus>Back</button>
+								<button class="btn btn-confirm" ng-click="registerAppCtrl.registerUser(registerAppCtrl.registerAppDetails);" tabindex="2">Confirm</button>
 							</div>
 						</form>
 					</div>
