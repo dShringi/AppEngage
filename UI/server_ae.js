@@ -8,6 +8,7 @@ const bodyParser  	= require('body-parser');
 const config			= require('./config/config');
 try{
 //API Routes Embeding
+const userRawdataController = require('./server/controllers/userRawdataController');
 const crashController = require('./server/controllers/crashController');
 const dashboardController = require('./server/controllers/dashboardController');
 const userDashboardController = require('./server/controllers/userDashboardController');
@@ -27,6 +28,7 @@ app.get('/', function (req, res) {
 	res.sendFile(__dirname + '/client/index.html');
 });
 
+app.get('/appengage/getuserRawdata',userRawdataController.getUserRawdata);
 app.get('/appengage/getCrashCounters', crashController.crashCounters);
 app.get('/appengage/getCrashDetails', crashController.crashDetail);
 app.get('/appengage/getDashBoardCounters', dashboardController.dashboardCounters);
