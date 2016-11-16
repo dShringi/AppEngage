@@ -10,7 +10,15 @@ module.exports.salt = '$2a$10$2bcGZRHuqiatshKdY0vDT.';
 module.exports.connectionstring = 'mongodb://localhost/';
 module.exports.appengageConnString	=	'mongodb://localhost/appengage';
 
+
+module.exports.coll_begins			= 	'coll_begins';
+module.exports.coll_ends			= 	'coll_ends';
 module.exports.coll_crashes			= 	'coll_crashes';
+module.exports.coll_screens			= 	'coll_screens';
+module.exports.coll_events			= 	'coll_events';
+module.exports.appname			    = 	'appengage';
+
+
 module.exports.coll_dashboard		= 	'coll_dashboard';
 module.exports.coll_realtime		= 	'coll_realtimes';
 module.exports.coll_users 			= 	'coll_users';
