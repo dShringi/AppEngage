@@ -16,7 +16,7 @@ define(['app','assets/js/moment-timezone-with-data-2010-2020'],function (app, mo
 			}
 		}
 	});
-	landingPageApp.controller("registerAppController",['$scope','$http','apiUrl','FocusWithinModal', function($scope,$http,apiUrl,FocusWithinModal){
+	landingPageApp.controller("registerAppController",['$scope','$http','apiUrl', function($scope,$http,apiUrl){
 		this.registerAppDetails={
 			"user": {
 				"fn": "",

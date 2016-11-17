@@ -1,5 +1,5 @@
-define(['components/landingPage/controller/landingPageController'],function () {
-   var appEngage = angular.module('AppEngage',['ui.router','LandingPageApp']);
+define(['components/landingPage/controller/landingPageController','components/commons/controller/commonController'],function () {
+   var appEngage = angular.module('AppEngage',['ui.router','LandingPageApp','CommonApp']);
    appEngage.constant('apiUrl', 'http://52.206.121.100/appengage');
    appEngage.config(function($stateProvider, $urlMatcherFactoryProvider, $urlRouterProvider){
       $urlRouterProvider.otherwise("/home");
@@ -7,7 +7,7 @@ define(['components/landingPage/controller/landingPageController'],function () {
       $stateProvider.state("navHome",{
          url:"/home",
          views: {
-            'nav@': {
+            'header@': {
                templateUrl: 'app/components/landingPage/view/navbar.html'
             },
             'main@': {
@@ -18,12 +18,12 @@ define(['components/landingPage/controller/landingPageController'],function () {
       $stateProvider.state("Dashboard",{
          url:"/dashboard",
          views: {
+            'header@': {
+               templateUrl: 'app/components/commons/view/header.html'
+            },
             'nav@': {
-               templateUrl: 'app/components/dashboard/view/header.html'
-            }/*,
-            'main@': {
-               templateUrl: ''
-            }*/
+               templateUrl: 'app/components/commons/view/verticalNav.html'
+            }
          }
       });
    });

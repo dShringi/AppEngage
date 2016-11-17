@@ -14,11 +14,16 @@
 	<script src="app/assets/js/require.min.js" data-main="app/config.js"></script>
 	</head>
 	<body class="landing-page">
+		<!--<div class="verticalNav">
+
+		</div>-->
 		<div class="headerSection">
 			<div ui-view="nav"></div>
+			<div ui-view="header"></div>
+			<div ui-view="main"></div>
 		</div>
 		<div class="mainContentSection">
-			<div ui-view="main"></div>
+
 		</div>
 		<div ng-include="'app/components/landingPage/view/registerApp.html'"></div>
 		<div ng-include="'app/components/landingPage/view/login.html'"></div>

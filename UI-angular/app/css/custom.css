@@ -13,3 +13,95 @@ body{
 	height:20px;
 	color:red;
 }
+.verticalNav{
+    height: 100%;
+}
+.vertical-nav {
+    background: rgb(56,67,75);
+    font-size: 13px;
+    /* ========== LISTE DES LIENS : + styles des liens en bas ======================= */
+    /* ============================================================================== */
+    /* Styles des liens de la navigation */
+}
+.vertical-nav ul {
+    background: rgb(56,67,75);
+    list-style: none;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+.vertical-nav a {
+    font-family: 'Roboto', sans-serif;
+    font-size: 17px;
+    height: 50px;
+    line-height: 53px;
+    display: inline-block;
+    vertical-align: middle;
+    width: 100%;
+    padding-left: 10px;
+    text-decoration: none;
+    box-sizing: border-box;
+    cursor: pointer;
+}
+.subMenu{
+    padding-left: 50px !important;
+}
+.menuName{
+    display: inline-block;
+    width: 132px;
+    /*float: right;*/
+    padding-top: 12px;
+    height: 45px;
+    padding-left: 5px;
+    font-size: 17px;
+    color: #FFFFFF;
+}
+.vertical-nav i{
+    font-size: 17px;
+    color: #FFFFFF;
+}
+.vertical-nav{
+    position: fixed;
+    z-index: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 210px;
+}
+.vertical-nav50{
+    position: fixed;
+    z-index: 0;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 50px;
+}
+.vertical-nav50 .sidebar-nav .menuName{
+    display: none;
+}
+.bar-icon{
+    height: 71px;
+}
+.bar-icon a{
+    padding-left: 0px;
+}
+.wdt80{
+    width: 80px;
+}
+.vertical-nav .menuSize{
+    height: 45px;
+    padding: 10px 10px;
+}
+.vertical-nav50 .menuSize{
+    height: 45px;
+    padding: 10px 3px;
+}
+.show {
+    left : 50px;
+}
+.margin-left210{
+    margin-left: 210px;
+}
+.margin-left50{
+    margin-left: 50px;
+}

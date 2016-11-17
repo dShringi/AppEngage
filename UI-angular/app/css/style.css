@@ -52,8 +52,6 @@ section>header{
 .btn{background-image:none;text-shadow:none;box-shadow:none}
 .btn-success{background-color:rgb(141,198,65);border-color:rgb(141,198,65);}
 .btn-success-inverse{background-color:rgb(255,255,255);border-color:rgb(141,198,65);color:#666}
-.wdt80{width: 80px}
-.wdt210{width: 210px}
 .left-side {position: absolute;top: 0;left: 0; overflow-x: hidden; overflow-y: hidden; z-index: 10}
 .bar-icon, .arrow-icon{background-color:rgb(34,43,50)}
 
